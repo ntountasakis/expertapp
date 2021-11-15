@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:expertapp/src/star_rating.dart';
+import 'package:expertapp/src/profile/star_rating.dart';
 import 'dart:developer';
 
 class ExpertReview extends StatelessWidget {

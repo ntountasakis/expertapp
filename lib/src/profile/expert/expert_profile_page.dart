@@ -1,7 +1,7 @@
-import 'package:expertapp/src/profile_picture.dart';
-import 'package:expertapp/src/star_rating.dart';
-import 'package:expertapp/src/expert_reviews.dart';
-import 'package:expertapp/src/text_rating.dart';
+import 'package:expertapp/src/profile/profile_picture.dart';
+import 'package:expertapp/src/profile/star_rating.dart';
+import 'package:expertapp/src/profile/expert/expert_reviews.dart';
+import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:flutter/material.dart';
 
 class ExpertProfilePage extends StatefulWidget {
