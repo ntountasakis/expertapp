@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:expertapp/src/star_rating.dart';
+import 'dart:developer';
 
 class ExpertReview extends StatelessWidget {
-  String _reviewerName;
-  String _review;
-  double _rating;
+  final String _reviewerName;
+  final String _review;
+  final double _rating;
 
   ExpertReview(this._reviewerName, this._review, this._rating);
+
+  factory ExpertReview.fromRTDB(reviewerName, Map<String, dynamic> data) {
+    var review = data['review'];
+    var rating = data['rating'].toDouble();
+    return ExpertReview(reviewerName, review, rating);
+  }
 
   @override
   Widget build(BuildContext context) {
