@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
-import 'dart:developer';
 
 class ExpertReview extends StatelessWidget {
   final String _reviewerName;
@@ -13,6 +12,15 @@ class ExpertReview extends StatelessWidget {
     var review = data['review'];
     var rating = data['rating'].toDouble();
     return ExpertReview(reviewerName, review, rating);
+  }
+
+  Map<String, dynamic> makeMap() {
+    var myReviewDetails = new Map<String, dynamic>();
+    myReviewDetails['review'] = _review;
+    myReviewDetails['rating'] = _rating;
+    var myTopLevelReview = new Map<String, dynamic>();
+    myTopLevelReview[_reviewerName] = myReviewDetails;
+    return myTopLevelReview;
   }
 
   @override
