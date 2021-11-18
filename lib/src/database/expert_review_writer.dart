@@ -9,10 +9,6 @@ class ExpertReviewWriter {
 
   void uploadReview(ExpertReview aExpertReview) {
     final _reviewRef = _database.child('expertReviews/expertReviews/John Doe');
-
-    final myJsonPayload = jsonEncode(aExpertReview.makeMap());
-    log('json payload: $myJsonPayload');
-
     _reviewRef.set(aExpertReview.makeMap());
   }
 }
