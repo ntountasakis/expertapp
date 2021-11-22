@@ -1,3 +1,4 @@
+import 'package:expertapp/src/database/models/user_id.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
@@ -7,6 +8,9 @@ import 'package:flutter/material.dart';
 import 'expert_review_submit_page.dart';
 
 class ExpertProfilePage extends StatefulWidget {
+  final UserId _userId;
+  const ExpertProfilePage(this._userId);
+
   @override
   _ExpertProfilePageState createState() => _ExpertProfilePageState();
 }
@@ -24,7 +28,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
             Container(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                "John Doe",
+                widget._userId.name,
                 style: TextStyle(fontSize: 24),
               ),
             ),
@@ -63,7 +67,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               ],
             ),
             Expanded(
-              child: ExpertReviews(),
+              child: ExpertReviews(widget._userId),
             )
           ],
         ));

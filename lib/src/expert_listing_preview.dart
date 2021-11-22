@@ -14,8 +14,10 @@ class ExpertListingPreview extends StatelessWidget {
     return ListTile(
         leading: GestureDetector(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ExpertProfilePage()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ExpertProfilePage(_userId)));
             },
             child: IntrinsicWidth(
                 child: ListTile(

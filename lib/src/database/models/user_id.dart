@@ -1,6 +1,7 @@
 class UserId {
   final String name;
-  final int id;
+  final String id;
 
-  UserId(this.name, this.id);
+  UserId(this.name, id)
+  : id = id.toString();
 }
