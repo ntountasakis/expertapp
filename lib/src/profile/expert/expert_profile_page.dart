@@ -52,7 +52,8 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ExpertReviewSubmitPage()));
+                          builder: (context) =>
+                              ExpertReviewSubmitPage(widget._userId)));
                 },
                 child: const Text('Write a Review'),
               ),

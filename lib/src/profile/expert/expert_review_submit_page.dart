@@ -1,9 +1,13 @@
 import 'package:expertapp/src/database/expert_review_writer.dart';
+import 'package:expertapp/src/database/models/user_id.dart';
 import 'package:expertapp/src/profile/expert/expert_review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ExpertReviewSubmitPage extends StatefulWidget {
+  final UserId _expertUserId;
+  ExpertReviewSubmitPage(this._expertUserId);
+
   @override
   State<ExpertReviewSubmitPage> createState() => _ExpertReviewSubmitPageState();
 }
@@ -68,7 +72,7 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
       onPressed: () {
         var myNewReview = ExpertReview("Nick T", _review, _rating);
         var myReviewWriter = ExpertReviewWriter();
-        myReviewWriter.uploadReview(myNewReview);
+        myReviewWriter.uploadReview(widget._expertUserId, myNewReview);
       },
       child: Text("Submit Review"));
 }
