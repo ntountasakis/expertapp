@@ -1,8 +1,7 @@
-import 'package:expertapp/src/database/models/user_id.dart';
+import 'package:expertapp/src/firebase/database/expert_review_loader.dart';
+import 'package:expertapp/src/firebase/database/models/user_id.dart';
 import 'package:expertapp/src/profile/expert/expert_review.dart';
 import 'package:flutter/material.dart';
-
-import '../../database/expert_review_loader.dart';
 
 class ExpertReviews extends StatefulWidget {
   final UserId _userId;

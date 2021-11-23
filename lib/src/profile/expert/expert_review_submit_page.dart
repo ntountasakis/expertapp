@@ -1,5 +1,5 @@
-import 'package:expertapp/src/database/expert_review_writer.dart';
-import 'package:expertapp/src/database/models/user_id.dart';
+import 'package:expertapp/src/firebase/database/expert_review_writer.dart';
+import 'package:expertapp/src/firebase/database/models/user_id.dart';
 import 'package:expertapp/src/profile/expert/expert_review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';

@@ -1,4 +1,4 @@
-import 'package:expertapp/src/database/models/user_id.dart';
+import 'package:expertapp/src/firebase/database/models/user_id.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';

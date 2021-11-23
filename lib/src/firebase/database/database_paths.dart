@@ -1,4 +1,4 @@
-import 'package:expertapp/src/database/models/user_id.dart';
+import 'models/user_id.dart';
 
 class DatabasePaths {
   static const EXPERT_USERS = 'expertUsers/';

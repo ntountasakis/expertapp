@@ -1,8 +1,9 @@
-import 'package:expertapp/src/database/database_paths.dart';
-import 'package:expertapp/src/database/models/user_id.dart';
 import 'package:expertapp/src/profile/expert/expert_review.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'dart:developer';
+
+import 'database_paths.dart';
+import 'models/user_id.dart';
 
 class ExpertReviewLoader {
   final _database = FirebaseDatabase.instance.reference();
