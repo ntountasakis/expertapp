@@ -21,7 +21,7 @@ class ExpertListingPreview extends StatelessWidget {
             },
             child: IntrinsicWidth(
                 child: ListTile(
-                    leading: ProfilePicture('assets/images/man-profile.jpg'),
+                    leading: ProfilePicture(_userId),
                     title: Expanded(child: Text(_userId.name))))));
   }
 }

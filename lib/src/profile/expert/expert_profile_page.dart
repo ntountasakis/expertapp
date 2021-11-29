@@ -35,7 +35,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
             SizedBox(
               width: 200,
               height: 200,
-              child: ProfilePicture('assets/images/man-profile.jpg'),
+              child: ProfilePicture(widget._userId),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
