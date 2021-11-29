@@ -1,4 +1,4 @@
-import 'package:expertapp/src/profile/expert/expert_profile_page.dart';
+import 'package:expertapp/src/screens/expert_profile_page.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 

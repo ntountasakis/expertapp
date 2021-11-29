@@ -1,9 +1,9 @@
 import 'package:expertapp/src/expert_listing_preview.dart';
 import 'package:flutter/material.dart';
 
-import 'firebase/database/database_paths.dart';
-import 'firebase/database/models/user_id.dart';
-import 'firebase/database/user_loader.dart';
+import '../firebase/database/database_paths.dart';
+import '../firebase/database/models/user_id.dart';
+import '../firebase/database/user_loader.dart';
 
 class ExpertListings extends StatefulWidget {
   @override
