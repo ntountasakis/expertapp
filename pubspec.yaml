@@ -28,9 +28,9 @@ dependencies:
   firebase_storage: ^10.1.0
   flutter:
     sdk: flutter
-  flutter_facebook_auth: ^4.0.0
   flutter_rating_bar: ^4.0.0
   flutter_signin_button: ^2.0.0
+  flutterfire_ui: ^0.3.1
 
 dev_dependencies:
   flutter_test:

@@ -15,19 +15,22 @@ class _ExpertListingsState extends State<ExpertListings> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: _userStream.getUserStream(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final myUsers = snapshot.data as List<UserId>;
-            return ListView.builder(
-                itemCount: myUsers.length,
-                itemBuilder: (context, index) {
-                  return ExpertListingPreview(myUsers[index]);
-                });
-          } else {
-            return CircularProgressIndicator();
-          }
-        });
+    return Scaffold(
+        appBar: AppBar(title: Text('Expert Listings')),
+        body: Container(
+            child: StreamBuilder(
+                stream: _userStream.getUserStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final myUsers = snapshot.data as List<UserId>;
+                    return ListView.builder(
+                        itemCount: myUsers.length,
+                        itemBuilder: (context, index) {
+                          return ExpertListingPreview(myUsers[index]);
+                        });
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                })));
   }
 }
