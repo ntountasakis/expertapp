@@ -5,7 +5,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'models/user_id.dart';
 
 class UserLoader {
-  final _database = FirebaseDatabase.instance.reference();
+  final _database = FirebaseDatabase.instance.ref();
   late final _userStream;
 
   UserLoader(String userPath) {
@@ -18,7 +18,10 @@ class UserLoader {
         final userMaps = List<dynamic>.from(event.snapshot.value);
         final List<UserId> userList = [];
         userMaps.forEach((nextUser) {
-          userList.add(UserId(nextUser['name'], nextUser['id']));
+          if (nextUser != null)
+          {
+            userList.add(UserId(nextUser['name'], nextUser['id']));
+          }
         });
         return userList;
       });

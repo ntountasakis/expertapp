@@ -5,7 +5,7 @@ import 'database_paths.dart';
 import 'models/user_id.dart';
 
 class ExpertReviewWriter {
-  final _database = FirebaseDatabase.instance.reference();
+  final _database = FirebaseDatabase.instance.ref();
 
   void uploadReview(UserId aExpertUser, ExpertReview aExpertReview) {
     final _reviewRef = _database.child(DatabasePaths.EXPERT_REVIEWS_FOR_EXPERT(aExpertUser));

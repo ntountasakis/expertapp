@@ -13,10 +13,15 @@ class ExpertReviewLoader {
         .child(DatabasePaths.EXPERT_REVIEWS_FOR_EXPERT(aExpertUser))
         .onValue;
     final reviewStreamToPublish = reviewStream.map((event) {
-      final reviewMap = Map<String, dynamic>.from(event.snapshot.value as Map<String, dynamic>);
       List<ExpertReview> expertReviews = [];
+      if (!event.snapshot.exists) {
+        return expertReviews;
+      }
+      final reviewMap = Map<String, dynamic>.from(
+          event.snapshot.value as Map<dynamic, dynamic>);
       for (var expertReviewerName in reviewMap.keys) {
-        var nextReview = Map<String, dynamic>.from(reviewMap[expertReviewerName]);
+        var nextReview =
+            Map<String, dynamic>.from(reviewMap[expertReviewerName]);
         try {
           var myExpertReview =
               ExpertReview.fromRTDB(expertReviewerName, nextReview);
