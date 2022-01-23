@@ -1,4 +1,5 @@
 import 'package:expertapp/src/expert_listing_preview.dart';
+import 'package:expertapp/src/screens/auth_gate.dart';
 import 'package:flutter/material.dart';
 
 import '../firebase/database/database_paths.dart';
@@ -12,11 +13,21 @@ class ExpertListings extends StatefulWidget {
 
 class _ExpertListingsState extends State<ExpertListings> {
   final _userStream = UserLoader(DatabasePaths.EXPERT_USERS);
+  final ButtonStyle style =
+      ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 8));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Expert Listings')),
+        appBar: AppBar(
+            leading: ElevatedButton(
+              style: style,
+              onPressed: () async {
+                await AuthGate.signOut();
+              },
+              child: const Text('Sign Out'),
+            ),
+            title: Text('Expert Listings')),
         body: Container(
             child: StreamBuilder(
                 stream: _userStream.getUserStream(),

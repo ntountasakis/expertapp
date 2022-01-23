@@ -8,14 +8,21 @@ class AuthGate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    var streamBuilder = StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return SignInScreen(providerConfigs: []);
+          return SignInScreen(providerConfigs: [
+            EmailProviderConfiguration(),
+          ]);
         }
         return ExpertListings();
       },
     );
+    return streamBuilder;
+  }
+
+  static Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
   }
 }
