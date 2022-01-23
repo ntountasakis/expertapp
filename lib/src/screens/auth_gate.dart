@@ -14,6 +14,9 @@ class AuthGate extends StatelessWidget {
         if (!snapshot.hasData) {
           return SignInScreen(providerConfigs: [
             EmailProviderConfiguration(),
+            GoogleProviderConfiguration(
+            clientId: '111394228371-4slr6ceip09bqefipq2ikbvribtj93qj.apps.googleusercontent.com',
+          )
           ]);
         }
         return ExpertListings();
