@@ -1,10 +1,18 @@
+import 'dart:developer';
+
 import 'package:expertapp/src/screens/expert_listings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 
 class AuthGate extends StatelessWidget {
+  void handleAuthStateChangeAction(context, AuthState state) {
+    if (state is UserCreated) {
+      log('new user!!');
+    }
+  }
   const AuthGate({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +20,9 @@ class AuthGate extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return SignInScreen(providerConfigs: [
+          return SignInScreen(actions: [
+            AuthStateChangeAction(handleAuthStateChangeAction)
+          ], providerConfigs: [
             EmailProviderConfiguration(),
             GoogleProviderConfiguration(
               clientId:
