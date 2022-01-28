@@ -1,28 +1,19 @@
 import 'dart:developer';
 
-import 'package:expertapp/src/screens/expert_listings.dart';
+import 'package:expertapp/src/gates/user_creation_gate.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 
-class AuthGate extends StatelessWidget {
-  void handleAuthStateChangeAction(context, AuthState state) {
-    if (state is UserCreated) {
-      log('new user!!');
-    }
-  }
-  const AuthGate({Key? key}) : super(key: key);
-
+class AuthGatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var streamBuilder = StreamBuilder(
+    return StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return SignInScreen(actions: [
-            AuthStateChangeAction(handleAuthStateChangeAction)
-          ], providerConfigs: [
+          return SignInScreen(providerConfigs: [
             EmailProviderConfiguration(),
             GoogleProviderConfiguration(
               clientId:
@@ -33,10 +24,9 @@ class AuthGate extends StatelessWidget {
             )
           ]);
         }
-        return ExpertListings();
+        return UserCreationGate(FirebaseAuth.instance.currentUser!);
       },
     );
-    return streamBuilder;
   }
 
   static Future<void> signOut() async {

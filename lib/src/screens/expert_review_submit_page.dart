@@ -1,12 +1,12 @@
-import 'package:expertapp/src/firebase/database/expert_review_writer.dart';
-import 'package:expertapp/src/firebase/database/models/user_id.dart';
-import 'package:expertapp/src/profile/expert/expert_review.dart';
+import 'package:expertapp/src/firebase/database/models/review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ExpertReviewSubmitPage extends StatefulWidget {
-  final UserId _expertUserId;
-  ExpertReviewSubmitPage(this._expertUserId);
+  final String _reviewerUserId;
+  final String _expertUserId;
+
+  ExpertReviewSubmitPage(this._reviewerUserId, this._expertUserId);
 
   @override
   State<ExpertReviewSubmitPage> createState() => _ExpertReviewSubmitPageState();
@@ -69,10 +69,9 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
 
   Widget buildSubmit() => ElevatedButton(
       style: style,
-      onPressed: () {
-        var myNewReview = ExpertReview("Nick T", _review, _rating);
-        var myReviewWriter = ExpertReviewWriter();
-        myReviewWriter.uploadReview(widget._expertUserId, myNewReview);
+      onPressed: () async {
+        final myNewReview = Review(widget._reviewerUserId, _review, _rating);
+        await myNewReview.put(widget._expertUserId);
       },
       child: Text("Submit Review"));
 }

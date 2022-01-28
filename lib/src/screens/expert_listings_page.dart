@@ -1,18 +1,18 @@
 import 'package:expertapp/src/expert_listing_preview.dart';
-import 'package:expertapp/src/screens/auth_gate.dart';
+import 'package:expertapp/src/firebase/database/models/user_information.dart';
+import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:flutter/material.dart';
 
-import '../firebase/database/database_paths.dart';
-import '../firebase/database/models/user_id.dart';
-import '../firebase/database/user_loader.dart';
+class ExpertListingsPage extends StatefulWidget {
+  final UserInformation _currentUser;
 
-class ExpertListings extends StatefulWidget {
+  const ExpertListingsPage(this._currentUser);
+
   @override
-  _ExpertListingsState createState() => _ExpertListingsState();
+  _ExpertListingsPageState createState() => _ExpertListingsPageState();
 }
 
-class _ExpertListingsState extends State<ExpertListings> {
-  final _userStream = UserLoader(DatabasePaths.EXPERT_USERS);
+class _ExpertListingsPageState extends State<ExpertListingsPage> {
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 8));
 
@@ -23,21 +23,21 @@ class _ExpertListingsState extends State<ExpertListings> {
             leading: ElevatedButton(
               style: style,
               onPressed: () async {
-                await AuthGate.signOut();
+                await AuthGatePage.signOut();
               },
               child: const Text('Sign Out'),
             ),
             title: Text('Expert Listings')),
         body: Container(
             child: StreamBuilder(
-                stream: _userStream.getUserStream(),
+                stream: UserInformation.getStream(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    final myUsers = snapshot.data as List<UserId>;
+                    final myUsers = snapshot.data as List<UserInformation>;
                     return ListView.builder(
                         itemCount: myUsers.length,
                         itemBuilder: (context, index) {
-                          return ExpertListingPreview(myUsers[index]);
+                          return ExpertListingPreview(widget._currentUser, myUsers[index]);
                         });
                   } else {
                     return CircularProgressIndicator();

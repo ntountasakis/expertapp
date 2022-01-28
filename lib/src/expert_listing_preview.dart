@@ -1,13 +1,13 @@
+import 'package:expertapp/src/firebase/database/models/user_information.dart';
 import 'package:expertapp/src/screens/expert_profile_page.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 
-import 'firebase/database/models/user_id.dart';
-
 class ExpertListingPreview extends StatelessWidget {
-  final UserId _userId;
+  final UserInformation _currentUser;
+  final UserInformation _expertUserInfo;
 
-  const ExpertListingPreview(this._userId);
+  const ExpertListingPreview(this._currentUser, this._expertUserInfo);
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +17,11 @@ class ExpertListingPreview extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ExpertProfilePage(_userId)));
+                      builder: (context) => ExpertProfilePage(_currentUser, _expertUserInfo)));
             },
             child: IntrinsicWidth(
                 child: ListTile(
-                    leading: ProfilePicture(_userId),
-                    title: Text(_userId.name)))));
+                    leading: ProfilePicture(_expertUserInfo.uid),
+                    title: Text(_expertUserInfo.firstName)))));
   }
 }

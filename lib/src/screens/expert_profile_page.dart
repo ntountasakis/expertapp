@@ -1,4 +1,4 @@
-import 'package:expertapp/src/firebase/database/models/user_id.dart';
+import 'package:expertapp/src/firebase/database/models/user_information.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
@@ -8,8 +8,9 @@ import 'package:flutter/material.dart';
 import 'expert_review_submit_page.dart';
 
 class ExpertProfilePage extends StatefulWidget {
-  final UserId _userId;
-  const ExpertProfilePage(this._userId);
+  final UserInformation _currentUser;
+  final UserInformation _expertUserInfo;
+  const ExpertProfilePage(this._currentUser, this._expertUserInfo);
 
   @override
   _ExpertProfilePageState createState() => _ExpertProfilePageState();
@@ -28,14 +29,14 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
             Container(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                widget._userId.name,
+                widget._expertUserInfo.firstName,
                 style: TextStyle(fontSize: 24),
               ),
             ),
             SizedBox(
               width: 200,
               height: 200,
-              child: ProfilePicture(widget._userId),
+              child: ProfilePicture(widget._expertUserInfo.uid),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -52,8 +53,8 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              ExpertReviewSubmitPage(widget._userId)));
+                          builder: (context) => ExpertReviewSubmitPage(
+                              widget._expertUserInfo.uid, widget._currentUser.uid)));
                 },
                 child: const Text('Write a Review'),
               ),
@@ -68,7 +69,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               ],
             ),
             Expanded(
-              child: ExpertReviews(widget._userId),
+              child: ExpertReviews(widget._expertUserInfo),
             )
           ],
         ));

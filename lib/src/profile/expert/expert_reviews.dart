@@ -1,23 +1,22 @@
-import 'package:expertapp/src/firebase/database/expert_review_loader.dart';
-import 'package:expertapp/src/firebase/database/models/user_id.dart';
+import 'package:expertapp/src/firebase/database/models/review.dart';
+import 'package:expertapp/src/firebase/database/models/user_information.dart';
 import 'package:expertapp/src/profile/expert/expert_review.dart';
 import 'package:flutter/material.dart';
 
 class ExpertReviews extends StatefulWidget {
-  final UserId _userId;
-  const ExpertReviews(this._userId);
+  final UserInformation _expertUserInfo;
+  const ExpertReviews(this._expertUserInfo);
 
   @override
   State<ExpertReviews> createState() => _ExpertReviewsState();
 }
 
 class _ExpertReviewsState extends State<ExpertReviews> {
-  final _expertReviewLoader = ExpertReviewLoader();
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: _expertReviewLoader.getExpertReviewStream(widget._userId),
+        stream: ExpertReview.getStream(widget._expertUserInfo),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final myReviews =
