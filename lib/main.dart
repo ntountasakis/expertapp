@@ -1,11 +1,28 @@
+import 'dart:io';
+
 import 'package:expertapp/src/screens/auth_gate_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+
+const bool USE_FIREBASE_EMULATOR = true;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  if (USE_FIREBASE_EMULATOR) {
+    _connectToFirebaseEmulator();
+  }
+
   runApp(MyApp());
+}
+
+Future _connectToFirebaseEmulator() async {
+  final localhostString = Platform.isAndroid ? '10.0.2.2' : 'localhost';
+  FirebaseDatabase.instance.useDatabaseEmulator(localhostString, 9000);
+  await FirebaseAuth.instance.useAuthEmulator(localhostString, 9099);
 }
 
 class MyApp extends StatelessWidget {
