@@ -5,8 +5,9 @@ class UserInformation {
   final String uid;
   final String firstName;
   final String lastName;
+  final String? profilePicUrl;
 
-  UserInformation(this.uid, this.firstName, this.lastName);
+  UserInformation(this.uid, this.firstName, this.lastName, this.profilePicUrl);
 
   Future<void> put() async {
     await DatabaseUtil.put(_path(uid), _toRTDB());
@@ -27,8 +28,8 @@ class UserInformation {
       final userInfos = <UserInformation>[];
       event.forEach((userMaps) {
         userMaps.forEach((key, value) {
-      final userInfoMap = Map<String, dynamic>.from(
-          value as Map<dynamic, dynamic>);
+          final userInfoMap =
+              Map<String, dynamic>.from(value as Map<dynamic, dynamic>);
           userInfos.add(_fromRTDB(key, userInfoMap));
         });
       });
@@ -41,10 +42,19 @@ class UserInformation {
   }
 
   Map<String, dynamic> _toRTDB() {
-    return {'firstName': firstName, 'lastName': lastName};
+    var fieldsMap = {'firstName': firstName, 'lastName': lastName};
+    if (profilePicUrl != null) {
+      fieldsMap['profilePicUrl'] = profilePicUrl!;
+    }
+    return fieldsMap;
   }
 
   static UserInformation _fromRTDB(String uid, Map<String, dynamic> data) {
-    return UserInformation(uid, data['firstName'], data['lastName']);
+    String? profilePicUrl;
+    if (data.containsKey('profilePicUrl')) {
+      profilePicUrl = data['profilePicUrl'];
+    }
+    return UserInformation(
+        uid, data['firstName'], data['lastName'], profilePicUrl);
   }
 }
