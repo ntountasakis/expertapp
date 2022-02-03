@@ -59,8 +59,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
           }
           _formKey.currentState!.save();
 
-          final userInfo = UserInformation(
-              widget._authenticatedUser.uid, _firstName, _lastName);
+          final userInfo = UserInformation(widget._authenticatedUser.uid,
+              _firstName, _lastName, widget._authenticatedUser.photoURL);
           await userInfo.put();
 
           log('User Info Uploaded');

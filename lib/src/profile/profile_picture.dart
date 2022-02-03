@@ -3,21 +3,25 @@ import 'package:expertapp/src/firebase/storage/storage_util.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePicture extends StatelessWidget {
-  final String _profilePicturePath;
+  final String? _profilePictureUrl;
 
-  ProfilePicture(String? profilePictureUrl)
-      : _profilePicturePath = profilePictureUrl != null
-            ? StoragePaths.PROFILE_PICS + profilePictureUrl
-            : StoragePaths.DEFAULT_PROFILE_PIC;
+  ProfilePicture(this._profilePictureUrl);
+
+  Widget _imageWidget(String url) {
+    return ClipOval(child: Image.network(url));
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_profilePictureUrl != null) {
+      return _imageWidget(_profilePictureUrl!);
+    }
     return FutureBuilder(
-      future: StorageUtil.getDownloadUrl(_profilePicturePath),
+      future: StorageUtil.getDownloadUrl(StoragePaths.DEFAULT_PROFILE_PIC),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           String pictureUrl = snapshot.data as String;
-          return ClipOval(child: Image.network(pictureUrl));
+          return _imageWidget(pictureUrl);
         }
         return CircularProgressIndicator();
       },

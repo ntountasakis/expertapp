@@ -3,6 +3,7 @@ import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
+import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:flutter/material.dart';
 
 import 'expert_review_submit_page.dart';
@@ -23,7 +24,15 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Expert Profile")),
+        appBar: AppBar(
+            leading: ElevatedButton(
+              style: style,
+              onPressed: () async {
+                await AuthGatePage.signOut();
+              },
+              child: const Text('Sign Out'),
+            ),
+          title: const Text("Expert Profile")),
         body: Column(
           children: [
             Container(
