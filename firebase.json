@@ -7,29 +7,29 @@
   },
   "emulators": {
     "auth": {
-      "port": 9099
-    },
-    "functions": {
-      "port": 5001
-    },
-    "firestore": {
-      "port": 8080
-    },
-    "database": {
       "port": 9000
     },
+    "functions": {
+      "port": 9001
+    },
+    "firestore": {
+      "port": 9001
+    },
+    "database": {
+      "port": 9003
+    },
     "hosting": {
-      "port": 5000
+      "port": 9004
     },
     "pubsub": {
-      "port": 8085
+      "port": 9005
     },
     "storage": {
-      "port": 9199
+      "port": 9006
     },
     "ui": {
       "enabled": true,
-      "port": 7999
+      "port": 9007
     }
   }
 }
