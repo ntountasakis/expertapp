@@ -11,15 +11,23 @@ class DatabaseUtil {
   }
 
   static Future<Map<String, dynamic>?> get(String aPath) async {
-    final DatabaseReference ref = _database.child(aPath);
-    return ref.get().then((event) {
-      return event.value != null
-          ? new Map<String, dynamic>.from(event.value as Map<dynamic, dynamic>)
-          : null;
-    });
+    DatabaseReference _database = FirebaseDatabase.instance.ref();
+    try {
+      final DatabaseReference ref = _database.child(aPath);
+      return ref.get().then((event) {
+        return event.value != null
+            ? new Map<String, dynamic>.from(
+                event.value as Map<dynamic, dynamic>)
+            : null;
+      });
+    } catch (e) {
+      log('Exception getting $aPath from Database: Error: $e');
+      return null;
+    }
   }
 
   static Stream<List<Map<String, dynamic>>> getEntryStream(String aPath) {
+    DatabaseReference _database = FirebaseDatabase.instance.ref();
     final Stream<DatabaseEvent> databaseStream = _database.child(aPath).onValue;
     return databaseStream.map((DatabaseEvent event) {
       List<Map<String, dynamic>> entries = [];

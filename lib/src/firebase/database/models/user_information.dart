@@ -5,12 +5,16 @@ class UserInformation {
   final String uid;
   final String firstName;
   final String lastName;
-  final String? profilePicUrl;
+  late String? profilePicUrl;
 
   UserInformation(this.uid, this.firstName, this.lastName, this.profilePicUrl);
 
+  void updateProfilePicUrl(String uploadedImageUrl) {
+    profilePicUrl = uploadedImageUrl;
+  }
+
   Future<void> put() async {
-    await DatabaseUtil.put(_path(uid), _toRTDB());
+    return DatabaseUtil.put(_path(uid), _toRTDB());
   }
 
   static Future<UserInformation?> get(String uid) async {

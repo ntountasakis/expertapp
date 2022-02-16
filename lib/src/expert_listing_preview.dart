@@ -11,17 +11,21 @@ class ExpertListingPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-        leading: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ExpertProfilePage(_currentUser, _expertUserInfo)));
-            },
-            child: IntrinsicWidth(
+    return Container(
+      child: ListTile(
+          leading: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ExpertProfilePage(_currentUser, _expertUserInfo)));
+              },
+              child: Container(
                 child: ListTile(
                     leading: ProfilePicture(_expertUserInfo.profilePicUrl),
-                    title: Text(_expertUserInfo.firstName)))));
+                    title: Text(_expertUserInfo.firstName)),
+              ))),
+    );
   }
 }

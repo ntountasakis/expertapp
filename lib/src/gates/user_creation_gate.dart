@@ -14,12 +14,15 @@ class UserCreationGate extends StatelessWidget {
     return FutureBuilder(
         future: UserInformation.get(_authenticatedUser.uid),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            // return ExpertListingsPage(snapshot.data as UserInformation);
-            final userInfo = snapshot.data as UserInformation;
-            return ExpertProfilePage(userInfo, userInfo);
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              // return ExpertListingsPage(snapshot.data as UserInformation);
+              final userInfo = snapshot.data as UserInformation;
+              return ExpertProfilePage(userInfo, userInfo);
+            }
+            return UserSignupPage(_authenticatedUser);
           }
-          return UserSignupPage(_authenticatedUser);
+          return CircularProgressIndicator();
         });
   }
 }
