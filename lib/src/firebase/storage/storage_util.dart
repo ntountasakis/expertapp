@@ -18,4 +18,12 @@ class StorageUtil {
       log('Exception uploading to $storagePath');
     }
   }
+
+  static Future<void> deleteFile(String fileUrl) async {
+    try {
+      await _storage.refFromURL(fileUrl).delete();
+    } on FirebaseException catch (e) {
+      log('Exception deleting $fileUrl');
+    }
+  }
 }

@@ -30,17 +30,20 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
   void onProfilePicSelection(Uint8List profilePicBytes) async {
+    final String? oldProfilePicUrl = widget._profilePicUrl;
     final String imageName = Uuid().v4();
     final String imageUploadPath = StoragePaths.PROFILE_PICS + imageName;
     await StorageUtil.uploadFile(profilePicBytes, imageUploadPath);
-
-    // todo implement deletion
     String uploadedImageUrl = await StorageUtil.getDownloadUrl(imageUploadPath);
     widget._expertUserInfo.updateProfilePicUrl(uploadedImageUrl);
     await widget._expertUserInfo.put();
     setState(() {
       widget._profilePicUrl = uploadedImageUrl;
     });
+
+    if (oldProfilePicUrl != null) {
+      await StorageUtil.deleteFile(oldProfilePicUrl);
+    }
   }
 
   @override
