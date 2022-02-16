@@ -79,5 +79,11 @@
     </array>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <true/>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>To upload a profile picture from photo library</string>
+    <key>NSCameraUsageDescription</key>
+    <string>To take a photo for the profile picture or to make video calls</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>To facilitate voice and video calls</string>
 </dict>
 </plist>

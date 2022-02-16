@@ -1,17 +1,25 @@
+import 'dart:typed_data';
+
 import 'package:expertapp/src/firebase/database/models/user_information.dart';
+import 'package:expertapp/src/firebase/storage/storage_paths.dart';
+import 'package:expertapp/src/firebase/storage/storage_util.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 import 'expert_review_submit_page.dart';
 
 class ExpertProfilePage extends StatefulWidget {
   final UserInformation _currentUser;
   final UserInformation _expertUserInfo;
-  const ExpertProfilePage(this._currentUser, this._expertUserInfo);
+  late String? _profilePicUrl;
+  ExpertProfilePage(this._currentUser, this._expertUserInfo) {
+    this._profilePicUrl = this._expertUserInfo.profilePicUrl;
+  }
 
   @override
   _ExpertProfilePageState createState() => _ExpertProfilePageState();
@@ -20,6 +28,20 @@ class ExpertProfilePage extends StatefulWidget {
 class _ExpertProfilePageState extends State<ExpertProfilePage> {
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+
+  void onProfilePicSelection(Uint8List profilePicBytes) async {
+    final String imageName = Uuid().v4();
+    final String imageUploadPath = StoragePaths.PROFILE_PICS + imageName;
+    await StorageUtil.uploadFile(profilePicBytes, imageUploadPath);
+
+    // todo implement deletion
+    String uploadedImageUrl = await StorageUtil.getDownloadUrl(imageUploadPath);
+    widget._expertUserInfo.updateProfilePicUrl(uploadedImageUrl);
+    await widget._expertUserInfo.put();
+    setState(() {
+      widget._profilePicUrl = uploadedImageUrl;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +54,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               },
               child: const Text('Sign Out'),
             ),
-          title: const Text("Expert Profile")),
+            title: const Text("Expert Profile")),
         body: Column(
           children: [
             Container(
@@ -45,7 +67,8 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
             SizedBox(
               width: 200,
               height: 200,
-              child: ProfilePicture(widget._expertUserInfo.profilePicUrl),
+              child: ProfilePicture(
+                  widget._expertUserInfo.profilePicUrl, onProfilePicSelection),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -63,7 +86,8 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ExpertReviewSubmitPage(
-                              widget._expertUserInfo.uid, widget._currentUser.uid)));
+                              widget._expertUserInfo.uid,
+                              widget._currentUser.uid)));
                 },
                 child: const Text('Write a Review'),
               ),
