@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:expertapp/src/firebase/database/models/user_information.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
 import 'package:expertapp/src/firebase/storage/storage_paths.dart';
 import 'package:expertapp/src/firebase/storage/storage_util.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
@@ -14,11 +15,11 @@ import 'package:uuid/uuid.dart';
 import 'expert_review_submit_page.dart';
 
 class ExpertProfilePage extends StatefulWidget {
-  final UserInformation _currentUser;
-  final UserInformation _expertUserInfo;
+  final DocumentWrapper<UserInformation> _currentUser;
+  final DocumentWrapper<UserInformation> _expertUser;
   late String? _profilePicUrl;
-  ExpertProfilePage(this._currentUser, this._expertUserInfo) {
-    this._profilePicUrl = this._expertUserInfo.profilePicUrl;
+  ExpertProfilePage(this._currentUser, this._expertUser) {
+    this._profilePicUrl = this._expertUser.documentType.profilePicUrl;
   }
 
   @override
@@ -35,8 +36,8 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
     final String imageUploadPath = StoragePaths.PROFILE_PICS + imageName;
     await StorageUtil.uploadFile(profilePicBytes, imageUploadPath);
     String uploadedImageUrl = await StorageUtil.getDownloadUrl(imageUploadPath);
-    widget._expertUserInfo.updateProfilePicUrl(uploadedImageUrl);
-    await widget._expertUserInfo.put();
+    widget._expertUser.documentType.profilePicUrl = uploadedImageUrl;
+    await widget._expertUser.documentType.set(widget._expertUser.documentId);
     setState(() {
       widget._profilePicUrl = uploadedImageUrl;
     });
@@ -63,7 +64,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
             Container(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                widget._expertUserInfo.firstName,
+                widget._expertUser.documentType.firstName,
                 style: TextStyle(fontSize: 24),
               ),
             ),
@@ -71,7 +72,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               width: 200,
               height: 200,
               child: ProfilePicture(
-                  widget._expertUserInfo.profilePicUrl, onProfilePicSelection),
+                  widget._expertUser.documentType.profilePicUrl, onProfilePicSelection),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -89,8 +90,8 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ExpertReviewSubmitPage(
-                              widget._expertUserInfo.uid,
-                              widget._currentUser.uid)));
+                              widget._currentUser,
+                              widget._expertUser)));
                 },
                 child: const Text('Write a Review'),
               ),
@@ -105,7 +106,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               ],
             ),
             Expanded(
-              child: ExpertReviews(widget._expertUserInfo),
+              child: ExpertReviews(widget._expertUser),
             )
           ],
         ));

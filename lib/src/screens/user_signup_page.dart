@@ -1,7 +1,6 @@
 import 'dart:developer';
 
-import 'package:expertapp/src/firebase/database/models/user_information.dart';
-import 'package:expertapp/src/firebase/storage/storage_paths.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
 import 'package:expertapp/src/screens/expert_listings_page.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,13 +61,13 @@ class _UserSignupPageState extends State<UserSignupPage> {
 
           final userInfo = UserInformation(widget._authenticatedUser.uid,
               _firstName, _lastName, widget._authenticatedUser.photoURL);
-          await userInfo.put();
+          final userInfoWrapper = await userInfo.put();
 
           log('User Info Uploaded');
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ExpertListingsPage(userInfo)));
+                  builder: (context) => ExpertListingsPage(userInfoWrapper)));
         },
         child: const Text('Submit'));
   }

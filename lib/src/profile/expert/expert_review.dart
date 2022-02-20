@@ -1,28 +1,22 @@
-import 'package:expertapp/src/firebase/database/models/review.dart';
-import 'package:expertapp/src/firebase/database/models/user_information.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/review.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
 import 'package:flutter/material.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 
 class ExpertReview extends StatelessWidget {
-  final Review _expertReview;
-  final UserInformation _reviewerUserInfo;
+  final DocumentWrapper<UserInformation> _reviewerUserInfo;
+  final DocumentWrapper<Review> _expertReview;
 
-  ExpertReview(this._expertReview, this._reviewerUserInfo);
+  ExpertReview(this._reviewerUserInfo, this._expertReview);
 
-  static Stream<List<ExpertReview>> getStream(
-      UserInformation expertUser) {
-    return Review.getStream(expertUser.uid).map((List<Review> reviews) {
-      final List<ExpertReview> myReviewWidgets = [];
-
-      reviews.forEach((Review review) async {
-        UserInformation? reviewerInfo = await UserInformation.get(review.reviewerUid);
-        if (reviewerInfo != null)
-        {
-          myReviewWidgets.add(ExpertReview(review, reviewerInfo));
-        }
+  static Stream<Iterable<ExpertReview>> getStream(
+      DocumentWrapper<UserInformation> expertUser) {
+    return Review.getStream(expertUser.documentType.authUid)
+        .map((Iterable<DocumentWrapper<Review>> iterableReviews) {
+      return iterableReviews.map((DocumentWrapper<Review> wrappedReview) {
+        return ExpertReview(expertUser, wrappedReview);
       });
-
-      return myReviewWidgets;
     });
   }
 
@@ -42,15 +36,17 @@ class ExpertReview extends StatelessWidget {
                     alignment: WrapAlignment.start,
                     textDirection: TextDirection.ltr,
                     children: [
-                      Text(_reviewerUserInfo.firstName,
+                      Text(_reviewerUserInfo.documentType.firstName,
                           style: TextStyle(fontSize: 16)),
-                      StarRating(_expertReview.rating, 16.0)
+                      StarRating(_expertReview.documentType.rating, 16.0)
                     ])
               ]),
               Expanded(
                   child: Scrollbar(
-                      child: SingleChildScrollView(
-                          child: Text(_expertReview.review))))
+                child: SingleChildScrollView(
+                  child: Text(_expertReview.documentType.reviewText),
+                ),
+              )),
             ]),
           ),
         ));

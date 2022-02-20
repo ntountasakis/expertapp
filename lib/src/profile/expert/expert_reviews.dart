@@ -1,10 +1,10 @@
-import 'package:expertapp/src/firebase/database/models/review.dart';
-import 'package:expertapp/src/firebase/database/models/user_information.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
 import 'package:expertapp/src/profile/expert/expert_review.dart';
 import 'package:flutter/material.dart';
 
 class ExpertReviews extends StatefulWidget {
-  final UserInformation _expertUserInfo;
+  final DocumentWrapper<UserInformation> _expertUserInfo;
   const ExpertReviews(this._expertUserInfo);
 
   @override
@@ -17,14 +17,12 @@ class _ExpertReviewsState extends State<ExpertReviews> {
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: ExpertReview.getStream(widget._expertUserInfo),
-        builder: (context, snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<Iterable<ExpertReview>> snapshot) {
           if (snapshot.hasData) {
-            final myReviews =
-                List<ExpertReview>.from(snapshot.data! as List<ExpertReview>);
             return ListView.builder(
-                itemCount: myReviews.length,
+                itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
-                  return myReviews[index];
+                  return snapshot.data!.elementAt(index);
                 });
           } else {
             return CircularProgressIndicator();
