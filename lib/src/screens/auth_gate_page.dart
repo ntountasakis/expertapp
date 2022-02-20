@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:expertapp/src/gates/user_creation_gate.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:firebase_storage/firebase_storage.dart';
@@ -14,7 +13,7 @@ class StorageUtil {
   static Future<void> uploadFile(Uint8List rawBytes, String storagePath) async {
     try {
       await _storage.ref(storagePath).putData(rawBytes);
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       log('Exception uploading to $storagePath');
     }
   }
@@ -22,7 +21,7 @@ class StorageUtil {
   static Future<void> deleteFile(String fileUrl) async {
     try {
       await _storage.refFromURL(fileUrl).delete();
-    } on FirebaseException catch (e) {
+    } on FirebaseException {
       log('Exception deleting $fileUrl');
     }
   }
