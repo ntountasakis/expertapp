@@ -39,7 +39,7 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
                 const SizedBox(height: 16),
                 buildNumericalRating(),
                 const SizedBox(height: 16),
-                buildSubmit(),
+                buildSubmit(context),
               ],
             )));
   }
@@ -71,13 +71,39 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
         },
       );
 
-  Widget buildSubmit() => ElevatedButton(
+  void _reviewSubmitAcknowledgmentDialog(BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text(
+              "Review Submission Successful",
+              style: TextStyle(fontSize: 18),
+            ),
+            children: [
+              SimpleDialogOption(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Center(
+                    child: Text(
+                      "Ok",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ))
+            ],
+          );
+        });
+  }
+
+  Widget buildSubmit(BuildContext context) => ElevatedButton(
       style: style,
       onPressed: () async {
         await onSubmitReview(
             reviewedUid: widget._authorUser.documentId,
             reviewText: _review,
             reviewRating: _rating);
+        _reviewSubmitAcknowledgmentDialog(context);
       },
       child: Text("Submit Review"));
 }
