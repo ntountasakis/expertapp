@@ -20,7 +20,7 @@ class Review {
           json['authorLastName'] as String,
           json['reviewedUid'] as String,
           json['reviewText'] as String,
-          json['rating'] as double,
+          json['rating'] + 0.0,
         );
 
   Map<String, dynamic> _toJson() {

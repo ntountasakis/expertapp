@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/firebase/storage/storage_paths.dart';
 import 'package:expertapp/src/firebase/storage/storage_util.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
@@ -16,10 +17,10 @@ import 'expert_review_submit_page.dart';
 
 class ExpertProfilePage extends StatefulWidget {
   final DocumentWrapper<UserInformation> _currentUser;
-  final DocumentWrapper<UserInformation> _expertUser;
+  final DocumentWrapper<UserMetadata> _expertUserMetadata;
   late String? _profilePicUrl;
-  ExpertProfilePage(this._currentUser, this._expertUser) {
-    this._profilePicUrl = this._expertUser.documentType.profilePicUrl;
+  ExpertProfilePage(this._currentUser, this._expertUserMetadata) {
+    this._profilePicUrl = this._expertUserMetadata.documentType.profilePicUrl;
   }
 
   @override
@@ -31,20 +32,21 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
   void onProfilePicSelection(Uint8List profilePicBytes) async {
-    final String? oldProfilePicUrl = widget._profilePicUrl;
-    final String imageName = Uuid().v4();
-    final String imageUploadPath = StoragePaths.PROFILE_PICS + imageName;
-    await StorageUtil.uploadFile(profilePicBytes, imageUploadPath);
-    String uploadedImageUrl = await StorageUtil.getDownloadUrl(imageUploadPath);
-    widget._expertUser.documentType.profilePicUrl = uploadedImageUrl;
-    await widget._expertUser.documentType.set(widget._expertUser.documentId);
-    setState(() {
-      widget._profilePicUrl = uploadedImageUrl;
-    });
+    //todo
+    // final String? oldProfilePicUrl = widget._profilePicUrl;
+    // final String imageName = Uuid().v4();
+    // final String imageUploadPath = StoragePaths.PROFILE_PICS + imageName;
+    // await StorageUtil.uploadFile(profilePicBytes, imageUploadPath);
+    // String uploadedImageUrl = await StorageUtil.getDownloadUrl(imageUploadPath);
+    // widget._expertUser.documentType.profilePicUrl = uploadedImageUrl;
+    // await widget._expertUser.documentType.set(widget._expertUser.documentId);
+    // setState(() {
+    //   widget._profilePicUrl = uploadedImageUrl;
+    // });
 
-    if (oldProfilePicUrl != null) {
-      await StorageUtil.deleteFile(oldProfilePicUrl);
-    }
+    // if (oldProfilePicUrl != null) {
+    //   await StorageUtil.deleteFile(oldProfilePicUrl);
+    // }
   }
 
   @override
@@ -64,7 +66,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
             Container(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                widget._expertUser.documentType.firstName,
+                widget._expertUserMetadata.documentType.firstName,
                 style: TextStyle(fontSize: 24),
               ),
             ),
@@ -72,14 +74,25 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               width: 200,
               height: 200,
               child: ProfilePicture(
-                  widget._expertUser.documentType.profilePicUrl, onProfilePicSelection),
+                  widget._expertUserMetadata.documentType.profilePicUrl,
+                  onProfilePicSelection),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Flexible(flex: 20, child: StarRating(3.5, 25.0)),
+                Flexible(
+                    flex: 20,
+                    child: StarRating(
+                        widget._expertUserMetadata.documentType
+                            .getAverageReviewRating(),
+                        25.0)),
                 Spacer(flex: 1),
-                Flexible(flex: 20, child: TextRating(3.5, 18.0))
+                Flexible(
+                    flex: 20,
+                    child: TextRating(
+                        widget._expertUserMetadata.documentType
+                            .getAverageReviewRating(),
+                        18.0))
               ],
             ),
             Row(children: [
@@ -91,7 +104,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
                       MaterialPageRoute(
                           builder: (context) => ExpertReviewSubmitPage(
                               widget._currentUser,
-                              widget._expertUser)));
+                              widget._expertUserMetadata)));
                 },
                 child: const Text('Write a Review'),
               ),
@@ -106,7 +119,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               ],
             ),
             Expanded(
-              child: ExpertReviews(widget._expertUser),
+              child: ExpertReviews(widget._expertUserMetadata),
             )
           ],
         ));

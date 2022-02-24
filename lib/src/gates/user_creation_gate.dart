@@ -12,7 +12,7 @@ class UserCreationGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: UserInformation.getByAuthToken(_authenticatedUser.uid),
+        future: UserInformation.get(_authenticatedUser.uid),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentWrapper<UserInformation>?> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
