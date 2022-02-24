@@ -1,18 +1,18 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/review.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 
 class ExpertReview extends StatelessWidget {
-  final DocumentWrapper<UserInformation> _reviewerUserInfo;
+  final DocumentWrapper<UserMetadata> _reviewerUserMetadata;
   final DocumentWrapper<Review> _expertReview;
 
-  ExpertReview(this._reviewerUserInfo, this._expertReview);
+  ExpertReview(this._reviewerUserMetadata, this._expertReview);
 
   static Stream<Iterable<ExpertReview>> getStream(
-      DocumentWrapper<UserInformation> expertUser) {
-    return Review.getStream(expertUser.documentType.authUid)
+      DocumentWrapper<UserMetadata> expertUser) {
+    return Review.getStream(expertUser.documentId)
         .map((Iterable<DocumentWrapper<Review>> iterableReviews) {
       return iterableReviews.map((DocumentWrapper<Review> wrappedReview) {
         return ExpertReview(expertUser, wrappedReview);
@@ -36,7 +36,7 @@ class ExpertReview extends StatelessWidget {
                     alignment: WrapAlignment.start,
                     textDirection: TextDirection.ltr,
                     children: [
-                      Text(_reviewerUserInfo.documentType.firstName,
+                      Text(_reviewerUserMetadata.documentType.firstName,
                           style: TextStyle(fontSize: 16)),
                       StarRating(_expertReview.documentType.rating, 16.0)
                     ])

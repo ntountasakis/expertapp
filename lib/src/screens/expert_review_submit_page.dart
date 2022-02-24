@@ -1,14 +1,16 @@
+import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/review.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ExpertReviewSubmitPage extends StatefulWidget {
   final DocumentWrapper<UserInformation> _authorUser;
-  final DocumentWrapper<UserInformation> _expertUser;
+  final DocumentWrapper<UserMetadata> _expertUserMetadata;
 
-  ExpertReviewSubmitPage(this._authorUser, this._expertUser);
+  ExpertReviewSubmitPage(this._authorUser, this._expertUserMetadata);
 
   @override
   State<ExpertReviewSubmitPage> createState() => _ExpertReviewSubmitPageState();
@@ -72,15 +74,10 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
   Widget buildSubmit() => ElevatedButton(
       style: style,
       onPressed: () async {
-        final myNewReview = Review(
-            widget._authorUser.documentType.authUid,
-            widget._authorUser.documentType.firstName,
-            widget._authorUser.documentType.lastName,
-            widget._expertUser.documentType.authUid,
-            _review,
-            _rating);
-
-        await myNewReview.put();
+        await onSubmitReview(
+            reviewedUid: widget._authorUser.documentId,
+            reviewText: _review,
+            reviewRating: _rating);
       },
       child: Text("Submit Review"));
 }
