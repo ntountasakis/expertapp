@@ -71,13 +71,13 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
         },
       );
 
-  void _reviewSubmitAcknowledgmentDialog(BuildContext context) async {
+  void _reviewSubmitAcknowledgmentDialog(BuildContext context, String dialogText) async {
     showDialog(
         context: context,
         builder: (context) {
           return SimpleDialog(
             title: Text(
-              "Review Submission Successful",
+              dialogText,
               style: TextStyle(fontSize: 18),
             ),
             children: [
@@ -99,11 +99,11 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
   Widget buildSubmit(BuildContext context) => ElevatedButton(
       style: style,
       onPressed: () async {
-        await onSubmitReview(
+        String dialogText = await onSubmitReview(
             reviewedUid: widget._expertUserMetadata.documentId,
             reviewText: _review,
             reviewRating: _rating);
-        _reviewSubmitAcknowledgmentDialog(context);
+        _reviewSubmitAcknowledgmentDialog(context, dialogText);
       },
       child: Text("Submit Review"));
 }

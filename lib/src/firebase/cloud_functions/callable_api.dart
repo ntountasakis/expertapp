@@ -20,7 +20,7 @@ Future<void> onUserSignup(
   await getCallable(CallableFunctions.USER_SIGNUP).call(userData);
 }
 
-Future<void> onSubmitReview(
+Future<String> onSubmitReview(
     {required String reviewedUid,
     required String reviewText,
     required double reviewRating}) async {
@@ -29,7 +29,9 @@ Future<void> onSubmitReview(
     'reviewText': reviewText,
     'reviewRating': reviewRating,
   };
-  await getCallable(CallableFunctions.SUBMIT_REVIEW).call(review);
+  final result =
+      await getCallable(CallableFunctions.SUBMIT_REVIEW).call(review);
+  return result.data["message"];
 }
 
 Future<String> onProfilePicUpload({required Uint8List pictureBytes}) async {
