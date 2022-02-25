@@ -1,5 +1,4 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/profile/expert/expert_review.dart';
 import 'package:flutter/material.dart';
