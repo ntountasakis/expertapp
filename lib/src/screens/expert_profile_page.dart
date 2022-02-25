@@ -1,25 +1,17 @@
-import 'dart:typed_data';
-
-import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
-import 'package:expertapp/src/firebase/storage/storage_paths.dart';
-import 'package:expertapp/src/firebase/storage/storage_util.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
-import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 import 'expert_review_submit_page.dart';
 
 class ExpertProfilePage extends StatefulWidget {
-  final DocumentWrapper<UserInformation> _currentUser;
+  final String _currentUserUid;
   final DocumentWrapper<UserMetadata> _expertUserMetadata;
-  ExpertProfilePage(this._currentUser, this._expertUserMetadata);
+  ExpertProfilePage(this._currentUserUid, this._expertUserMetadata);
 
   @override
   _ExpertProfilePageState createState() => _ExpertProfilePageState();
@@ -29,23 +21,12 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
-  void onProfilePicSelection(Uint8List profilePicBytes) async {
-    // TODO, this crashes iOS 13 simulator via Rosetta.
-    await onProfilePicUpload(pictureBytes: profilePicBytes);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            leading: ElevatedButton(
-              style: style,
-              onPressed: () async {
-                await AuthGatePage.signOut();
-              },
-              child: const Text('Sign Out'),
-            ),
-            title: const Text("Expert Profile")),
+          title: const Text("Expert Profile"),
+        ),
         body: Column(
           children: [
             Container(
@@ -59,8 +40,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               width: 200,
               height: 200,
               child: ProfilePicture(
-                  widget._expertUserMetadata.documentType.profilePicUrl,
-                  onProfilePicSelection),
+                  widget._expertUserMetadata.documentType.profilePicUrl),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +68,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ExpertReviewSubmitPage(
-                              widget._currentUser,
+                              widget._currentUserUid,
                               widget._expertUserMetadata)));
                 },
                 child: const Text('Write a Review'),
