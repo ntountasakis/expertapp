@@ -6,7 +6,6 @@ import 'package:expertapp/src/firebase/storage/storage_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
 
 class ProfilePicture extends StatelessWidget {
   final String? profilePicUrl;
