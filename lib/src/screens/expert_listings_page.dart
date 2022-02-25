@@ -2,13 +2,13 @@ import 'package:expertapp/src/expert_listing_preview.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
-import 'package:expertapp/src/screens/auth_gate_page.dart';
+import 'package:expertapp/src/navigation/hamburger_menu.dart';
 import 'package:flutter/material.dart';
 
 class ExpertListingsPage extends StatefulWidget {
-  final DocumentWrapper<UserInformation> _currentUser;
+  final DocumentWrapper<UserMetadata> _currentUserMetadata;
 
-  const ExpertListingsPage(this._currentUser);
+  const ExpertListingsPage(this._currentUserMetadata);
 
   @override
   _ExpertListingsPageState createState() => _ExpertListingsPageState();
@@ -22,14 +22,9 @@ class _ExpertListingsPageState extends State<ExpertListingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            leading: ElevatedButton(
-              style: style,
-              onPressed: () async {
-                await AuthGatePage.signOut();
-              },
-              child: const Text('Sign Out'),
-            ),
-            title: Text('Expert Listings')),
+          title: Text('Expert Listings'),
+        ),
+        drawer: HamburgerMenu(widget._currentUserMetadata),
         body: StreamBuilder(
             stream: UserMetadata.getStream(),
             builder: (BuildContext context,
@@ -40,7 +35,9 @@ class _ExpertListingsPageState extends State<ExpertListingsPage> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       return ExpertListingPreview(
-                          widget._currentUser, snapshot.data!.elementAt(index));
+                        widget._currentUserMetadata.documentId,
+                        snapshot.data!.elementAt(index),
+                      );
                     });
               } else {
                 return Text("Loading.....");

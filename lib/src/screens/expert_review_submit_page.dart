@@ -1,16 +1,16 @@
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/review.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ExpertReviewSubmitPage extends StatefulWidget {
-  final DocumentWrapper<UserInformation> _authorUser;
+  // TODO, we'll need the author user for deleting/modyfing existing review
+  final String _authorUserUid;
   final DocumentWrapper<UserMetadata> _expertUserMetadata;
 
-  ExpertReviewSubmitPage(this._authorUser, this._expertUserMetadata);
+  ExpertReviewSubmitPage(this._authorUserUid, this._expertUserMetadata);
 
   @override
   State<ExpertReviewSubmitPage> createState() => _ExpertReviewSubmitPageState();
@@ -100,7 +100,7 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
       style: style,
       onPressed: () async {
         await onSubmitReview(
-            reviewedUid: widget._authorUser.documentId,
+            reviewedUid: widget._expertUserMetadata.documentId,
             reviewText: _review,
             reviewRating: _rating);
         _reviewSubmitAcknowledgmentDialog(context);

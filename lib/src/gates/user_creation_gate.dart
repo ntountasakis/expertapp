@@ -1,8 +1,8 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/screens/expert_listings_page.dart';
 import 'package:expertapp/src/screens/user_signup_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide UserMetadata;
 import 'package:flutter/material.dart';
 
 class UserCreationGate extends StatelessWidget {
@@ -12,14 +12,14 @@ class UserCreationGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: UserInformation.get(_authenticatedUser.uid),
+        future: UserMetadata.get(_authenticatedUser.uid),
         builder: (BuildContext context,
-            AsyncSnapshot<DocumentWrapper<UserInformation>?> snapshot) {
+            AsyncSnapshot<DocumentWrapper<UserMetadata>?> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
-              final userInfoWrapper =
-                  snapshot.data as DocumentWrapper<UserInformation>;
-              return ExpertListingsPage(userInfoWrapper);
+              final userMetadataWrapper =
+                  snapshot.data as DocumentWrapper<UserMetadata>;
+              return ExpertListingsPage(userMetadataWrapper);
             }
             return UserSignupPage(_authenticatedUser);
           }

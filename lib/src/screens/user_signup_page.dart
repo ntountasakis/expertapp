@@ -3,10 +3,11 @@ import 'dart:developer';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:expertapp/src/screens/expert_listings_page.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide UserMetadata;
 import 'package:flutter/material.dart';
 
 class UserSignupPage extends StatefulWidget {
@@ -70,10 +71,10 @@ class _UserSignupPageState extends State<UserSignupPage> {
               _firstName, _lastName, widget._authenticatedUser.photoURL);
           log('New User Signup');
 
-          DocumentWrapper<UserInformation>? userInfoWrapper =
-              await UserInformation.get(widget._authenticatedUser.uid);
+          DocumentWrapper<UserMetadata>? userMetadataWrapper =
+              await UserMetadata.get(widget._authenticatedUser.uid);
 
-          if (userInfoWrapper == null) {
+          if (userMetadataWrapper == null) {
             throw Exception(
                 'Expected ${widget._authenticatedUser.uid} to exist');
           }
@@ -81,7 +82,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ExpertListingsPage(userInfoWrapper),
+                builder: (context) => ExpertListingsPage(userMetadataWrapper),
               ));
         },
         child: const Text('Submit'));

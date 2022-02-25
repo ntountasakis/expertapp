@@ -37,6 +37,16 @@ class UserMetadata {
     return runningSumReviewRatings / numReviews;
   }
 
+  static Future<DocumentWrapper<UserMetadata>?> get(
+      String documentId) async {
+    DocumentSnapshot snapshot =
+        await _userMetadataRef().doc(documentId).get();
+    if (snapshot.exists) {
+      return DocumentWrapper(documentId, snapshot.data() as UserMetadata);
+    }
+    return null;
+  }
+
   static Stream<Iterable<DocumentWrapper<UserMetadata>>> getStream() {
     return _userMetadataRef()
         .snapshots()
