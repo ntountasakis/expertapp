@@ -32,6 +32,17 @@ class UserInformation {
     return null;
   }
 
+  static Stream<Iterable<DocumentWrapper<UserInformation>>> getStream() {
+    return _userInformationRef()
+        .snapshots()
+        .map((QuerySnapshot<UserInformation> collectionSnapshot) {
+      return collectionSnapshot.docs
+          .map((QueryDocumentSnapshot<UserInformation> documentSnapshot) {
+        return DocumentWrapper(documentSnapshot.id, documentSnapshot.data());
+      });
+    });
+  }
+
   static CollectionReference<UserInformation> _userInformationRef() {
     return FirebaseFirestore.instance
         .collection(CollectionPaths.USERS)
