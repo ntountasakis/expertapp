@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
+import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
   final String currentUserUid;
@@ -53,9 +54,8 @@ class _ChatPageState extends State<ChatPage> {
         });
       });
 
-  Widget buildChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
-    if (chatMessage.documentType.authorUid == widget.currentUserUid) {
-      return ChatBubble(
+  Widget buildSendChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
+    return ChatBubble(
         clipper: ChatBubbleClipper1(type: BubbleType.sendBubble),
         alignment: Alignment.topRight,
         margin: EdgeInsets.only(top: 20),
@@ -63,18 +63,52 @@ class _ChatPageState extends State<ChatPage> {
         child: Text(
           chatMessage.documentType.chatText,
           style: TextStyle(color: Colors.white),
+        ));
+  }
+
+  Widget buildReceiverChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
+    return ChatBubble(
+      clipper: ChatBubbleClipper1(type: BubbleType.receiverBubble),
+      backGroundColor: Color(0xffE7E7ED),
+      margin: EdgeInsets.only(top: 20),
+      child: Text(
+        chatMessage.documentType.chatText,
+        style: TextStyle(color: Colors.black),
+      ),
+    );
+  }
+
+  String messageTimeAnnotation(DocumentWrapper<ChatMessage> chatMessage) {
+    final messageTime = DateTime.fromMillisecondsSinceEpoch(
+            chatMessage.documentType.millisecondsSinceEpochUtc)
+        .toLocal();
+    final DateFormat formatter = DateFormat().add_yMd().add_jm();
+    return formatter.format(messageTime);
+  }
+
+  Widget buildChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
+    if (chatMessage.documentType.authorUid == widget.currentUserUid) {
+      return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+        buildSendChatBubble(chatMessage),
+        SizedBox(
+          height: 10,
         ),
-      );
+        Container(
+          margin: const EdgeInsets.only(right: 20),
+          child: Text("Sent: " + messageTimeAnnotation(chatMessage)),
+        ),
+      ]);
     } else {
-      return ChatBubble(
-        clipper: ChatBubbleClipper1(type: BubbleType.receiverBubble),
-        backGroundColor: Color(0xffE7E7ED),
-        margin: EdgeInsets.only(top: 20),
-        child: Text(
-          chatMessage.documentType.chatText,
-          style: TextStyle(color: Colors.black),
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        buildReceiverChatBubble(chatMessage),
+        SizedBox(
+          height: 10,
         ),
-      );
+        Container(
+          margin: const EdgeInsets.only(left: 20),
+          child: Text("Received: " + messageTimeAnnotation(chatMessage)),
+        ),
+      ]);
     }
   }
 
