@@ -1,6 +1,7 @@
 import 'package:expertapp/src/firebase/firestore/document_models/chat_message.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
@@ -115,7 +116,26 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Chat Page")),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            SizedBox(
+              height: 45,
+              width: 45,
+              child: ProfilePicture(
+                  widget.recipientUserMetadata.documentType.profilePicUrl),
+            ),
+            SizedBox(
+              width: 15,
+            ),
+            Expanded(
+              child: Text(widget.recipientUserMetadata.documentType.firstName +
+                  " " +
+                  widget.recipientUserMetadata.documentType.lastName),
+            )
+          ],
+        ),
+      ),
       body: Column(
         children: [
           Expanded(
