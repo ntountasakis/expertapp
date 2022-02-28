@@ -10,4 +10,7 @@ export {submitReview};
 import {userSignup} from "./cloud_functions/user_signup";
 export {userSignup};
 
+import {chatroomLookup} from "./cloud_functions/chatroom_lookup";
+export {chatroomLookup};
+
 

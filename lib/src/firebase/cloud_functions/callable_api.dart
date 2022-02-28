@@ -44,3 +44,14 @@ Future<String> onProfilePicUpload({required Uint8List pictureBytes}) async {
   final newProfilePicUrl = result.data;
   return newProfilePicUrl;
 }
+
+Future<String> lookupChatroomId(String otherUid) async {
+  Map<String, dynamic> chatroomQuery = {
+    'otherUid': otherUid,
+  };
+  HttpsCallableResult result =
+      await getCallable(CallableFunctions.CHATROOM_LOOKUP).call(chatroomQuery);
+
+  final chatroomId = result.data;
+  return chatroomId;
+}
