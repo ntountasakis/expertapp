@@ -1,9 +1,11 @@
+import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
+import 'package:expertapp/src/screens/chat_page.dart';
 import 'package:flutter/material.dart';
 
 import 'expert_review_submit_page.dart';
@@ -72,6 +74,24 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
                               widget._expertUserMetadata)));
                 },
                 child: const Text('Write a Review'),
+              ),
+            ]),
+            Row(children: [
+              ElevatedButton(
+                style: style,
+                onPressed: () async {
+                  final chatroomId =
+                      await lookupChatroomId(widget._expertUserMetadata.documentId);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatPage(
+                          widget._currentUserUid, widget._expertUserMetadata,
+                          chatroomId),
+                    ),
+                  );
+                },
+                child: const Text('Chat Expert'),
               ),
             ]),
             Row(
