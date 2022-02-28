@@ -88,26 +88,35 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget buildChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
+    final messageTimeStyle = TextStyle(
+      fontSize: 12,
+    );
     if (chatMessage.documentType.authorUid == widget.currentUserUid) {
       return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
         buildSendChatBubble(chatMessage),
         SizedBox(
-          height: 10,
+          height: 5,
         ),
         Container(
           margin: const EdgeInsets.only(right: 20),
-          child: Text("Sent: " + messageTimeAnnotation(chatMessage)),
+          child: Text(
+            "Sent: " + messageTimeAnnotation(chatMessage),
+            style: messageTimeStyle,
+          ),
         ),
       ]);
     } else {
       return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         buildReceiverChatBubble(chatMessage),
         SizedBox(
-          height: 10,
+          height: 5,
         ),
         Container(
           margin: const EdgeInsets.only(left: 20),
-          child: Text("Received: " + messageTimeAnnotation(chatMessage)),
+          child: Text(
+            "Received: " + messageTimeAnnotation(chatMessage),
+            style: messageTimeStyle,
+          ),
         ),
       ]);
     }
