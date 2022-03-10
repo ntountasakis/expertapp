@@ -6,6 +6,7 @@ import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:expertapp/src/screens/chat_page.dart';
+import 'package:expertapp/src/screens/video_call_page.dart';
 import 'package:flutter/material.dart';
 
 import 'expert_review_submit_page.dart';
@@ -62,38 +63,9 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
                         18.0))
               ],
             ),
-            Row(children: [
-              ElevatedButton(
-                style: style,
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ExpertReviewSubmitPage(
-                              widget._currentUserUid,
-                              widget._expertUserMetadata)));
-                },
-                child: const Text('Write a Review'),
-              ),
-            ]),
-            Row(children: [
-              ElevatedButton(
-                style: style,
-                onPressed: () async {
-                  final chatroomId =
-                      await lookupChatroomId(widget._expertUserMetadata.documentId);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChatPage(
-                          widget._currentUserUid, widget._expertUserMetadata,
-                          chatroomId),
-                    ),
-                  );
-                },
-                child: const Text('Chat Expert'),
-              ),
-            ]),
+            buildReviewSubmitButton(context),
+            buildChatButton(context),
+            buildCallButton(context),
             Row(
               children: [
                 Padding(
@@ -108,5 +80,48 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
             )
           ],
         ));
+  }
+
+  Widget buildReviewSubmitButton(BuildContext context) {
+    return ElevatedButton(
+      style: style,
+      onPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ExpertReviewSubmitPage(
+                    widget._currentUserUid, widget._expertUserMetadata)));
+      },
+      child: const Text('Write a Review'),
+    );
+  }
+
+  Widget buildChatButton(BuildContext context) {
+    return ElevatedButton(
+      style: style,
+      onPressed: () async {
+        final chatroomId =
+            await lookupChatroomId(widget._expertUserMetadata.documentId);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatPage(
+                widget._currentUserUid, widget._expertUserMetadata, chatroomId),
+          ),
+        );
+      },
+      child: const Text('Chat Expert'),
+    );
+  }
+
+  Widget buildCallButton(BuildContext context) {
+    return ElevatedButton(
+      style: style,
+      onPressed: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => VideoCallPage("test")));
+      },
+      child: const Text('Call Expert'),
+    );
   }
 }
