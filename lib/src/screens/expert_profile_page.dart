@@ -1,11 +1,15 @@
+import 'dart:developer';
+
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:expertapp/src/screens/chat_page.dart';
+import 'package:expertapp/src/screens/transaction/expert_call_preview.dart';
 import 'package:expertapp/src/screens/video_call_page.dart';
 import 'package:flutter/material.dart';
 
@@ -63,9 +67,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
                         18.0))
               ],
             ),
-            buildReviewSubmitButton(context),
-            buildChatButton(context),
-            buildCallButton(context),
+            buildCallPreviewButton(context),
             Row(
               children: [
                 Padding(
@@ -82,46 +84,67 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
         ));
   }
 
-  Widget buildReviewSubmitButton(BuildContext context) {
-    return ElevatedButton(
-      style: style,
-      onPressed: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ExpertReviewSubmitPage(
-                    widget._currentUserUid, widget._expertUserMetadata)));
-      },
-      child: const Text('Write a Review'),
-    );
-  }
-
-  Widget buildChatButton(BuildContext context) {
+  Widget buildCallPreviewButton(BuildContext context) {
     return ElevatedButton(
       style: style,
       onPressed: () async {
-        final chatroomId =
-            await lookupChatroomId(widget._expertUserMetadata.documentId);
+        DocumentWrapper<ExpertRate>? expertRate =
+            await ExpertRate.get(widget._expertUserMetadata.documentId);
+        if (expertRate == null) {
+          log('Cant find expert rate for ${widget._expertUserMetadata.documentId}');
+          return;
+        }
         Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChatPage(
-                widget._currentUserUid, widget._expertUserMetadata, chatroomId),
-          ),
-        );
+            context,
+            MaterialPageRoute(
+                builder: (context) => ExpertCallPreview(
+                    widget._expertUserMetadata, expertRate.documentType)));
       },
-      child: const Text('Chat Expert'),
+      child: Text('Call ${widget._expertUserMetadata.documentType.firstName}'),
     );
   }
 
-  Widget buildCallButton(BuildContext context) {
-    return ElevatedButton(
-      style: style,
-      onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => VideoCallPage("test")));
-      },
-      child: const Text('Call Expert'),
-    );
-  }
+  // TODO revive in call transaction
+  // Widget buildReviewSubmitButton(BuildContext context) {
+  //   return ElevatedButton(
+  //     style: style,
+  //     onPressed: () {
+  //       Navigator.push(
+  //           context,
+  //           MaterialPageRoute(
+  //               builder: (context) => ExpertReviewSubmitPage(
+  //                   widget._currentUserUid, widget._expertUserMetadata)));
+  //     },
+  //     child: const Text('Write a Review'),
+  //   );
+  // }
+
+  // Widget buildChatButton(BuildContext context) {
+  //   return ElevatedButton(
+  //     style: style,
+  //     onPressed: () async {
+  //       final chatroomId =
+  //           await lookupChatroomId(widget._expertUserMetadata.documentId);
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(
+  //           builder: (context) => ChatPage(
+  //               widget._currentUserUid, widget._expertUserMetadata, chatroomId),
+  //         ),
+  //       );
+  //     },
+  //     child: const Text('Chat Expert'),
+  //   );
+  // }
+
+  // Widget buildCallButton(BuildContext context) {
+  //   return ElevatedButton(
+  //     style: style,
+  //     onPressed: () {
+  //       Navigator.push(context,
+  //           MaterialPageRoute(builder: (context) => VideoCallPage("test")));
+  //     },
+  //     child: const Text('Call Expert'),
+  //   );
+  // }
 }
