@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
+import 'package:expertapp/src/server/server_info.dart';
 import 'package:flutter/material.dart';
 
 class ExpertCallPreview extends StatelessWidget {
@@ -43,7 +46,12 @@ class ExpertCallPreview extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: ElevatedButton(
         style: callButtonStyle,
-        onPressed: () async {},
+        onPressed: () async {
+          List<InternetAddress> dnsResults =
+              await InternetAddress.lookup(ServerInfo.hostname);
+
+          int x = 4;
+        },
         child: const Text('Begin Call'),
       ),
     );

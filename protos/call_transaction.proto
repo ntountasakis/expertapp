@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+service CallTransaction
+{
+    rpc InitiateCall(CallRequest) returns (stream CallMessage) {}
+}
+
+message CallRequest {
+    string userAuthToken = 1;
+}
+
+message CallMessage {
+    string ack= 1;
+}
