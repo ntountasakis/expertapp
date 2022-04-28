@@ -113,6 +113,7 @@ app.*.symbols
 # Generated Files
 lib/src/generated
 server/node_modules
+server/generated
 
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3
