@@ -1,8 +1,10 @@
 syntax = "proto3";
 
+package call_transaction_package;
+
 service CallTransaction
 {
-    rpc InitiateCall(CallRequest) returns (stream CallMessage) {}
+    rpc InitiateCall(CallRequest) returns (CallMessage) {}
 }
 
 message CallRequest {
@@ -10,5 +12,5 @@ message CallRequest {
 }
 
 message CallMessage {
-    string ack= 1;
+    string ack = 1;
 }
