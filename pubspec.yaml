@@ -37,7 +37,10 @@ dependencies:
   flutter_signin_button: ^2.0.0
   flutterfire_ui: ^0.3.1
   google_sign_in: ^5.2.3
+  grpc: ^3.0.2
   image_picker: ^0.8.4
+  permission_handler: ^8.0.0+1
+  protobuf: ^2.0.1
   uuid: ^3.0.5
 
 dev_dependencies:

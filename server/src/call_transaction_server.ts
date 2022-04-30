@@ -5,7 +5,12 @@ import { CallTransactionHandlers } from './protos/call_transaction_package/CallT
 
 const callTransactionServer: CallTransactionHandlers= {
     InitiateCall: function (call: grpc.ServerUnaryCall<CallRequest, CallMessage>, callback: grpc.sendUnaryData<CallMessage>): void {
-        throw new Error("Function not implemented.");
+        if (call.request) {
+            console.log(`(server) Got client message: ${call.request.userAuthToken}`);
+          }
+          callback(null, {
+            ack: 'Hello from the server',
+          });
     }
 };
 
