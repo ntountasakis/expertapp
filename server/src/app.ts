@@ -22,7 +22,7 @@ function getServer(): grpc.Server {
 
 const server = getServer();
 
-server.bindAsync('0.0.0.0:8080', ServerCredentials.createInsecure(), (err: Error | null, bindPort: number) => {
+server.bindAsync(`0.0.0.0:${process.env.PORT}`, ServerCredentials.createInsecure(), (err: Error | null, bindPort: number) => {
   if (err) {
     throw err;
   }

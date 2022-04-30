@@ -10,7 +10,7 @@ COPY ./server/scripts ./scripts
 COPY ./server/package.json ./
 COPY ./server/tsconfig.json ./
 COPY ./server/src ./src/
-COPY ./protos ./protos_defs
+COPY ../protos ./protos_defs
 RUN npm install
 RUN npm run build
 
