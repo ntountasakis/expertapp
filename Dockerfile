@@ -20,4 +20,5 @@ COPY --from=0 ./node/package.json ./
 RUN npm install --only=production
 COPY --from=0 /node/dist .
 WORKDIR /server/src
+EXPOSE 8080
 CMD ["node", "app.js"]

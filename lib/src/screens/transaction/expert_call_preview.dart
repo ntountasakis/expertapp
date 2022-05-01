@@ -9,7 +9,6 @@ import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
 import 'package:expertapp/src/server/server_info.dart';
 import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class ExpertCallPreview extends StatelessWidget {
   final DocumentWrapper<UserMetadata> expertUserMetadata;
@@ -50,17 +49,18 @@ class ExpertCallPreview extends StatelessWidget {
       child: ElevatedButton(
         style: callButtonStyle,
         onPressed: () async {
-
-          await InternetAddress.lookup(ServerInfo.hostname).then((value) {
-            value.forEach((element) async {
-              print(element.address);
+          final List<RRecord>? records =
+              await DnsUtils.lookupRecord(ServerInfo.hostname, RRecordType.ANY);
+          if (records != null) {
+            records.forEach((record) {
+              print(record.data);
+              print(record.name);
             });
-          });
+          }
+
           final channel = ClientChannel(
             ServerInfo.hostname,
             port: ServerInfo.port,
-            options: const ChannelOptions(
-                credentials: ChannelCredentials.insecure()),
           );
 
           final stub = CallTransactionClient(channel);
