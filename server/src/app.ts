@@ -1,5 +1,4 @@
 import { Logging } from '@google-cloud/logging';
-import express from 'express';
 import { Server, ServerCredentials } from '@grpc/grpc-js';
 
 import * as grpc from '@grpc/grpc-js'

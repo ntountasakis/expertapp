@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@google-cloud/logging": "^9.8.0",
-    "@grpc/proto-loader": "^0.6.9",
-    "express": "^4.17.3"
+    "@grpc/proto-loader": "^0.6.9"
   }
 }
