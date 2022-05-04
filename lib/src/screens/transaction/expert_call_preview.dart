@@ -1,12 +1,10 @@
-import 'dart:io';
-
+import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pbgrpc.dart';
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
-import 'package:expertapp/src/server/server_info.dart';
 import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
 
@@ -49,18 +47,9 @@ class ExpertCallPreview extends StatelessWidget {
       child: ElevatedButton(
         style: callButtonStyle,
         onPressed: () async {
-          final List<RRecord>? records =
-              await DnsUtils.lookupRecord(ServerInfo.hostname, RRecordType.ANY);
-          if (records != null) {
-            records.forEach((record) {
-              print(record.data);
-              print(record.name);
-            });
-          }
-
           final channel = ClientChannel(
-            ServerInfo.hostname,
-            port: ServerInfo.port,
+            EnvironmentConfig.getConfig().rpcServerHostname(),
+            port: EnvironmentConfig.getConfig().rpcServerPort(),
           );
 
           final stub = CallTransactionClient(channel);
