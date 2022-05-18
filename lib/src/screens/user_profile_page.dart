@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:developer';
 
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
@@ -13,7 +14,11 @@ class UserProfilePage extends StatelessWidget {
 
   void onProfilePicSelection(Uint8List profilePicBytes) async {
     // TODO, this crashes iOS 13 simulator via Rosetta.
-    await onProfilePicUpload(pictureBytes: profilePicBytes);
+    try {
+      final picUrl = await onProfilePicUpload(pictureBytes: profilePicBytes);
+    } catch (e) {
+      log("picture upload failed ${e}");
+    }
   }
 
   @override

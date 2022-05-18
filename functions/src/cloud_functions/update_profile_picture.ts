@@ -8,16 +8,20 @@ export const updateProfilePicture = functions.https.onCall(
         throw new Error("Cannot call by unauthorized users");
       }
 
-      const profilePictureBucket = "gs://expert-app-backend.appspot.com/profilePics";
-      const generatedImageName = uuidv4();
-      const newPictureFile = admin.storage().bucket(profilePictureBucket)
-          .file(generatedImageName);
+      const profilePictureBucket = "gs://expert-app-backend.appspot.com";
+      const generatedImageName = `profilePics/${uuidv4()}`;
+      const pictureBucket = admin.storage().bucket(profilePictureBucket);
+      const doesExist = await pictureBucket.exists();
+      if (!doesExist) {
+        throw new Error(`Bucket: ${profilePictureBucket} does not exist`);
+      }
 
       const pictureBytes : Buffer = Buffer.from(data.pictureBytes);
-      await newPictureFile.save(pictureBytes);
+      console.log(`picture bytes size: ${pictureBytes.byteLength}`);
 
-      console.log(`Uploaded profilePic ${generatedImageName} 
-    for user ${context.auth.uid}`);
+      const pictureFile = pictureBucket.file(generatedImageName);
+      await pictureFile.save(pictureBytes);
+      console.log("done");
 
-      return newPictureFile.publicUrl;
+      return {url: `${pictureFile.publicUrl()}`};
     });
