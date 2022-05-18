@@ -7,15 +7,30 @@ import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.d
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 
-class UserProfilePage extends StatelessWidget {
+class UserProfilePage extends StatefulWidget {
   final DocumentWrapper<UserMetadata> userMetadata;
 
   const UserProfilePage(this.userMetadata);
 
+  @override
+  State<UserProfilePage> createState() => _UserProfilePageState(userMetadata.documentType.profilePicUrl);
+}
+
+class _UserProfilePageState extends State<UserProfilePage> {
+  String _profilePicUrl;
+
+  _UserProfilePageState(this._profilePicUrl);
+
   void onProfilePicSelection(Uint8List profilePicBytes) async {
     // TODO, this crashes iOS 13 simulator via Rosetta.
     try {
-      final picUrl = await onProfilePicUpload(pictureBytes: profilePicBytes);
+      final publicUrl = await onProfilePicUpload(pictureBytes: profilePicBytes);
+      await widget.userMetadata.documentType
+          .updateProfilePic(widget.userMetadata.documentId, publicUrl);
+
+      setState(() {
+        _profilePicUrl = publicUrl;
+      });
     } catch (e) {
       log("picture upload failed ${e}");
     }
@@ -32,15 +47,14 @@ class UserProfilePage extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(8.0),
             child: Text(
-              userMetadata.documentType.firstName,
+              widget.userMetadata.documentType.firstName,
               style: TextStyle(fontSize: 24),
             ),
           ),
           SizedBox(
             width: 200,
             height: 200,
-            child: ProfilePicture(
-                userMetadata.documentType.profilePicUrl, onProfilePicSelection),
+            child: ProfilePicture(_profilePicUrl, onProfilePicSelection),
           ),
         ],
       ),
