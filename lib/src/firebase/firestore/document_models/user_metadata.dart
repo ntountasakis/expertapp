@@ -5,7 +5,7 @@ import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
 class UserMetadata {
   final String firstName;
   final String lastName;
-  final String profilePicUrl;
+  String profilePicUrl;
   final double runningSumReviewRatings;
   final int numReviews;
 
@@ -37,14 +37,21 @@ class UserMetadata {
     return runningSumReviewRatings / numReviews;
   }
 
-  static Future<DocumentWrapper<UserMetadata>?> get(
-      String documentId) async {
-    DocumentSnapshot snapshot =
-        await _userMetadataRef().doc(documentId).get();
+  Future<void> updateProfilePic(String aDocumentId, String url) async {
+    profilePicUrl = url;
+    await update(aDocumentId);
+  }
+
+  static Future<DocumentWrapper<UserMetadata>?> get(String documentId) async {
+    DocumentSnapshot snapshot = await _userMetadataRef().doc(documentId).get();
     if (snapshot.exists) {
       return DocumentWrapper(documentId, snapshot.data() as UserMetadata);
     }
     return null;
+  }
+
+  Future<void> update(String documentId) async {
+    await _userMetadataRef().doc(documentId).set(this);
   }
 
   static Stream<Iterable<DocumentWrapper<UserMetadata>>> getStream() {
