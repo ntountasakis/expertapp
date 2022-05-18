@@ -12,7 +12,7 @@ function startFirebaseEmulators() {
   mkdir -p ${DATA_DIR}
   echo "Starting firebase emulators with data dir: ${DATA_DIR}"
 
-  firebase emulators:start --import=${DATA_DIR} --export-on-exit=${DATA_DIR} &
+  firebase emulators:start --inspect-functions --import=${DATA_DIR} --export-on-exit=${DATA_DIR} &
   FIREBASE_PID=$!
 
   sleep 10

@@ -41,7 +41,7 @@ Future<String> onProfilePicUpload({required Uint8List pictureBytes}) async {
   HttpsCallableResult result =
       await getCallable(CallableFunctions.UPDATE_PROFILE_PIC).call(picture);
 
-  final newProfilePicUrl = result.data;
+  final newProfilePicUrl = result.data['url'];
   return newProfilePicUrl;
 }
 

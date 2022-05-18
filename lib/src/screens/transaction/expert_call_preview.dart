@@ -47,9 +47,13 @@ class ExpertCallPreview extends StatelessWidget {
       child: ElevatedButton(
         style: callButtonStyle,
         onPressed: () async {
+          final channelOptions = EnvironmentConfig.getConfig().isProd()
+              ? ChannelOptions(credentials: ChannelCredentials.secure())
+              : ChannelOptions(credentials: ChannelCredentials.insecure());
           final channel = ClientChannel(
             EnvironmentConfig.getConfig().rpcServerHostname(),
             port: EnvironmentConfig.getConfig().rpcServerPort(),
+            options: channelOptions
           );
 
           final stub = CallTransactionClient(channel);

@@ -3,12 +3,12 @@ import 'package:expertapp/src/firebase/firestore/document_models/document_wrappe
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
 
 class ExpertRate {
-  final double dollarsPerMinute;
+  final num dollarsPerMinute;
 
   ExpertRate(this.dollarsPerMinute);
 
   ExpertRate.fromJson(Map<String, dynamic> json)
-      : this(json['dollarsPerMinute'] as double);
+      : this(json['dollarsPerMinute'] as num);
 
   Map<String, dynamic> _toJson() {
     var fieldsMap = {
