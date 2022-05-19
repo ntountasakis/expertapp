@@ -17,11 +17,9 @@ export const updateProfilePicture = functions.https.onCall(
       }
 
       const pictureBytes : Buffer = Buffer.from(data.pictureBytes);
-      console.log(`picture bytes size: ${pictureBytes.byteLength}`);
 
       const pictureFile = pictureBucket.file(generatedImageName);
       await pictureFile.save(pictureBytes);
-      console.log("done");
 
       return {url: `${pictureFile.publicUrl()}`};
     });
