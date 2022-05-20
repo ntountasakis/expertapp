@@ -1,10 +1,12 @@
 import 'package:expertapp/src/environment/environment_config.dart';
+import 'package:expertapp/src/firebase/cloud_messaging/message_handler.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
+import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,11 +18,17 @@ void main() async {
     await connectToFirebaseEmulator();
   }
 
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  initFirebaseMessagingForegroundHandler();
+  initFirebaseMessagingOpenedApp();
+
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  final appLifecycle = AppLifecycle();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -37,7 +45,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: AuthGatePage(),
+      home: AuthGatePage(appLifecycle),
     );
   }
 }

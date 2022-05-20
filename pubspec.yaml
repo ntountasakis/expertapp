@@ -28,6 +28,7 @@ dependencies:
   firebase_auth: ^3.3.3
   firebase_core: ^1.8.0
   firebase_database: ^9.0.5
+  firebase_messaging: ^11.4.0
   firebase_storage: ^10.1.0
   flutter:
     sdk: flutter
@@ -36,6 +37,7 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   flutter_signin_button: ^2.0.0
   flutterfire_ui: ^0.3.1
+  google_api_availability: ^3.0.1
   google_sign_in: ^5.2.3
   grpc: ^3.0.2
   image_picker: ^0.8.4
