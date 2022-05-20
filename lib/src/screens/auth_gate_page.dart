@@ -1,10 +1,14 @@
-
 import 'package:expertapp/src/gates/user_creation_gate.dart';
+import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 
 class AuthGatePage extends StatelessWidget {
+  final AppLifecycle _appLifecycle;
+
+  AuthGatePage(this._appLifecycle);
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -23,7 +27,7 @@ class AuthGatePage extends StatelessWidget {
               )
             ]);
           }
-          return UserCreationGate(FirebaseAuth.instance.currentUser!);
+          return UserCreationGate(_appLifecycle, FirebaseAuth.instance.currentUser!);
         } else {
           return CircularProgressIndicator();
         }

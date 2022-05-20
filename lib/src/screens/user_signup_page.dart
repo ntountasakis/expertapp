@@ -4,6 +4,7 @@ import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:expertapp/src/screens/expert_listings_page.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
@@ -11,8 +12,9 @@ import 'package:firebase_auth/firebase_auth.dart' hide UserMetadata;
 import 'package:flutter/material.dart';
 
 class UserSignupPage extends StatefulWidget {
+  final AppLifecycle _appLifecycle;
   final User _authenticatedUser;
-  UserSignupPage(this._authenticatedUser);
+  UserSignupPage(this._appLifecycle, this._authenticatedUser);
 
   @override
   State<UserSignupPage> createState() => _UserSignupPageState();
@@ -63,12 +65,9 @@ class _UserSignupPageState extends State<UserSignupPage> {
           }
           _formKey.currentState!.save();
 
-          // final userInfo = UserInformation(
-          //     _firstName, _lastName, widget._authenticatedUser.photoURL);
-          // await userInfo.set(widget._authenticatedUser.uid);
-
           await onUserSignup(
               _firstName, _lastName, widget._authenticatedUser.photoURL);
+
           log('New User Signup');
 
           DocumentWrapper<UserMetadata>? userMetadataWrapper =
@@ -78,6 +77,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
             throw Exception(
                 'Expected ${widget._authenticatedUser.uid} to exist');
           }
+
+          widget._appLifecycle.onUserLogin(userMetadataWrapper);
 
           Navigator.push(
               context,
