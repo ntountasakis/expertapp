@@ -2,7 +2,7 @@ import 'package:expertapp/src/environment/debug.dart';
 import 'package:expertapp/src/environment/prod.dart';
 
 abstract class EnvironmentConfig {
-  static const bool IS_PROD = true;
+  static const bool IS_PROD = false;
 
   String rpcServerHostname();
   int rpcServerPort();

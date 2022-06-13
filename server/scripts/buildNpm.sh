@@ -16,4 +16,5 @@ NODE_BIN="${WORK_DIR}/node_modules/.bin/"
 generateProtoBufs ${NODE_BIN} ${PROTO_DEFS} ${PROTO_OUT}
 tsc -p .
 
+mkdir -p "${DIST_DIR}"
 cp -r ${PROTO_DEFS} "${DIST_DIR}/protos"

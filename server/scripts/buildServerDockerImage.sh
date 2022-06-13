@@ -9,7 +9,18 @@ REPO_IMAGE_NAME="us-docker.pkg.dev/${PROJECT_NAME}/gcr.io/${IMAGE_NAME}:latest"
 
 
 buildDockerImage() {
-    docker build -t $REPO_IMAGE_NAME $DOCKER_CONTEXT
+    docker build \
+     --progress plain \
+    -t $REPO_IMAGE_NAME \
+    $DOCKER_CONTEXT
+}
+
+buildLocalDockerImage() {
+    docker build \
+     --progress plain \
+    -t $REPO_IMAGE_NAME \
+    --build-arg GOOGLE_APPLICATION_CREDENTIALS="$(cat $GOOGLE_APPLICATION_CREDENTIALS)" \
+    $DOCKER_CONTEXT
 }
 
 uploadToArtifactRegistry() {
@@ -17,7 +28,7 @@ uploadToArtifactRegistry() {
 }
 
 runLocalDockerContainer() {
-  docker run -d --env PORT=8080 -p 8080:8080 -t $REPO_IMAGE_NAME
+  docker run -d --env PORT=8080 --env GOOGLE_APPLICATION_CREDENTIALS='/server/src/credentials.json' -p 8080:8080 -t $REPO_IMAGE_NAME
 }
 
 stopDockerContainer() {
@@ -28,7 +39,7 @@ while getopts "burs" opt; do
     case $opt in
     b)
 	echo "Building docker image"
-	buildDockerImage
+	buildLocalDockerImage
 	;;
     u)
 	echo "Uploading docker image to artifact registry"
