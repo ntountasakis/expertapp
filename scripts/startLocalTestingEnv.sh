@@ -20,7 +20,8 @@ function startFirebaseEmulators() {
 
 function startServerDockerContainer {
   echo "Building & running server docker container locally"
-  buildDockerImage
+  buildLocalDockerImage
+  echo "Running docker container"
   runLocalDockerContainer
 }
 
