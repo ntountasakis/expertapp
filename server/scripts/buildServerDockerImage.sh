@@ -10,16 +10,14 @@ REPO_IMAGE_NAME="us-docker.pkg.dev/${PROJECT_NAME}/gcr.io/${IMAGE_NAME}:latest"
 
 buildDockerImage() {
     docker build \
-     --progress plain \
     -t $REPO_IMAGE_NAME \
     $DOCKER_CONTEXT
 }
 
 buildLocalDockerImage() {
     docker build \
-     --progress plain \
+    --progress=plain \
     -t $REPO_IMAGE_NAME \
-    --build-arg GOOGLE_APPLICATION_CREDENTIALS="$(cat $GOOGLE_APPLICATION_CREDENTIALS)" \
     $DOCKER_CONTEXT
 }
 
@@ -28,17 +26,24 @@ uploadToArtifactRegistry() {
 }
 
 runLocalDockerContainer() {
-  docker run -d --env PORT=8080 --env GOOGLE_APPLICATION_CREDENTIALS='/server/src/credentials.json' -p 8080:8080 -t $REPO_IMAGE_NAME
+  docker run -d --env PORT=8080 \
+  --env GOOGLE_APPLICATION_CREDENTIALS='/server/src/conf/expert-app-localdev.json' \
+  -p 8080:8080 \
+  -t $REPO_IMAGE_NAME
 }
 
 stopDockerContainer() {
   docker rm $(docker stop $(docker ps -a -q --filter ancestor=${REPO_IMAGE_NAME} --format="{{.ID}}"))
 }
 
-while getopts "burs" opt; do
+while getopts "bdurs" opt; do
     case $opt in
     b)
-	echo "Building docker image"
+	echo "Building prod docker image"
+	buildDockerImage
+	;;
+    d)
+	echo "Building dev local docker image"
 	buildLocalDockerImage
 	;;
     u)

@@ -115,6 +115,9 @@ lib/src/generated
 server/node_modules
 server/generated
 
+# Secrets
+conf/expert-app-localdev.json
+
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3
 !**/ios/**/default.mode2v3
