@@ -10,6 +10,7 @@
 .history
 .svn/
 .firebase/
+.scripts/emulatorData/
 
 # IntelliJ related
 *.iml
