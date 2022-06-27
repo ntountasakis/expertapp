@@ -8,7 +8,8 @@ service CallTransaction
 }
 
 message CallRequest {
-    string userAuthToken = 1;
+    string callerUid = 1;
+    string calledUid = 2;
 }
 
 message CallMessage {

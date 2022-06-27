@@ -98,7 +98,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
             context,
             MaterialPageRoute(
                 builder: (context) => ExpertCallPreview(
-                    widget._expertUserMetadata, expertRate.documentType)));
+                    widget._currentUserUid, widget._expertUserMetadata, expertRate.documentType)));
       },
       child: Text('Call ${widget._expertUserMetadata.documentType.firstName}'),
     );

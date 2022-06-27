@@ -18,25 +18,15 @@ function startFirebaseEmulators() {
   sleep 10
 }
 
-function startServerDockerContainer {
-  echo "Building & running server docker container locally"
-  buildLocalDockerImage
-  echo "Running docker container"
-  runLocalDockerContainer
-}
-
 function shutdown()
 {
     echo "shutting down"
     echo "Killing firebase pid ${FIREBASE_PID}"
     kill ${FIREBASE_PID}
-    echo "Killing docker grpc server"
-    stopDockerContainer
 }
 
 trap 'shutdown' SIGINT SIGTERM
 
 startFirebaseEmulators
-startServerDockerContainer
 
 wait

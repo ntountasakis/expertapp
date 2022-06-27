@@ -26,6 +26,13 @@ server.bindAsync(`0.0.0.0:${process.env.PORT}`, ServerCredentials.createInsecure
       }
 
       console.log(`gRPC:Server:${bindPort}`, new Date().toLocaleString());
+
+      const useEmulator = true;
+      if (useEmulator) {
+        const firestoreUrl = "host.docker.internal:9002";
+        console.log(`Configuring firestore to point to local emulator ${firestoreUrl}`);
+        process.env["FIRESTORE_EMULATOR_HOST"] = firestoreUrl;
+      }
       admin.initializeApp();
       server.start();
     });
