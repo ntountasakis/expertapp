@@ -1,14 +1,15 @@
-import 'package:expertapp/src/environment/environment_config.dart';
+import 'package:expertapp/src/call_server/call_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
-import 'package:expertapp/src/generated/protos/call_transaction.pbgrpc.dart';
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
+import 'package:expertapp/src/screens/transaction/expert_call_main.dart';
 import 'package:flutter/material.dart';
-import 'package:grpc/grpc.dart';
+import 'package:provider/provider.dart';
 
 class ExpertCallPreview extends StatelessWidget {
+  final String currentUserId;
   final DocumentWrapper<UserMetadata> expertUserMetadata;
   final ExpertRate expertRate;
 
@@ -18,7 +19,8 @@ class ExpertCallPreview extends StatelessWidget {
   final ButtonStyle callButtonStyle =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
-  ExpertCallPreview(this.expertUserMetadata, this.expertRate);
+  ExpertCallPreview(
+      this.currentUserId, this.expertUserMetadata, this.expertRate);
 
   String blurbText() {
     String longText =
@@ -46,24 +48,14 @@ class ExpertCallPreview extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: ElevatedButton(
         style: callButtonStyle,
-        onPressed: () async {
-          final channelOptions = EnvironmentConfig.getConfig().isProd()
-              ? ChannelOptions(credentials: ChannelCredentials.secure())
-              : ChannelOptions(credentials: ChannelCredentials.insecure());
-          final channel = ClientChannel(
-            EnvironmentConfig.getConfig().rpcServerHostname(),
-            port: EnvironmentConfig.getConfig().rpcServerPort(),
-            options: channelOptions
-          );
-
-          final stub = CallTransactionClient(channel);
-          final request = CallRequest(userAuthToken: "TEST token");
-          final response = await stub.initiateCall(request);
-          showDialog(
-              context: context,
-              builder: (context) {
-                return SimpleDialog(title: Text(response.ack));
-              });
+        onPressed: () {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) {
+            return ChangeNotifierProvider<CallModel>(
+              create: (context) => CallModel(),
+              child: ExpertCallMain(currentUserId, expertUserMetadata),
+            );
+          }));
         },
         child: const Text('Begin Call'),
       ),
