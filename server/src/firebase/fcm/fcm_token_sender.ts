@@ -1,10 +1,12 @@
 import * as admin from "firebase-admin";
+import {CallJoinRequest} from "./models/call_join_request";
 
-export const sendToken = function(token: string): void {
-  const message = {
+export const sendCallJoinRequest = function(token: string, joinRequest: CallJoinRequest): void {
+  const payload = {
     data: {
-      score: "850",
-      time: "2:45",
+      messageType: joinRequest.messageType(),
+      callerUid: joinRequest.callerUid,
+      calledUid: joinRequest.calledUid,
     },
     token: token,
   };
@@ -13,7 +15,7 @@ export const sendToken = function(token: string): void {
   // registration token.
 
 
-  admin.messaging().send(message)
+  admin.messaging().send(payload)
       .then((response: any) => {
         // Response is a message ID string.
         console.log("Successfully sent message:", response);
