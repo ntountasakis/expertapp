@@ -9,9 +9,9 @@ import 'package:provider/provider.dart';
 
 class ExpertCallMain extends StatefulWidget {
   final String currentUserId;
-  final DocumentWrapper<UserMetadata> expertMetadata;
+  final DocumentWrapper<UserMetadata> connectedUserMetadata;
 
-  ExpertCallMain(this.currentUserId, this.expertMetadata);
+  ExpertCallMain(this.currentUserId, this.connectedUserMetadata);
 
   @override
   State<ExpertCallMain> createState() => _ExpertCallMainState();
@@ -27,14 +27,14 @@ class _ExpertCallMainState extends State<ExpertCallMain> {
           _callManager.call(
               context: context,
               currentUserId: widget.currentUserId,
-              calledUserId: widget.expertMetadata.documentId)
+              calledUserId: widget.connectedUserMetadata.documentId)
         });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UserPreviewAppbar(widget.expertMetadata),
+      appBar: UserPreviewAppbar(widget.connectedUserMetadata),
       body: Consumer<CallModel>(
         builder: (_, callstate, child) {
           final stateStatus = callstate.callConnectionState;

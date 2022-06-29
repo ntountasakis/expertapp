@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import {CallJoinRequest} from "./models/call_join_request";
+import {CallJoinRequest} from "./messages/call_join_request";
 
 export const sendCallJoinRequest = function(token: string, joinRequest: CallJoinRequest): void {
   const payload = {

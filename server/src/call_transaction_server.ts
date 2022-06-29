@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import * as grpc from "@grpc/grpc-js";
 import {sendCallJoinRequest} from "./firebase/fcm/fcm_token_sender";
-import {CallJoinRequest} from "./firebase/fcm/models/call_join_request";
+import {CallJoinRequest} from "./firebase/fcm/messages/call_join_request";
 import {lookupUserToken} from "./firebase/fcm/token_util";
 import {CallMessage} from "./protos/call_transaction_package/CallMessage";
 import {CallRequest} from "./protos/call_transaction_package/CallRequest";

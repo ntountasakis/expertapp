@@ -25,6 +25,8 @@ void main() async {
   runApp(MyApp());
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   final appLifecycle = AppLifecycle();
@@ -33,6 +35,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         // This is the theme of your application.
         //
