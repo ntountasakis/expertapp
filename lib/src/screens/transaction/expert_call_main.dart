@@ -27,7 +27,8 @@ class _ExpertCallMainState extends State<ExpertCallMain> {
           _callManager.call(
               context: context,
               currentUserId: widget.currentUserId,
-              calledUserId: widget.connectedUserMetadata.documentId)
+              calledUserId: widget.connectedUserMetadata.documentId,
+              )
         });
   }
 
@@ -45,6 +46,8 @@ class _ExpertCallMainState extends State<ExpertCallMain> {
               return Text("CONNECTING");
             case CallConnectionState.CONNECTED:
               return Text("CONNECTED");
+            case CallConnectionState.ERRORED:
+              return Text("Call request denied. Error: ${callstate.errorMsg}");
           }
         },
       ),

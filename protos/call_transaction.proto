@@ -13,5 +13,6 @@ message CallRequest {
 }
 
 message CallMessage {
-    string ack = 1;
+    bool success = 1;
+    string errorMessage = 2;
 }
