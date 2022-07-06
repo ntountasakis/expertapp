@@ -2,13 +2,17 @@ import {CallRequest} from "./protos/call_transaction_package/CallRequest";
 import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
 import {ExpertRate} from "./firebase/firestore/models/expert_rate";
+import {CallTransctionRequestResult} from "./call_transaction_request_result";
+import {lookupUserToken} from "./firebase/firestore/lookup_user_token";
 
-export const createCallTransaction = async (request: CallRequest): Promise<boolean> => {
-  const success = await admin.firestore().runTransaction(async (transaction) => {
+export const createCallTransaction = async ({request}: {request: CallRequest}):
+Promise<CallTransctionRequestResult> => {
+  const myResult = new CallTransctionRequestResult();
+  await admin.firestore().runTransaction(async (transaction) => {
     if (request.calledUid == null || request.calledUid == null) {
-      console.error(`Invalid Call Transaction Request, either ids are null. 
-      CalledUid: ${request.calledUid} CallerUid: ${request.callerUid}`);
-      return false;
+      myResult.errorMessage = `Invalid Call Transaction Request, either ids are null. 
+      CalledUid: ${request.calledUid} CallerUid: ${request.callerUid}`;
+      return;
     }
     const ratesCollectionRef = admin.firestore()
         .collection("expert_rates");
@@ -16,9 +20,20 @@ export const createCallTransaction = async (request: CallRequest): Promise<boole
         ratesCollectionRef.doc(request.calledUid));
 
     if (!calledRateDoc.exists) {
-      console.error("Called User does not have a registered rate");
-      return false;
+      myResult.errorMessage = `Called User: ${request.calledUid} 
+      does not have a registered rate`;
+      return;
     }
+
+    const [tokenSuccess, tokenErrorMessage, calledUserToken] = await lookupUserToken(
+        {userId: request.calledUid, transaction: transaction});
+
+    if (!tokenSuccess) {
+      myResult.errorMessage = tokenErrorMessage;
+      return;
+    }
+
+    myResult.calledToken = calledUserToken;
 
     const callRate = calledRateDoc.data() as ExpertRate;
     const callRequestTimeUtcMs = Date.now();
@@ -35,10 +50,7 @@ export const createCallTransaction = async (request: CallRequest): Promise<boole
         .collection("call_transactions").doc(transactionId);
 
     transaction.create(callTransactionDoc, newTransaction);
-
-    console.log("Transaction complete");
-    return true;
+    myResult.success = true;
   });
-
-  return success;
+  return myResult;
 };

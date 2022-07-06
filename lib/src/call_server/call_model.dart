@@ -2,22 +2,30 @@ import 'package:expertapp/src/call_server/call_connection_state.dart';
 import 'package:flutter/material.dart';
 
 class CallModel extends ChangeNotifier {
-  CallConnectionState connectionState = CallConnectionState.DISCONNECTED;
+  String _errorMessage = "";
+  CallConnectionState _connectionState = CallConnectionState.DISCONNECTED;
 
-  CallConnectionState get callConnectionState => connectionState;
+  CallConnectionState get callConnectionState => _connectionState;
+  String get errorMsg => _errorMessage;
 
   void onCallRequest() {
-    connectionState = CallConnectionState.CONNECTING;
+    _connectionState = CallConnectionState.CONNECTING;
     notifyListeners();
   }
 
   void onConnected() {
-    connectionState = CallConnectionState.CONNECTED;
+    _connectionState = CallConnectionState.CONNECTED;
     notifyListeners();
   }
 
   void onDisconnected() {
-    connectionState = CallConnectionState.DISCONNECTED;
+    _connectionState = CallConnectionState.DISCONNECTED;
+    notifyListeners();
+  }
+
+  void onErrored(String aErrorMessage) {
+    _errorMessage = aErrorMessage;
+    _connectionState = CallConnectionState.ERRORED;
     notifyListeners();
   }
 }

@@ -1,11 +1,12 @@
 import * as admin from "firebase-admin";
 
-export async function lookupUserToken(userId: string): Promise<string> {
+export async function lookupUserToken(
+    {userId, transaction}: {userId: string, transaction: FirebaseFirestore.Transaction}):
+    Promise<[success: boolean, errorMessage: string, token: string]> {
   const tokenCollection = admin.firestore().collection("fcm_tokens");
-  const tokenDocument = await tokenCollection.doc(userId).get();
+  const tokenDocument = await transaction.get(tokenCollection.doc(userId));
   if (!tokenDocument.exists) {
-    console.error(`Cannot find token for user: ${userId}`);
-    return "";
+    return [false, `Cannot find token for user: ${userId}`, ""];
   }
-  return tokenDocument.get("token");
+  return [true, "", tokenDocument.get("token")];
 }

@@ -16,7 +16,7 @@ class CallManager {
 
   final _client = CallTransactionClient(CHANNEL);
 
-  Future<CallMessage> call(
+  Future<void> call(
       {required BuildContext context,
       required String currentUserId,
       required String calledUserId}) async {
@@ -25,7 +25,11 @@ class CallManager {
     final model = Provider.of<CallModel>(context, listen: false);
     model.onCallRequest();
     final response = await _client.initiateCall(request);
-    model.onConnected();
-    return response;
+
+    if (response.success) {
+      model.onConnected();
+    } else {
+      model.onErrored(response.errorMessage);
+    }
   }
 }

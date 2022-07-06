@@ -1,5 +1,6 @@
 enum CallConnectionState
 {
+  ERRORED,
   DISCONNECTED,
   CONNECTING,
   CONNECTED
