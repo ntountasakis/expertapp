@@ -4,15 +4,27 @@ package call_transaction_package;
 
 service CallTransaction
 {
-    rpc InitiateCall(CallRequest) returns (CallMessage) {}
+    rpc InitiateCall(ClientMessageContainer) returns (ServerMessageContainer) {}
 }
 
-message CallRequest {
+message ClientCallRequest {
     string callerUid = 1;
     string calledUid = 2;
 }
 
-message CallMessage {
+message ClientMessageContainer {
+    oneof messageWrapper {
+        ClientCallRequest callRequest = 1;
+    }
+}
+
+message ServerCallRequestResponse {
     bool success = 1;
     string errorMessage = 2;
+}
+
+message ServerMessageContainer {
+    oneof messageWrapper {
+        ServerCallRequestResponse ServerCallRequestResponse = 1;
+    }
 }

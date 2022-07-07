@@ -3,23 +3,30 @@ import {CallTransctionRequestResult} from "./call_transaction_request_result";
 import {createCallTransaction} from "./create_call_transaction";
 import {sendCallJoinRequest} from "./firebase/fcm/fcm_token_sender";
 import {CallJoinRequest} from "./firebase/fcm/messages/call_join_request";
-import {CallMessage} from "./protos/call_transaction_package/CallMessage";
-import {CallRequest} from "./protos/call_transaction_package/CallRequest";
 import {CallTransactionHandlers} from "./protos/call_transaction_package/CallTransaction";
+import {ClientMessageContainer} from "./protos/call_transaction_package/ClientMessageContainer";
+import {ServerCallRequestResponse} from "./protos/call_transaction_package/ServerCallRequestResponse";
+import {ServerMessageContainer} from "./protos/call_transaction_package/ServerMessageContainer";
 
 export const callTransactionServer: CallTransactionHandlers = {
-  async InitiateCall(call: grpc.ServerUnaryCall<CallRequest, CallMessage>, callback: grpc.sendUnaryData<CallMessage>) {
+  async InitiateCall(call: grpc.ServerUnaryCall<ClientMessageContainer, ServerMessageContainer>,
+      callback: grpc.sendUnaryData<ServerMessageContainer>) {
     const [paramsValid, paramsInvalidErrorMessage] = callRequestParamsValid(call.request);
     if (!paramsValid) {
       sendCallRequestFailure(paramsInvalidErrorMessage, callback);
       return;
     }
 
-    console.log(`InitiateCall request begin. Caller Uid: ${call.request.calledUid} 
-      Called Uid: ${call.request.calledUid}`);
+    const clientCallRequest = call.request.callRequest;
+    if (clientCallRequest == null) {
+      throw new Error("Client call request shouldn't be null!");
+    }
 
-    const calledUid = call.request.calledUid as string;
-    const callerUid = call.request.callerUid as string;
+    console.log(`InitiateCall request begin. Caller Uid: ${clientCallRequest.calledUid} 
+      Called Uid: ${clientCallRequest.calledUid}`);
+
+    const calledUid = clientCallRequest.calledUid as string;
+    const callerUid = clientCallRequest.callerUid as string;
     const request = new CallJoinRequest({callerUid: callerUid, calledUid: calledUid});
     const callTransactionResult: CallTransctionRequestResult = await createCallTransaction({request: request});
 
@@ -32,36 +39,49 @@ export const callTransactionServer: CallTransactionHandlers = {
     sendCallJoinRequest(callTransactionResult.calledToken, request);
     sendCallRequestSuccess(callback);
 
-    console.log(`InitiateCall request success. Caller Uid: ${call.request.calledUid} 
-      Called Uid: ${call.request.calledUid}`);
+    console.log(`InitiateCall request success. Caller Uid: ${clientCallRequest.calledUid} 
+      Called Uid: ${clientCallRequest.calledUid}`);
   },
 };
 
-function callRequestParamsValid(request: CallRequest): [success: boolean, errorMessage: string] {
+function callRequestParamsValid(request: ClientMessageContainer): [success: boolean, errorMessage: string] {
   if (request == null) {
     return [false, "InitiateCall request object null"];
   }
-  if (request.calledUid == null || request.calledUid.length == 0) {
+  const clientCallRequest = request.callRequest;
+  if (clientCallRequest == null) {
+    return [false, "Unexpected messageType in ClientMessageContainer in Initiate Call"];
+  }
+  if (clientCallRequest.calledUid == null || clientCallRequest.calledUid.length == 0) {
     return [false, "InitiateCall Error: CalledUID empty or zero-length"];
   }
-  if (request.callerUid == null || request.callerUid.length == 0) {
+  if (clientCallRequest.callerUid == null || clientCallRequest.callerUid.length == 0) {
     return [false, "InitiateCall Error: CallerUID empty or zero-length"];
   }
   return [true, ""];
 }
 
-function sendCallRequestFailure(errorMessage: string, callback: grpc.sendUnaryData<CallMessage>) {
+function sendCallRequestFailure(errorMessage: string, callback: grpc.sendUnaryData<ServerMessageContainer>) {
   console.error(errorMessage);
-  callback(null, {
+  const serverCallRequestResponse: ServerCallRequestResponse = {
     "success": false,
     "errorMessage": errorMessage,
-  });
+  };
+  callback(null, makeServerMessageContainer(serverCallRequestResponse));
 }
 
-function sendCallRequestSuccess(callback: grpc.sendUnaryData<CallMessage>) {
-  callback(null, {
+function sendCallRequestSuccess(callback: grpc.sendUnaryData<ServerMessageContainer>) {
+  const serverCallRequestResponse: ServerCallRequestResponse = {
     "success": true,
     "errorMessage": "",
-  });
+  };
+
+  callback(null, makeServerMessageContainer(serverCallRequestResponse));
 }
 
+function makeServerMessageContainer(serverCallRequestResponse: ServerCallRequestResponse): ServerMessageContainer {
+  return {
+    "ServerCallRequestResponse": serverCallRequestResponse,
+    "messageWrapper": "ServerCallRequestResponse",
+  };
+}
