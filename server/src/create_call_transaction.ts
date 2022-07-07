@@ -1,11 +1,11 @@
-import {CallRequest} from "./protos/call_transaction_package/CallRequest";
 import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
 import {ExpertRate} from "./firebase/firestore/models/expert_rate";
 import {CallTransctionRequestResult} from "./call_transaction_request_result";
 import {lookupUserToken} from "./firebase/firestore/lookup_user_token";
+import {CallJoinRequest} from "./firebase/fcm/messages/call_join_request";
 
-export const createCallTransaction = async ({request}: {request: CallRequest}):
+export const createCallTransaction = async ({request}: {request: CallJoinRequest}):
 Promise<CallTransctionRequestResult> => {
   const myResult = new CallTransctionRequestResult();
   await admin.firestore().runTransaction(async (transaction) => {

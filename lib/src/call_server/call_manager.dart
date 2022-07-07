@@ -21,15 +21,24 @@ class CallManager {
       required String currentUserId,
       required String calledUserId}) async {
     final request =
-        CallRequest(callerUid: currentUserId, calledUid: calledUserId);
+        ClientCallRequest(callerUid: currentUserId, calledUid: calledUserId);
+    final messageContainer = new ClientMessageContainer(callRequest: request);
     final model = Provider.of<CallModel>(context, listen: false);
-    model.onCallRequest();
-    final response = await _client.initiateCall(request);
 
-    if (response.success) {
-      model.onConnected();
+    model.onCallRequest();
+    final serverResponseContainer =
+        await _client.initiateCall(messageContainer);
+
+    if (serverResponseContainer.hasServerCallRequestResponse()) {
+      final response = serverResponseContainer.serverCallRequestResponse;
+      if (response.success) {
+        model.onConnected();
+      } else {
+        model.onErrored(response.errorMessage);
+      }
     } else {
-      model.onErrored(response.errorMessage);
+      throw new Exception('''Unexpected ServerResponseContainer messageType on 
+      call request ${serverResponseContainer.whichMessageWrapper()}''');
     }
   }
 }
