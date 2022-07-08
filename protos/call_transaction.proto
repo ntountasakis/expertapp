@@ -4,7 +4,7 @@ package call_transaction_package;
 
 service CallTransaction
 {
-    rpc InitiateCall(ClientMessageContainer) returns (stream ServerMessageContainer) {}
+    rpc InitiateCall(stream ClientMessageContainer) returns (stream ServerMessageContainer) {}
 }
 
 message ClientCallRequest {

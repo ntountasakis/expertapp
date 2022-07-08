@@ -9,40 +9,48 @@ import {ServerCallRequestResponse} from "./protos/call_transaction_package/Serve
 import {ServerMessageContainer} from "./protos/call_transaction_package/ServerMessageContainer";
 
 export const callTransactionServer: CallTransactionHandlers = {
-  async InitiateCall(call: grpc.ServerWritableStream<ClientMessageContainer, ServerMessageContainer>) {
-    const [paramsValid, paramsInvalidErrorMessage] = callRequestParamsValid(call.request);
-    if (!paramsValid) {
-      sendCallRequestFailure(paramsInvalidErrorMessage, call);
+  async InitiateCall(call: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>) {
+    call.on("data", async (aClientMessage: ClientMessageContainer) => {
+      const [paramsValid, paramsInvalidErrorMessage] = callRequestParamsValid(aClientMessage);
+      if (!paramsValid) {
+        sendCallRequestFailure(paramsInvalidErrorMessage, call);
+        call.end();
+        return;
+      }
+
+      const clientCallRequest = aClientMessage.callRequest;
+      if (clientCallRequest == null) {
+        throw new Error("Client call request shouldn't be null!");
+      }
+
+      console.log(`InitiateCall request begin. Caller Uid: ${clientCallRequest.calledUid} 
+      Called Uid: ${clientCallRequest.calledUid}`);
+
+      const calledUid = clientCallRequest.calledUid as string;
+      const callerUid = clientCallRequest.callerUid as string;
+      const request = new CallJoinRequest({callerUid: callerUid, calledUid: calledUid});
+      const callTransactionResult: CallTransctionRequestResult = await createCallTransaction({request: request});
+
+      if (!callTransactionResult.success) {
+        sendCallRequestFailure(`Unable to create call transaction. Error: ${callTransactionResult.errorMessage}`,
+            call);
+        return;
+      }
+
+      sendCallJoinRequest(callTransactionResult.calledToken, request);
+      sendCallRequestSuccess(call);
+
       call.end();
-      return;
-    }
 
-    const clientCallRequest = call.request.callRequest;
-    if (clientCallRequest == null) {
-      throw new Error("Client call request shouldn't be null!");
-    }
-
-    console.log(`InitiateCall request begin. Caller Uid: ${clientCallRequest.calledUid} 
+      console.log(`InitiateCall request success. Caller Uid: ${clientCallRequest.calledUid} 
       Called Uid: ${clientCallRequest.calledUid}`);
-
-    const calledUid = clientCallRequest.calledUid as string;
-    const callerUid = clientCallRequest.callerUid as string;
-    const request = new CallJoinRequest({callerUid: callerUid, calledUid: calledUid});
-    const callTransactionResult: CallTransctionRequestResult = await createCallTransaction({request: request});
-
-    if (!callTransactionResult.success) {
-      sendCallRequestFailure(`Unable to create call transaction. Error: ${callTransactionResult.errorMessage}`,
-          call);
-      return;
-    }
-
-    sendCallJoinRequest(callTransactionResult.calledToken, request);
-    sendCallRequestSuccess(call);
-
-    call.end();
-
-    console.log(`InitiateCall request success. Caller Uid: ${clientCallRequest.calledUid} 
-      Called Uid: ${clientCallRequest.calledUid}`);
+    });
+    call.on("error", (error: Error) => {
+      console.log(`Error Initiate Call: ${error}`);
+    });
+    call.on("end", () => {
+      console.log("End Initiate Call Stream");
+    });
   },
 };
 
@@ -63,7 +71,7 @@ function callRequestParamsValid(request: ClientMessageContainer): [success: bool
   return [true, ""];
 }
 function sendCallRequestFailure(errorMessage: string,
-    call: grpc.ServerWritableStream<ClientMessageContainer, ServerMessageContainer>) {
+    call: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>) {
   console.error(errorMessage);
   const serverCallRequestResponse: ServerCallRequestResponse = {
     "success": false,
@@ -72,7 +80,7 @@ function sendCallRequestFailure(errorMessage: string,
   call.write(makeServerMessageContainer(serverCallRequestResponse));
 }
 
-function sendCallRequestSuccess(call: grpc.ServerWritableStream<ClientMessageContainer, ServerMessageContainer>) {
+function sendCallRequestSuccess(call: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>) {
   const serverCallRequestResponse: ServerCallRequestResponse = {
     "success": true,
     "errorMessage": "",

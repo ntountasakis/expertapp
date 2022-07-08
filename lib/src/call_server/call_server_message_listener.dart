@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ class CallServerMessageListener {
     if (aMessage.hasServerCallRequestResponse()) {
       final response = aMessage.serverCallRequestResponse;
       if (response.success) {
+        log("Successful response from server");
         _model.onConnected();
       } else {
         _model.onErrored(response.errorMessage);
