@@ -9,11 +9,11 @@ import {ServerCallRequestResponse} from "./protos/call_transaction_package/Serve
 import {ServerMessageContainer} from "./protos/call_transaction_package/ServerMessageContainer";
 
 export const callTransactionServer: CallTransactionHandlers = {
-  async InitiateCall(call: grpc.ServerUnaryCall<ClientMessageContainer, ServerMessageContainer>,
-      callback: grpc.sendUnaryData<ServerMessageContainer>) {
+  async InitiateCall(call: grpc.ServerWritableStream<ClientMessageContainer, ServerMessageContainer>) {
     const [paramsValid, paramsInvalidErrorMessage] = callRequestParamsValid(call.request);
     if (!paramsValid) {
-      sendCallRequestFailure(paramsInvalidErrorMessage, callback);
+      sendCallRequestFailure(paramsInvalidErrorMessage, call);
+      call.end();
       return;
     }
 
@@ -32,12 +32,14 @@ export const callTransactionServer: CallTransactionHandlers = {
 
     if (!callTransactionResult.success) {
       sendCallRequestFailure(`Unable to create call transaction. Error: ${callTransactionResult.errorMessage}`,
-          callback);
+          call);
       return;
     }
 
     sendCallJoinRequest(callTransactionResult.calledToken, request);
-    sendCallRequestSuccess(callback);
+    sendCallRequestSuccess(call);
+
+    call.end();
 
     console.log(`InitiateCall request success. Caller Uid: ${clientCallRequest.calledUid} 
       Called Uid: ${clientCallRequest.calledUid}`);
@@ -60,23 +62,23 @@ function callRequestParamsValid(request: ClientMessageContainer): [success: bool
   }
   return [true, ""];
 }
-
-function sendCallRequestFailure(errorMessage: string, callback: grpc.sendUnaryData<ServerMessageContainer>) {
+function sendCallRequestFailure(errorMessage: string,
+    call: grpc.ServerWritableStream<ClientMessageContainer, ServerMessageContainer>) {
   console.error(errorMessage);
   const serverCallRequestResponse: ServerCallRequestResponse = {
     "success": false,
     "errorMessage": errorMessage,
   };
-  callback(null, makeServerMessageContainer(serverCallRequestResponse));
+  call.write(makeServerMessageContainer(serverCallRequestResponse));
 }
 
-function sendCallRequestSuccess(callback: grpc.sendUnaryData<ServerMessageContainer>) {
+function sendCallRequestSuccess(call: grpc.ServerWritableStream<ClientMessageContainer, ServerMessageContainer>) {
   const serverCallRequestResponse: ServerCallRequestResponse = {
     "success": true,
     "errorMessage": "",
   };
 
-  callback(null, makeServerMessageContainer(serverCallRequestResponse));
+  call.write(makeServerMessageContainer(serverCallRequestResponse));
 }
 
 function makeServerMessageContainer(serverCallRequestResponse: ServerCallRequestResponse): ServerMessageContainer {
