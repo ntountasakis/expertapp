@@ -1,6 +1,5 @@
 import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pbgrpc.dart';
-import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
 
 class CallServerConnectionEstablisher {
@@ -14,14 +13,8 @@ class CallServerConnectionEstablisher {
 
   final _client = CallTransactionClient(CHANNEL);
 
-  Stream<ServerMessageContainer> call(
-      {required BuildContext context,
-      required String currentUserId,
-      required String calledUserId}) {
-    final request =
-        ClientCallRequest(callerUid: currentUserId, calledUid: calledUserId);
-    final messageContainer = new ClientMessageContainer(callRequest: request);
-    final serverResponseContainer = _client.initiateCall(messageContainer);
-    return serverResponseContainer;
+  Stream<ServerMessageContainer> connect(
+    Stream<ClientMessageContainer> clientMessageStream) {
+    return _client.initiateCall(clientMessageStream);
   }
 }
