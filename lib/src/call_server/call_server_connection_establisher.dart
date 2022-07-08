@@ -1,11 +1,9 @@
-import 'package:expertapp/src/call_server/call_model.dart';
 import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pbgrpc.dart';
 import 'package:flutter/material.dart';
 import 'package:grpc/grpc.dart';
-import 'package:provider/provider.dart';
 
-class CallManager {
+class CallServerConnectionEstablisher {
   static final CHANNEL_OPTIONS = EnvironmentConfig.getConfig().isProd()
       ? ChannelOptions(credentials: ChannelCredentials.secure())
       : ChannelOptions(credentials: ChannelCredentials.insecure());
@@ -16,29 +14,14 @@ class CallManager {
 
   final _client = CallTransactionClient(CHANNEL);
 
-  Future<void> call(
+  Stream<ServerMessageContainer> call(
       {required BuildContext context,
       required String currentUserId,
-      required String calledUserId}) async {
+      required String calledUserId}) {
     final request =
         ClientCallRequest(callerUid: currentUserId, calledUid: calledUserId);
     final messageContainer = new ClientMessageContainer(callRequest: request);
-    final model = Provider.of<CallModel>(context, listen: false);
-
-    model.onCallRequest();
-    final serverResponseContainer =
-        await _client.initiateCall(messageContainer);
-
-    if (serverResponseContainer.hasServerCallRequestResponse()) {
-      final response = serverResponseContainer.serverCallRequestResponse;
-      if (response.success) {
-        model.onConnected();
-      } else {
-        model.onErrored(response.errorMessage);
-      }
-    } else {
-      throw new Exception('''Unexpected ServerResponseContainer messageType on 
-      call request ${serverResponseContainer.whichMessageWrapper()}''');
-    }
+    final serverResponseContainer = _client.initiateCall(messageContainer);
+    return serverResponseContainer;
   }
 }

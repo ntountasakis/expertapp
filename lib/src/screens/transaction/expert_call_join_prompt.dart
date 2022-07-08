@@ -1,4 +1,4 @@
-import 'package:expertapp/src/call_server/call_model.dart';
+import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/cloud_messaging/messages/call_join_request.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
@@ -24,8 +24,8 @@ class ExpertCallJoinPrompt extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) {
-                  return ChangeNotifierProvider<CallModel>(
-                    create: (context) => CallModel(),
+                  return ChangeNotifierProvider<CallServerModel>(
+                    create: (context) => CallServerModel(),
                     child:
                         ExpertCallMain(request.calledUid, callerUserMetadata),
                   );
