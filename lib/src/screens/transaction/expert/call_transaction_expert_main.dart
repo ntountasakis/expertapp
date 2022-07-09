@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
+import 'package:expertapp/src/call_server/widgets/call_server_connection_state_view.dart';
+import 'package:expertapp/src/call_server/widgets/call_server_disconnect_button.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
@@ -52,17 +56,19 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
       appBar: UserPreviewAppbar(widget.callerClientMetadata),
       body: Consumer<CallServerModel>(
         builder: (_, callstate, child) {
-          final stateStatus = callstate.callConnectionState;
-          switch (stateStatus) {
-            case CallServerConnectionState.DISCONNECTED:
-              return Text("DISCONNECTED");
-            case CallServerConnectionState.CONNECTING:
-              return Text("CONNECTING");
-            case CallServerConnectionState.CONNECTED:
-              return Text("CONNECTED");
-            case CallServerConnectionState.ERRORED:
-              return Text("Call join denied. Error: ${callstate.errorMsg}");
-          }
+          return Column(children: [
+            Container(
+              padding: EdgeInsets.all(8.0),
+              child: callServerConnectionStateView(callstate),
+            ),
+            SizedBox(
+              width: 200,
+              height: 200,
+            ),
+            Container(
+              child: callServerDisconnectButton(context, _callManager),
+            )
+          ]);
         },
       ),
     );

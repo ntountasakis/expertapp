@@ -15,7 +15,6 @@ export const callTransactionServer: CallTransactionHandlers = {
         const transactionId = aClientMessage.callJoinRequest.callTransactionId;
         const joinerId = aClientMessage.callJoinRequest.joinerUid;
         console.log(`Got call join request from joinerId: ${joinerId} with transaction id: ${transactionId}`);
-        call.end();
         return;
       }
       const [paramsValid, paramsInvalidErrorMessage] = callInitiateRequestParamsValid(aClientMessage);
@@ -47,8 +46,6 @@ export const callTransactionServer: CallTransactionHandlers = {
       // todo: named params
       sendCallJoinRequest(callTransactionResult.calledToken, request, callTransactionResult.callTransactionId);
       sendCallRequestSuccess(call);
-
-      call.end();
 
       console.log(`InitiateCall request success. Caller Uid: ${clientCallRequest.callerUid} 
       Called Uid: ${clientCallRequest.calledUid}`);
