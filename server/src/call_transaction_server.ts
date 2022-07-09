@@ -11,19 +11,26 @@ import {ServerMessageContainer} from "./protos/call_transaction_package/ServerMe
 export const callTransactionServer: CallTransactionHandlers = {
   async InitiateCall(call: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>) {
     call.on("data", async (aClientMessage: ClientMessageContainer) => {
-      const [paramsValid, paramsInvalidErrorMessage] = callRequestParamsValid(aClientMessage);
+      if (aClientMessage.callJoinRequest != null) {
+        const transactionId = aClientMessage.callJoinRequest.callTransactionId;
+        const joinerId = aClientMessage.callJoinRequest.joinerUid;
+        console.log(`Got call join request from joinerId: ${joinerId} with transaction id: ${transactionId}`);
+        call.end();
+        return;
+      }
+      const [paramsValid, paramsInvalidErrorMessage] = callInitiateRequestParamsValid(aClientMessage);
       if (!paramsValid) {
         sendCallRequestFailure(paramsInvalidErrorMessage, call);
         call.end();
         return;
       }
 
-      const clientCallRequest = aClientMessage.callRequest;
+      const clientCallRequest = aClientMessage.callInitiateRequest;
       if (clientCallRequest == null) {
         throw new Error("Client call request shouldn't be null!");
       }
 
-      console.log(`InitiateCall request begin. Caller Uid: ${clientCallRequest.calledUid} 
+      console.log(`InitiateCall request begin. Caller Uid: ${clientCallRequest.callerUid} 
       Called Uid: ${clientCallRequest.calledUid}`);
 
       const calledUid = clientCallRequest.calledUid as string;
@@ -37,12 +44,13 @@ export const callTransactionServer: CallTransactionHandlers = {
         return;
       }
 
-      sendCallJoinRequest(callTransactionResult.calledToken, request);
+      // todo: named params
+      sendCallJoinRequest(callTransactionResult.calledToken, request, callTransactionResult.callTransactionId);
       sendCallRequestSuccess(call);
 
       call.end();
 
-      console.log(`InitiateCall request success. Caller Uid: ${clientCallRequest.calledUid} 
+      console.log(`InitiateCall request success. Caller Uid: ${clientCallRequest.callerUid} 
       Called Uid: ${clientCallRequest.calledUid}`);
     });
     call.on("error", (error: Error) => {
@@ -54,18 +62,18 @@ export const callTransactionServer: CallTransactionHandlers = {
   },
 };
 
-function callRequestParamsValid(request: ClientMessageContainer): [success: boolean, errorMessage: string] {
+function callInitiateRequestParamsValid(request: ClientMessageContainer): [success: boolean, errorMessage: string] {
   if (request == null) {
     return [false, "InitiateCall request object null"];
   }
-  const clientCallRequest = request.callRequest;
-  if (clientCallRequest == null) {
+  const clientInitiateRequest = request.callInitiateRequest;
+  if (clientInitiateRequest == null) {
     return [false, "Unexpected messageType in ClientMessageContainer in Initiate Call"];
   }
-  if (clientCallRequest.calledUid == null || clientCallRequest.calledUid.length == 0) {
+  if (clientInitiateRequest.calledUid == null || clientInitiateRequest.calledUid.length == 0) {
     return [false, "InitiateCall Error: CalledUID empty or zero-length"];
   }
-  if (clientCallRequest.callerUid == null || clientCallRequest.callerUid.length == 0) {
+  if (clientInitiateRequest.callerUid == null || clientInitiateRequest.callerUid.length == 0) {
     return [false, "InitiateCall Error: CallerUID empty or zero-length"];
   }
   return [true, ""];

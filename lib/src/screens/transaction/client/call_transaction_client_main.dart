@@ -7,35 +7,39 @@ import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ExpertCallMain extends StatefulWidget {
+class CallTransactionClientMain extends StatefulWidget {
   final String currentUserId;
-  final DocumentWrapper<UserMetadata> connectedUserMetadata;
+  final DocumentWrapper<UserMetadata> connectedExpertMetadata;
 
-  ExpertCallMain(this.currentUserId, this.connectedUserMetadata);
+  CallTransactionClientMain(this.currentUserId, this.connectedExpertMetadata);
 
   @override
-  State<ExpertCallMain> createState() => _ExpertCallMainState();
+  State<CallTransactionClientMain> createState() =>
+      _CallTransactionClientMainState(
+          currentUserId: currentUserId,
+          otherUserId: connectedExpertMetadata.documentId);
 }
 
-class _ExpertCallMainState extends State<ExpertCallMain> {
-  final _callManager = CallServerManager();
+class _CallTransactionClientMainState extends State<CallTransactionClientMain> {
+  late CallServerManager _callManager;
+
+  _CallTransactionClientMainState(
+      {required String currentUserId, required String otherUserId}) {
+    _callManager = CallServerManager(
+        currentUserId: currentUserId, otherUserId: otherUserId);
+  }
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero).then((_) => {
-          _callManager.connect(
-            context: context,
-            currentUserId: widget.currentUserId,
-            calledUserId: widget.connectedUserMetadata.documentId,
-          )
-        });
+    Future.delayed(Duration.zero)
+        .then((_) => {_callManager.initiateCall(context)});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UserPreviewAppbar(widget.connectedUserMetadata),
+      appBar: UserPreviewAppbar(widget.connectedExpertMetadata),
       body: Consumer<CallServerModel>(
         builder: (_, callstate, child) {
           final stateStatus = callstate.callConnectionState;

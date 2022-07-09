@@ -7,14 +7,20 @@ service CallTransaction
     rpc InitiateCall(stream ClientMessageContainer) returns (stream ServerMessageContainer) {}
 }
 
-message ClientCallRequest {
+message ClientCallInitiateRequest {
     string callerUid = 1;
     string calledUid = 2;
 }
 
+message ClientCallJoinRequest {
+    string callTransactionId = 1;
+    string joinerUid = 2;
+}
+
 message ClientMessageContainer {
     oneof messageWrapper {
-        ClientCallRequest callRequest = 1;
+        ClientCallInitiateRequest callInitiateRequest = 1;
+        ClientCallJoinRequest callJoinRequest = 2;
     }
 }
 

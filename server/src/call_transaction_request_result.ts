@@ -2,6 +2,7 @@ export class CallTransctionRequestResult {
     _success = false;
     _errorMessage = "";
     _calledToken = "";
+    _callTransactionId = "";
 
     set success(success: boolean) {
       this._success = success;
@@ -25,5 +26,13 @@ export class CallTransctionRequestResult {
 
     get calledToken(): string {
       return this._calledToken;
+    }
+
+    set callTransactionId(transactionId: string) {
+      this._callTransactionId = transactionId;
+    }
+
+    get callTransactionId(): string {
+      return this._callTransactionId;
     }
 }
