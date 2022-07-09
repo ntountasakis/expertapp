@@ -10,15 +10,14 @@ class CallServerMessageListener {
 
   void onConnect(BuildContext context) {
     _model = Provider.of<CallServerModel>(context, listen: false);
+    _model.onConnected();
   }
 
   void onMessage(ServerMessageContainer aMessage) {
     if (aMessage.hasServerCallRequestResponse()) {
       final response = aMessage.serverCallRequestResponse;
-      if (response.success) {
-        log("Successful response from server");
-        _model.onConnected();
-      } else {
+      if (!response.success) {
+        log("Error from call server ${response.errorMessage}");
         _model.onErrored(response.errorMessage);
       }
     } else {

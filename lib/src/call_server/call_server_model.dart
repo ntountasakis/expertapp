@@ -9,11 +9,6 @@ class CallServerModel extends ChangeNotifier {
   CallServerConnectionState get callConnectionState => _connectionState;
   String get errorMsg => _errorMessage;
 
-  void onCallRequest() {
-    _connectionState = CallServerConnectionState.CONNECTING;
-    notifyListeners();
-  }
-
   void onConnected() {
     _connectionState = CallServerConnectionState.CONNECTED;
     notifyListeners();

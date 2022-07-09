@@ -41,7 +41,7 @@ class CallServerManager {
         onDone: this._onDone);
   }
 
-  void disconnect() async {
+  Future<void> disconnect() async {
     await _serverMessageProducer.shutdown();
     _serverMessageStreamSubscription.cancel();
   }
