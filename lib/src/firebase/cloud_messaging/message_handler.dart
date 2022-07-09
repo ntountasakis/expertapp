@@ -5,7 +5,7 @@ import 'package:expertapp/src/firebase/cloud_messaging/message_decoder.dart';
 import 'package:expertapp/src/firebase/cloud_messaging/messages/call_join_request.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
-import 'package:expertapp/src/screens/transaction/expert_call_join_prompt.dart';
+import 'package:expertapp/src/screens/transaction/call_transaction_expert_prompt.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
@@ -31,20 +31,21 @@ void initFirebaseMessagingForegroundHandler() {
       print('Message also contained a notification: ${message.notification}');
     }
 
-    final CallJoinRequest request =
+    final CallJoinRequestTokenPayload callJoinRequest =
         MessageDecoder.callJoinRequestFromJson(message.data);
     final DocumentWrapper<UserMetadata>? callerMetadata =
-        await UserMetadata.get(request.callerUid);
+        await UserMetadata.get(callJoinRequest.callerUid);
 
     if (callerMetadata == null) {
-      log("Cannot accept call join request from unknown user: ${request.callerUid}");
+      log("Cannot accept call join request from unknown user: ${callJoinRequest.callerUid}");
       return;
     }
     navigatorKey.currentState?.push(
       MaterialPageRoute(
-      builder: (context) => ExpertCallJoinPrompt(
-        request,
-        callerMetadata,
+      builder: (context) => CallTransactionExpertPrompt(
+        callJoinRequest: callJoinRequest,
+        currentUserId: callJoinRequest.calledUid,
+        callerUserMetadata: callerMetadata,
       ),
     ));
   });

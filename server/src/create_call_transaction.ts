@@ -33,6 +33,8 @@ Promise<CallTransctionRequestResult> => {
       return;
     }
 
+    console.log(`Found token ${calledUserToken} for ${request.calledUid}`);
+
     myResult.calledToken = calledUserToken;
 
     const callRate = calledRateDoc.data() as ExpertRate;
@@ -51,6 +53,7 @@ Promise<CallTransctionRequestResult> => {
 
     transaction.create(callTransactionDoc, newTransaction);
     myResult.success = true;
+    myResult.callTransactionId = transactionId;
   });
   return myResult;
 };

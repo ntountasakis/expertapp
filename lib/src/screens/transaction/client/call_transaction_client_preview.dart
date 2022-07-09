@@ -4,11 +4,11 @@ import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dar
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
-import 'package:expertapp/src/screens/transaction/expert_call_main.dart';
+import 'package:expertapp/src/screens/transaction/client/call_transaction_client_main.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ExpertCallPreview extends StatelessWidget {
+class CallTransactionClientPreview extends StatelessWidget {
   final String currentUserId;
   final DocumentWrapper<UserMetadata> expertUserMetadata;
   final ExpertRate expertRate;
@@ -19,7 +19,7 @@ class ExpertCallPreview extends StatelessWidget {
   final ButtonStyle callButtonStyle =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
-  ExpertCallPreview(
+  CallTransactionClientPreview(
       this.currentUserId, this.expertUserMetadata, this.expertRate);
 
   String blurbText() {
@@ -53,7 +53,8 @@ class ExpertCallPreview extends StatelessWidget {
               MaterialPageRoute(builder: (context) {
             return ChangeNotifierProvider<CallServerModel>(
               create: (context) => CallServerModel(),
-              child: ExpertCallMain(currentUserId, expertUserMetadata),
+              child:
+                  CallTransactionClientMain(currentUserId, expertUserMetadata),
             );
           }));
         },

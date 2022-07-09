@@ -11,14 +11,26 @@ class CallServerManager {
   final _callEstablisher = CallServerConnectionEstablisher();
   final _serverMessageListener = CallServerMessageListener();
   final _serverMessageProducer = CallServerMessageProducer();
+  final String currentUserId;
+  final String otherUserId;
   late Stream<ServerMessageContainer> _serverMessageStream;
   late StreamSubscription<ServerMessageContainer>
       _serverMessageStreamSubscription;
 
-  void connect(
-      {required BuildContext context,
-      required String currentUserId,
-      required String calledUserId}) {
+  CallServerManager({required this.currentUserId, required this.otherUserId});
+
+  void initiateCall(BuildContext context) {
+    _connect(context);
+    _beginCall(context);
+  }
+
+  void joinCall(
+      {required BuildContext context, required String callTransactionId}) {
+    _connect(context);
+    _joinCall(context, callTransactionId);
+  }
+
+  void _connect(BuildContext context) {
     _serverMessageStream = _callEstablisher
         .connect(_serverMessageProducer.messageProducerStream());
     _serverMessageListener.onConnect(context);
@@ -27,12 +39,6 @@ class CallServerManager {
         _serverMessageListener.onMessage,
         onError: this._onError,
         onDone: this._onDone);
-
-    _beginCall(
-      context: context,
-      currentUserId: currentUserId,
-      calledUserId: calledUserId
-    );
   }
 
   void disconnect() async {
@@ -49,13 +55,19 @@ class CallServerManager {
     _serverMessageListener.onDisconnect();
   }
 
-  void _beginCall(
-      {required BuildContext context,
-      required String currentUserId,
-      required String calledUserId}) {
-    final request =
-        ClientCallRequest(callerUid: currentUserId, calledUid: calledUserId);
-    final messageContainer = new ClientMessageContainer(callRequest: request);
+  void _beginCall(BuildContext context) {
+    final initiateRequest = ClientCallInitiateRequest(
+        callerUid: currentUserId, calledUid: otherUserId);
+    final messageContainer =
+        new ClientMessageContainer(callInitiateRequest: initiateRequest);
+    _serverMessageProducer.sendMessage(messageContainer);
+  }
+
+  void _joinCall(BuildContext context, String callTransactionId) {
+    final joinRequest = ClientCallJoinRequest(
+        callTransactionId: callTransactionId, joinerUid: currentUserId);
+    final messageContainer =
+        new ClientMessageContainer(callJoinRequest: joinRequest);
     _serverMessageProducer.sendMessage(messageContainer);
   }
 }

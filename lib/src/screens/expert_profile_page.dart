@@ -9,7 +9,7 @@ import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:expertapp/src/screens/chat_page.dart';
-import 'package:expertapp/src/screens/transaction/expert_call_preview.dart';
+import 'package:expertapp/src/screens/transaction/client/call_transaction_client_preview.dart';
 import 'package:expertapp/src/screens/video_call_page.dart';
 import 'package:flutter/material.dart';
 
@@ -97,8 +97,10 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => ExpertCallPreview(
-                    widget._currentUserUid, widget._expertUserMetadata, expertRate.documentType)));
+                builder: (context) => CallTransactionClientPreview(
+                    widget._currentUserUid,
+                    widget._expertUserMetadata,
+                    expertRate.documentType)));
       },
       child: Text('Call ${widget._expertUserMetadata.documentType.firstName}'),
     );

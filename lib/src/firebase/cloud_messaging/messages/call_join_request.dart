@@ -1,7 +1,8 @@
-class CallJoinRequest {
+class CallJoinRequestTokenPayload {
   final String callerUid;
   final String calledUid;
+  final String callTransactionId;
 
-  CallJoinRequest({required String callerUid, required String calledUid})
-  : this.callerUid = callerUid, this.calledUid = calledUid {}
+  CallJoinRequestTokenPayload(
+      {required this.callerUid, required this.calledUid, required this.callTransactionId});
 }

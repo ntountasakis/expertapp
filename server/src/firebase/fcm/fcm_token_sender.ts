@@ -1,12 +1,14 @@
 import * as admin from "firebase-admin";
 import {CallJoinRequest} from "./messages/call_join_request";
 
-export const sendCallJoinRequest = function(token: string, joinRequest: CallJoinRequest): void {
+export const sendCallJoinRequest = function(token: string, joinRequest: CallJoinRequest,
+    callTransactionId: string): void {
   const payload = {
     data: {
       messageType: joinRequest.messageType(),
       callerUid: joinRequest.callerUid,
       calledUid: joinRequest.calledUid,
+      callTransactionId: callTransactionId,
     },
     token: token,
   };
