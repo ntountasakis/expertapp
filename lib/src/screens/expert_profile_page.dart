@@ -121,14 +121,4 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
   //   );
   // }
 
-  // Widget buildCallButton(BuildContext context) {
-  //   return ElevatedButton(
-  //     style: style,
-  //     onPressed: () {
-  //       Navigator.push(context,
-  //           MaterialPageRoute(builder: (context) => VideoCallPage("test")));
-  //     },
-  //     child: const Text('Call Expert'),
-  //   );
-  // }
 }
