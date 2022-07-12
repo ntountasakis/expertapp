@@ -4,6 +4,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.d
 import 'package:expertapp/src/screens/chat_page.dart';
 import 'package:flutter/material.dart';
 
+// todo: pass flag to make chat page editable, and view-only otherwise
 Widget buildEditableChatButton({required BuildContext context, required String currentUserId, 
 required DocumentWrapper<UserMetadata> calledUserMetadata}) {
   final ButtonStyle style =
