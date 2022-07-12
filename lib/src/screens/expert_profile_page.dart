@@ -121,24 +121,6 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
   //   );
   // }
 
-  // Widget buildChatButton(BuildContext context) {
-  //   return ElevatedButton(
-  //     style: style,
-  //     onPressed: () async {
-  //       final chatroomId =
-  //           await lookupChatroomId(widget._expertUserMetadata.documentId);
-  //       Navigator.push(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => ChatPage(
-  //               widget._currentUserUid, widget._expertUserMetadata, chatroomId),
-  //         ),
-  //       );
-  //     },
-  //     child: const Text('Chat Expert'),
-  //   );
-  // }
-
   // Widget buildCallButton(BuildContext context) {
   //   return ElevatedButton(
   //     style: style,
