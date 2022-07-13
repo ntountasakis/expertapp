@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import {CallJoinRequest} from "./messages/call_join_request";
 
-export const sendCallJoinRequest = function(token: string, joinRequest: CallJoinRequest,
+export const sendCallJoinRequest = function(fcmToken: string, joinRequest: CallJoinRequest,
     callTransactionId: string): void {
   const payload = {
     data: {
@@ -10,7 +10,7 @@ export const sendCallJoinRequest = function(token: string, joinRequest: CallJoin
       calledUid: joinRequest.calledUid,
       callTransactionId: callTransactionId,
     },
-    token: token,
+    token: fcmToken,
   };
 
   // Send a message to the device corresponding to the provided

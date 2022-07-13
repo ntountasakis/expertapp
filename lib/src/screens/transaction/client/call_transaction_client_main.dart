@@ -71,7 +71,7 @@ class _CallTransactionClientMainState extends State<CallTransactionClientMain> {
               height: 100,
             ),
             Container(
-              child: buildVideoCallButton(context, widget.currentUserId),
+              child: buildVideoCallButton(context: context, model: callstate),
             )
           ]);
         },

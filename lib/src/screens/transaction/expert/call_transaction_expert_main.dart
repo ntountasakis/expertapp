@@ -83,9 +83,9 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
               width: 200,
               height: 100,
             ),
-            Container(
-              child: buildVideoCallButton(context, widget.currentUserId),
-            )
+            // Container(
+            //   child: buildVideoCallButton(context, widget.currentUserId),
+            // )
           ]);
         },
       ),

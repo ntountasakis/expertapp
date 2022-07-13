@@ -29,8 +29,15 @@ message ServerCallRequestResponse {
     string errorMessage = 2;
 }
 
+message ServerAgoraCredentials {
+    string token = 1;
+    string channelName = 2;
+    uint32 uid = 3;
+}
+
 message ServerMessageContainer {
     oneof messageWrapper {
         ServerCallRequestResponse ServerCallRequestResponse = 1;
+        ServerAgoraCredentials serverAgoraCredentials = 2;
     }
 }

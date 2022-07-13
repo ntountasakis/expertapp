@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 
 class VideoCallPage extends StatefulWidget {
   final String channelName;
+  final String agoraToken;
   final String currentUserId;
 
-  VideoCallPage(this.channelName, this.currentUserId);
+  VideoCallPage(
+      {required this.channelName,
+      required this.agoraToken,
+      required this.currentUserId});
 
   @override
   State<VideoCallPage> createState() =>
@@ -22,7 +26,7 @@ class _VideoCallPageState extends State<VideoCallPage> {
                 appId: appId,
                 channelName: channelName,
                 username: currentUserId,
-                tempToken: AgoraAppId.TEST_TOKEN),
+                tempToken: "test token will not work"),
             enabledPermission: [
               Permission.camera,
               Permission.microphone,
