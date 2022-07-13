@@ -2,8 +2,9 @@ import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
 import {ExpertRate} from "./firebase/firestore/models/expert_rate";
 import {CallTransctionRequestResult} from "./call_transaction_request_result";
-import {lookupUserToken} from "./firebase/firestore/lookup_user_token";
+import {lookupUserFcmToken} from "./firebase/firestore/lookup_user_token";
 import {CallJoinRequest} from "./firebase/fcm/messages/call_join_request";
+import {CallTransaction} from "./firebase/firestore/models/call_transaction";
 
 export const createCallTransaction = async ({request}: {request: CallJoinRequest}):
 Promise<CallTransctionRequestResult> => {
@@ -25,7 +26,7 @@ Promise<CallTransctionRequestResult> => {
       return;
     }
 
-    const [tokenSuccess, tokenErrorMessage, calledUserToken] = await lookupUserToken(
+    const [tokenSuccess, tokenErrorMessage, calledUserFcmToken] = await lookupUserFcmToken(
         {userId: request.calledUid, transaction: transaction});
 
     if (!tokenSuccess) {
@@ -33,19 +34,21 @@ Promise<CallTransctionRequestResult> => {
       return;
     }
 
-    console.log(`Found token ${calledUserToken} for ${request.calledUid}`);
+    console.log(`Found token ${calledUserFcmToken} for ${request.calledUid}`);
 
-    myResult.calledToken = calledUserToken;
+    myResult.calledFcmToken = calledUserFcmToken;
 
     const callRate = calledRateDoc.data() as ExpertRate;
     const callRequestTimeUtcMs = Date.now();
     const transactionId = uuidv4();
+    const agoraChannelName = uuidv4();
 
-    const newTransaction = {
+    const newTransaction: CallTransaction = {
       "callerUid": request.callerUid,
       "calledUid": request.calledUid,
       "callRequestTimeUtcMs": callRequestTimeUtcMs,
       "expertRateDollarsPerMinute": callRate.dollarsPerMinute,
+      "agoraChannelName": agoraChannelName,
     };
 
     const callTransactionDoc = admin.firestore()
@@ -54,6 +57,7 @@ Promise<CallTransctionRequestResult> => {
     transaction.create(callTransactionDoc, newTransaction);
     myResult.success = true;
     myResult.callTransactionId = transactionId;
+    myResult.agoraChannelName = agoraChannelName;
   });
   return myResult;
 };

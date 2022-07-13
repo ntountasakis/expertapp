@@ -29,6 +29,9 @@
     "@google-cloud/logging": "^9.8.0",
     "@grpc/proto-loader": "^0.6.9",
     "@types/uuid": "^8.3.4",
+    "crc-32": "^1.2.2",
+    "crypto": "^1.0.1",
+    "cuint": "^0.2.2",
     "firebase-admin": "^10.2.0",
     "uuid": "^8.3.2"
   }

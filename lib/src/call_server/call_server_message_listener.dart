@@ -20,6 +20,8 @@ class CallServerMessageListener {
         log("Error from call server ${response.errorMessage}");
         _model.onErrored(response.errorMessage);
       }
+    } else if (aMessage.hasServerAgoraCredentials()) {
+      _model.onAgoraCredentials(aMessage.serverAgoraCredentials);
     } else {
       throw new Exception('''Unexpected ServerResponseContainer messageType 
       on call request ${aMessage.whichMessageWrapper()}''');

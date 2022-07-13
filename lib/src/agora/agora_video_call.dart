@@ -7,11 +7,14 @@ import 'package:expertapp/src/agora/agora_app_id.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-const appId = AgoraAppId.ID;
-const token = AgoraAppId.TEST_TOKEN;
-const channel = "test-debug";
-
 class AgoraVideoCall extends StatefulWidget {
+  final String agoraChannelName;
+  final String agoraToken;
+  final int agoraUid;
+
+  AgoraVideoCall({required this.agoraChannelName, required this.agoraToken,
+  required this.agoraUid});
+
   @override
   _AgoraVideoCallState createState() => _AgoraVideoCallState();
 }
@@ -32,7 +35,7 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
     await [Permission.microphone, Permission.camera].request();
 
     //create the engine
-    _engine = await RtcEngine.create(appId);
+    _engine = await RtcEngine.create(AgoraAppId.ID);
     await _engine.enableVideo();
     _engine.setEventHandler(
       RtcEngineEventHandler(
@@ -57,7 +60,8 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
       ),
     );
 
-    await _engine.joinChannel(token, channel, null, 0);
+    await _engine.joinChannel(
+        widget.agoraToken, widget.agoraChannelName, null, widget.agoraUid);
   }
 
   // Create UI with local view and remote view
@@ -94,7 +98,7 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
     if (_remoteUid != null) {
       return RtcRemoteView.SurfaceView(
         uid: _remoteUid!,
-        channelId: channel,
+        channelId: widget.agoraChannelName,
       );
     } else {
       return Text(

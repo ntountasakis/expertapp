@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
 
-export async function lookupUserToken(
+export async function lookupUserFcmToken(
     {userId, transaction}: {userId: string, transaction: FirebaseFirestore.Transaction}):
     Promise<[success: boolean, errorMessage: string, token: string]> {
   const tokenCollection = admin.firestore().collection("fcm_tokens");

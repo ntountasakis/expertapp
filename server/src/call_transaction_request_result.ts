@@ -1,8 +1,9 @@
 export class CallTransctionRequestResult {
     _success = false;
     _errorMessage = "";
-    _calledToken = "";
+    _calledFcmToken = "";
     _callTransactionId = "";
+    _agoraChannelName = "";
 
     set success(success: boolean) {
       this._success = success;
@@ -20,12 +21,12 @@ export class CallTransctionRequestResult {
       return this._errorMessage;
     }
 
-    set calledToken(token: string) {
-      this._calledToken = token;
+    set calledFcmToken(token: string) {
+      this._calledFcmToken = token;
     }
 
-    get calledToken(): string {
-      return this._calledToken;
+    get calledFcmToken(): string {
+      return this._calledFcmToken;
     }
 
     set callTransactionId(transactionId: string) {
@@ -34,5 +35,13 @@ export class CallTransctionRequestResult {
 
     get callTransactionId(): string {
       return this._callTransactionId;
+    }
+
+    set agoraChannelName(agoraChannelName: string) {
+      this._agoraChannelName = agoraChannelName;
+    }
+
+    get agoraChannelName(): string {
+      return this._agoraChannelName;
     }
 }
