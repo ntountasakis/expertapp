@@ -37,7 +37,7 @@ export function dispatchClientMessage({clientMessage, invalidMessageHandler, cli
       invalidMessageHandler(callJoinRequestInvalidErrorMessage);
       return;
     }
-    handleClientCallJoinRequest(callJoinRequest);
+    handleClientCallJoinRequest(callJoinRequest, clientMessageSender);
     return;
   }
 
