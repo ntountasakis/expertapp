@@ -10,7 +10,6 @@ import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:expertapp/src/screens/chat_page.dart';
 import 'package:expertapp/src/screens/transaction/client/call_transaction_client_preview.dart';
-import 'package:expertapp/src/screens/video_call_page.dart';
 import 'package:flutter/material.dart';
 
 import 'expert_review_submit_page.dart';
