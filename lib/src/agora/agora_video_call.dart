@@ -8,6 +8,8 @@ import 'package:expertapp/src/agora/agora_app_id.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'agora_video_controls.dart';
+
 class AgoraVideoCall extends StatefulWidget {
   final String agoraChannelName;
   final String agoraToken;
@@ -22,16 +24,11 @@ class AgoraVideoCall extends StatefulWidget {
   _AgoraVideoCallState createState() => _AgoraVideoCallState();
 }
 
-class CallButtonState {
-  bool videoEnabled = true;
-  bool audioEnabled = true;
-}
-
 class _AgoraVideoCallState extends State<AgoraVideoCall> {
   int? _remoteUid;
   bool _localUserJoined = false;
   late RtcEngine _engine;
-  final buttonState = CallButtonState();
+  final buttonState = AgoraVideoCallButtonState();
 
   @override
   void initState() {
@@ -73,66 +70,23 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
         widget.agoraToken, widget.agoraChannelName, null, widget.agoraUid);
   }
 
-  Widget buildCameraButton() {
-    final MaterialColor cameraColor =
-        buttonState.videoEnabled ? Colors.green : Colors.red;
-    return IconButton(
-      icon: Icon(
-        Icons.camera_alt,
-        size: 20,
-        color: cameraColor,
-      ),
-      onPressed: () async {
-        await _engine.muteLocalVideoStream(!buttonState.videoEnabled);
-        setState(() {
-          buttonState.videoEnabled = !buttonState.videoEnabled;
-        });
-      },
-    );
+  void onCameraMuteTap(bool cameraMuted) async {
+      await _engine.muteLocalVideoStream(!buttonState.videoEnabled);
+      setState(() {
+        buttonState.videoEnabled = cameraMuted;
+      });
   }
 
-  Widget buildMicButton() {
-    final MaterialColor micColor =
-        buttonState.audioEnabled ? Colors.green : Colors.red;
-    return IconButton(
-      icon: Icon(
-        Icons.mic,
-        size: 20,
-        color: micColor,
-      ),
-      onPressed: () async {
-        await _engine.muteLocalAudioStream(!buttonState.audioEnabled);
-        setState(() {
-          buttonState.audioEnabled = !buttonState.audioEnabled;
-        });
-      },
-    );
+  void onMicButtonMuteTap(bool cameraMuted) async {
+    await _engine.muteLocalAudioStream(!buttonState.audioEnabled);
+    setState(() {
+      buttonState.audioEnabled = cameraMuted;
+    });
   }
 
-  Widget buildEndCallButton(BuildContext) {
-    return IconButton(
-      icon: Icon(
-        Icons.call_end_rounded,
-        size: 20,
-        color: Colors.red,
-      ),
-      onPressed: () async {
-        await _engine.destroy();
-        Navigator.pop(context);
-      },
-    );
-  }
-
-  Widget buildVideoButtons(BuildContext context) {
-    return Row(
-      children: [
-        buildCameraButton(),
-        SizedBox(width: 20),
-        buildMicButton(),
-        SizedBox(width: 20),
-        buildEndCallButton(context)
-      ],
-    );
+  void onEndCallTap() async {
+      await _engine.destroy();
+      Navigator.pop(context);
   }
 
   // Create UI with local view and remote view
@@ -164,7 +118,10 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
             ),
             Positioned(
               bottom: 30,
-              child: buildVideoButtons(context),
+              child: agoraVideoButtons(callButtonState: buttonState,
+                onCameraMuteTap: onCameraMuteTap,
+              onMicMuteTap: onMicButtonMuteTap,
+              onEndCalTap: onEndCallTap),
             )
           ],
         ),
