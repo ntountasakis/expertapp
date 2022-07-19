@@ -71,22 +71,41 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
   }
 
   void onCameraMuteTap(bool cameraMuted) async {
-      await _engine.muteLocalVideoStream(!buttonState.videoEnabled);
-      setState(() {
-        buttonState.videoEnabled = cameraMuted;
-      });
+    await _engine.muteLocalVideoStream(cameraMuted);
+    setState(() {
+      buttonState.videoMuted = cameraMuted;
+    });
   }
 
-  void onMicButtonMuteTap(bool cameraMuted) async {
-    await _engine.muteLocalAudioStream(!buttonState.audioEnabled);
+  void onMicButtonMuteTap(bool audioMuted) async {
+    await _engine.muteLocalAudioStream(audioMuted);
     setState(() {
-      buttonState.audioEnabled = cameraMuted;
+      buttonState.audioMuted = audioMuted;
     });
   }
 
   void onEndCallTap() async {
-      await _engine.destroy();
-      Navigator.pop(context);
+    await _engine.destroy();
+    Navigator.pop(context);
+  }
+
+  Widget localVideoView() {
+    if (buttonState.videoMuted) {
+      return Container(
+        width: 100,
+        height: 150,
+        color: Colors.black,
+      );
+    }
+    return Container(
+      width: 100,
+      height: 150,
+      child: Center(
+        child: _localUserJoined
+            ? RtcLocalView.SurfaceView()
+            : CircularProgressIndicator(),
+      ),
+    );
   }
 
   // Create UI with local view and remote view
@@ -106,22 +125,17 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
             ),
             Align(
               alignment: Alignment.topLeft,
-              child: Container(
-                width: 100,
-                height: 150,
-                child: Center(
-                  child: _localUserJoined
-                      ? RtcLocalView.SurfaceView()
-                      : CircularProgressIndicator(),
-                ),
-              ),
+              child: localVideoView(),
             ),
             Positioned(
               bottom: 30,
-              child: agoraVideoButtons(callButtonState: buttonState,
-                onCameraMuteTap: onCameraMuteTap,
-              onMicMuteTap: onMicButtonMuteTap,
-              onEndCalTap: onEndCallTap),
+              left: 0,
+              child: agoraVideoButtons(
+                  callButtonState: buttonState,
+                  onCameraMuteTap: onCameraMuteTap,
+                  onMicMuteTap: onMicButtonMuteTap,
+                  onEndCalTap: onEndCallTap,
+                  context: context),
             )
           ],
         ),
