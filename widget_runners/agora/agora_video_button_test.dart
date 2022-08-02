@@ -1,6 +1,8 @@
 import 'package:expertapp/src/agora/agora_video_controls.dart';
 import 'package:flutter/material.dart';
 
+import '../widget_runner_test_app.dart';
+
 class VideoButtonWrapper extends StatefulWidget {
   VideoButtonWrapper();
 
@@ -63,20 +65,6 @@ class _VideoButtonWrapperState extends State<VideoButtonWrapper> {
   }
 }
 
-class MyTestApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Test',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: VideoButtonWrapper(),
-    );
-  }
-}
-
 void main() {
-  runApp(new MyTestApp());
+  runApp(new WidgetRunnerTestApp(new VideoButtonWrapper()));
 }
