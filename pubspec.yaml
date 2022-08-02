@@ -36,6 +36,7 @@ dependencies:
   flutter_chat_bubble: ^2.0.0
   flutter_rating_bar: ^4.0.0
   flutter_signin_button: ^2.0.0
+  flutter_stripe: ^4.0.0
   flutterfire_ui: ^0.4.2+2
   google_api_availability: ^3.0.1
   google_sign_in: ^5.2.3
