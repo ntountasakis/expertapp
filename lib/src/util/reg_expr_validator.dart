@@ -3,4 +3,8 @@ class RegExprValidator {
     // todo
     return true;
   }
+  static bool isValidEmail(String email) {
+    // todo
+    return true;
+  }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class CallServerModel extends ChangeNotifier {
   String _errorMessage = "";
   ServerAgoraCredentials? _agoraCredentials;
+  ServerCallBeginPaymentInitiate? _callBeginPaymentInitiate;
 
   CallServerConnectionState _connectionState =
       CallServerConnectionState.DISCONNECTED;
@@ -12,6 +13,7 @@ class CallServerModel extends ChangeNotifier {
   CallServerConnectionState get callConnectionState => _connectionState;
   String get errorMsg => _errorMessage;
   ServerAgoraCredentials? get agoraCredentials => _agoraCredentials;
+  ServerCallBeginPaymentInitiate? get callBeginPaymentInitiate => _callBeginPaymentInitiate;
 
   void onConnected() {
     _connectionState = CallServerConnectionState.CONNECTED;
@@ -31,6 +33,12 @@ class CallServerModel extends ChangeNotifier {
 
   void onAgoraCredentials(ServerAgoraCredentials agoraCredentials) {
     _agoraCredentials = agoraCredentials;
+    notifyListeners();
+  }
+
+  void onServerCallBeginPaymentInitiate(
+      ServerCallBeginPaymentInitiate callBeginPaymentInitiate) {
+    _callBeginPaymentInitiate = callBeginPaymentInitiate;
     notifyListeners();
   }
 }
