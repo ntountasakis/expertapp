@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_information.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/auth_gate_page.dart';
@@ -27,6 +26,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
 
   late String _firstName;
   late String _lastName;
+  late String _email;
 
   Widget _buildFirstName() {
     return TextFormField(
@@ -56,6 +56,20 @@ class _UserSignupPageState extends State<UserSignupPage> {
         });
   }
 
+  Widget _buildEmail() {
+    return TextFormField(
+        decoration: InputDecoration(labelText: 'Email'),
+        validator: (value) {
+          if (value != null && !RegExprValidator.isValidEmail(value)) {
+            return 'Please enter a valid email';
+          }
+          return null;
+        },
+        onSaved: (value) {
+          _email = value!;
+        });
+  }
+
   Widget _buildSubmitButton() {
     return ElevatedButton(
         style: buttonStyle,
@@ -66,7 +80,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
           _formKey.currentState!.save();
 
           await onUserSignup(
-              _firstName, _lastName, widget._authenticatedUser.photoURL);
+              _firstName, _lastName, _email, widget._authenticatedUser.photoURL);
 
           log('New User Signup');
 
@@ -107,6 +121,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
                 child: Column(children: [
                   _buildFirstName(),
                   _buildLastName(),
+                  _buildEmail(),
                   _buildSubmitButton()
                 ]))));
   }

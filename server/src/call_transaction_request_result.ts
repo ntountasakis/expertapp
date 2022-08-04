@@ -4,6 +4,8 @@ export class CallTransctionRequestResult {
     _calledFcmToken = "";
     _callTransactionId = "";
     _agoraChannelName = "";
+    _stripeCallerClientSecret = "";
+    _stripeCallerCustomerId = "";
 
     set success(success: boolean) {
       this._success = success;
@@ -43,5 +45,21 @@ export class CallTransctionRequestResult {
 
     get agoraChannelName(): string {
       return this._agoraChannelName;
+    }
+
+    set stripeCallerClientSecret(secret: string) {
+      this._stripeCallerClientSecret = secret;
+    }
+
+    get stripeCallerClientSecret(): string {
+      return this._stripeCallerClientSecret;
+    }
+
+    set stripeCallerCustomerId(customerId: string) {
+      this._stripeCallerCustomerId = customerId;
+    }
+
+    get stripeCallerCustomerId(): string {
+      return this._stripeCallerCustomerId;
     }
 }

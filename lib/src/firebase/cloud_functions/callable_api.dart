@@ -8,10 +8,11 @@ HttpsCallable getCallable(String functionName) {
 }
 
 Future<void> onUserSignup(
-    String firstName, String lastName, String? profilePicUrl) async {
+    String firstName, String lastName, String email, String? profilePicUrl) async {
   Map<String, String> userData = {
     'firstName': firstName,
     'lastName': lastName,
+    'email': email,
   };
 
   if (profilePicUrl != null) {

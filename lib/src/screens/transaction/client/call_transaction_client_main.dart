@@ -3,6 +3,7 @@ import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/call_server/widgets/call_server_connection_state_view.dart';
 import 'package:expertapp/src/call_server/widgets/call_server_disconnect_button.dart';
 import 'package:expertapp/src/call_server/widgets/call_server_editable_chat_button.dart';
+import 'package:expertapp/src/call_server/widgets/call_server_payment_prompt.dart';
 import 'package:expertapp/src/call_server/widgets/call_server_video_call_button.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
@@ -45,6 +46,7 @@ class _CallTransactionClientMainState extends State<CallTransactionClientMain> {
       appBar: UserPreviewAppbar(widget.connectedExpertMetadata),
       body: Consumer<CallServerModel>(
         builder: (_, callstate, child) {
+          showPaymentPrompt(context: context, model: callstate);
           return Column(children: [
             Container(
               padding: EdgeInsets.all(8.0),

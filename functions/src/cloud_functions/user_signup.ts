@@ -10,6 +10,7 @@ export const userSignup = functions.https.onCall(async (data, context) => {
   const uid = context.auth.uid;
   const firstName : string = data.firstName;
   const lastName : string = data.lastName;
+  const email : string = data.email;
   let profilePicUrl = "";
   if ("profilePicUrl" in data) {
     profilePicUrl = data.profilePicUrl;
@@ -47,7 +48,8 @@ export const userSignup = functions.https.onCall(async (data, context) => {
   const firebaseUser = {
     "firstName": firstName,
     "lastName": lastName,
-    "stripe_customer_id": stripeCustomerId,
+    "email": email,
+    "stripeCustomerId": stripeCustomerId,
   };
   batch.set(admin.firestore().collection("users").doc(uid), firebaseUser);
 

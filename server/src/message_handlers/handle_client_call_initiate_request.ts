@@ -6,6 +6,7 @@ import {ClientMessageSenderInterface} from "../message_sender/client_message_sen
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
 import {ServerCallRequestResponse} from "../protos/call_transaction_package/ServerCallRequestResponse";
 import {sendServerAgoraCredentials} from "../agora/client_utils/send_server_agora_credentials";
+import {sendServerCallBeginPaymentInitiate} from "../stripe/send_server_call_begin_payment_initiate";
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     clientMessageSender: ClientMessageSenderInterface): Promise<void> {
@@ -27,6 +28,8 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   sendCallJoinRequest(callTransactionResult.calledFcmToken, request, callTransactionResult.callTransactionId);
   sendCallRequestSuccess(clientMessageSender);
   sendServerAgoraCredentials(clientMessageSender, callTransactionResult.agoraChannelName, callerUid);
+  sendServerCallBeginPaymentInitiate(clientMessageSender, callTransactionResult.stripeCallerClientSecret,
+      callTransactionResult.stripeCallerCustomerId);
   return;
 }
 

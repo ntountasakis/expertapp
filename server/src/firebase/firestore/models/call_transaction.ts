@@ -4,4 +4,5 @@ export interface CallTransaction {
     callRequestTimeUtcMs: number;
     expertRateDollarsPerMinute: number;
     agoraChannelName: string;
+    callerCallInitiatePaymentIntentId: string;
 }
