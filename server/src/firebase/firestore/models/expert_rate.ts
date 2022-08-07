@@ -1,4 +1,4 @@
 export interface ExpertRate
 {
-    dollarsPerMinute: number;
+    centsPerMinute: number;
 }
