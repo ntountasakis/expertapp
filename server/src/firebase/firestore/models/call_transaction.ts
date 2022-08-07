@@ -3,6 +3,7 @@ export interface CallTransaction {
     calledUid: string;
     callRequestTimeUtcMs: number;
     expertRateCentsPerMinute: number;
+    expertRateCentsCallStart: number;
     agoraChannelName: string;
     callerCallInitiatePaymentIntentId: string;
 }
