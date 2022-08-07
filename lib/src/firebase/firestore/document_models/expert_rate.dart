@@ -5,23 +5,33 @@ import 'package:intl/intl.dart';
 
 class ExpertRate {
   final num centsPerMinute;
+  final num centsCallStart;
 
-  ExpertRate(this.centsPerMinute);
+  ExpertRate(this.centsPerMinute, this.centsCallStart);
 
   ExpertRate.fromJson(Map<String, dynamic> json)
-      : this(json['centsPerMinute'] as num);
+      : this(json['centsPerMinute'] as num, json['centsCallStart'] as num);
 
   Map<String, dynamic> _toJson() {
     var fieldsMap = {
       'centsPerMinute': centsPerMinute,
+      'centsCallStart': centsCallStart,
     };
     return fieldsMap;
   }
 
-  String formattedRate() {
+  String formattedStartCallFee() {
+    return _formattedRate(centsCallStart);
+  }
+
+  String formattedPerMinuteFee() {
+    return _formattedRate(centsPerMinute);
+  }
+
+  String _formattedRate(num centsFee) {
     final dollarFormat = new NumberFormat("#,##0.00", "en_US");
-    int dollars = (centsPerMinute / 100).truncate();
-    num cents = centsPerMinute % 100;
+    int dollars = (centsFee / 100).truncate();
+    num cents = centsFee % 100;
     num decimalAmount = dollars + (cents / 100);
     return '\$${dollarFormat.format(decimalAmount)} per minute';
   }

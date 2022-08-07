@@ -20,7 +20,11 @@ class ExpertPricingCard extends StatelessWidget {
           style: pricingHeader,
         ),
         Text(
-          'Rate: ' + expertRate.formattedRate(),
+          'Fee to Start Call: ' + expertRate.formattedStartCallFee(),
+          style: pricingContent,
+        ),
+        Text(
+          'Fee Per Minute: ' + expertRate.formattedPerMinuteFee(),
           style: pricingContent,
         )
       ],

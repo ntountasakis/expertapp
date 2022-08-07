@@ -50,7 +50,7 @@ Promise<CallTransctionRequestResult> => {
 
     const [paymentIntentValid, paymentIntentErrorMessage, paymentIntentId, paymentIntentClientSecret] =
       await createStripePaymentIntent(privateCallerUserInfo.stripeCustomerId, privateCallerUserInfo.email,
-          callRate.centsPerMinute, "Call Transaction");
+          callRate.centsCallStart, "Begin Call Transaction");
 
     if (!paymentIntentValid) {
       myResult.errorMessage = `Cannot initiate payment start. ${paymentIntentErrorMessage}`;
@@ -69,6 +69,7 @@ Promise<CallTransctionRequestResult> => {
       "calledUid": request.calledUid,
       "callRequestTimeUtcMs": callRequestTimeUtcMs,
       "expertRateCentsPerMinute": callRate.centsPerMinute,
+      "expertRateCentsCallStart": callRate.centsCallStart,
       "agoraChannelName": agoraChannelName,
       "callerCallInitiatePaymentIntentId": paymentIntentId,
     };
