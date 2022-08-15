@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import StripeConstants from "./constants";
 
 export default async function createStripePaymentIntent(customerId: string, customerEmail: string,
-    amountToBillInCents: number, paymentDescription: string):
+    amountToBillInCents: number, paymentDescription: string, paymentStatusId: string):
     Promise<[valid: boolean, errorMessage: string, paymentIntentId: string, clientSecret: string]> {
   // eslint-disable-next-line max-len
   const stripe = new Stripe("sk_test_51LLQIdAoQ8pfRhfFWhXXPMmQkBMR1wAZSiFAc0fRZ3OQfnVJ3Mo5MXt65rv33lt0A7mzUIRWahIbSt2iFDFDrZ6C00jF2hT9eZ", {
@@ -24,6 +24,9 @@ export default async function createStripePaymentIntent(customerId: string, cust
       payment_method_types: ["card"],
       receipt_email: customerEmail,
       statement_descriptor: paymentDescription,
+      metadata: {
+        "payment_status_id": paymentStatusId,
+      },
     });
     if (paymentIntentResponse.client_secret != null) {
       return [true, "", paymentIntentResponse.id, paymentIntentResponse.client_secret];

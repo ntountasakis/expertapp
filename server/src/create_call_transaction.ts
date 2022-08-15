@@ -7,6 +7,7 @@ import {CallJoinRequest} from "./firebase/fcm/messages/call_join_request";
 import {CallTransaction} from "./firebase/firestore/models/call_transaction";
 import createStripePaymentIntent from "./stripe/payment_intent_creator";
 import {PrivateUserInfo} from "./firebase/firestore/models/private_user_info";
+import {PaymentStatus} from "./firebase/firestore/models/payment_status";
 
 export const createCallTransaction = async ({request}: {request: CallJoinRequest}):
 Promise<CallTransctionRequestResult> => {
@@ -47,10 +48,10 @@ Promise<CallTransctionRequestResult> => {
       return;
     }
 
-
-    const [paymentIntentValid, paymentIntentErrorMessage, paymentIntentId, paymentIntentClientSecret] =
+    const callerCallStartPaymentStatusId = uuidv4();
+    const [paymentIntentValid, paymentIntentErrorMessage, _, paymentIntentClientSecret] =
       await createStripePaymentIntent(privateCallerUserInfo.stripeCustomerId, privateCallerUserInfo.email,
-          callRate.centsCallStart, "Begin Call Transaction");
+          callRate.centsCallStart, "Begin Call Transaction", callerCallStartPaymentStatusId);
 
     if (!paymentIntentValid) {
       myResult.errorMessage = `Cannot initiate payment start. ${paymentIntentErrorMessage}`;
@@ -64,6 +65,19 @@ Promise<CallTransctionRequestResult> => {
     const transactionId = uuidv4();
     const agoraChannelName = uuidv4();
 
+
+    const callerCallStartPaymentStatus: PaymentStatus = {
+      "uid": request.callerUid,
+      "status": "",
+      "centsToCollect": callRate.centsCallStart,
+      "centsCollected": 0,
+    };
+
+    const callStartPaymentDoc = admin.firestore()
+        .collection("payment_statuses").doc(callerCallStartPaymentStatusId);
+
+    transaction.create(callStartPaymentDoc, callerCallStartPaymentStatus);
+
     const newTransaction: CallTransaction = {
       "callerUid": request.callerUid,
       "calledUid": request.calledUid,
@@ -71,7 +85,7 @@ Promise<CallTransctionRequestResult> => {
       "expertRateCentsPerMinute": callRate.centsPerMinute,
       "expertRateCentsCallStart": callRate.centsCallStart,
       "agoraChannelName": agoraChannelName,
-      "callerCallInitiatePaymentIntentId": paymentIntentId,
+      "callerCallStartPaymentStatusId": callerCallStartPaymentStatusId,
     };
 
     const callTransactionDoc = admin.firestore()
@@ -84,6 +98,7 @@ Promise<CallTransctionRequestResult> => {
     myResult.agoraChannelName = agoraChannelName;
     myResult.stripeCallerClientSecret = paymentIntentClientSecret;
     myResult.stripeCallerCustomerId = privateCallerUserInfo.stripeCustomerId;
+    myResult.callerCallStartPaymentStatusId = callerCallStartPaymentStatusId;
   });
   return myResult;
 };
