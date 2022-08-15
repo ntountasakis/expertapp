@@ -6,6 +6,7 @@ export class CallTransctionRequestResult {
     _agoraChannelName = "";
     _stripeCallerClientSecret = "";
     _stripeCallerCustomerId = "";
+    _callerCallStartPaymentStatusId = "";
 
     set success(success: boolean) {
       this._success = success;
@@ -61,5 +62,13 @@ export class CallTransctionRequestResult {
 
     get stripeCallerCustomerId(): string {
       return this._stripeCallerCustomerId;
+    }
+
+    set callerCallStartPaymentStatusId(paymentStatusId: string) {
+      this._callerCallStartPaymentStatusId = paymentStatusId;
+    }
+
+    get callerCallStartPaymentStatusId(): string {
+      return this._callerCallStartPaymentStatusId;
     }
 }

@@ -3,13 +3,13 @@
     "module": "commonjs",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "outDir": "lib",
-    "sourceMap": true,
+    "outDir": "out",
     "strict": true,
-    "target": "es2017"
+    "target": "es2017",
+    "sourceMap": true
   },
   "compileOnSave": true,
   "include": [
     "src"
-  ]
+, "../server/src/call_state/call_manager.ts"  ]
 }

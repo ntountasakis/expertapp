@@ -14,7 +14,6 @@ Future<void> showPaymentPrompt(
 
   await Stripe.instance.initPaymentSheet(
     paymentSheetParameters: SetupPaymentSheetParameters(
-      customFlow: true,
       merchantDisplayName: 'Flutter Stripe Store Demo',
       paymentIntentClientSecret: stripeClientSecret,
       customerId: stripeCustomerId,

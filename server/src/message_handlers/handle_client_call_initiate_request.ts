@@ -7,9 +7,11 @@ import {ClientCallInitiateRequest} from "../protos/call_transaction_package/Clie
 import {ServerCallRequestResponse} from "../protos/call_transaction_package/ServerCallRequestResponse";
 import {sendServerAgoraCredentials} from "../agora/client_utils/send_server_agora_credentials";
 import {sendServerCallBeginPaymentInitiate} from "../stripe/send_server_call_begin_payment_initiate";
+import {listenForPaymentStatusUpdates} from "../stripe/payment_status_listener";
+import {CallManager} from "../call_state/call_manager";
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
-    clientMessageSender: ClientMessageSenderInterface): Promise<void> {
+    clientMessageSender: ClientMessageSenderInterface, callManager: CallManager): Promise<void> {
   console.log(`InitiateCall request begin. Caller Uid: ${callInitiateRequest.callerUid} 
       Called Uid: ${callInitiateRequest.calledUid}`);
 
@@ -30,6 +32,8 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   sendServerAgoraCredentials(clientMessageSender, callTransactionResult.agoraChannelName, callerUid);
   sendServerCallBeginPaymentInitiate(clientMessageSender, callTransactionResult.stripeCallerClientSecret,
       callTransactionResult.stripeCallerCustomerId);
+
+  listenForPaymentStatusUpdates(callTransactionResult.callerCallStartPaymentStatusId, callManager);
   return;
 }
 

@@ -13,7 +13,7 @@
   "engines": {
     "node": "14"
   },
-  "main": "lib/index.js",
+  "main": "out/index.js",
   "dependencies": {
     "@types/uuid": "^8.3.4",
     "firebase-admin": "^10.1",
