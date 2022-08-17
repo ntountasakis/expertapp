@@ -1,4 +1,4 @@
-import {CallManager} from "../call_state/call_manager";
+import {EventListenerManager} from "../event_listeners/event_listener_manager";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {InvalidClientMessageHandlerInterface} from "../message_sender/invalid_client_message_handler_interface";
 import {isValidClientInitiateRequest} from "../message_validators/validate_client_call_initiate_request";
@@ -8,9 +8,9 @@ import {ClientMessageContainer} from "../protos/call_transaction_package/ClientM
 import {handleClientCallInitiateRequest} from "./handle_client_call_initiate_request";
 import {handleClientCallJoinRequest} from "./handle_client_call_join_request";
 
-export function dispatchClientMessage({clientMessage, invalidMessageHandler, clientMessageSender, callManager}:
+export function dispatchClientMessage({clientMessage, invalidMessageHandler, clientMessageSender, eventListenerManager}:
     {clientMessage: ClientMessageContainer, invalidMessageHandler: InvalidClientMessageHandlerInterface,
-        clientMessageSender: ClientMessageSenderInterface, callManager: CallManager}): void {
+        clientMessageSender: ClientMessageSenderInterface, eventListenerManager: EventListenerManager}): void {
   {
     const [messageContainerValid, messageContainerInvalidErrorMessage] = isValidClientMessageContainer(
         {clientMessage: clientMessage});
@@ -27,7 +27,7 @@ export function dispatchClientMessage({clientMessage, invalidMessageHandler, cli
       invalidMessageHandler(callInitiateRequestInvalidErrorMessage);
       return;
     }
-    handleClientCallInitiateRequest(callInitiateRequest, clientMessageSender, callManager);
+    handleClientCallInitiateRequest(callInitiateRequest, clientMessageSender, eventListenerManager);
     return;
   }
   if (clientMessage.callJoinRequest) {

@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import StripeConstants from "./constants";
+import {StripeConstants} from "./constants";
 
 export default async function createStripePaymentIntent(customerId: string, customerEmail: string,
     amountToBillInCents: number, paymentDescription: string, paymentStatusId: string):
