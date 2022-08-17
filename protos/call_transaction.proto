@@ -40,10 +40,14 @@ message ServerCallBeginPaymentInitiate {
     string customerId = 2;
 }
 
+message ServerCallBeginPaymentInitiateResolved {
+}
+
 message ServerMessageContainer {
     oneof messageWrapper {
         ServerCallRequestResponse serverCallRequestResponse = 1;
         ServerAgoraCredentials serverAgoraCredentials = 2;
         ServerCallBeginPaymentInitiate serverCallBeginPaymentInitiate = 3;
+        ServerCallBeginPaymentInitiateResolved serverCallBeginPaymentInitiateResolved = 4;
     }
 }

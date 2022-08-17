@@ -2,6 +2,8 @@ import * as grpc from "@grpc/grpc-js";
 import {ClientMessageContainer} from "../protos/call_transaction_package/ClientMessageContainer";
 import {ServerAgoraCredentials} from "../protos/call_transaction_package/ServerAgoraCredentials";
 import {ServerCallBeginPaymentInitiate} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiate";
+// eslint-disable-next-line max-len
+import {ServerCallBeginPaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiateResolved";
 import {ServerCallRequestResponse} from "../protos/call_transaction_package/ServerCallRequestResponse";
 import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
 import {ClientMessageSenderInterface} from "./client_message_sender_interface";
@@ -31,6 +33,14 @@ export class GrpcClientMessageSender extends ClientMessageSenderInterface {
       const clientMessageContainer: ServerMessageContainer = {
         "serverCallBeginPaymentInitiate": callBeginPaymentInitiate,
         "messageWrapper": "serverCallBeginPaymentInitiate",
+      };
+      this.sendingStream.write(clientMessageContainer);
+    }
+    sendCallBeginPaymentInitiateResolved(
+        callBeginPaymentInitiateResolved: ServerCallBeginPaymentInitiateResolved): void {
+      const clientMessageContainer: ServerMessageContainer = {
+        "serverCallBeginPaymentInitiateResolved": callBeginPaymentInitiateResolved,
+        "messageWrapper": "serverCallBeginPaymentInitiateResolved",
       };
       this.sendingStream.write(clientMessageContainer);
     }

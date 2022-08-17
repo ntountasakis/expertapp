@@ -25,6 +25,9 @@ class CallServerMessageListener {
     } else if (aMessage.hasServerCallBeginPaymentInitiate()) {
       _model.onServerCallBeginPaymentInitiate(
           aMessage.serverCallBeginPaymentInitiate);
+    } else if (aMessage.hasServerCallBeginPaymentInitiateResolved()) {
+      log("Init payment resolved!");
+      _model.onServerCallBeginPaymentInitiateResolved();
     } else {
       throw new Exception('''Unexpected ServerResponseContainer messageType 
       on call request ${aMessage.whichMessageWrapper()}''');
