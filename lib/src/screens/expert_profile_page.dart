@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
+import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
@@ -8,22 +8,17 @@ import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
-import 'package:expertapp/src/screens/chat_page.dart';
 import 'package:expertapp/src/screens/transaction/client/call_transaction_client_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'expert_review_submit_page.dart';
 
-class ExpertProfilePage extends StatefulWidget {
+class ExpertProfilePage extends StatelessWidget {
   final String _currentUserUid;
   final DocumentWrapper<UserMetadata> _expertUserMetadata;
   ExpertProfilePage(this._currentUserUid, this._expertUserMetadata);
 
-  @override
-  _ExpertProfilePageState createState() => _ExpertProfilePageState();
-}
-
-class _ExpertProfilePageState extends State<ExpertProfilePage> {
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
@@ -38,7 +33,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
             Container(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                widget._expertUserMetadata.documentType.firstName,
+                _expertUserMetadata.documentType.firstName,
                 style: TextStyle(fontSize: 24),
               ),
             ),
@@ -46,7 +41,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               width: 200,
               height: 200,
               child: ProfilePicture(
-                  widget._expertUserMetadata.documentType.profilePicUrl),
+                  _expertUserMetadata.documentType.profilePicUrl),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -54,14 +49,14 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
                 Flexible(
                     flex: 20,
                     child: StarRating(
-                        widget._expertUserMetadata.documentType
+                        _expertUserMetadata.documentType
                             .getAverageReviewRating(),
                         25.0)),
                 Spacer(flex: 1),
                 Flexible(
                     flex: 20,
                     child: TextRating(
-                        widget._expertUserMetadata.documentType
+                        _expertUserMetadata.documentType
                             .getAverageReviewRating(),
                         18.0))
               ],
@@ -77,7 +72,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               ],
             ),
             Expanded(
-              child: ExpertReviews(widget._expertUserMetadata),
+              child: ExpertReviews(_expertUserMetadata),
             )
           ],
         ));
@@ -88,20 +83,17 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
       style: style,
       onPressed: () async {
         DocumentWrapper<ExpertRate>? expertRate =
-            await ExpertRate.get(widget._expertUserMetadata.documentId);
+            await ExpertRate.get(_expertUserMetadata.documentId);
         if (expertRate == null) {
-          log('Cant find expert rate for ${widget._expertUserMetadata.documentId}');
+          log('Cant find expert rate for ${_expertUserMetadata.documentId}');
           return;
         }
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => CallTransactionClientPreview(
-                    widget._currentUserUid,
-                    widget._expertUserMetadata,
-                    expertRate.documentType)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return CallTransactionClientPreview(_currentUserUid,
+              _expertUserMetadata, expertRate.documentType);
+        }));
       },
-      child: Text('Call ${widget._expertUserMetadata.documentType.firstName}'),
+      child: Text('Call ${_expertUserMetadata.documentType.firstName}'),
     );
   }
 

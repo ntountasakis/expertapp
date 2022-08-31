@@ -12,37 +12,39 @@ class CallTransactionExpertPrompt extends StatelessWidget {
   final DocumentWrapper<UserMetadata> callerUserMetadata;
 
   const CallTransactionExpertPrompt(
-      {required this.callJoinRequest, required this.currentUserId, 
+      {required this.callJoinRequest,
+      required this.currentUserId,
       required this.callerUserMetadata});
 
   @override
   Widget build(BuildContext context) {
-    final callPrompt = 'Call with ${callerUserMetadata.documentType.firstName}';
-    return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Text(callPrompt),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) {
-                  return ChangeNotifierProvider<CallServerModel>(
-                    create: (context) => CallServerModel(),
-                    child: CallTransactionExpertMain(
-                      callTransactionId: callJoinRequest.callTransactionId,
-                      currentUserId: currentUserId,
-                      callerClientMetadata: callerUserMetadata,
-                    ),
-                  );
-                }));
-              },
-              child: Text("Join Call"),
-            ),
-          ],
-        ),
-      ),
-    );
+    return Text("foo");
+    // final callPrompt = 'Call with ${callerUserMetadata.documentType.firstName}';
+    // return Scaffold(
+    //   body: Container(
+    //     padding: EdgeInsets.all(8.0),
+    //     child: Column(
+    //       children: [
+    //         Text(callPrompt),
+    //         ElevatedButton(
+    //           onPressed: () {
+    //             Navigator.pushReplacement(context,
+    //                 MaterialPageRoute(builder: (context) {
+    //               return ChangeNotifierProvider<CallServerModel>(
+    //                 create: (context) => CallServerModel(),
+    //                 child: CallTransactionExpertMain(
+    //                   callTransactionId: callJoinRequest.callTransactionId,
+    //                   currentUserId: currentUserId,
+    //                   callerClientMetadata: callerUserMetadata,
+    //                 ),
+    //               );
+    //             }));
+    //           },
+    //           child: Text("Join Call"),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }

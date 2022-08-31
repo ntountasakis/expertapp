@@ -6,28 +6,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CallServerMessageListener {
-  late CallServerModel _model;
+  late BuildContext connectedContext;
 
   void onConnect(BuildContext context) {
-    _model = Provider.of<CallServerModel>(context, listen: false);
-    _model.onConnected();
+    connectedContext = context;
+    Provider.of<CallServerModel>(context, listen: false).onConnected();
   }
 
   void onMessage(ServerMessageContainer aMessage) {
+    CallServerModel model =
+        Provider.of<CallServerModel>(connectedContext, listen: false);
     if (aMessage.hasServerCallRequestResponse()) {
       final response = aMessage.serverCallRequestResponse;
       if (!response.success) {
         log("Error from call server ${response.errorMessage}");
-        _model.onErrored(response.errorMessage);
+        model.onErrored(response.errorMessage);
       }
     } else if (aMessage.hasServerAgoraCredentials()) {
-      _model.onAgoraCredentials(aMessage.serverAgoraCredentials);
+      model.onAgoraCredentials(aMessage.serverAgoraCredentials);
     } else if (aMessage.hasServerCallBeginPaymentInitiate()) {
-      _model.onServerCallBeginPaymentInitiate(
+      model.onServerCallBeginPaymentInitiate(
           aMessage.serverCallBeginPaymentInitiate);
     } else if (aMessage.hasServerCallBeginPaymentInitiateResolved()) {
       log("Init payment resolved!");
-      _model.onServerCallBeginPaymentInitiateResolved();
+      model.onServerCallBeginPaymentInitiateResolved();
     } else {
       throw new Exception('''Unexpected ServerResponseContainer messageType 
       on call request ${aMessage.whichMessageWrapper()}''');
@@ -35,6 +37,6 @@ class CallServerMessageListener {
   }
 
   void onDisconnect() {
-    _model.onDisconnected();
+    Provider.of<CallServerModel>(connectedContext, listen: false).onDisconnected();
   }
 }

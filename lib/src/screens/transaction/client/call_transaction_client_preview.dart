@@ -1,10 +1,11 @@
+import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
-import 'package:expertapp/src/screens/transaction/client/call_transaction_client_main.dart';
+import 'package:expertapp/src/screens/transaction/payment/call_client_payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,14 +14,14 @@ class CallTransactionClientPreview extends StatelessWidget {
   final DocumentWrapper<UserMetadata> expertUserMetadata;
   final ExpertRate expertRate;
 
+  CallTransactionClientPreview(
+      this.currentUserId, this.expertUserMetadata, this.expertRate);
+
   final explanationBlurbStyle = TextStyle(
     fontSize: 12,
   );
   final ButtonStyle callButtonStyle =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
-
-  CallTransactionClientPreview(
-      this.currentUserId, this.expertUserMetadata, this.expertRate);
 
   String blurbText() {
     String longText =
@@ -49,13 +50,18 @@ class CallTransactionClientPreview extends StatelessWidget {
       child: ElevatedButton(
         style: callButtonStyle,
         onPressed: () {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) {
+          CallServerManager callManager = new CallServerManager(
+              currentUserId: currentUserId,
+              otherUserId: expertUserMetadata.documentId);
+
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
             return ChangeNotifierProvider<CallServerModel>(
-              create: (context) => CallServerModel(),
-              child:
-                  CallTransactionClientMain(currentUserId, expertUserMetadata),
-            );
+                create: (_) => new CallServerModel(),
+                child: CallClientPaymentPage(
+                  currentUserId: currentUserId,
+                  expertUserMetadata: expertUserMetadata,
+                  callServerManager: callManager,
+                ));
           }));
         },
         child: const Text('Begin Call'),

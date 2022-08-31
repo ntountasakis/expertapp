@@ -4,15 +4,17 @@ import 'dart:developer';
 import 'package:expertapp/src/call_server/call_server_connection_establisher.dart';
 import 'package:expertapp/src/call_server/call_server_message_listener.dart';
 import 'package:expertapp/src/call_server/call_server_message_producer.dart';
+import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:flutter/material.dart';
 
 class CallServerManager {
-  final _callEstablisher = CallServerConnectionEstablisher();
-  final _serverMessageListener = CallServerMessageListener();
-  final _serverMessageProducer = CallServerMessageProducer();
   final String currentUserId;
   final String otherUserId;
+  final _callEstablisher = CallServerConnectionEstablisher();
+  final _serverMessageProducer = CallServerMessageProducer();
+  late CallServerMessageListener _serverMessageListener =
+      CallServerMessageListener();
   late Stream<ServerMessageContainer> _serverMessageStream;
   late StreamSubscription<ServerMessageContainer>
       _serverMessageStreamSubscription;
