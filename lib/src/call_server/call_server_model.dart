@@ -1,12 +1,13 @@
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
+import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:flutter/material.dart';
 
 class CallServerModel extends ChangeNotifier {
   String _errorMessage = "";
   ServerAgoraCredentials? _agoraCredentials;
-  ServerCallBeginPaymentInitiate? _callBeginPaymentInitiate;
-  bool callBeginPaymentInitiateResolved = false;
+  CallServerPaymentPromptModel _callBeginPaymentPromptModel =
+      new CallServerPaymentPromptModel();
 
   CallServerConnectionState _connectionState =
       CallServerConnectionState.DISCONNECTED;
@@ -14,8 +15,8 @@ class CallServerModel extends ChangeNotifier {
   CallServerConnectionState get callConnectionState => _connectionState;
   String get errorMsg => _errorMessage;
   ServerAgoraCredentials? get agoraCredentials => _agoraCredentials;
-  ServerCallBeginPaymentInitiate? get callBeginPaymentInitiate =>
-      _callBeginPaymentInitiate;
+  CallServerPaymentPromptModel get callBeginPaymentPromptModel =>
+      _callBeginPaymentPromptModel;
 
   void onConnected() {
     _connectionState = CallServerConnectionState.CONNECTED;
@@ -40,12 +41,12 @@ class CallServerModel extends ChangeNotifier {
 
   void onServerCallBeginPaymentInitiate(
       ServerCallBeginPaymentInitiate callBeginPaymentInitiate) {
-    _callBeginPaymentInitiate = callBeginPaymentInitiate;
+    _callBeginPaymentPromptModel.onPaymentDetails(callBeginPaymentInitiate);
     notifyListeners();
   }
 
   void onServerCallBeginPaymentInitiateResolved() {
-    callBeginPaymentInitiateResolved = true;
+    _callBeginPaymentPromptModel.onPaymentComplete();
     notifyListeners();
   }
 }
