@@ -22,4 +22,4 @@ COPY --from=base /node/dist .
 WORKDIR /server/src
 COPY ./conf ./conf
 EXPOSE 8080
-CMD ["node", "app.js"]
+ENTRYPOINT ["node", "app.js"]
