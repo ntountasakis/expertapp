@@ -27,11 +27,11 @@ uploadToArtifactRegistry() {
 
 runLocalDockerContainer() {
   # 9002 for local firestore emulator
-  docker run -d --env PORT=8080 \
+  export LOCAL_NAME=$(docker run -d --env PORT=8080 \
   --env GOOGLE_APPLICATION_CREDENTIALS='/server/src/conf/expert-app-localdev.json' \
   -p 8080:8080 \
   --add-host=host.docker.internal:host-gateway \
-  -t $REPO_IMAGE_NAME &
+  -t $REPO_IMAGE_NAME)
 }
 
 stopDockerContainer() {

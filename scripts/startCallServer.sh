@@ -13,6 +13,7 @@ function startServerDockerContainer {
   buildLocalDockerImage
   echo "Running docker container"
   runLocalDockerContainer
+  echo "local name $LOCAL_NAME"
 }
 
 function shutdown()
@@ -25,5 +26,6 @@ function shutdown()
 trap 'shutdown' SIGINT SIGTERM
 
 startServerDockerContainer
+docker logs -f $LOCAL_NAME
 
 wait
