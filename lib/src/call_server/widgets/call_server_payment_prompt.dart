@@ -15,6 +15,5 @@ Future<void> showPaymentPrompt(CallServerModel model) async {
     ),
   );
 
-  model.callBeginPaymentPromptModel.onPaymentPrompt();
   await Stripe.instance.presentPaymentSheet();
 }

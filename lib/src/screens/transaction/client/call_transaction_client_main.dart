@@ -25,18 +25,18 @@ class CallTransactionClientMain extends StatelessWidget {
     return Scaffold(
       appBar: UserPreviewAppbar(connectedExpertMetadata),
       body: Consumer<CallServerModel>(
-        builder: (newContext, callstate, child) {
+        builder: (context, model, child) {
           return Column(children: [
             Container(
               padding: EdgeInsets.all(8.0),
-              child: callServerConnectionStateView(callstate),
+              child: callServerConnectionStateView(model),
             ),
             SizedBox(
               width: 200,
               height: 100,
             ),
             Container(
-              child: callServerDisconnectButton(newContext, callServerManager),
+              child: callServerDisconnectButton(context, callServerManager),
             ),
             SizedBox(
               width: 200,
@@ -44,7 +44,7 @@ class CallTransactionClientMain extends StatelessWidget {
             ),
             Container(
               child: buildEditableChatButton(
-                  context: newContext,
+                  context: context,
                   currentUserId: currentUserId,
                   calledUserMetadata: connectedExpertMetadata),
             ),
@@ -53,7 +53,7 @@ class CallTransactionClientMain extends StatelessWidget {
               height: 100,
             ),
             Container(
-              child: buildVideoCallButton(context: newContext, model: callstate),
+              child: buildVideoCallButton(context: context, model: model),
             )
           ]);
         },
