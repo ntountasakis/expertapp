@@ -17,37 +17,31 @@ class CallTransactionExpertMain extends StatefulWidget {
   final String callTransactionId;
   final String currentUserId;
   final DocumentWrapper<UserMetadata> callerClientMetadata;
+  final CallServerManager callServerManager;
 
   CallTransactionExpertMain(
       {required this.callTransactionId,
       required this.currentUserId,
-      required this.callerClientMetadata});
+      required this.callerClientMetadata,
+      required this.callServerManager});
 
   @override
   State<CallTransactionExpertMain> createState() =>
       _CallTransactionExpertMainState(
-          currentUserId: currentUserId,
-          otherUserId: callerClientMetadata.documentId,
           callTransactionId: callTransactionId);
 }
 
 class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
   final String callTransactionId;
-  late CallServerManager _callManager;
 
-  _CallTransactionExpertMainState(
-      {required String currentUserId,
-      required String otherUserId,
-      required this.callTransactionId}) {
-    _callManager = CallServerManager(
-        currentUserId: currentUserId, otherUserId: otherUserId);
+  _CallTransactionExpertMainState({required this.callTransactionId}) {
   }
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero).then((_) => {
-          _callManager.joinCall(
+          widget.callServerManager.joinCall(
               context: context, callTransactionId: callTransactionId)
         });
   }
@@ -57,18 +51,18 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
     return Scaffold(
       appBar: UserPreviewAppbar(widget.callerClientMetadata),
       body: Consumer<CallServerModel>(
-        builder: (_, callstate, child) {
+        builder: (_, model, child) {
           return Column(children: [
             Container(
               padding: EdgeInsets.all(8.0),
-              child: callServerConnectionStateView(callstate),
+              child: callServerConnectionStateView(model),
             ),
             SizedBox(
               width: 200,
               height: 100,
             ),
             Container(
-              child: callServerDisconnectButton(context, _callManager),
+              child: callServerDisconnectButton(context, widget.callServerManager),
             ),
             SizedBox(
               width: 200,
@@ -84,7 +78,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
               height: 100,
             ),
             Container(
-              child: buildVideoCallButton(context: context, model: callstate),
+              child: buildVideoCallButton(context: context, model: model),
             )
           ]);
         },
