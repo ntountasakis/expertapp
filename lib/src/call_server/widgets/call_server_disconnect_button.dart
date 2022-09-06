@@ -9,7 +9,7 @@ Widget callServerDisconnectButton(
       onPressed: () async {
         await manager.disconnect();
         log('EndCallButton: call disconnected');
-        Navigator.pop(context);
+        Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
       },
       child: Text("End Call"));
 }
