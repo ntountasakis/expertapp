@@ -3,7 +3,6 @@ import '../generated/protos/call_transaction.pb.dart';
 enum PaymentState {
   WAITING_FOR_PAYMENT_DETAILS,
   READY_TO_PRESENT_PAYMENT,
-  AWAITING_PAYMENT_RESOLVE,
   PAYMENT_COMPLETE,
   PAYMENT_FAILURE
 }
@@ -18,11 +17,6 @@ class CallServerPaymentPromptModel {
   void onPaymentDetails(ServerCallBeginPaymentInitiate details) {
     _paymentDetails = details;
     _state = PaymentState.READY_TO_PRESENT_PAYMENT;
-  }
-
-  void onPaymentPrompt() {
-    assert(_paymentDetails != null);
-    _state = PaymentState.AWAITING_PAYMENT_RESOLVE;
   }
 
   void onPaymentComplete() {

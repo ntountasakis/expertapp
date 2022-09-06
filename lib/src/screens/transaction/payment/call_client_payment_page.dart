@@ -12,7 +12,7 @@ import 'package:expertapp/src/screens/transaction/client/call_transaction_client
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CallClientPaymentPage extends StatelessWidget {
+class CallClientPaymentPage extends StatefulWidget {
   final String currentUserId;
   final DocumentWrapper<UserMetadata> expertUserMetadata;
   final CallServerManager callServerManager;
@@ -23,32 +23,47 @@ class CallClientPaymentPage extends StatelessWidget {
       required this.callServerManager});
 
   @override
+  State<CallClientPaymentPage> createState() => _CallClientPaymentPageState();
+}
+
+class _CallClientPaymentPageState extends State<CallClientPaymentPage> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero)
+        .then((value) => {widget.callServerManager.initiateCall(context)});
+  }
+
+  void navigateToNextPage(CallServerModel model) {
+    Future.microtask(() => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ListenableProvider<CallServerModel>.value(
+            value: model,
+            child: CallTransactionClientMain(
+                currentUserId: widget.currentUserId,
+                connectedExpertMetadata: widget.expertUserMetadata,
+                callServerManager: widget.callServerManager),
+          ),
+        )));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: UserPreviewAppbar(expertUserMetadata),
+      appBar: UserPreviewAppbar(widget.expertUserMetadata),
       body: Consumer<CallServerModel>(
         builder: (context, model, child) {
-          if (model.callConnectionState ==
-              CallServerConnectionState.DISCONNECTED) {
-            callServerManager.initiateCall(context);
-          }
           switch (model.callBeginPaymentPromptModel.paymentState) {
             case PaymentState.READY_TO_PRESENT_PAYMENT:
               showPaymentPrompt(model);
               break;
             case PaymentState.PAYMENT_COMPLETE:
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) {
-                return CallTransactionClientMain(
-                    currentUserId: currentUserId,
-                    connectedExpertMetadata: expertUserMetadata,
-                    callServerManager: callServerManager);
-              }));
+              navigateToNextPage(model);
               break;
             case PaymentState.PAYMENT_FAILURE:
               log("CallClientPaymentPage: Payment failure error");
               break;
-            case PaymentState.AWAITING_PAYMENT_RESOLVE:
             case PaymentState.WAITING_FOR_PAYMENT_DETAILS:
               break;
           }
