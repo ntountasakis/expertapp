@@ -3,7 +3,7 @@ import {ClientCallState} from "../call_state/client_call_state";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 // eslint-disable-next-line max-len
 import {ServerCallBeginPaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiateResolved";
-import {sendFcmCallJoinRequest} from "../server/client_communication/fcm/send_call_join_request";
+import {sendFcmCallJoinRequest} from "../server/client_communication/fcm/send_fcm_call_join_request";
 
 export async function onPaymentSuccessCallInitiate(clientMessageSender: ClientMessageSenderInterface,
     clientCallState : ClientCallState): Promise<void> {
