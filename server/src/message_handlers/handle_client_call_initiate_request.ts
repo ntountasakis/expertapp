@@ -4,11 +4,12 @@ import {CallJoinRequest} from "../firebase/fcm/messages/call_join_request";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
 import {ServerCallRequestResponse} from "../protos/call_transaction_package/ServerCallRequestResponse";
-import {sendServerCallBeginPaymentInitiate} from "../stripe/send_server_call_begin_payment_initiate";
 import {EventListenerManager} from "../event_listeners/event_listener_manager";
 import {PaymentStatusState} from "../call_state/payment_status_state";
 import {onPaymentSuccessCallInitiate} from "../call_events/on_payment_success_call_initiate";
 import {ClientCallManager} from "../call_state/client_call_manager";
+// eslint-disable-next-line max-len
+import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_begin_payment_initiate";
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     clientMessageSender: ClientMessageSenderInterface, eventListenerManager: EventListenerManager,
@@ -36,7 +37,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
       paymentStatusState);
 
   sendCallRequestSuccess(clientMessageSender);
-  sendServerCallBeginPaymentInitiate(clientMessageSender, callTransactionResult.stripeCallerClientSecret,
+  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, callTransactionResult.stripeCallerClientSecret,
       callTransactionResult.stripeCallerCustomerId);
   return;
 }

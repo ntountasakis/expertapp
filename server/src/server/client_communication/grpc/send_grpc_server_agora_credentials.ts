@@ -1,10 +1,10 @@
-import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
-import {ServerAgoraCredentials} from "../../protos/call_transaction_package/ServerAgoraCredentials";
-import {AgoraAppConfiguration} from "../agora_app_configuration";
-import {agoraGenerateChannelUid} from "../agora_channel_utils";
-import {Role, RtcTokenBuilder} from "../lib/RtcTokenBuilder";
+import {ClientMessageSenderInterface} from "../../../message_sender/client_message_sender_interface";
+import {AgoraAppConfiguration} from "../../../agora/agora_app_configuration";
+import {agoraGenerateChannelUid} from "../../../agora/agora_channel_utils";
+import {Role, RtcTokenBuilder} from "../../../agora/lib/RtcTokenBuilder";
+import {ServerAgoraCredentials} from "../../../protos/call_transaction_package/ServerAgoraCredentials";
 
-export function sendServerAgoraCredentials(clientMessageSender: ClientMessageSenderInterface,
+export function sendGrpcServerAgoraCredentials(clientMessageSender: ClientMessageSenderInterface,
     channelName: string, clientUserId: string): void {
   const agoraUidForChannel = agoraGenerateChannelUid();
   // todo TTL

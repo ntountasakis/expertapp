@@ -2,12 +2,12 @@ import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
 import {ExpertRate} from "./firebase/firestore/models/expert_rate";
 import {CallTransctionRequestResult} from "./call_transaction_request_result";
-import {lookupUserFcmToken} from "./firebase/firestore/lookup_user_fcm_token";
 import {CallJoinRequest} from "./firebase/fcm/messages/call_join_request";
 import {CallTransaction} from "./firebase/firestore/models/call_transaction";
 import createStripePaymentIntent from "./stripe/payment_intent_creator";
 import {PrivateUserInfo} from "./firebase/firestore/models/private_user_info";
 import {PaymentStatus} from "./firebase/firestore/models/payment_status";
+import {lookupUserFcmToken} from "./firebase/firestore/functions/lookup_user_fcm_token";
 
 export const createCallTransaction = async ({request}: {request: CallJoinRequest}):
 Promise<CallTransctionRequestResult> => {
