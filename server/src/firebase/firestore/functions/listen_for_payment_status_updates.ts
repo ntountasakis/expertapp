@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
-import {EventListenerManager} from "../event_listeners/event_listener_manager";
-import {PaymentStatus} from "../firebase/firestore/models/payment_status";
+import {EventListenerManager} from "../../../event_listeners/event_listener_manager";
+import {PaymentStatus} from "../models/payment_status";
 
 export function listenForPaymentStatusUpdates(paymentStatusId: string, listenerManager: EventListenerManager): void {
   const doc = admin.firestore().collection("payment_statuses").doc(paymentStatusId);

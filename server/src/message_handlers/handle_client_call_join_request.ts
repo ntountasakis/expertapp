@@ -1,5 +1,5 @@
-import {sendServerAgoraCredentials} from "../agora/client_utils/send_server_agora_credentials";
-import {lookupAgoraChannelName} from "../firebase/firestore/lookup_agora_channel_name";
+import {sendGrpcServerAgoraCredentials} from "../server/client_communication/grpc/send_grpc_server_agora_credentials";
+import {lookupAgoraChannelName} from "../firebase/firestore/functions/lookup_agora_channel_name";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallJoinRequest} from "../protos/call_transaction_package/ClientCallJoinRequest";
 
@@ -16,6 +16,6 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
     console.error(agoraChannelLookupErrorMessage);
     return;
   }
-  sendServerAgoraCredentials(clientMessageSender, agoraChannelName, joinerId);
+  sendGrpcServerAgoraCredentials(clientMessageSender, agoraChannelName, joinerId);
   return;
 }

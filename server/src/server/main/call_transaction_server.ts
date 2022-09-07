@@ -1,11 +1,11 @@
 import * as grpc from "@grpc/grpc-js";
-import {ClientCallManager} from "./call_state/client_call_manager";
-import {EventListenerManager} from "./event_listeners/event_listener_manager";
-import {dispatchClientMessage} from "./message_handlers/client_message_dispatcher";
-import {GrpcClientMessageSender} from "./message_sender/grpc_client_message_sender";
-import {CallTransactionHandlers} from "./protos/call_transaction_package/CallTransaction";
-import {ClientMessageContainer} from "./protos/call_transaction_package/ClientMessageContainer";
-import {ServerMessageContainer} from "./protos/call_transaction_package/ServerMessageContainer";
+import {ClientCallManager} from "../../call_state/client_call_manager";
+import {EventListenerManager} from "../../event_listeners/event_listener_manager";
+import {dispatchClientMessage} from "../../message_handlers/client_message_dispatcher";
+import {GrpcClientMessageSender} from "../../message_sender/grpc_client_message_sender";
+import {CallTransactionHandlers} from "../../protos/call_transaction_package/CallTransaction";
+import {ClientMessageContainer} from "../../protos/call_transaction_package/ClientMessageContainer";
+import {ServerMessageContainer} from "../../protos/call_transaction_package/ServerMessageContainer";
 
 const eventListenerManager = new EventListenerManager();
 const clientCallManager = new ClientCallManager();

@@ -4,7 +4,7 @@ import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import * as admin from "firebase-admin";
 import {ProtoGrpcType} from "./protos/call_transaction";
-import {CallTransactionServer} from "./call_transaction_server";
+import {CallTransactionServer} from "./server/main/call_transaction_server";
 
 function getServer(): Server {
   const packageDefinition = protoLoader.loadSync("../protos/call_transaction.proto");
