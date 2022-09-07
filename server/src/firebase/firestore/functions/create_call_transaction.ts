@@ -1,22 +1,24 @@
 import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
-import {ExpertRate} from "./firebase/firestore/models/expert_rate";
-import {CallTransctionRequestResult} from "./call_transaction_request_result";
-import {CallJoinRequest} from "./firebase/fcm/messages/call_join_request";
-import {CallTransaction} from "./firebase/firestore/models/call_transaction";
-import createStripePaymentIntent from "./stripe/payment_intent_creator";
-import {PrivateUserInfo} from "./firebase/firestore/models/private_user_info";
-import {PaymentStatus} from "./firebase/firestore/models/payment_status";
-import {lookupUserFcmToken} from "./firebase/firestore/functions/lookup_user_fcm_token";
+import {ExpertRate} from "../models/expert_rate";
+import {CallJoinRequest} from "../../fcm/messages/call_join_request";
+import {CallTransaction} from "../models/call_transaction";
+import createStripePaymentIntent from "../../../stripe/payment_intent_creator";
+import {PrivateUserInfo} from "../models/private_user_info";
+import {PaymentStatus} from "../models/payment_status";
+import {lookupUserFcmToken} from "./lookup_user_fcm_token";
+
+type CallTransactionReturnType = [valid: boolean, errorMessage: string,
+  callStartPaymentIntentClientSecret: string, callerStripeCustomerId: string,
+  transaction: CallTransaction | undefined];
 
 export const createCallTransaction = async ({request}: {request: CallJoinRequest}):
-Promise<CallTransctionRequestResult> => {
-  const myResult = new CallTransctionRequestResult();
-  await admin.firestore().runTransaction(async (transaction) => {
+  Promise<CallTransactionReturnType> => {
+  return await admin.firestore().runTransaction(async (transaction) => {
     if (request.calledUid == null || request.calledUid == null) {
-      myResult.errorMessage = `Invalid Call Transaction Request, either ids are null. 
+      const errorMessage = `Invalid Call Transaction Request, either ids are null.
       CalledUid: ${request.calledUid} CallerUid: ${request.callerUid}`;
-      return;
+      return callTransactionFailure(errorMessage);
     }
     const ratesCollectionRef = admin.firestore()
         .collection("expert_rates");
@@ -24,8 +26,8 @@ Promise<CallTransctionRequestResult> => {
         ratesCollectionRef.doc(request.calledUid));
 
     if (!calledRateDoc.exists) {
-      myResult.errorMessage = `Called User: ${request.calledUid} does not have a registered rate`;
-      return;
+      const errorMessage = `Called User: ${request.calledUid} does not have a registered rate`;
+      return callTransactionFailure(errorMessage);
     }
     const privateUserInfoRef = admin.firestore()
         .collection("users");
@@ -33,8 +35,8 @@ Promise<CallTransctionRequestResult> => {
         privateUserInfoRef.doc(request.callerUid));
 
     if (!privateCallerUserInfoDoc.exists) {
-      myResult.errorMessage = `Caller User: ${request.calledUid} does not have a private user info`;
-      return;
+      const errorMessage = `Caller User: ${request.calledUid} does not have a private user info`;
+      return callTransactionFailure(errorMessage);
     }
 
     const privateCallerUserInfo = privateCallerUserInfoDoc.data() as PrivateUserInfo;
@@ -44,8 +46,7 @@ Promise<CallTransctionRequestResult> => {
         {userId: request.calledUid, transaction: transaction});
 
     if (!tokenSuccess) {
-      myResult.errorMessage = tokenErrorMessage;
-      return;
+      return callTransactionFailure(tokenErrorMessage);
     }
 
     const callerCallStartPaymentStatusId = uuidv4();
@@ -54,17 +55,15 @@ Promise<CallTransctionRequestResult> => {
           callRate.centsCallStart, "Begin Call Transaction", callerCallStartPaymentStatusId);
 
     if (!paymentIntentValid) {
-      myResult.errorMessage = `Cannot initiate payment start. ${paymentIntentErrorMessage}`;
-      return;
+      const errorMessage = `Cannot initiate payment start. ${paymentIntentErrorMessage}`;
+      return callTransactionFailure(errorMessage);
     }
-
 
     console.log(`Found token ${calledUserFcmToken} for ${request.calledUid}`);
 
     const callRequestTimeUtcMs = Date.now();
     const transactionId = uuidv4();
     const agoraChannelName = uuidv4();
-
 
     const callerCallStartPaymentStatus: PaymentStatus = {
       "uid": request.callerUid,
@@ -79,8 +78,10 @@ Promise<CallTransctionRequestResult> => {
     transaction.create(callStartPaymentDoc, callerCallStartPaymentStatus);
 
     const newTransaction: CallTransaction = {
+      "callTransactionId": transactionId,
       "callerUid": request.callerUid,
       "calledUid": request.calledUid,
+      "calledFcmToken": calledUserFcmToken,
       "callRequestTimeUtcMs": callRequestTimeUtcMs,
       "expertRateCentsPerMinute": callRate.centsPerMinute,
       "expertRateCentsCallStart": callRate.centsCallStart,
@@ -92,13 +93,11 @@ Promise<CallTransctionRequestResult> => {
         .collection("call_transactions").doc(transactionId);
 
     transaction.create(callTransactionDoc, newTransaction);
-    myResult.success = true;
-    myResult.calledFcmToken = calledUserFcmToken;
-    myResult.callTransactionId = transactionId;
-    myResult.agoraChannelName = agoraChannelName;
-    myResult.stripeCallerClientSecret = paymentIntentClientSecret;
-    myResult.stripeCallerCustomerId = privateCallerUserInfo.stripeCustomerId;
-    myResult.callerCallStartPaymentStatusId = callerCallStartPaymentStatusId;
+
+    return [true, "", paymentIntentClientSecret, privateCallerUserInfo.stripeCustomerId, newTransaction];
   });
-  return myResult;
 };
+
+function callTransactionFailure(errorMessage: string): CallTransactionReturnType {
+  return [false, errorMessage, "", "", undefined];
+}
