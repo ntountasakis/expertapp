@@ -1,5 +1,4 @@
-import {CallTransctionRequestResult} from "../call_transaction_request_result";
-import {createCallTransaction} from "../create_call_transaction";
+import {createCallTransaction} from "../firebase/firestore/functions/create_call_transaction";
 import {CallJoinRequest} from "../firebase/fcm/messages/call_join_request";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
@@ -21,25 +20,27 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   const calledUid = callInitiateRequest.calledUid as string;
   const callerUid = callInitiateRequest.callerUid as string;
   const request = new CallJoinRequest({callerUid: callerUid, calledUid: calledUid});
-  const callTransactionResult: CallTransctionRequestResult = await createCallTransaction({request: request});
+  const [transactionValid, transactionErrorMessage,
+    callerPaymentIntentClientSecret, callerStripeCustomerId, transaction] =
+    await createCallTransaction({request: request});
 
-  if (!callTransactionResult.success) {
-    sendGrpcCallRequestFailure(`Unable to create call transaction. Error: ${callTransactionResult.errorMessage}`,
+  if (!transactionValid || transaction == undefined) {
+    sendGrpcCallRequestFailure(`Unable to create call transaction. Error: ${transactionErrorMessage}`,
         clientMessageSender);
     return;
   }
 
+  // todo: call join request poor name as the caller isnt the joiner
   // todo: named params
 
-  const newClientCallState = clientCallManager.createNewCallState(request, callTransactionResult);
+  const newClientCallState = clientCallManager.createNewCallState(request, transaction);
   const paymentStatusState = new PaymentStatusState(clientMessageSender, newClientCallState,
       onPaymentSuccessCallInitiate);
-  eventListenerManager.registerForPaymentStatusUpdates(callTransactionResult.callerCallStartPaymentStatusId,
+  eventListenerManager.registerForPaymentStatusUpdates(transaction?.callerCallStartPaymentStatusId,
       paymentStatusState);
 
   sendGrpcCallRequestSuccess(clientMessageSender);
-  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, callTransactionResult.stripeCallerClientSecret,
-      callTransactionResult.stripeCallerCustomerId);
+  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, callerPaymentIntentClientSecret, callerStripeCustomerId);
   return;
 }
 

@@ -1,6 +1,8 @@
 export interface CallTransaction {
+    callTransactionId: string;
     callerUid: string;
     calledUid: string;
+    calledFcmToken: string;
     callRequestTimeUtcMs: number;
     expertRateCentsPerMinute: number;
     expertRateCentsCallStart: number;
