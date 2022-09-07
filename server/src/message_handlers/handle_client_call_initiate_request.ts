@@ -3,13 +3,14 @@ import {createCallTransaction} from "../create_call_transaction";
 import {CallJoinRequest} from "../firebase/fcm/messages/call_join_request";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
-import {ServerCallRequestResponse} from "../protos/call_transaction_package/ServerCallRequestResponse";
 import {EventListenerManager} from "../event_listeners/event_listener_manager";
 import {PaymentStatusState} from "../call_state/payment_status_state";
 import {onPaymentSuccessCallInitiate} from "../call_events/on_payment_success_call_initiate";
 import {ClientCallManager} from "../call_state/client_call_manager";
 // eslint-disable-next-line max-len
 import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_begin_payment_initiate";
+import {sendGrpcCallRequestFailure} from "../server/client_communication/grpc/send_grpc_call_request_failure";
+import {sendGrpcCallRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_request_success";
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     clientMessageSender: ClientMessageSenderInterface, eventListenerManager: EventListenerManager,
@@ -23,7 +24,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   const callTransactionResult: CallTransctionRequestResult = await createCallTransaction({request: request});
 
   if (!callTransactionResult.success) {
-    sendCallRequestFailure(`Unable to create call transaction. Error: ${callTransactionResult.errorMessage}`,
+    sendGrpcCallRequestFailure(`Unable to create call transaction. Error: ${callTransactionResult.errorMessage}`,
         clientMessageSender);
     return;
   }
@@ -36,26 +37,9 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   eventListenerManager.registerForPaymentStatusUpdates(callTransactionResult.callerCallStartPaymentStatusId,
       paymentStatusState);
 
-  sendCallRequestSuccess(clientMessageSender);
+  sendGrpcCallRequestSuccess(clientMessageSender);
   sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, callTransactionResult.stripeCallerClientSecret,
       callTransactionResult.stripeCallerCustomerId);
   return;
 }
 
-function sendCallRequestFailure(errorMessage: string,
-    clientMessageSender: ClientMessageSenderInterface) {
-  console.error(errorMessage);
-  const serverCallRequestResponse: ServerCallRequestResponse = {
-    "success": false,
-    "errorMessage": errorMessage,
-  };
-  clientMessageSender.sendCallRequestResponse(serverCallRequestResponse);
-}
-
-function sendCallRequestSuccess(clientMessageSender: ClientMessageSenderInterface) {
-  const serverCallRequestResponse: ServerCallRequestResponse = {
-    "success": true,
-    "errorMessage": "",
-  };
-  clientMessageSender.sendCallRequestResponse(serverCallRequestResponse);
-}
