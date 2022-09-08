@@ -1,12 +1,11 @@
 import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
-import {ExpertRate} from "../models/expert_rate";
 import {CallJoinRequest} from "../../fcm/messages/call_join_request";
 import {CallTransaction} from "../models/call_transaction";
 import createStripePaymentIntent from "../../../stripe/payment_intent_creator";
-import {PrivateUserInfo} from "../models/private_user_info";
 import {PaymentStatus} from "../models/payment_status";
 import {lookupUserFcmToken} from "./lookup_user_fcm_token";
+import {getExpertRate, getPrivateUserInfo} from "./util/utils";
 
 type CallTransactionReturnType = [valid: boolean, errorMessage: string,
   callStartPaymentIntentClientSecret: string, callerStripeCustomerId: string,
@@ -20,33 +19,23 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       CalledUid: ${request.calledUid} CallerUid: ${request.callerUid}`;
       return callTransactionFailure(errorMessage);
     }
-    const ratesCollectionRef = admin.firestore()
-        .collection("expert_rates");
-    const calledRateDoc = await transaction.get(
-        ratesCollectionRef.doc(request.calledUid));
 
-    if (!calledRateDoc.exists) {
-      const errorMessage = `Called User: ${request.calledUid} does not have a registered rate`;
-      return callTransactionFailure(errorMessage);
-    }
-    const privateUserInfoRef = admin.firestore()
-        .collection("users");
-    const privateCallerUserInfoDoc = await transaction.get(
-        privateUserInfoRef.doc(request.callerUid));
-
-    if (!privateCallerUserInfoDoc.exists) {
-      const errorMessage = `Caller User: ${request.calledUid} does not have a private user info`;
-      return callTransactionFailure(errorMessage);
+    const [expertRateLookupErrorMessage, callRate] = await getExpertRate(request.calledUid, transaction);
+    if (expertRateLookupErrorMessage !== "" || callRate === undefined) {
+      return callTransactionFailure(expertRateLookupErrorMessage);
     }
 
-    const privateCallerUserInfo = privateCallerUserInfoDoc.data() as PrivateUserInfo;
-    const callRate = calledRateDoc.data() as ExpertRate;
+    const [privateCallerInfoLookupErrorMessage, privateCallerUserInfo] = await getPrivateUserInfo(
+        request.calledUid, transaction);
+    if (privateCallerInfoLookupErrorMessage !== "" || privateCallerUserInfo === undefined) {
+      return callTransactionFailure(privateCallerInfoLookupErrorMessage);
+    }
 
-    const [tokenSuccess, tokenErrorMessage, calledUserFcmToken] = await lookupUserFcmToken(
+    const [tokenSuccess, tokenLookupErrorMessage, calledUserFcmToken] = await lookupUserFcmToken(
         {userId: request.calledUid, transaction: transaction});
 
     if (!tokenSuccess) {
-      return callTransactionFailure(tokenErrorMessage);
+      return callTransactionFailure(tokenLookupErrorMessage);
     }
 
     const callerCallStartPaymentStatusId = uuidv4();
@@ -87,6 +76,8 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       "expertRateCentsCallStart": callRate.centsCallStart,
       "agoraChannelName": agoraChannelName,
       "callerCallStartPaymentStatusId": callerCallStartPaymentStatusId,
+      "calledHasJoined": false,
+      "calledJoinTimeUtcMs": 0,
     };
 
     const callTransactionDoc = admin.firestore()
@@ -99,5 +90,6 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
 };
 
 function callTransactionFailure(errorMessage: string): CallTransactionReturnType {
+  console.error(`Error in CreateCallTransaction: ${errorMessage}`);
   return [false, errorMessage, "", "", undefined];
 }
