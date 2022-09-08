@@ -33,6 +33,7 @@ message ClientMessageContainer {
 message ServerCallRequestResponse {
     bool success = 1;
     string errorMessage = 2;
+    string callTransactionId = 3;
 }
 
 message ServerAgoraCredentials {

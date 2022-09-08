@@ -39,7 +39,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   eventListenerManager.registerForPaymentStatusUpdates(transaction?.callerCallStartPaymentStatusId,
       paymentStatusState);
 
-  sendGrpcCallRequestSuccess(clientMessageSender);
+  sendGrpcCallRequestSuccess(transaction.callTransactionId, clientMessageSender);
   sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, callerPaymentIntentClientSecret, callerStripeCustomerId);
   return;
 }

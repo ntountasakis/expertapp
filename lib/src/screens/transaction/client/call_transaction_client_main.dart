@@ -36,7 +36,7 @@ class CallTransactionClientMain extends StatelessWidget {
               height: 100,
             ),
             Container(
-              child: callServerDisconnectButton(context, callServerManager),
+              child: callServerDisconnectButton(context, callServerManager, model),
             ),
             SizedBox(
               width: 200,

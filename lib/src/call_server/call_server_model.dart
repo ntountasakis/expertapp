@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class CallServerModel extends ChangeNotifier {
   String _errorMessage = "";
+  String _callTransactionId = "";
   ServerAgoraCredentials? _agoraCredentials;
   CallServerPaymentPromptModel _callBeginPaymentPromptModel =
       new CallServerPaymentPromptModel();
@@ -14,6 +15,7 @@ class CallServerModel extends ChangeNotifier {
 
   CallServerConnectionState get callConnectionState => _connectionState;
   String get errorMsg => _errorMessage;
+  String get callTransactionId => _callTransactionId;
   ServerAgoraCredentials? get agoraCredentials => _agoraCredentials;
   CallServerPaymentPromptModel get callBeginPaymentPromptModel =>
       _callBeginPaymentPromptModel;
@@ -32,6 +34,10 @@ class CallServerModel extends ChangeNotifier {
     _errorMessage = aErrorMessage;
     _connectionState = CallServerConnectionState.ERRORED;
     notifyListeners();
+  }
+
+  void onServerCallRequestResponse(ServerCallRequestResponse response) {
+    _callTransactionId = response.callTransactionId;
   }
 
   void onAgoraCredentials(ServerAgoraCredentials agoraCredentials) {

@@ -25,6 +25,20 @@ export const endCallTransactionClientInitiated = async (
       return endCallTransactionFailure(callTransactionLookupErrorMessage);
     }
 
+    if (terminateRequest.uid !== callTransaction.callerUid) {
+      const errorMessage = `Uid: ${terminateRequest.uid} cannot terminate call: ${callTransaction.callerUid} 
+      because they are not the caller`;
+      endCallTransactionFailure(errorMessage);
+    }
+
+    if (callTransaction.callHasEnded || callTransaction.callEndTimeUtsMs !== 0) {
+      const errorMessage = `Uid: ${terminateRequest.uid} cannot terminate call: ${callTransaction.callerUid} 
+      because is already terminate`;
+      endCallTransactionFailure(errorMessage);
+    }
+
+    markEndCallTime(callTransaction.callTransactionId, transaction);
+
     /* algorithm todo:
     1) mark call end time in transaction
     2) calculate cost of call
@@ -33,9 +47,18 @@ export const endCallTransactionClientInitiated = async (
     5) pay expert
     */
 
+    console.log(`CallTransaction: ${callTransaction.callTransactionId} terminated`);
     return endCallTransactionFailure(""); // todo remove
   });
 };
+
+function markEndCallTime(callTransactionId: string, transaction: FirebaseFirestore.Transaction) {
+  const callTransactionRef = admin.firestore().collection("call_transactions").doc(callTransactionId);
+  transaction.update(callTransactionRef, {
+    "callHasEnded": true,
+    "callEndTimeUtsMs": true,
+  });
+}
 
 function endCallTransactionFailure(errorMessage: string): EndCallTransactionReturnType {
   console.error(`Error in EndCallTransaction: ${errorMessage}`);

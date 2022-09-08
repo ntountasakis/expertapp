@@ -32,6 +32,14 @@ class CallServerManager {
     _joinCall(context, callTransactionId);
   }
 
+  void terminateCall(String callTransactionId) {
+    final terminateRequest = ClientCallTerminateRequest(
+        callTransactionId: callTransactionId, uid: currentUserId);
+    final messageContainer =
+        new ClientMessageContainer(callTerminateRequest: terminateRequest);
+    _serverMessageProducer.sendMessage(messageContainer);
+  }
+
   void _connect(BuildContext context) {
     _serverMessageStream = _callEstablisher
         .connect(_serverMessageProducer.messageProducerStream());
