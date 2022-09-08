@@ -27,22 +27,20 @@ class CallTransactionExpertMain extends StatefulWidget {
 
   @override
   State<CallTransactionExpertMain> createState() =>
-      _CallTransactionExpertMainState(
-          callTransactionId: callTransactionId);
+      _CallTransactionExpertMainState(callTransactionId: callTransactionId);
 }
 
 class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
   final String callTransactionId;
 
-  _CallTransactionExpertMainState({required this.callTransactionId}) {
-  }
+  _CallTransactionExpertMainState({required this.callTransactionId}) {}
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero).then((_) => {
-          widget.callServerManager.joinCall(
-              context: context, callTransactionId: callTransactionId)
+          widget.callServerManager
+              .joinCall(context: context, callTransactionId: callTransactionId)
         });
   }
 
@@ -62,17 +60,18 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
               height: 100,
             ),
             Container(
-              child: callServerDisconnectButton(context, widget.callServerManager),
+              child: callServerDisconnectButton(
+                  context, widget.callServerManager, model),
             ),
             SizedBox(
               width: 200,
               height: 100,
             ),
             Container(
-              child: buildEditableChatButton(context: context, 
-              currentUserId: widget.currentUserId, 
-              calledUserMetadata: widget.callerClientMetadata)
-            ),
+                child: buildEditableChatButton(
+                    context: context,
+                    currentUserId: widget.currentUserId,
+                    calledUserMetadata: widget.callerClientMetadata)),
             SizedBox(
               width: 200,
               height: 100,

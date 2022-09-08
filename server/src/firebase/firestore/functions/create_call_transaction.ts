@@ -78,6 +78,8 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       "callerCallStartPaymentStatusId": callerCallStartPaymentStatusId,
       "calledHasJoined": false,
       "calledJoinTimeUtcMs": 0,
+      "callHasEnded": false,
+      "callEndTimeUtsMs": 0,
     };
 
     const callTransactionDoc = admin.firestore()

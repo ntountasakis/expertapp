@@ -12,6 +12,7 @@ import {ClientCallTerminateRequest} from "../protos/call_transaction_package/Cli
 import {ClientMessageContainer} from "../protos/call_transaction_package/ClientMessageContainer";
 import {handleClientCallInitiateRequest} from "./handle_client_call_initiate_request";
 import {handleClientCallJoinRequest} from "./handle_client_call_join_request";
+import {handleClientCallTerminateRequest} from "./handle_client_call_terminate_request";
 
 export async function dispatchClientMessage({clientMessage, invalidMessageHandler, clientMessageSender,
   eventListenerManager, clientCallManager}: {
@@ -28,7 +29,7 @@ export async function dispatchClientMessage({clientMessage, invalidMessageHandle
   } else if (clientMessage.callJoinRequest) {
     await dispatchCallJoinRequest(clientMessage.callJoinRequest, invalidMessageHandler, clientMessageSender);
   } else if (clientMessage.callTerminateRequest) {
-    await dispatchCallTerminateRequest(clientMessage.callTerminateRequest, invalidMessageHandler, clientMessageSender);
+    await dispatchCallTerminateRequest(clientMessage.callTerminateRequest, invalidMessageHandler);
   } else {
     invalidMessageHandler("Unknown client message type");
   }
@@ -71,14 +72,13 @@ async function dispatchCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
   await handleClientCallJoinRequest(callJoinRequest, clientMessageSender);
 }
 
-function dispatchCallTerminateRequest(callTerminateRequest: ClientCallTerminateRequest,
-    invalidMessageHandler : InvalidClientMessageHandlerInterface,
-    clientMessageSender: ClientMessageSenderInterface): void {
+async function dispatchCallTerminateRequest(callTerminateRequest: ClientCallTerminateRequest,
+    invalidMessageHandler : InvalidClientMessageHandlerInterface): Promise<void> {
   const [callTerminateRequestValid, callTerminateRequestInvalidErrorMessage] = isValidClientTerminateRequest(
       {callTerminateRequest: callTerminateRequest});
   if (!callTerminateRequestValid) {
     invalidMessageHandler(callTerminateRequestInvalidErrorMessage);
-    return;
+  } else {
+    handleClientCallTerminateRequest(callTerminateRequest);
   }
-  handleClientCallTerminateRequest(callTerminateRequest, clientMessageSender);
 }

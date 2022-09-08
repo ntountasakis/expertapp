@@ -10,4 +10,6 @@ export interface CallTransaction {
     callerCallStartPaymentStatusId: string;
     calledHasJoined: boolean;
     calledJoinTimeUtcMs: number;
+    callHasEnded: boolean;
+    callEndTimeUtsMs: number;
 }

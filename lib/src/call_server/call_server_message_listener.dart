@@ -21,6 +21,8 @@ class CallServerMessageListener {
       if (!response.success) {
         log("Error from call server ${response.errorMessage}");
         model.onErrored(response.errorMessage);
+      } else {
+        model.onServerCallRequestResponse(response);
       }
     } else if (aMessage.hasServerAgoraCredentials()) {
       model.onAgoraCredentials(aMessage.serverAgoraCredentials);
@@ -37,6 +39,7 @@ class CallServerMessageListener {
   }
 
   void onDisconnect() {
-    Provider.of<CallServerModel>(connectedContext, listen: false).onDisconnected();
+    Provider.of<CallServerModel>(connectedContext, listen: false)
+        .onDisconnected();
   }
 }
