@@ -5,7 +5,8 @@ import {CallTransaction} from "../models/call_transaction";
 import createStripePaymentIntent from "../../../stripe/payment_intent_creator";
 import {PaymentStatus} from "../models/payment_status";
 import {lookupUserFcmToken} from "./lookup_user_fcm_token";
-import {getExpertRate, getPrivateUserInfo} from "./util/utils";
+import {getExpertRate, getPrivateUserInfo} from "./util/model_fetchers";
+import {paymentIntentHelperFunc, PaymentIntentType} from "./util/payment_intent_helper";
 
 type CallTransactionReturnType = [valid: boolean, errorMessage: string,
   callStartPaymentIntentClientSecret: string, callerStripeCustomerId: string,
@@ -38,15 +39,14 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       return callTransactionFailure(tokenLookupErrorMessage);
     }
 
-    const callerCallStartPaymentStatusId = uuidv4();
-    const [paymentIntentValid, paymentIntentErrorMessage, _, paymentIntentClientSecret] =
-      await createStripePaymentIntent(privateCallerUserInfo.stripeCustomerId, privateCallerUserInfo.email,
-          callRate.centsCallStart, "Begin Call Transaction", callerCallStartPaymentStatusId);
+    const paymentIntentResult: PaymentIntentType = await paymentIntentHelperFunc(
+        {costInCents: callRate.centsCallStart, privateUserInfo: privateCallerUserInfo,
+          description: "Create Call Transaction"});
 
-    if (!paymentIntentValid) {
-      const errorMessage = `Cannot initiate payment start. ${paymentIntentErrorMessage}`;
-      return callTransactionFailure(errorMessage);
+    if (typeof paymentIntentResult === "string") {
+      return callTransactionFailure(paymentIntentResult);
     }
+    const [paymentStatusId, paymentIntentClientSecret] = paymentIntentResult;
 
     console.log(`Found token ${calledUserFcmToken} for ${request.calledUid}`);
 
@@ -61,8 +61,7 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       "centsCollected": 0,
     };
 
-    const callStartPaymentDoc = admin.firestore()
-        .collection("payment_statuses").doc(callerCallStartPaymentStatusId);
+    const callStartPaymentDoc = admin.firestore().collection("payment_statuses").doc(paymentStatusId);
 
     transaction.create(callStartPaymentDoc, callerCallStartPaymentStatus);
 
@@ -75,7 +74,7 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       "expertRateCentsPerMinute": callRate.centsPerMinute,
       "expertRateCentsCallStart": callRate.centsCallStart,
       "agoraChannelName": agoraChannelName,
-      "callerCallStartPaymentStatusId": callerCallStartPaymentStatusId,
+      "callerCallStartPaymentStatusId": paymentStatusId,
       "calledHasJoined": false,
       "calledJoinTimeUtcMs": 0,
       "callHasEnded": false,
