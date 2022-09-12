@@ -1,10 +1,19 @@
 import * as admin from "firebase-admin";
 import {ClientCallTerminateRequest} from "../../../protos/call_transaction_package/ClientCallTerminateRequest";
-import {CallTransaction} from "../models/call_transaction";
-import {getCallTransaction, getPrivateUserInfo} from "./util/utils";
+import {calculateCostOfCallInCents} from "./util/call_cost_calculator";
+import {getCallTransaction, getPrivateUserInfo} from "./util/model_fetchers";
+import {paymentIntentHelperFunc, PaymentIntentType} from "./util/payment_intent_helper";
 
-type EndCallTransactionReturnType = [valid: boolean, errorMessage: string, endCallPaymentIntentClientSecret: string,
-callerStripeCustomerId: string, transaction: CallTransaction | undefined];
+/* algorithm todo:
+    1) mark call end time in transaction -- done
+    2) calculate cost of call -- done
+    3) create stripe payment intent with these details -- done
+    4) create new message type and have client pay
+    5) pay expert
+    */
+
+export type EndCallTransactionReturnType = [endCallPaymentIntentClientSecret: string,
+callerStripeCustomerId: string] | string;
 
 export const endCallTransactionClientInitiated = async (
     {terminateRequest}: {terminateRequest: ClientCallTerminateRequest}): Promise<EndCallTransactionReturnType> => {
@@ -37,30 +46,40 @@ export const endCallTransactionClientInitiated = async (
       endCallTransactionFailure(errorMessage);
     }
 
-    markEndCallTime(callTransaction.callTransactionId, transaction);
+    const endTimeUtcMs = Date.now();
+    markEndCallTime(callTransaction.callTransactionId, transaction, endTimeUtcMs);
 
-    /* algorithm todo:
-    1) mark call end time in transaction
-    2) calculate cost of call
-    3) create stripe payment intent with these details
-    4) create new message type and have client pay
-    5) pay expert
-    */
+    const costOfCallInCents = calculateCostOfCallInCents({
+      beginTimeUtcMs: callTransaction.calledJoinTimeUtcMs,
+      endTimeUtcMs: endTimeUtcMs,
+      centsPerMinute: callTransaction.expertRateCentsPerMinute,
+    });
 
-    console.log(`CallTransaction: ${callTransaction.callTransactionId} terminated`);
-    return endCallTransactionFailure(""); // todo remove
+    const paymentIntentResult: PaymentIntentType = await paymentIntentHelperFunc(
+        {costInCents: costOfCallInCents, privateUserInfo: privateCallerUserInfo,
+          description: "End Call Transaction"});
+
+    if (typeof paymentIntentResult === "string") {
+      return endCallTransactionFailure(paymentIntentResult);
+    }
+    const [paymentStatusId, paymentIntentClientSecret] = paymentIntentResult;
+
+    console.log(`CallTransactionTerminationRequest: ${callTransaction.callTransactionId} serviced`);
+
+    return [paymentIntentClientSecret, paymentStatusId];
   });
 };
 
-function markEndCallTime(callTransactionId: string, transaction: FirebaseFirestore.Transaction) {
+function markEndCallTime(callTransactionId: string, transaction: FirebaseFirestore.Transaction,
+    callEndTimeUtsMs: number) {
   const callTransactionRef = admin.firestore().collection("call_transactions").doc(callTransactionId);
   transaction.update(callTransactionRef, {
     "callHasEnded": true,
-    "callEndTimeUtsMs": true,
+    "callEndTimeUtsMs": callEndTimeUtsMs,
   });
 }
 
 function endCallTransactionFailure(errorMessage: string): EndCallTransactionReturnType {
   console.error(`Error in EndCallTransaction: ${errorMessage}`);
-  return [false, errorMessage, "", "", undefined];
+  return errorMessage;
 }

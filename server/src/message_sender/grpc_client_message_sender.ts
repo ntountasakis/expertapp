@@ -5,6 +5,7 @@ import {ServerCallBeginPaymentInitiate} from "../protos/call_transaction_package
 // eslint-disable-next-line max-len
 import {ServerCallBeginPaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiateResolved";
 import {ServerCallRequestResponse} from "../protos/call_transaction_package/ServerCallRequestResponse";
+import { ServerCallTerminatePaymentInitiate } from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiate";
 import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
 import {ClientMessageSenderInterface} from "./client_message_sender_interface";
 
@@ -41,6 +42,14 @@ export class GrpcClientMessageSender extends ClientMessageSenderInterface {
       const clientMessageContainer: ServerMessageContainer = {
         "serverCallBeginPaymentInitiateResolved": callBeginPaymentInitiateResolved,
         "messageWrapper": "serverCallBeginPaymentInitiateResolved",
+      };
+      this.sendingStream.write(clientMessageContainer);
+    }
+    sendCallTerminatePaymentInitiate(callTerminatePaymentInitiate: ServerCallTerminatePaymentInitiate):
+      void {
+      const clientMessageContainer: ServerMessageContainer = {
+        "serverCallTerminatePaymentInitiate": callTerminatePaymentInitiate,
+        "messageWrapper": "serverCallTerminatePaymentInitiate",
       };
       this.sendingStream.write(clientMessageContainer);
     }
