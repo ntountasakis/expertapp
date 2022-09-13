@@ -2,8 +2,6 @@ import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
 import {CallJoinRequest} from "../../fcm/messages/call_join_request";
 import {CallTransaction} from "../models/call_transaction";
-import createStripePaymentIntent from "../../../stripe/payment_intent_creator";
-import {PaymentStatus} from "../models/payment_status";
 import {lookupUserFcmToken} from "./lookup_user_fcm_token";
 import {getExpertRate, getPrivateUserInfo} from "./util/model_fetchers";
 import {paymentIntentHelperFunc, PaymentIntentType} from "./util/payment_intent_helper";
@@ -41,7 +39,8 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
 
     const paymentIntentResult: PaymentIntentType = await paymentIntentHelperFunc(
         {costInCents: callRate.centsCallStart, privateUserInfo: privateCallerUserInfo,
-          description: "Create Call Transaction"});
+          uid: request.calledUid, transaction: transaction,
+          description: "Start Call"});
 
     if (typeof paymentIntentResult === "string") {
       return callTransactionFailure(paymentIntentResult);
@@ -54,17 +53,6 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
     const transactionId = uuidv4();
     const agoraChannelName = uuidv4();
 
-    const callerCallStartPaymentStatus: PaymentStatus = {
-      "uid": request.callerUid,
-      "status": "",
-      "centsToCollect": callRate.centsCallStart,
-      "centsCollected": 0,
-    };
-
-    const callStartPaymentDoc = admin.firestore().collection("payment_statuses").doc(paymentStatusId);
-
-    transaction.create(callStartPaymentDoc, callerCallStartPaymentStatus);
-
     const newTransaction: CallTransaction = {
       "callTransactionId": transactionId,
       "callerUid": request.callerUid,
@@ -75,6 +63,7 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       "expertRateCentsCallStart": callRate.centsCallStart,
       "agoraChannelName": agoraChannelName,
       "callerCallStartPaymentStatusId": paymentStatusId,
+      "callerCallTerminatePaymentStatusId": "",
       "calledHasJoined": false,
       "calledJoinTimeUtcMs": 0,
       "callHasEnded": false,

@@ -1,14 +1,16 @@
-import {CallJoinRequest} from "../firebase/fcm/messages/call_join_request";
-import {CallTransaction} from "../firebase/firestore/models/call_transaction";
+import {CallerBeginCallContext} from "./callback_contexts/caller_begin_call_context";
 import {ClientCallState} from "./client_call_state";
 
 export class ClientCallManager {
     clientCallStates = new Map<string, ClientCallState>();
 
-    createNewCallState(callJoinRequest: CallJoinRequest,
-        callTransactionRequestResult: CallTransaction): ClientCallState {
-      const callState = new ClientCallState(callJoinRequest, callTransactionRequestResult);
-      this.clientCallStates.set(callTransactionRequestResult.callTransactionId, callState);
+    createCallStateOnCallerBegin(callerBeginCallContext: CallerBeginCallContext): ClientCallState {
+      const callState = new ClientCallState(callerBeginCallContext);
+      this.clientCallStates.set(callerBeginCallContext.transactionId, callState);
       return callState;
+    }
+
+    getCallState(transactionId: string): ClientCallState | undefined {
+      return this.clientCallStates.get(transactionId);
     }
 }

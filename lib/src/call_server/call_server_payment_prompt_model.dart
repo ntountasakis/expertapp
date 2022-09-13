@@ -9,13 +9,17 @@ enum PaymentState {
 
 class CallServerPaymentPromptModel {
   PaymentState _state = PaymentState.WAITING_FOR_PAYMENT_DETAILS;
-  ServerCallBeginPaymentInitiate? _paymentDetails;
+  late String _clientSecret;
+  late String _stripeCustomerId;
 
   PaymentState get paymentState => _state;
-  ServerCallBeginPaymentInitiate? get paymentDetails => _paymentDetails;
+  String get clientSecret => _clientSecret;
+  String get stripeCustomerId => _stripeCustomerId;
 
-  void onPaymentDetails(ServerCallBeginPaymentInitiate details) {
-    _paymentDetails = details;
+  void onPaymentDetails(
+      {required String clientSecret, required String stripeCustomerId}) {
+    _clientSecret = clientSecret;
+    _stripeCustomerId = stripeCustomerId;
     _state = PaymentState.READY_TO_PRESENT_PAYMENT;
   }
 

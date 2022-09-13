@@ -1,12 +1,9 @@
-import {CallJoinRequest} from "../firebase/fcm/messages/call_join_request";
-import {CallTransaction} from "../firebase/firestore/models/call_transaction";
+import {CallerBeginCallContext} from "./callback_contexts/caller_begin_call_context";
 
 export class ClientCallState {
-    callJoinRequest: CallJoinRequest;
-    transaction: CallTransaction;
+  callerBeginCallContext: CallerBeginCallContext;
 
-    constructor(callJoinRequest: CallJoinRequest, transaction: CallTransaction) {
-      this.callJoinRequest = callJoinRequest;
-      this.transaction = transaction;
-    }
+  constructor(callerBeginCallContext: CallerBeginCallContext) {
+    this.callerBeginCallContext = callerBeginCallContext;
+  }
 }

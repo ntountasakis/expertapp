@@ -30,8 +30,12 @@ class CallServerMessageListener {
       model.onServerCallBeginPaymentInitiate(
           aMessage.serverCallBeginPaymentInitiate);
     } else if (aMessage.hasServerCallBeginPaymentInitiateResolved()) {
-      log("Init payment resolved!");
       model.onServerCallBeginPaymentInitiateResolved();
+    } else if (aMessage.hasServerCallTerminatePaymentInitiate()) {
+      model.onServerCallTerminatePaymentInitiate(
+          aMessage.serverCallTerminatePaymentInitiate);
+    } else if (aMessage.hasServerCallTerminatePaymentInitiateResolved()) {
+      model.onServerCallTerminatePaymentInitiateResolved();
     } else {
       throw new Exception('''Unexpected ServerResponseContainer messageType 
       on call request ${aMessage.whichMessageWrapper()}''');

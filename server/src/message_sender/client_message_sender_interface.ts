@@ -5,12 +5,16 @@ import {ServerCallBeginPaymentInitiate} from "../protos/call_transaction_package
 import {ServerCallTerminatePaymentInitiate} from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiate";
 // eslint-disable-next-line max-len
 import {ServerCallBeginPaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiateResolved";
+// eslint-disable-next-line max-len
+import {ServerCallTerminatePaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiateResolved";
 
 export abstract class ClientMessageSenderInterface {
     abstract sendCallRequestResponse(callRequestResponse: ServerCallRequestResponse): void;
     abstract sendCallAgoraCredentials(callAgoraCredentials: ServerAgoraCredentials): void;
     abstract sendCallBeginPaymentInitiate(callBeginPaymentInitiate: ServerCallBeginPaymentInitiate): void;
-    abstract sendCallTerminatePaymentInitiate(callTerminatePaymentInitiate: ServerCallTerminatePaymentInitiate): void;
     // eslint-disable-next-line max-len
     abstract sendCallBeginPaymentInitiateResolved(callBeginPaymentInitiateResolved: ServerCallBeginPaymentInitiateResolved): void;
+    abstract sendCallTerminatePaymentInitiate(callTerminatePaymentInitiate: ServerCallTerminatePaymentInitiate): void;
+    // eslint-disable-next-line max-len
+    abstract sendCallTerminatePaymentInitiateResolved(callTerminatePaymentInitiateResolved: ServerCallTerminatePaymentInitiateResolved): void;
 }
