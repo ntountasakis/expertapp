@@ -8,25 +8,27 @@ import 'package:expertapp/src/call_server/widgets/call_server_payment_prompt.dar
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
-import 'package:expertapp/src/screens/transaction/client/call_transaction_client_main.dart';
+import 'package:expertapp/src/screens/transaction/client/call_client_main.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CallClientPaymentPage extends StatefulWidget {
+class CallBeginClientPaymentPage extends StatefulWidget {
   final String currentUserId;
   final DocumentWrapper<UserMetadata> expertUserMetadata;
   final CallServerManager callServerManager;
 
-  const CallClientPaymentPage(
+  const CallBeginClientPaymentPage(
       {required this.currentUserId,
       required this.expertUserMetadata,
       required this.callServerManager});
 
   @override
-  State<CallClientPaymentPage> createState() => _CallClientPaymentPageState();
+  State<CallBeginClientPaymentPage> createState() =>
+      _CallBeginClientPaymentPageState();
 }
 
-class _CallClientPaymentPageState extends State<CallClientPaymentPage> {
+class _CallBeginClientPaymentPageState
+    extends State<CallBeginClientPaymentPage> {
   @override
   void initState() {
     super.initState();
@@ -40,7 +42,7 @@ class _CallClientPaymentPageState extends State<CallClientPaymentPage> {
         MaterialPageRoute(
           builder: (context) => ListenableProvider<CallServerModel>.value(
             value: model,
-            child: CallTransactionClientMain(
+            child: CallClientMain(
                 currentUserId: widget.currentUserId,
                 connectedExpertMetadata: widget.expertUserMetadata,
                 callServerManager: widget.callServerManager),
@@ -56,13 +58,13 @@ class _CallClientPaymentPageState extends State<CallClientPaymentPage> {
         builder: (context, model, child) {
           switch (model.callBeginPaymentPromptModel.paymentState) {
             case PaymentState.READY_TO_PRESENT_PAYMENT:
-              showPaymentPrompt(model);
+              showPaymentPrompt(model.callBeginPaymentPromptModel);
               break;
             case PaymentState.PAYMENT_COMPLETE:
               navigateToNextPage(model);
               break;
             case PaymentState.PAYMENT_FAILURE:
-              log("CallClientPaymentPage: Payment failure error");
+              log("CallClientPaymentBeginPage: Payment failure error");
               break;
             case PaymentState.WAITING_FOR_PAYMENT_DETAILS:
               break;

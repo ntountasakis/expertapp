@@ -12,8 +12,11 @@ import {paymentIntentHelperFunc, PaymentIntentType} from "./util/payment_intent_
     5) pay expert
     */
 
-export type EndCallTransactionReturnType = [endCallPaymentIntentClientSecret: string,
-callerStripeCustomerId: string] | string;
+export type EndCallTransactionReturnType = [
+  endCallTransactionId: string,
+  endCallPaymentIntentClientSecret: string,
+  endCallPaymentIntentPaymentStatusId: string,
+  callerStripeCustomerId: string] | string;
 
 export const endCallTransactionClientInitiated = async (
     {terminateRequest}: {terminateRequest: ClientCallTerminateRequest}): Promise<EndCallTransactionReturnType> => {
@@ -47,8 +50,6 @@ export const endCallTransactionClientInitiated = async (
     }
 
     const endTimeUtcMs = Date.now();
-    markEndCallTime(callTransaction.callTransactionId, transaction, endTimeUtcMs);
-
     const costOfCallInCents = calculateCostOfCallInCents({
       beginTimeUtcMs: callTransaction.calledJoinTimeUtcMs,
       endTimeUtcMs: endTimeUtcMs,
@@ -57,23 +58,29 @@ export const endCallTransactionClientInitiated = async (
 
     const paymentIntentResult: PaymentIntentType = await paymentIntentHelperFunc(
         {costInCents: costOfCallInCents, privateUserInfo: privateCallerUserInfo,
-          description: "End Call Transaction"});
+          uid: terminateRequest.uid, transaction: transaction,
+          description: "End Call"});
 
     if (typeof paymentIntentResult === "string") {
       return endCallTransactionFailure(paymentIntentResult);
     }
     const [paymentStatusId, paymentIntentClientSecret] = paymentIntentResult;
 
+    updateCallTransactionTerminateFields(callTransaction.callTransactionId, paymentStatusId, endTimeUtcMs, transaction);
+
+    console.log(`Cost of Call: ${costOfCallInCents}`);
     console.log(`CallTransactionTerminationRequest: ${callTransaction.callTransactionId} serviced`);
 
-    return [paymentIntentClientSecret, paymentStatusId];
+    return [callTransaction.callTransactionId, paymentIntentClientSecret,
+      paymentStatusId, privateCallerUserInfo.stripeCustomerId];
   });
 };
 
-function markEndCallTime(callTransactionId: string, transaction: FirebaseFirestore.Transaction,
-    callEndTimeUtsMs: number) {
+function updateCallTransactionTerminateFields(callTransactionId: string,
+    callTerminatePaymentStatusId: string, callEndTimeUtsMs: number, transaction: FirebaseFirestore.Transaction) {
   const callTransactionRef = admin.firestore().collection("call_transactions").doc(callTransactionId);
   transaction.update(callTransactionRef, {
+    "callerCallTerminatePaymentStatusId": callTerminatePaymentStatusId,
     "callHasEnded": true,
     "callEndTimeUtsMs": callEndTimeUtsMs,
   });

@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:expertapp/src/call_server/call_server_connection_establisher.dart';
 import 'package:expertapp/src/call_server/call_server_message_listener.dart';
 import 'package:expertapp/src/call_server/call_server_message_producer.dart';
-import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +31,7 @@ class CallServerManager {
     _joinCall(context, callTransactionId);
   }
 
-  void terminateCall(String callTransactionId) {
+  void sendTerminateCallRequest(String callTransactionId) {
     final terminateRequest = ClientCallTerminateRequest(
         callTransactionId: callTransactionId, uid: currentUserId);
     final messageContainer =

@@ -8,7 +8,7 @@ Widget callServerDisconnectButton(
     BuildContext context, CallServerManager manager, CallServerModel model) {
   return ElevatedButton(
       onPressed: () async {
-        manager.terminateCall(model.callTransactionId);
+        manager.sendTerminateCallRequest(model.callTransactionId);
         await manager.disconnect();
         log('EndCallButton: call disconnected');
         Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);

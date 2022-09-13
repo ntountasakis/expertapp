@@ -10,6 +10,7 @@ import {ClientCallManager} from "../call_state/client_call_manager";
 import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_begin_payment_initiate";
 import {sendGrpcCallRequestFailure} from "../server/client_communication/grpc/send_grpc_call_request_failure";
 import {sendGrpcCallRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_request_success";
+import {CallerBeginCallContext} from "../call_state/callback_contexts/caller_begin_call_context";
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     clientMessageSender: ClientMessageSenderInterface, eventListenerManager: EventListenerManager,
@@ -33,7 +34,10 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   // todo: call join request poor name as the caller isnt the joiner
   // todo: named params
 
-  const newClientCallState = clientCallManager.createNewCallState(request, transaction);
+  const callBeginCallerContext = new CallerBeginCallContext({transactionId: transaction.callTransactionId,
+    agoraChannelName: transaction.agoraChannelName, calledFcmToken: transaction.calledFcmToken,
+    callJoinRequest: request});
+  const newClientCallState = clientCallManager.createCallStateOnCallerBegin(callBeginCallerContext);
   const paymentStatusState = new PaymentStatusState(clientMessageSender, newClientCallState,
       onPaymentSuccessCallInitiate);
   eventListenerManager.registerForPaymentStatusUpdates(transaction?.callerCallStartPaymentStatusId,

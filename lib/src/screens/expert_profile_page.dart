@@ -8,7 +8,7 @@ import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
-import 'package:expertapp/src/screens/transaction/client/call_transaction_client_preview.dart';
+import 'package:expertapp/src/screens/transaction/client/call_client_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -89,8 +89,8 @@ class ExpertProfilePage extends StatelessWidget {
           return;
         }
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return CallTransactionClientPreview(_currentUserUid,
-              _expertUserMetadata, expertRate.documentType);
+          return CallClientPreview(
+              _currentUserUid, _expertUserMetadata, expertRate.documentType);
         }));
       },
       child: Text('Call ${_expertUserMetadata.documentType.firstName}'),

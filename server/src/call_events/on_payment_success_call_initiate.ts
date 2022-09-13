@@ -10,8 +10,9 @@ export async function onPaymentSuccessCallInitiate(clientMessageSender: ClientMe
   const paymentResolved: ServerCallBeginPaymentInitiateResolved = {};
   clientMessageSender.sendCallBeginPaymentInitiateResolved(paymentResolved);
 
-  sendFcmCallJoinRequest(clientCallState.transaction.calledFcmToken, clientCallState.callJoinRequest,
-      clientCallState.transaction.callTransactionId);
-  sendGrpcServerAgoraCredentials(clientMessageSender, clientCallState.transaction.agoraChannelName,
-      clientCallState.callJoinRequest.callerUid);
+  sendFcmCallJoinRequest(clientCallState.callerBeginCallContext.calledFcmToken,
+      clientCallState.callerBeginCallContext.callJoinRequest,
+      clientCallState.callerBeginCallContext.transactionId);
+  sendGrpcServerAgoraCredentials(clientMessageSender, clientCallState.callerBeginCallContext.agoraChannelName,
+      clientCallState.callerBeginCallContext.callJoinRequest.callerUid);
 }

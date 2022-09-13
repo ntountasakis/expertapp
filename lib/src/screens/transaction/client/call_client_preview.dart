@@ -5,16 +5,16 @@ import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dar
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
-import 'package:expertapp/src/screens/transaction/payment/call_client_payment_page.dart';
+import 'package:expertapp/src/screens/transaction/client/call_begin_client_payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CallTransactionClientPreview extends StatelessWidget {
+class CallClientPreview extends StatelessWidget {
   final String currentUserId;
   final DocumentWrapper<UserMetadata> expertUserMetadata;
   final ExpertRate expertRate;
 
-  CallTransactionClientPreview(
+  CallClientPreview(
       this.currentUserId, this.expertUserMetadata, this.expertRate);
 
   final explanationBlurbStyle = TextStyle(
@@ -57,7 +57,7 @@ class CallTransactionClientPreview extends StatelessWidget {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return ChangeNotifierProvider<CallServerModel>(
                 create: (_) => new CallServerModel(),
-                child: CallClientPaymentPage(
+                child: CallBeginClientPaymentPage(
                   currentUserId: currentUserId,
                   expertUserMetadata: expertUserMetadata,
                   callServerManager: callManager,

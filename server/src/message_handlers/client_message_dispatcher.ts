@@ -29,7 +29,8 @@ export async function dispatchClientMessage({clientMessage, invalidMessageHandle
   } else if (clientMessage.callJoinRequest) {
     await dispatchCallJoinRequest(clientMessage.callJoinRequest, invalidMessageHandler, clientMessageSender);
   } else if (clientMessage.callTerminateRequest) {
-    await dispatchCallTerminateRequest(clientMessage.callTerminateRequest, invalidMessageHandler, clientMessageSender);
+    await dispatchCallTerminateRequest(clientMessage.callTerminateRequest, invalidMessageHandler,
+        clientMessageSender, clientCallManager, eventListenerManager);
   } else {
     invalidMessageHandler("Unknown client message type");
   }
@@ -74,12 +75,15 @@ async function dispatchCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
 
 async function dispatchCallTerminateRequest(callTerminateRequest: ClientCallTerminateRequest,
     invalidMessageHandler : InvalidClientMessageHandlerInterface,
-    clientMessageSender: ClientMessageSenderInterface): Promise<void> {
+    clientMessageSender: ClientMessageSenderInterface,
+    clientCallManager: ClientCallManager,
+    eventListenerManager: EventListenerManager): Promise<void> {
   const [callTerminateRequestValid, callTerminateRequestInvalidErrorMessage] = isValidClientTerminateRequest(
       {callTerminateRequest: callTerminateRequest});
   if (!callTerminateRequestValid) {
     invalidMessageHandler(callTerminateRequestInvalidErrorMessage);
   } else {
-    handleClientCallTerminateRequest(callTerminateRequest, clientMessageSender);
+    handleClientCallTerminateRequest(callTerminateRequest, clientMessageSender,
+        clientCallManager, eventListenerManager);
   }
 }

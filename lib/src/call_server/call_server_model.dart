@@ -9,6 +9,8 @@ class CallServerModel extends ChangeNotifier {
   ServerAgoraCredentials? _agoraCredentials;
   CallServerPaymentPromptModel _callBeginPaymentPromptModel =
       new CallServerPaymentPromptModel();
+  CallServerPaymentPromptModel _callTerminatePaymentPromptModel =
+      new CallServerPaymentPromptModel();
 
   CallServerConnectionState _connectionState =
       CallServerConnectionState.DISCONNECTED;
@@ -19,6 +21,8 @@ class CallServerModel extends ChangeNotifier {
   ServerAgoraCredentials? get agoraCredentials => _agoraCredentials;
   CallServerPaymentPromptModel get callBeginPaymentPromptModel =>
       _callBeginPaymentPromptModel;
+  CallServerPaymentPromptModel get callTerminatePaymentPromptModel =>
+      _callTerminatePaymentPromptModel;
 
   void onConnected() {
     _connectionState = CallServerConnectionState.CONNECTED;
@@ -47,12 +51,27 @@ class CallServerModel extends ChangeNotifier {
 
   void onServerCallBeginPaymentInitiate(
       ServerCallBeginPaymentInitiate callBeginPaymentInitiate) {
-    _callBeginPaymentPromptModel.onPaymentDetails(callBeginPaymentInitiate);
+    _callBeginPaymentPromptModel.onPaymentDetails(
+      stripeCustomerId: callBeginPaymentInitiate.customerId,
+      clientSecret: callBeginPaymentInitiate.clientSecret);
     notifyListeners();
   }
 
   void onServerCallBeginPaymentInitiateResolved() {
     _callBeginPaymentPromptModel.onPaymentComplete();
+    notifyListeners();
+  }
+
+  void onServerCallTerminatePaymentInitiate(
+      ServerCallTerminatePaymentInitiate callTerminatePaymentInitiate) {
+    _callTerminatePaymentPromptModel.onPaymentDetails(
+      stripeCustomerId: callTerminatePaymentInitiate.customerId,
+      clientSecret: callTerminatePaymentInitiate.clientSecret);
+    notifyListeners();
+  }
+
+  void onServerCallTerminatePaymentInitiateResolved() {
+    _callTerminatePaymentPromptModel.onPaymentComplete();
     notifyListeners();
   }
 }

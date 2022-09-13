@@ -19,7 +19,6 @@ export class PaymentStatusState {
 
     onPaymentStatusUpdate(status: PaymentStatus): boolean {
       if (status.status == StripePaymentIntentStates.SUCCEEDED) {
-        console.debug("Calling payment success callback");
         this.paymentSuccessCallback(this.clientMessageSender, this.clientCallState);
         return true;
       }
