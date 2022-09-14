@@ -37,7 +37,8 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   const callBeginCallerContext = new CallerBeginCallContext({transactionId: transaction.callTransactionId,
     agoraChannelName: transaction.agoraChannelName, calledFcmToken: transaction.calledFcmToken,
     callJoinRequest: request});
-  const newClientCallState = clientCallManager.createCallStateOnCallerBegin(callBeginCallerContext);
+  const newClientCallState = clientCallManager.createCallStateOnCallerBegin({
+    userId: callerUid, callerBeginCallContext: callBeginCallerContext});
   const paymentStatusState = new PaymentStatusState(clientMessageSender, newClientCallState,
       onPaymentSuccessCallInitiate);
   eventListenerManager.registerForPaymentStatusUpdates(transaction?.callerCallStartPaymentStatusId,

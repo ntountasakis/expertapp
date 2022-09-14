@@ -33,6 +33,7 @@ class _CallClientTerminatePaymentPageState
             value: model,
             child: CallClientSummary(
               expertUserMetadata: widget.connectedExpertMetadata,
+              callServerManager: widget.callServerManager,
             ),
           ),
         )));

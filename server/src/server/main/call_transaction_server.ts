@@ -14,6 +14,14 @@ export class CallTransactionServer implements CallTransactionHandlers {
   [name: string]: grpc.UntypedHandleCall;
 
   async InitiateCall(call: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>): Promise<void> {
+    const userId = call.metadata.getMap()["uid"] as string;
+    if (userId === undefined) {
+      console.error("Cannot find metadata with Key: uid");
+      call.end();
+      return;
+    }
+    console.log(`UserId: ${userId} initiate call`);
+
     call.on("data", async (aClientMessage: ClientMessageContainer) => {
       const messageSender = new GrpcClientMessageSender(call);
       dispatchClientMessage({clientMessage: aClientMessage, invalidMessageHandler: invalidMessageCallback,
@@ -26,6 +34,10 @@ export class CallTransactionServer implements CallTransactionHandlers {
     call.on("end", () => {
       console.log("End Initiate Call Stream");
       call.end();
+    });
+    call.on("cancelled", () => {
+      console.log(`UserId: ${userId} cancelled call`);
+      clientCallManager.clearCallState({userId: userId});
     });
   }
 }
