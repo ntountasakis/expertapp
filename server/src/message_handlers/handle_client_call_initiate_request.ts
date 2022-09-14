@@ -2,7 +2,6 @@ import {createCallTransaction} from "../firebase/firestore/functions/create_call
 import {CallJoinRequest} from "../firebase/fcm/messages/call_join_request";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
-import {EventListenerManager} from "../event_listeners/event_listener_manager";
 import {PaymentStatusState} from "../call_state/payment_status_state";
 import {onPaymentSuccessCallInitiate} from "../call_events/on_payment_success_call_initiate";
 import {ClientCallManager} from "../call_state/client_call_manager";
@@ -13,8 +12,7 @@ import {sendGrpcCallRequestSuccess} from "../server/client_communication/grpc/se
 import {CallerBeginCallContext} from "../call_state/callback_contexts/caller_begin_call_context";
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
-    clientMessageSender: ClientMessageSenderInterface, eventListenerManager: EventListenerManager,
-    clientCallManager: ClientCallManager): Promise<void> {
+    clientMessageSender: ClientMessageSenderInterface, clientCallManager: ClientCallManager): Promise<void> {
   console.log(`InitiateCall request begin. Caller Uid: ${callInitiateRequest.callerUid} 
       Called Uid: ${callInitiateRequest.calledUid}`);
 
@@ -41,7 +39,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
     userId: callerUid, callerBeginCallContext: callBeginCallerContext});
   const paymentStatusState = new PaymentStatusState(clientMessageSender, newClientCallState,
       onPaymentSuccessCallInitiate);
-  eventListenerManager.registerForPaymentStatusUpdates(transaction?.callerCallStartPaymentStatusId,
+  newClientCallState.eventListenerManager.registerForPaymentStatusUpdates(transaction?.callerCallStartPaymentStatusId,
       paymentStatusState);
 
   sendGrpcCallRequestSuccess(transaction.callTransactionId, clientMessageSender);

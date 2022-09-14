@@ -17,8 +17,12 @@ export class ClientCallManager {
     }
 
     clearCallState({userId}: {userId: string}): void {
-      if (!this.clientCallStates.delete(userId)) {
+      const callState = this.clientCallStates.get(userId);
+      if (callState === undefined) {
         console.error(`Unable to clear ClientCallState for UID: ${userId}. Does not exist`);
+        return;
       }
+      callState.clear();
+      this.clientCallStates.delete(userId);
     }
 }
