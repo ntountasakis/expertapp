@@ -6,7 +6,7 @@ import {EventUnsubscribeInterface} from "./event_unsubscribe_interface";
 export class EventListenerManager {
     paymentStatusListeners = new Map<string, [PaymentStatusState, EventUnsubscribeInterface]>();
 
-    clear(): void {
+    onDisconnect(): void {
       this.paymentStatusListeners.forEach((value: [PaymentStatusState, EventUnsubscribeInterface], key: string) => {
         const unsubscribeFn = value[1];
         console.log(`Unsubscribing from PaymentStatusId: ${key}`);

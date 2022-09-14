@@ -27,10 +27,14 @@ Promise<[errorMessage: string, privateUserInfo: PrivateUserInfo | undefined]> {
   return ["", privateCallerUserInfoDoc.data() as PrivateUserInfo];
 }
 
+export function getCallTransactionRef(callTransactionId: string) :
+  FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection("call_transactions").doc(callTransactionId);
+}
+
 export async function getCallTransaction(callTransactionId: string, transaction: FirebaseFirestore.Transaction) :
 Promise<[errorMessage: string, CallTransaction: CallTransaction | undefined]> {
-  const callTransactionRef = admin.firestore().collection("call_transactions");
-  const callTransactionDoc = await transaction.get(callTransactionRef.doc(callTransactionId));
+  const callTransactionDoc = await transaction.get(getCallTransactionRef(callTransactionId));
   if (!callTransactionDoc.exists) {
     const errorMessage = `Call Transaction: ${callTransactionId} does not exist`;
     return [errorMessage, undefined];

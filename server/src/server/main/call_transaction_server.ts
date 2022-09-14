@@ -34,7 +34,7 @@ export class CallTransactionServer implements CallTransactionHandlers {
     });
     call.on("cancelled", () => {
       console.log(`UserId: ${userId} cancelled call`);
-      clientCallManager.clearCallState({userId: userId});
+      clientCallManager.onClientDisconnect({userId: userId});
     });
   }
 }
