@@ -41,7 +41,8 @@ class CallServerManager {
 
   void _connect(BuildContext context) {
     _serverMessageStream = _callEstablisher
-        .connect(_serverMessageProducer.messageProducerStream());
+        .connect(_serverMessageProducer.messageProducerStream(),
+        currentUserId);
     _serverMessageListener.onConnect(context);
 
     _serverMessageStreamSubscription = _serverMessageStream.listen(

@@ -17,17 +17,19 @@ export async function handleClientCallTerminateRequest(callTerminateRequest: Cli
   const endCallPromise: EndCallTransactionReturnType =
     await endCallTransactionClientInitiated({terminateRequest: callTerminateRequest});
 
-  if (typeof endCallPromise === "string") {
+  if (typeof endCallPromise === "string" || callTerminateRequest.uid === undefined) {
     console.error(endCallPromise);
     return;
   }
+
 
   const [endCallTransactionId, endCallPaymentIntentClientSecret,
     endCallPaymentStatusId, callerStripeCustomerId] = endCallPromise;
   sendGrpcServerCallTerminatePaymentInitiate({clientMessageSender: clientMessageSender,
     customerId: callerStripeCustomerId, clientSecret: endCallPaymentIntentClientSecret});
 
-  const existingClientCallState = clientCallManager.getCallState(endCallTransactionId);
+  const uid = callTerminateRequest.uid as string;
+  const existingClientCallState = clientCallManager.getCallState({userId: uid});
   if (existingClientCallState === undefined) {
     console.error(`Cannot find existing CallState in handleClientCallTerminateRequest for ID: ${endCallTransactionId}`);
     return;

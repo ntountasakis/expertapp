@@ -14,7 +14,9 @@ class CallServerConnectionEstablisher {
   final _client = CallTransactionClient(CHANNEL);
 
   Stream<ServerMessageContainer> connect(
-    Stream<ClientMessageContainer> clientMessageStream) {
-    return _client.initiateCall(clientMessageStream);
+      Stream<ClientMessageContainer> clientMessageStream,
+      String currentUserId) {
+    return _client.initiateCall(clientMessageStream,
+    options: CallOptions(metadata: {"uid": currentUserId}));
   }
 }
