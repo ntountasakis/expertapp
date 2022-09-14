@@ -10,6 +10,8 @@ import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communica
 import {sendGrpcCallRequestFailure} from "../server/client_communication/grpc/send_grpc_call_request_failure";
 import {sendGrpcCallRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_request_success";
 import {CallerBeginCallContext} from "../call_state/callback_contexts/caller_begin_call_context";
+// eslint-disable-next-line max-len
+import {endCallTransactionClientDisconnect} from "../firebase/firestore/functions/end_call_transaction_client_disconnect";
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     clientMessageSender: ClientMessageSenderInterface, clientCallManager: ClientCallManager): Promise<void> {
@@ -36,7 +38,8 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
     agoraChannelName: transaction.agoraChannelName, calledFcmToken: transaction.calledFcmToken,
     callJoinRequest: request});
   const newClientCallState = clientCallManager.createCallStateOnCallerBegin({
-    userId: callerUid, callerBeginCallContext: callBeginCallerContext});
+    userId: callerUid, callerBeginCallContext: callBeginCallerContext,
+    callerDisconnectFunction: endCallTransactionClientDisconnect});
   const paymentStatusState = new PaymentStatusState(clientMessageSender, newClientCallState,
       onPaymentSuccessCallInitiate);
   newClientCallState.eventListenerManager.registerForPaymentStatusUpdates(transaction?.callerCallStartPaymentStatusId,
