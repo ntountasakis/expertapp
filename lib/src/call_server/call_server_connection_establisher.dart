@@ -15,8 +15,12 @@ class CallServerConnectionEstablisher {
 
   Stream<ServerMessageContainer> connect(
       Stream<ClientMessageContainer> clientMessageStream,
-      String currentUserId) {
+      String currentUserId,
+      bool isCaller) {
     return _client.initiateCall(clientMessageStream,
-    options: CallOptions(metadata: {"uid": currentUserId}));
+        options: CallOptions(metadata: {
+          "iscaller": isCaller.toString(),
+          "uid": currentUserId
+        }));
   }
 }
