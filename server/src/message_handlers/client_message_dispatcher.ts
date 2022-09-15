@@ -1,3 +1,4 @@
+import {CalledCallManager} from "../call_state/called/called_call_manager";
 import {CallerCallManager} from "../call_state/caller/caller_call_manager";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {InvalidClientMessageHandlerInterface} from "../message_sender/invalid_client_message_handler_interface";
@@ -14,18 +15,19 @@ import {handleClientCallJoinRequest} from "./handle_client_call_join_request";
 import {handleClientCallTerminateRequest} from "./handle_client_call_terminate_request";
 
 export async function dispatchClientMessage(
-    {clientMessage, invalidMessageHandler, clientMessageSender, clientCallManager}: {
+    {clientMessage, invalidMessageHandler, clientMessageSender, clientCallManager, calledCallManager}: {
     clientMessage: ClientMessageContainer,
     invalidMessageHandler: InvalidClientMessageHandlerInterface,
     clientMessageSender: ClientMessageSenderInterface,
-    clientCallManager: CallerCallManager}): Promise<void> {
+    clientCallManager: CallerCallManager, calledCallManager: CalledCallManager}): Promise<void> {
   if (!checkMessageContainerValid(clientMessage, invalidMessageHandler)) return;
 
   if (clientMessage.callInitiateRequest) {
     await dispatchCallInitiateRequest(clientMessage.callInitiateRequest, invalidMessageHandler,
         clientMessageSender, clientCallManager);
   } else if (clientMessage.callJoinRequest) {
-    await dispatchCallJoinRequest(clientMessage.callJoinRequest, invalidMessageHandler, clientMessageSender);
+    await dispatchCallJoinRequest(clientMessage.callJoinRequest, invalidMessageHandler, clientMessageSender,
+        calledCallManager);
   } else if (clientMessage.callTerminateRequest) {
     await dispatchCallTerminateRequest(clientMessage.callTerminateRequest, invalidMessageHandler,
         clientMessageSender, clientCallManager);
@@ -59,14 +61,15 @@ async function dispatchCallInitiateRequest(callInitiateRequest: ClientCallInitia
 
 async function dispatchCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
     invalidMessageHandler : InvalidClientMessageHandlerInterface,
-    clientMessageSender: ClientMessageSenderInterface): Promise<void> {
+    clientMessageSender: ClientMessageSenderInterface,
+    calledCallManager: CalledCallManager): Promise<void> {
   const [callJoinRequestValid, callJoinRequestInvalidErrorMessage] = isValidClientJoinRequest(
       {callJoinRequest: callJoinRequest});
   if (!callJoinRequestValid) {
     invalidMessageHandler(callJoinRequestInvalidErrorMessage);
     return;
   }
-  await handleClientCallJoinRequest(callJoinRequest, clientMessageSender);
+  await handleClientCallJoinRequest(callJoinRequest, clientMessageSender, calledCallManager);
 }
 
 async function dispatchCallTerminateRequest(callTerminateRequest: ClientCallTerminateRequest,

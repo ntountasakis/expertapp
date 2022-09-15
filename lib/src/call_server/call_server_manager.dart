@@ -21,13 +21,13 @@ class CallServerManager {
   CallServerManager({required this.currentUserId, required this.otherUserId});
 
   void initiateCall(BuildContext context) {
-    _connect(context);
+    _connect(context, true);
     _beginCall(context);
   }
 
   void joinCall(
       {required BuildContext context, required String callTransactionId}) {
-    _connect(context);
+    _connect(context, false);
     _joinCall(context, callTransactionId);
   }
 
@@ -39,10 +39,11 @@ class CallServerManager {
     _serverMessageProducer.sendMessage(messageContainer);
   }
 
-  void _connect(BuildContext context) {
-    _serverMessageStream = _callEstablisher
-        .connect(_serverMessageProducer.messageProducerStream(),
-        currentUserId);
+  void _connect(BuildContext context, bool isCaller) {
+    _serverMessageStream = _callEstablisher.connect(
+        _serverMessageProducer.messageProducerStream(),
+        currentUserId,
+        isCaller);
     _serverMessageListener.onConnect(context);
 
     _serverMessageStreamSubscription = _serverMessageStream.listen(

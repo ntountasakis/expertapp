@@ -10,7 +10,7 @@ export class CallerCallManager extends BaseCallManager {
     const callState = new CallerCallState(
         {callerBeginCallContext: callerBeginCallContext, onDisconnect: callerDisconnectFunction});
     this.callStates.set(userId, callState);
-    console.log(`Created ClientCallState for UID: ${userId}`);
+    console.log(`Created CallerCallState for UID: ${userId}`);
     return callState;
   }
 }
