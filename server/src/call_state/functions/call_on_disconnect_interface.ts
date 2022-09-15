@@ -1,3 +1,3 @@
-export interface ClientCallOnDisconnectInterface {
+export interface CallOnDisconnectInterface {
     ({transactionId}: {transactionId: string}): void;
 }

@@ -2,19 +2,19 @@ import {createCallTransaction} from "../firebase/firestore/functions/create_call
 import {CallJoinRequest} from "../firebase/fcm/messages/call_join_request";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
-import {PaymentStatusState} from "../call_state/payment_status_state";
+import {PaymentStatusState} from "../call_state/common/payment_status_state";
 import {onPaymentSuccessCallInitiate} from "../call_events/on_payment_success_call_initiate";
-import {ClientCallManager} from "../call_state/client_call_manager";
+import {CallerCallManager} from "../call_state/caller/caller_call_manager";
 // eslint-disable-next-line max-len
 import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_begin_payment_initiate";
 import {sendGrpcCallRequestFailure} from "../server/client_communication/grpc/send_grpc_call_request_failure";
 import {sendGrpcCallRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_request_success";
-import {CallerBeginCallContext} from "../call_state/callback_contexts/caller_begin_call_context";
+import {CallerBeginCallContext} from "../call_state/caller/caller_begin_call_context";
 // eslint-disable-next-line max-len
 import {endCallTransactionClientDisconnect} from "../firebase/firestore/functions/end_call_transaction_client_disconnect";
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
-    clientMessageSender: ClientMessageSenderInterface, clientCallManager: ClientCallManager): Promise<void> {
+    clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallerCallManager): Promise<void> {
   console.log(`InitiateCall request begin. Caller Uid: ${callInitiateRequest.callerUid} 
       Called Uid: ${callInitiateRequest.calledUid}`);
 
