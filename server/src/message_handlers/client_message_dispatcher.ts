@@ -1,4 +1,4 @@
-import {ClientCallManager} from "../call_state/client_call_manager";
+import {CallerCallManager} from "../call_state/caller/caller_call_manager";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {InvalidClientMessageHandlerInterface} from "../message_sender/invalid_client_message_handler_interface";
 import {isValidClientInitiateRequest} from "../message_validators/validate_client_call_initiate_request";
@@ -18,7 +18,7 @@ export async function dispatchClientMessage(
     clientMessage: ClientMessageContainer,
     invalidMessageHandler: InvalidClientMessageHandlerInterface,
     clientMessageSender: ClientMessageSenderInterface,
-    clientCallManager: ClientCallManager}): Promise<void> {
+    clientCallManager: CallerCallManager}): Promise<void> {
   if (!checkMessageContainerValid(clientMessage, invalidMessageHandler)) return;
 
   if (clientMessage.callInitiateRequest) {
@@ -47,7 +47,7 @@ function checkMessageContainerValid(clientMessage: ClientMessageContainer,
 async function dispatchCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     invalidMessageHandler : InvalidClientMessageHandlerInterface,
     clientMessageSender: ClientMessageSenderInterface,
-    clientCallManager: ClientCallManager): Promise<void> {
+    clientCallManager: CallerCallManager): Promise<void> {
   const [callInitiateRequestValid, callInitiateRequestInvalidErrorMessage] = isValidClientInitiateRequest(
       {callInitiateRequest: callInitiateRequest});
   if (!callInitiateRequestValid) {
@@ -72,7 +72,7 @@ async function dispatchCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
 async function dispatchCallTerminateRequest(callTerminateRequest: ClientCallTerminateRequest,
     invalidMessageHandler : InvalidClientMessageHandlerInterface,
     clientMessageSender: ClientMessageSenderInterface,
-    clientCallManager: ClientCallManager): Promise<void> {
+    clientCallManager: CallerCallManager): Promise<void> {
   const [callTerminateRequestValid, callTerminateRequestInvalidErrorMessage] = isValidClientTerminateRequest(
       {callTerminateRequest: callTerminateRequest});
   if (!callTerminateRequestValid) {

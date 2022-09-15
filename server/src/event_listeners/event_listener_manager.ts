@@ -1,4 +1,4 @@
-import {PaymentStatusState} from "../call_state/payment_status_state";
+import {PaymentStatusState} from "../call_state/common/payment_status_state";
 import {PaymentStatus} from "../firebase/firestore/models/payment_status";
 import {listenForPaymentStatusUpdates} from "../firebase/firestore/functions/listen_for_payment_status_updates";
 import {EventUnsubscribeInterface} from "./event_unsubscribe_interface";

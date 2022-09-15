@@ -1,12 +1,12 @@
 import * as grpc from "@grpc/grpc-js";
-import {ClientCallManager} from "../../call_state/client_call_manager";
+import {CallerCallManager} from "../../call_state/caller/caller_call_manager";
 import {dispatchClientMessage} from "../../message_handlers/client_message_dispatcher";
 import {GrpcClientMessageSender} from "../../message_sender/grpc_client_message_sender";
 import {CallTransactionHandlers} from "../../protos/call_transaction_package/CallTransaction";
 import {ClientMessageContainer} from "../../protos/call_transaction_package/ClientMessageContainer";
 import {ServerMessageContainer} from "../../protos/call_transaction_package/ServerMessageContainer";
 
-const clientCallManager = new ClientCallManager();
+const clientCallManager = new CallerCallManager();
 
 export class CallTransactionServer implements CallTransactionHandlers {
   [name: string]: grpc.UntypedHandleCall;
