@@ -1,10 +1,10 @@
 import * as admin from "firebase-admin";
-import {EventListenerManager} from "../../../event_listeners/event_listener_manager";
-import {EventUnsubscribeInterface} from "../../../event_listeners/event_unsubscribe_interface";
+import {FirestoreListenerManager} from "../event_listeners/firestore_listener_manager";
+import {FirestoreUnsubscribeInterface} from "../event_listeners/firestore_unsubscribe_interface";
 import {PaymentStatus} from "../models/payment_status";
 
 export function listenForPaymentStatusUpdates(
-    paymentStatusId: string, listenerManager: EventListenerManager): EventUnsubscribeInterface {
+    paymentStatusId: string, listenerManager: FirestoreListenerManager): FirestoreUnsubscribeInterface {
   const doc = admin.firestore().collection("payment_statuses").doc(paymentStatusId);
   const unsubscribeFn = doc.onSnapshot((docSnapshot) => {
     const paymentStatus = docSnapshot.data() as PaymentStatus;
