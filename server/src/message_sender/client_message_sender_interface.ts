@@ -7,6 +7,8 @@ import {ServerCallTerminatePaymentInitiate} from "../protos/call_transaction_pac
 import {ServerCallBeginPaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiateResolved";
 // eslint-disable-next-line max-len
 import {ServerCallTerminatePaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiateResolved";
+import {ServerCounterpartyJoinedCall} from "../protos/call_transaction_package/ServerCounterpartyJoinedCall";
+import {ServerCounterpartyLeftCall} from "../protos/call_transaction_package/ServerCounterpartyLeftCall";
 
 export abstract class ClientMessageSenderInterface {
     abstract sendCallRequestResponse(callRequestResponse: ServerCallRequestResponse): void;
@@ -17,4 +19,7 @@ export abstract class ClientMessageSenderInterface {
     abstract sendCallTerminatePaymentInitiate(callTerminatePaymentInitiate: ServerCallTerminatePaymentInitiate): void;
     // eslint-disable-next-line max-len
     abstract sendCallTerminatePaymentInitiateResolved(callTerminatePaymentInitiateResolved: ServerCallTerminatePaymentInitiateResolved): void;
+
+    abstract sendCounterpartyJoinedCall(counterpartyJoinedCall: ServerCounterpartyJoinedCall): void;
+    abstract sendCounterpartyLeftCall(sendCounterpartyLeftCall: ServerCounterpartyLeftCall): void;
 }

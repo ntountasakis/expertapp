@@ -1,6 +1,7 @@
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/call_server/widgets/call_server_connection_state_view.dart';
+import 'package:expertapp/src/call_server/widgets/call_server_counterparty_connection_state_view.dart';
 import 'package:expertapp/src/call_server/widgets/call_server_disconnect_button.dart';
 import 'package:expertapp/src/call_server/widgets/call_server_editable_chat_button.dart';
 import 'package:expertapp/src/call_server/widgets/call_server_video_call_button.dart';
@@ -31,6 +32,10 @@ class CallClientMain extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(8.0),
               child: callServerConnectionStateView(model),
+            ),
+            Container(
+              padding: EdgeInsets.all(8.0),
+              child: callServerCounterpartyConnectionStateView(model),
             ),
             SizedBox(
               width: 200,
