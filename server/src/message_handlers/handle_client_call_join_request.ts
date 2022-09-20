@@ -6,6 +6,8 @@ import {joinCallTransaction} from "../firebase/firestore/functions/join_call_tra
 import {CalledCallManager} from "../call_state/called/called_call_manager";
 // eslint-disable-next-line max-len
 import {endCallTransactionClientDisconnect} from "../firebase/firestore/functions/end_call_transaction_client_disconnect";
+import {onCalledTransactionUpdate} from "../call_events/called/called_on_transaction_update";
+import {listenForCallTransactionUpdates} from "../firebase/firestore/functions/listen_for_call_transaction_updates";
 
 export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
     clientMessageSender: ClientMessageSenderInterface,
@@ -28,9 +30,14 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
     console.error(agoraChannelLookupErrorMessage);
     return;
   }
-  calledCallManager.createCallStateOnCallJoin({
+  const newCalledState = calledCallManager.createCallStateOnCallJoin({
     userId: joinerId, transactionId: transactionId,
     callerDisconnectFunction: endCallTransactionClientDisconnect,
     clientMessageSender: clientMessageSender});
+  newCalledState.eventListenerManager.listenForEventUpdates({key: transactionId,
+    updateCallback: onCalledTransactionUpdate,
+    unsubscribeFn: listenForCallTransactionUpdates(
+        transactionId, newCalledState.eventListenerManager)});
+
   sendGrpcServerAgoraCredentials(clientMessageSender, agoraChannelName, joinerId);
 }
