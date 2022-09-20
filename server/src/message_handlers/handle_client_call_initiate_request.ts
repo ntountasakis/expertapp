@@ -2,7 +2,7 @@ import {createCallTransaction} from "../firebase/firestore/functions/create_call
 import {CallJoinRequest} from "../firebase/fcm/messages/call_join_request";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
-import {onPaymentSuccessCallInitiate} from "../call_events/on_payment_success_call_initiate";
+import {onCallerPaymentSuccessCallInitiate} from "../call_events/caller/caller_on_payment_success_call_initiate";
 import {CallerCallManager} from "../call_state/caller/caller_call_manager";
 // eslint-disable-next-line max-len
 import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_begin_payment_initiate";
@@ -12,6 +12,8 @@ import {CallerBeginCallContext} from "../call_state/caller/caller_begin_call_con
 // eslint-disable-next-line max-len
 import {endCallTransactionClientDisconnect} from "../firebase/firestore/functions/end_call_transaction_client_disconnect";
 import {listenForPaymentStatusUpdates} from "../firebase/firestore/functions/listen_for_payment_status_updates";
+import {onCallerTransactionUpdate} from "../call_events/caller/caller_on_transaction_update";
+import {listenForCallTransactionUpdates} from "../firebase/firestore/functions/listen_for_call_transaction_updates";
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallerCallManager): Promise<void> {
@@ -42,12 +44,15 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
     callerDisconnectFunction: endCallTransactionClientDisconnect,
     clientMessageSender: clientMessageSender});
   newClientCallState.eventListenerManager.listenForEventUpdates({key: transaction?.callerCallStartPaymentStatusId,
-    updateCallback: onPaymentSuccessCallInitiate,
+    updateCallback: onCallerPaymentSuccessCallInitiate,
     unsubscribeFn: listenForPaymentStatusUpdates(
         transaction.callerCallStartPaymentStatusId, newClientCallState.eventListenerManager)});
+  newClientCallState.eventListenerManager.listenForEventUpdates({key: transaction?.callTransactionId,
+    updateCallback: onCallerTransactionUpdate,
+    unsubscribeFn: listenForCallTransactionUpdates(
+        transaction.callTransactionId, newClientCallState.eventListenerManager)});
 
   sendGrpcCallRequestSuccess(transaction.callTransactionId, clientMessageSender);
   sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, callerPaymentIntentClientSecret, callerStripeCustomerId);
-  return;
 }
 
