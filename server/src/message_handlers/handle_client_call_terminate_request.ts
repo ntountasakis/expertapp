@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-len
-import {onPaymentSuccessCallTerminate} from "../call_events/on_payment_success_call_terminate";
+import {onCallerPaymentSuccessCallTerminate} from "../call_events/caller/caller_on_payment_success_call_terminate";
 import {CallerCallManager} from "../call_state/caller/caller_call_manager";
 // eslint-disable-next-line max-len
 import {endCallTransactionClientInitiated, EndCallTransactionReturnType} from "../firebase/firestore/functions/end_call_transaction_client_initiated";
@@ -32,7 +32,7 @@ export async function handleClientCallTerminateRequest(callTerminateRequest: Cli
     return;
   }
   existingClientCallState.eventListenerManager.listenForEventUpdates({key: endCallPaymentStatusId,
-    updateCallback: onPaymentSuccessCallTerminate,
+    updateCallback: onCallerPaymentSuccessCallTerminate,
     unsubscribeFn: listenForPaymentStatusUpdates(
         endCallPaymentStatusId, existingClientCallState.eventListenerManager)});
 }
