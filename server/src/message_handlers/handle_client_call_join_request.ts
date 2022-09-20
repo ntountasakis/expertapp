@@ -30,6 +30,7 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
   }
   calledCallManager.createCallStateOnCallJoin({
     userId: joinerId, transactionId: transactionId,
-    callerDisconnectFunction: endCallTransactionClientDisconnect});
+    callerDisconnectFunction: endCallTransactionClientDisconnect,
+    clientMessageSender: clientMessageSender});
   sendGrpcServerAgoraCredentials(clientMessageSender, agoraChannelName, joinerId);
 }

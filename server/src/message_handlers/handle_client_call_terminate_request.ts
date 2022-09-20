@@ -1,9 +1,9 @@
 // eslint-disable-next-line max-len
 import {onPaymentSuccessCallTerminate} from "../call_events/on_payment_success_call_terminate";
 import {CallerCallManager} from "../call_state/caller/caller_call_manager";
-import {PaymentStatusState} from "../call_state/common/payment_status_state";
 // eslint-disable-next-line max-len
 import {endCallTransactionClientInitiated, EndCallTransactionReturnType} from "../firebase/firestore/functions/end_call_transaction_client_initiated";
+import {listenForPaymentStatusUpdates} from "../firebase/firestore/functions/listen_for_payment_status_updates";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallTerminateRequest} from "../protos/call_transaction_package/ClientCallTerminateRequest";
 // eslint-disable-next-line max-len
@@ -31,8 +31,8 @@ export async function handleClientCallTerminateRequest(callTerminateRequest: Cli
     console.error(`Cannot find existing CallState in handleClientCallTerminateRequest for ID: ${endCallTransactionId}`);
     return;
   }
-  const paymentStatusState = new PaymentStatusState(clientMessageSender, existingClientCallState,
-      onPaymentSuccessCallTerminate);
-  existingClientCallState.eventListenerManager.registerForPaymentStatusUpdates(
-      endCallPaymentStatusId, paymentStatusState);
+  existingClientCallState.eventListenerManager.listenForEventUpdates({key: endCallPaymentStatusId,
+    updateCallback: onPaymentSuccessCallTerminate,
+    unsubscribeFn: listenForPaymentStatusUpdates(
+        endCallPaymentStatusId, existingClientCallState.eventListenerManager)});
 }

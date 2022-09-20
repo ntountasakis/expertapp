@@ -1,4 +1,5 @@
 import {EventListenerManager} from "../../event_listeners/event_listener_manager";
+import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
 import {CallOnDisconnectInterface} from "../functions/call_on_disconnect_interface";
 
 export class BaseCallState {
@@ -6,9 +7,11 @@ export class BaseCallState {
   eventListenerManager: EventListenerManager;
   onDisconnectFunction: CallOnDisconnectInterface;
 
-  constructor({transactionId, onDisconnect}: {onDisconnect: CallOnDisconnectInterface, transactionId: string}) {
+  constructor({transactionId, clientMessageSender, onDisconnect}:
+    {onDisconnect: CallOnDisconnectInterface, clientMessageSender: ClientMessageSenderInterface,
+        transactionId: string}) {
     this.transactionId = transactionId;
-    this.eventListenerManager = new EventListenerManager();
+    this.eventListenerManager = new EventListenerManager(clientMessageSender, this);
     this.onDisconnectFunction = onDisconnect;
   }
 
