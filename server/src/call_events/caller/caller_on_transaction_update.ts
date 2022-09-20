@@ -5,8 +5,12 @@ import {ClientMessageSenderInterface} from "../../message_sender/client_message_
 export function onCallerTransactionUpdate(clientMessageSender: ClientMessageSenderInterface,
     callState: BaseCallState, update: CallTransaction): boolean {
   if (update.callHasEnded) {
-    console.log("Caller detected callled ended the call");
+    console.log("Caller detected called ended the call");
+    clientMessageSender.sendCounterpartyLeftCall({});
     return true;
+  } else if (update.calledHasJoined) {
+    console.log("Caller detected called joined the call");
+    clientMessageSender.sendCounterpartyJoinedCall({});
   }
   return false;
 }

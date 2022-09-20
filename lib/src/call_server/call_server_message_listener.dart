@@ -36,6 +36,10 @@ class CallServerMessageListener {
           aMessage.serverCallTerminatePaymentInitiate);
     } else if (aMessage.hasServerCallTerminatePaymentInitiateResolved()) {
       model.onServerCallTerminatePaymentInitiateResolved();
+    } else if (aMessage.hasServerCounterpartyLeftCall()) {
+      model.onServerCounterpartyLeftCall();
+    } else if (aMessage.hasServerCounterpartyJoinedCall()) {
+      model.onServerCounterpartyJoinedCall();
     } else {
       throw new Exception('''Unexpected ServerResponseContainer messageType 
       on call request ${aMessage.whichMessageWrapper()}''');

@@ -9,6 +9,8 @@ import {ServerCallRequestResponse} from "../protos/call_transaction_package/Serv
 import {ServerCallTerminatePaymentInitiate} from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiate";
 // eslint-disable-next-line max-len
 import {ServerCallTerminatePaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiateResolved";
+import {ServerCounterpartyJoinedCall} from "../protos/call_transaction_package/ServerCounterpartyJoinedCall";
+import {ServerCounterpartyLeftCall} from "../protos/call_transaction_package/ServerCounterpartyLeftCall";
 import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
 import {ClientMessageSenderInterface} from "./client_message_sender_interface";
 
@@ -61,6 +63,22 @@ export class GrpcClientMessageSender extends ClientMessageSenderInterface {
       const clientMessageContainer: ServerMessageContainer = {
         "serverCallTerminatePaymentInitiateResolved": callTerminatePaymentInitiateResolved,
         "messageWrapper": "serverCallTerminatePaymentInitiateResolved",
+      };
+      this.sendingStream.write(clientMessageContainer);
+    }
+
+    sendCounterpartyJoinedCall(counterpartyJoinedCall: ServerCounterpartyJoinedCall): void {
+      const clientMessageContainer: ServerMessageContainer = {
+        "serverCounterpartyJoinedCall": counterpartyJoinedCall,
+        "messageWrapper": "serverCounterpartyJoinedCall",
+      };
+      this.sendingStream.write(clientMessageContainer);
+    }
+
+    sendCounterpartyLeftCall(counterpartyLeftCall: ServerCounterpartyLeftCall): void {
+      const clientMessageContainer: ServerMessageContainer = {
+        "serverCounterpartyLeftCall": counterpartyLeftCall,
+        "messageWrapper": "serverCounterpartyLeftCall",
       };
       this.sendingStream.write(clientMessageContainer);
     }

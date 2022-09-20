@@ -58,6 +58,12 @@ message ServerCallTerminatePaymentInitiate {
 message ServerCallTerminatePaymentInitiateResolved {
 }
 
+message ServerCounterpartyJoinedCall {
+}
+
+message ServerCounterpartyLeftCall {
+}
+
 
 message ServerMessageContainer {
     oneof messageWrapper {
@@ -67,5 +73,7 @@ message ServerMessageContainer {
         ServerCallBeginPaymentInitiateResolved serverCallBeginPaymentInitiateResolved = 4;
         ServerCallTerminatePaymentInitiate serverCallTerminatePaymentInitiate = 5;
         ServerCallTerminatePaymentInitiateResolved serverCallTerminatePaymentInitiateResolved = 6;
+        ServerCounterpartyLeftCall serverCounterpartyLeftCall = 7;
+        ServerCounterpartyJoinedCall serverCounterpartyJoinedCall = 8;
     }
 }

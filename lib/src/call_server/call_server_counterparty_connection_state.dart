@@ -1,0 +1,1 @@
+enum CallServerCounterpartyConnectionState { DISCONNECTED, JOINED, LEFT }
