@@ -10,6 +10,6 @@ export function sendGrpcServerCallTerminatePaymentInitiate({clientMessageSender,
     "clientSecret": clientSecret,
     "customerId": customerId,
   };
-  console.log(`Sending ServerCallTerminatePaymentInitiate for CustomerId: ${customerId} ClientSecret: ${clientSecret}`);
+  console.log(`Sending ServerCallTerminatePaymentInitiate for CustomerId: ${customerId}`);
   clientMessageSender.sendCallTerminatePaymentInitiate(serverCallTerminatePaymentInitiate);
 }

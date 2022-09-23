@@ -1,6 +1,6 @@
-import {ClientCallJoinRequest} from "../../../protos/call_transaction_package/ClientCallJoinRequest";
 import * as admin from "firebase-admin";
-import {CallTransaction} from "../models/call_transaction";
+import {ClientCallJoinRequest} from "../../../../../protos/call_transaction_package/ClientCallJoinRequest";
+import {CallTransaction} from "../../../models/call_transaction";
 
 type CallTransactionJoinReturnType = [valid: boolean, errorMessage: string];
 

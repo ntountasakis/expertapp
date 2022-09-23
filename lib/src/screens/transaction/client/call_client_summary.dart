@@ -22,14 +22,11 @@ class CallClientSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: UserPreviewAppbar(expertUserMetadata),
-      body: Container(
-        padding: EdgeInsets.all(8.0),
-        child: Column(children: [
-          exitCallFlowButton(context),
-        ]),
-      ),
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      child: Column(children: [
+        exitCallFlowButton(context),
+      ]),
     );
   }
 }

@@ -1,7 +1,7 @@
-import {FirestoreListenerManager} from "../event_listeners/firestore_listener_manager";
-import {FirestoreUnsubscribeInterface} from "../event_listeners/firestore_unsubscribe_interface";
-import {CallTransaction} from "../models/call_transaction";
-import {getCallTransactionRef} from "./util/model_fetchers";
+import {FirestoreListenerManager} from "../firestore_listener_manager";
+import {FirestoreUnsubscribeInterface} from "../firestore_unsubscribe_interface";
+import {CallTransaction} from "../../models/call_transaction";
+import {getCallTransactionRef} from "../../functions/util/model_fetchers";
 
 export function listenForCallTransactionUpdates(
     transactionId: string, listenerManager: FirestoreListenerManager): FirestoreUnsubscribeInterface {

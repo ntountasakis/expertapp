@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import {CallTransaction} from "../models/call_transaction";
+import {CallTransaction} from "../../models/call_transaction";
 
 export async function lookupAgoraChannelName({callTransactionId}: {callTransactionId: string}):
     Promise<[success: boolean, errorMessage: string, agoraChannelName: string]> {

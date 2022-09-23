@@ -12,7 +12,7 @@ import {sendGrpcServerAgoraCredentials} from "../../server/client_communication/
 
 export function onCallerPaymentSuccessCallInitiate(clientMessageSender: ClientMessageSenderInterface,
     callState : BaseCallState,
-    update: PaymentStatus): boolean {
+    update: PaymentStatus): Promise<boolean> {
   if (update.status == StripePaymentIntentStates.SUCCEEDED) {
     const paymentResolved: ServerCallBeginPaymentInitiateResolved = {};
     clientMessageSender.sendCallBeginPaymentInitiateResolved(paymentResolved);
@@ -23,7 +23,7 @@ export function onCallerPaymentSuccessCallInitiate(clientMessageSender: ClientMe
         callerCallState.callerBeginCallContext.transactionId);
     sendGrpcServerAgoraCredentials(clientMessageSender, callerCallState.callerBeginCallContext.agoraChannelName,
         callerCallState.callerBeginCallContext.callJoinRequest.callerUid);
-    return true;
+    return Promise.resolve(true);
   }
-  return false;
+  return Promise.resolve(false);
 }

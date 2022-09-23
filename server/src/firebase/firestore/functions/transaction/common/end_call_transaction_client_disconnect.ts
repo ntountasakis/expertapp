@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
-import {CallTransaction} from "../models/call_transaction";
-import {getCallTransaction, getCallTransactionRef} from "./util/model_fetchers";
+import {markCallEndIfNotAlready} from "../../util/call_transaction_complete";
+import {getCallTransaction} from "../../util/model_fetchers";
 
 export const endCallTransactionClientDisconnect = async (
     {transactionId}: {transactionId: string}): Promise<void> => {
@@ -14,17 +14,6 @@ export const endCallTransactionClientDisconnect = async (
       console.error(errorMsgPrefix + `Cannot find CallTransaction with ID: ${transactionId}`);
       return;
     }
-    markCallEndIfNotAlready(transactionId, callTransaction, transaction);
+    markCallEndIfNotAlready(callTransaction, Date.now(), transaction);
   });
 };
-
-function markCallEndIfNotAlready(callTransactionId: string,
-    callTransactionModel: CallTransaction, transaction: FirebaseFirestore.Transaction) {
-  if (!callTransactionModel.callHasEnded) {
-    console.log(`Marking callHasEnded in endCallTransactionClientDisconnect with ID: ${callTransactionId}`);
-    transaction.update(getCallTransactionRef(callTransactionId), {
-      "callHasEnded": true,
-      "callEndTimeUtsMs": Date.now(),
-    });
-  }
-}
