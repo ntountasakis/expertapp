@@ -6,8 +6,8 @@ import {onCallerPaymentSuccessCallInitiate} from "../call_events/caller/caller_o
 import {CallerCallManager} from "../call_state/caller/caller_call_manager";
 // eslint-disable-next-line max-len
 import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_begin_payment_initiate";
-import {sendGrpcCallRequestFailure} from "../server/client_communication/grpc/send_grpc_call_request_failure";
-import {sendGrpcCallRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_request_success";
+import {sendGrpcCallJoinOrRequestFailure} from "../server/client_communication/grpc/send_grpc_call_join_or_request_failure";
+import {sendGrpcCallJoinOrRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_join_or_request_success";
 import {CallerBeginCallContext} from "../call_state/caller/caller_begin_call_context";
 // eslint-disable-next-line max-len
 import {endCallTransactionClientDisconnect} from "../firebase/firestore/functions/transaction/common/end_call_transaction_client_disconnect";
@@ -31,7 +31,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
     await createCallTransaction({request: request});
 
   if (!transactionValid || transaction == undefined) {
-    sendGrpcCallRequestFailure(`Unable to create call transaction. Error: ${transactionErrorMessage}`,
+    sendGrpcCallJoinOrRequestFailure(`Unable to create call transaction. Error: ${transactionErrorMessage}`,
         clientMessageSender);
     return;
   }
@@ -55,7 +55,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
     unsubscribeFn: listenForCallTransactionUpdates(
         transaction.callTransactionId, newClientCallState.eventListenerManager)});
 
-  sendGrpcCallRequestSuccess(transaction.callTransactionId, clientMessageSender);
+  sendGrpcCallJoinOrRequestSuccess(transaction.callTransactionId, clientMessageSender);
   sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, callerPaymentIntentClientSecret, callerStripeCustomerId);
 }
 

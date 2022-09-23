@@ -30,7 +30,7 @@ message ClientMessageContainer {
     }
 }
 
-message ServerCallRequestResponse {
+message ServerCallJoinOrRequestResponse {
     bool success = 1;
     string errorMessage = 2;
     string callTransactionId = 3;
@@ -67,7 +67,7 @@ message ServerCounterpartyLeftCall {
 
 message ServerMessageContainer {
     oneof messageWrapper {
-        ServerCallRequestResponse serverCallRequestResponse = 1;
+        ServerCallJoinOrRequestResponse serverCallJoinOrRequestResponse = 1;
         ServerAgoraCredentials serverAgoraCredentials = 2;
         ServerCallBeginPaymentInitiate serverCallBeginPaymentInitiate = 3;
         ServerCallBeginPaymentInitiateResolved serverCallBeginPaymentInitiateResolved = 4;

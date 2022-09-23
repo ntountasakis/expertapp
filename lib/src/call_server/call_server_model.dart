@@ -47,7 +47,7 @@ class CallServerModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onServerCallRequestResponse(ServerCallRequestResponse response) {
+  void onServerCallJoinOrRequestResponse(ServerCallJoinOrRequestResponse response) {
     _callTransactionId = response.callTransactionId;
   }
 
@@ -83,14 +83,12 @@ class CallServerModel extends ChangeNotifier {
   }
 
   void onServerCounterpartyJoinedCall() {
-    _counterpartyConnectionState =
-        CallServerCounterpartyConnectionState.JOINED;
+    _counterpartyConnectionState = CallServerCounterpartyConnectionState.JOINED;
     notifyListeners();
   }
 
   void onServerCounterpartyLeftCall() {
-    _counterpartyConnectionState =
-        CallServerCounterpartyConnectionState.LEFT;
+    _counterpartyConnectionState = CallServerCounterpartyConnectionState.LEFT;
     notifyListeners();
   }
 }

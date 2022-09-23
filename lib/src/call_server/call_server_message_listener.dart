@@ -16,13 +16,13 @@ class CallServerMessageListener {
   void onMessage(ServerMessageContainer aMessage) {
     CallServerModel model =
         Provider.of<CallServerModel>(connectedContext, listen: false);
-    if (aMessage.hasServerCallRequestResponse()) {
-      final response = aMessage.serverCallRequestResponse;
+    if (aMessage.hasServerCallJoinOrRequestResponse()) {
+      final response = aMessage.serverCallJoinOrRequestResponse;
       if (!response.success) {
         log("Error from call server ${response.errorMessage}");
         model.onErrored(response.errorMessage);
       } else {
-        model.onServerCallRequestResponse(response);
+        model.onServerCallJoinOrRequestResponse(response);
       }
     } else if (aMessage.hasServerAgoraCredentials()) {
       model.onAgoraCredentials(aMessage.serverAgoraCredentials);
