@@ -1,38 +1,32 @@
 // eslint-disable-next-line max-len
-import {onCallerPaymentSuccessCallTerminate} from "../call_events/caller/caller_on_payment_success_call_terminate";
+import {callerSendPaymentRequestEndOfCall} from "../call_events/caller/caller_send_payment_request_end_of_call";
 import {CallerCallManager} from "../call_state/caller/caller_call_manager";
 // eslint-disable-next-line max-len
-import {endCallTransactionClientInitiated, EndCallTransactionReturnType} from "../firebase/firestore/functions/end_call_transaction_client_initiated";
-import {listenForPaymentStatusUpdates} from "../firebase/firestore/functions/listen_for_payment_status_updates";
+import {endCallTransactionCallerInitiated} from "../firebase/firestore/functions/transaction/caller/end_call_transaction_caller_initiated";
+import {EndCallTransactionReturnType} from "../firebase/firestore/functions/transaction/types/call_transaction_types";
+// eslint-disable-next-line max-len
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallTerminateRequest} from "../protos/call_transaction_package/ClientCallTerminateRequest";
 // eslint-disable-next-line max-len
-import {sendGrpcServerCallTerminatePaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_terminate_payment_initiate";
 
 export async function handleClientCallTerminateRequest(callTerminateRequest: ClientCallTerminateRequest,
     clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallerCallManager): Promise<void> {
   // todo: use return values
+  console.log(`handline clientCallTerminateRequest for ID: ${callTerminateRequest.callTransactionId}`);
   const endCallPromise: EndCallTransactionReturnType =
-    await endCallTransactionClientInitiated({terminateRequest: callTerminateRequest});
+    await endCallTransactionCallerInitiated({terminateRequest: callTerminateRequest});
 
   if (typeof endCallPromise === "string") {
-    console.error(endCallPromise);
+    console.error("Leaving handleClientCallTerminateRequest on error");
     return;
   }
-
-  const [endCallTransactionId, endCallPaymentIntentClientSecret,
-    endCallPaymentStatusId, callerStripeCustomerId] = endCallPromise;
-  sendGrpcServerCallTerminatePaymentInitiate({clientMessageSender: clientMessageSender,
-    customerId: callerStripeCustomerId, clientSecret: endCallPaymentIntentClientSecret});
-
   const uid = callTerminateRequest.uid as string;
-  const existingClientCallState = clientCallManager.getCallState({userId: uid});
-  if (existingClientCallState === undefined) {
-    console.error(`Cannot find existing CallState in handleClientCallTerminateRequest for ID: ${endCallTransactionId}`);
+  const baseCallState = clientCallManager.getCallState({userId: uid});
+  if (baseCallState === undefined) {
+    console.error(`Cannot find existing CallState in handleClientCallTerminateRequest for ID:
+    ${callTerminateRequest.callTransactionId}`);
     return;
   }
-  existingClientCallState.eventListenerManager.listenForEventUpdates({key: endCallPaymentStatusId,
-    updateCallback: onCallerPaymentSuccessCallTerminate,
-    unsubscribeFn: listenForPaymentStatusUpdates(
-        endCallPaymentStatusId, existingClientCallState.eventListenerManager)});
+
+  callerSendPaymentRequestEndOfCall(clientMessageSender, baseCallState);
 }

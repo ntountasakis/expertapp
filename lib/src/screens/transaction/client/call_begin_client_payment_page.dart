@@ -36,20 +36,6 @@ class _CallBeginClientPaymentPageState
         .then((value) => {widget.callServerManager.initiateCall(context)});
   }
 
-  void navigateToNextPage(CallServerModel model) {
-    Future.microtask(() => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ListenableProvider<CallServerModel>.value(
-            value: model,
-            child: CallClientMain(
-                currentUserId: widget.currentUserId,
-                connectedExpertMetadata: widget.expertUserMetadata,
-                callServerManager: widget.callServerManager),
-          ),
-        )));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,8 +47,10 @@ class _CallBeginClientPaymentPageState
               showPaymentPrompt(model.callBeginPaymentPromptModel);
               break;
             case PaymentState.PAYMENT_COMPLETE:
-              navigateToNextPage(model);
-              break;
+              return CallClientMain(
+                  currentUserId: widget.currentUserId,
+                  connectedExpertMetadata: widget.expertUserMetadata,
+                  callServerManager: widget.callServerManager);
             case PaymentState.PAYMENT_FAILURE:
               log("CallClientPaymentBeginPage: Payment failure error");
               break;

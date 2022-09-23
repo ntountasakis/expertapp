@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
-import {FirestoreListenerManager} from "../event_listeners/firestore_listener_manager";
-import {FirestoreUnsubscribeInterface} from "../event_listeners/firestore_unsubscribe_interface";
-import {PaymentStatus} from "../models/payment_status";
+import {PaymentStatus} from "../../models/payment_status";
+import {FirestoreListenerManager} from "../firestore_listener_manager";
+import {FirestoreUnsubscribeInterface} from "../firestore_unsubscribe_interface";
 
 export function listenForPaymentStatusUpdates(
     paymentStatusId: string, listenerManager: FirestoreListenerManager): FirestoreUnsubscribeInterface {

@@ -26,7 +26,6 @@ export async function paymentIntentHelperFunc({costInCents, privateUserInfo, uid
     "centsCollected": 0,
   };
 
-
   const callStartPaymentDoc = admin.firestore().collection("payment_statuses").doc(paymentStatusId);
   transaction.create(callStartPaymentDoc, callerCallStartPaymentStatus);
 

@@ -1,10 +1,10 @@
 import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
-import {CallJoinRequest} from "../../fcm/messages/call_join_request";
-import {CallTransaction} from "../models/call_transaction";
-import {lookupUserFcmToken} from "./lookup_user_fcm_token";
-import {getExpertRate, getPrivateUserInfo} from "./util/model_fetchers";
-import {paymentIntentHelperFunc, PaymentIntentType} from "./util/payment_intent_helper";
+import {CallJoinRequest} from "../../../../fcm/messages/call_join_request";
+import {CallTransaction} from "../../../models/call_transaction";
+import {lookupUserFcmToken} from "../../util/lookup_user_fcm_token";
+import {getExpertRate, getPrivateUserInfo} from "../../util/model_fetchers";
+import {paymentIntentHelperFunc, PaymentIntentType} from "../../util/payment_intent_helper";
 
 type CallTransactionReturnType = [valid: boolean, errorMessage: string,
   callStartPaymentIntentClientSecret: string, callerStripeCustomerId: string,

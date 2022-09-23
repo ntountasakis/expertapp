@@ -7,12 +7,12 @@ import {ServerCallTerminatePaymentInitiateResolved} from "../../protos/call_tran
 import {StripePaymentIntentStates} from "../../stripe/constants";
 
 export function onCallerPaymentSuccessCallTerminate(clientMessageSender: ClientMessageSenderInterface,
-    callState : BaseCallState, update: PaymentStatus): boolean {
+    callState : BaseCallState, update: PaymentStatus): Promise<boolean> {
   if (update.status == StripePaymentIntentStates.SUCCEEDED) {
     const paymentResolved: ServerCallTerminatePaymentInitiateResolved = {};
     console.log("On paymentSuccessCallTerminate. Sending payment resolved to client");
     clientMessageSender.sendCallTerminatePaymentInitiateResolved(paymentResolved);
-    return true;
+    return Promise.resolve(true);
   }
-  return false;
+  return Promise.resolve(false);
 }

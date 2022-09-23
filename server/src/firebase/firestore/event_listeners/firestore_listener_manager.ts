@@ -27,14 +27,14 @@ export class FirestoreListenerManager {
       this.listeners.set(key, [updateCallback, unsubscribeFn]);
     }
 
-    onEventUpdate({key, type, update} : {key: string, type: string, update: any}): void {
+    async onEventUpdate({key, type, update} : {key: string, type: string, update: any}): Promise<void> {
       const listener : [FirestoreUpdateCallback, FirestoreUnsubscribeInterface] | undefined =
         this._getListener({key: key, type: type});
       if (listener === undefined) {
         return;
       }
       const updateCallback = listener[0];
-      const isDone = updateCallback(this.clientMessageSender, this.callState, update);
+      const isDone = await updateCallback(this.clientMessageSender, this.callState, update);
       this._onCallbackComplete({key: key, isDone: isDone, unsubscribeFn: listener[1]});
     }
 

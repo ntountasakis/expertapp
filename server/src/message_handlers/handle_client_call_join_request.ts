@@ -1,13 +1,14 @@
 import {sendGrpcServerAgoraCredentials} from "../server/client_communication/grpc/send_grpc_server_agora_credentials";
-import {lookupAgoraChannelName} from "../firebase/firestore/functions/lookup_agora_channel_name";
+import {lookupAgoraChannelName} from "../firebase/firestore/functions/util/lookup_agora_channel_name";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallJoinRequest} from "../protos/call_transaction_package/ClientCallJoinRequest";
-import {joinCallTransaction} from "../firebase/firestore/functions/join_call_transaction";
+import {joinCallTransaction} from "../firebase/firestore/functions/transaction/called/join_call_transaction";
 import {CalledCallManager} from "../call_state/called/called_call_manager";
 // eslint-disable-next-line max-len
-import {endCallTransactionClientDisconnect} from "../firebase/firestore/functions/end_call_transaction_client_disconnect";
+import {endCallTransactionClientDisconnect} from "../firebase/firestore/functions/transaction/common/end_call_transaction_client_disconnect";
 import {onCalledTransactionUpdate} from "../call_events/called/called_on_transaction_update";
-import {listenForCallTransactionUpdates} from "../firebase/firestore/functions/listen_for_call_transaction_updates";
+// eslint-disable-next-line max-len
+import {listenForCallTransactionUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_call_transaction_updates";
 
 export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
     clientMessageSender: ClientMessageSenderInterface,

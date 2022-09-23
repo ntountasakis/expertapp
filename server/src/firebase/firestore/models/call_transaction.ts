@@ -1,4 +1,5 @@
-export interface CallTransaction {
+export interface CallTransaction
+{
     callTransactionId: string;
     callerUid: string;
     calledUid: string;
