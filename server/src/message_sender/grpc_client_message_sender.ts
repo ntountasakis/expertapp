@@ -4,7 +4,7 @@ import {ServerAgoraCredentials} from "../protos/call_transaction_package/ServerA
 import {ServerCallBeginPaymentInitiate} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiate";
 // eslint-disable-next-line max-len
 import {ServerCallBeginPaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiateResolved";
-import {ServerCallRequestResponse} from "../protos/call_transaction_package/ServerCallRequestResponse";
+import {ServerCallJoinOrRequestResponse} from "../protos/call_transaction_package/ServerCallJoinOrRequestResponse";
 // eslint-disable-next-line max-len
 import {ServerCallTerminatePaymentInitiate} from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiate";
 // eslint-disable-next-line max-len
@@ -21,10 +21,10 @@ export class GrpcClientMessageSender extends ClientMessageSenderInterface {
       super();
       this.sendingStream = sendingStream;
     }
-    sendCallRequestResponse(callRequestResponse: ServerCallRequestResponse): void {
+    sendCallJoinOrRequestResponse(callRequestResponse: ServerCallJoinOrRequestResponse): void {
       const clientMessageContainer: ServerMessageContainer = {
-        "serverCallRequestResponse": callRequestResponse,
-        "messageWrapper": "serverCallRequestResponse",
+        "serverCallJoinOrRequestResponse": callRequestResponse,
+        "messageWrapper": "serverCallJoinOrRequestResponse",
       };
       this.sendingStream.write(clientMessageContainer);
     }
