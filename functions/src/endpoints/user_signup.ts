@@ -18,7 +18,7 @@ export const userSignup = functions.https.onCall(async (data, context) => {
 
   // eslint-disable-next-line max-len
   const stripe = new Stripe("sk_test_51LLQIdAoQ8pfRhfFWhXXPMmQkBMR1wAZSiFAc0fRZ3OQfnVJ3Mo5MXt65rv33lt0A7mzUIRWahIbSt2iFDFDrZ6C00jF2hT9eZ", {
-    apiVersion: "2020-08-27",
+    apiVersion: "2022-08-01",
   });
 
   const stripeCustomerId = await createStripeCustomer({stripe: stripe});
