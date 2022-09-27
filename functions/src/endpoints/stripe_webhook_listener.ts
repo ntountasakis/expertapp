@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions";
-import {handlePaymentIntentSucceeded} from "./stripe/handle_payment_intent_succeeded";
+import {handlePaymentIntentSucceeded} from "../cloud_functions/stripe/webhook/handle_payment_intent_succeeded";
 
 export const stripeWebhookListener = functions.https.onRequest(async (request, response) => {
   try {

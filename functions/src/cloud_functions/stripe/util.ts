@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 
-export async function createStripeUser({stripe}: {stripe: Stripe}) : Promise<string> {
+export async function createStripeCustomer({stripe}: {stripe: Stripe}) : Promise<string> {
   let stripeCustomerId = "";
   try {
     const stripeCustomerResponse = await stripe.customers.create();
@@ -15,4 +15,36 @@ export async function createStripeUser({stripe}: {stripe: Stripe}) : Promise<str
     }
   }
   return stripeCustomerId;
+}
+
+export async function createStripeConnectAccount({stripe, firstName, lastName, email}:
+    {stripe: Stripe, firstName: string, lastName: string, email: string}): Promise<string> {
+  const account: Stripe.Response<Stripe.Account> = await stripe.accounts.create({
+    type: "express",
+    business_type: "individual",
+    capabilities: {
+      card_payments: {requested: true},
+      transfers: {requested: true},
+    },
+    individual: {
+      email: email,
+      first_name: firstName,
+      last_name: lastName,
+    },
+  });
+  return account.id;
+}
+
+export async function createAccountLinkOnboarding({stripe, account, refreshUrl, returnUrl}:
+    {stripe: Stripe, account: string, refreshUrl: string, returnUrl: string}): Promise<string> {
+  const accountLink = await stripe.accountLinks.create(
+      {
+        account: account,
+        refresh_url: refreshUrl,
+        return_url: returnUrl,
+        type: "account_onboarding",
+      },
+  );
+
+  return accountLink.url;
 }
