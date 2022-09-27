@@ -21,5 +21,11 @@ FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.CHATROOM_METADATA);
 }
 
+function getPaymentStatusDocumentRef({paymentStatusId}: {paymentStatusId: string}):
+FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection(CollectionPaths.PAYMENT_STATUSES).doc(paymentStatusId);
+}
 
-export {getUserDocumentRef, getUserMetadataDocumentRef, getReviewsCollectionRef, getChatroomMetadataCollectionRef};
+
+export {getUserDocumentRef, getUserMetadataDocumentRef, getReviewsCollectionRef,
+    getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef};
