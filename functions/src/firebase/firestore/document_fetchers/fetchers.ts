@@ -18,7 +18,7 @@ FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData> {
 
 function getChatroomMetadataCollectionRef():
 FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData> {
-  return admin.firestore().collection("chatroom_metadata");
+  return admin.firestore().collection(CollectionPaths.CHATROOM_METADATA);
 }
 
 
