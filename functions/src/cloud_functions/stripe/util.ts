@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 
-export async function createStripeCustomer({stripe}: {stripe: Stripe}) : Promise<string> {
+async function createStripeCustomer({stripe}: {stripe: Stripe}) : Promise<string> {
   let stripeCustomerId = "";
   try {
     const stripeCustomerResponse = await stripe.customers.create();
@@ -17,7 +17,7 @@ export async function createStripeCustomer({stripe}: {stripe: Stripe}) : Promise
   return stripeCustomerId;
 }
 
-export async function createStripeConnectAccount({stripe, firstName, lastName, email}:
+async function createStripeConnectAccount({stripe, firstName, lastName, email}:
     {stripe: Stripe, firstName: string, lastName: string, email: string}): Promise<string> {
   const account: Stripe.Response<Stripe.Account> = await stripe.accounts.create({
     type: "express",
@@ -48,3 +48,5 @@ export async function createAccountLinkOnboarding({stripe, account, refreshUrl, 
 
   return accountLink.url;
 }
+
+export {createStripeConnectAccount, createStripeCustomer};

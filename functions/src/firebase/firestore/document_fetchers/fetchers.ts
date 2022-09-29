@@ -28,4 +28,4 @@ FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
 
 
 export {getUserDocumentRef, getUserMetadataDocumentRef, getReviewsCollectionRef,
-    getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef};
+  getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef};
