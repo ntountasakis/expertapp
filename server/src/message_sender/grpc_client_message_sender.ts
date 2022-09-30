@@ -2,12 +2,12 @@ import * as grpc from "@grpc/grpc-js";
 import {ClientMessageContainer} from "../protos/call_transaction_package/ClientMessageContainer";
 import {ServerAgoraCredentials} from "../protos/call_transaction_package/ServerAgoraCredentials";
 import {ServerCallBeginPaymentInitiate} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiate";
-// eslint-disable-next-line max-len
+
 import {ServerCallBeginPaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiateResolved";
 import {ServerCallJoinOrRequestResponse} from "../protos/call_transaction_package/ServerCallJoinOrRequestResponse";
-// eslint-disable-next-line max-len
+
 import {ServerCallTerminatePaymentInitiate} from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiate";
-// eslint-disable-next-line max-len
+
 import {ServerCallTerminatePaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiateResolved";
 import {ServerCounterpartyJoinedCall} from "../protos/call_transaction_package/ServerCounterpartyJoinedCall";
 import {ServerCounterpartyLeftCall} from "../protos/call_transaction_package/ServerCounterpartyLeftCall";

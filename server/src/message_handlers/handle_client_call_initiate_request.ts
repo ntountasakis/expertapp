@@ -4,17 +4,17 @@ import {ClientMessageSenderInterface} from "../message_sender/client_message_sen
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
 import {onCallerPaymentSuccessCallInitiate} from "../call_events/caller/caller_on_payment_success_call_initiate";
 import {CallerCallManager} from "../call_state/caller/caller_call_manager";
-// eslint-disable-next-line max-len
+
 import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_begin_payment_initiate";
 import {sendGrpcCallJoinOrRequestFailure} from "../server/client_communication/grpc/send_grpc_call_join_or_request_failure";
 import {sendGrpcCallJoinOrRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_join_or_request_success";
 import {CallerBeginCallContext} from "../call_state/caller/caller_begin_call_context";
-// eslint-disable-next-line max-len
+
 import {endCallTransactionClientDisconnect} from "../firebase/firestore/functions/transaction/common/end_call_transaction_client_disconnect";
 import {onCallerTransactionUpdate} from "../call_events/caller/caller_on_transaction_update";
-// eslint-disable-next-line max-len
+
 import {listenForPaymentStatusUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_payment_status_updates";
-// eslint-disable-next-line max-len
+
 import {listenForCallTransactionUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_call_transaction_updates";
 
 
