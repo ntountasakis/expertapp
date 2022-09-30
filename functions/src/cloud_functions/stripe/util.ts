@@ -49,4 +49,9 @@ export async function createAccountLinkOnboarding({stripe, account, refreshUrl, 
   return accountLink.url;
 }
 
-export {createStripeConnectAccount, createStripeCustomer};
+async function retrieveAccount({stripe, account}: {stripe: Stripe, account: string}):
+Promise<Stripe.Response<Stripe.Account>> {
+  return await stripe.accounts.retrieve(account);
+}
+
+export {createStripeConnectAccount, createStripeCustomer, retrieveAccount};
