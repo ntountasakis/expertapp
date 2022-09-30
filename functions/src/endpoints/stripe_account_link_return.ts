@@ -30,7 +30,7 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
     console.log(`Connected account: ${accountId} sign up process complete`);
 
     response.set("Content-Type", "text/html");
-    // eslint-disable-next-line max-len
+
     response.send(Buffer.from("<p style=\x22text-align: center;\x22><strong>Sign up complete. You may close this window.</strong></p>"));
     response.status(200).end();
   }

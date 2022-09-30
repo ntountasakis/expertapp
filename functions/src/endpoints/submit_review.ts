@@ -37,7 +37,6 @@ export const submitReview = functions.https.onCall(async (data, context) => {
     const matchingReviews = await transaction.get(
         getReviewsFromAuthorForReviewed({authorUid: authorUid, reviewedUid: reviewedUid}));
     if (matchingReviews.size > 1) {
-      // eslint-disable-next-line max-len
       throw new Error(`Author ${authorUid} managed to leave ${matchingReviews.size} for ${reviewedUid}. Not leaving additional`);
     }
     const reviewedUserMetadataObject = reviewedMetadata.data() as UserMetadata;

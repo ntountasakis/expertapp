@@ -1,13 +1,13 @@
-// eslint-disable-next-line max-len
+
 import {callerSendPaymentRequestEndOfCall} from "../call_events/caller/caller_send_payment_request_end_of_call";
 import {CallerCallManager} from "../call_state/caller/caller_call_manager";
-// eslint-disable-next-line max-len
+
 import {endCallTransactionCallerInitiated} from "../firebase/firestore/functions/transaction/caller/end_call_transaction_caller_initiated";
 import {EndCallTransactionReturnType} from "../firebase/firestore/functions/transaction/types/call_transaction_types";
-// eslint-disable-next-line max-len
+
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallTerminateRequest} from "../protos/call_transaction_package/ClientCallTerminateRequest";
-// eslint-disable-next-line max-len
+
 
 export async function handleClientCallTerminateRequest(callTerminateRequest: ClientCallTerminateRequest,
     clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallerCallManager): Promise<void> {

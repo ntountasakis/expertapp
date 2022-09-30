@@ -1,6 +1,6 @@
 
 import {ClientMessageSenderInterface} from "../../../message_sender/client_message_sender_interface";
-// eslint-disable-next-line max-len
+
 import {ServerCallTerminatePaymentInitiate} from "../../../protos/call_transaction_package/ServerCallTerminatePaymentInitiate";
 
 export function sendGrpcServerCallTerminatePaymentInitiate({clientMessageSender, clientSecret, customerId}:
