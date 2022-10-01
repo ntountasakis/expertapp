@@ -116,7 +116,7 @@ app.*.symbols
 lib/src/generated
 server/node_modules
 server/generated
-functions/out
+server/functions/out
 
 # Secrets
 conf/expert-app-localdev.json
