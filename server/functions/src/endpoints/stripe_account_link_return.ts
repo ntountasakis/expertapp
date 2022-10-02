@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions";
-import {StripeProvider} from "../cloud_functions/stripe/stripe_provider";
+import {StripeProvider} from "../../../shared/stripe/stripe_provider";
 import {createAccountLinkOnboarding, retrieveAccount} from "../cloud_functions/stripe/util";
 
 export const stripeAccountLinkReturn = functions.https.onRequest(async (request, response) => {
@@ -31,6 +31,7 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
 
     response.set("Content-Type", "text/html");
 
+    // eslint-disable-next-line max-len
     response.send(Buffer.from("<p style=\x22text-align: center;\x22><strong>Sign up complete. You may close this window.</strong></p>"));
     response.status(200).end();
   }

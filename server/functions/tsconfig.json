@@ -6,10 +6,9 @@
     "outDir": "out",
     "strict": true,
     "target": "es2017",
-    "sourceMap": true
+    "sourceMap": true,
+    "rootDirs": ["src", "../shared"]
   },
   "compileOnSave": true,
-  "include": [
-    "src"
-, "../server/src/call_state/call_manager.ts"  ]
+  "include": [ "src" , "../shared"]
 }

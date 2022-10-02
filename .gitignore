@@ -114,7 +114,7 @@ app.*.symbols
 
 # Generated Files
 lib/src/generated
-server/node_modules
+server/call_transaction/node_modules
 server/generated
 server/functions/out
 

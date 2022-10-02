@@ -1,10 +1,10 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import Stripe from "stripe";
 import {createStripeCustomer} from "../cloud_functions/stripe/util";
 import {createUser} from "../firebase/firestore/functions/create_user";
 import {createUserMetadata} from "../firebase/firestore/functions/create_user_metadata";
 import {getDefaultProfilePicUrl} from "../firebase/storage/functions/get_default_profile_pic_url";
+import {StripeProvider} from "../../../shared/stripe/stripe_provider";
 
 export const userSignup = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -16,12 +16,7 @@ export const userSignup = functions.https.onCall(async (data, context) => {
   const lastName : string = data.lastName;
   const email : string = data.email;
 
-
-  const stripe = new Stripe("sk_test_51LLQIdAoQ8pfRhfFWhXXPMmQkBMR1wAZSiFAc0fRZ3OQfnVJ3Mo5MXt65rv33lt0A7mzUIRWahIbSt2iFDFDrZ6C00jF2hT9eZ", {
-    apiVersion: "2022-08-01",
-  });
-
-  const stripeCustomerId = await createStripeCustomer({stripe: stripe});
+  const stripeCustomerId = await createStripeCustomer({stripe: StripeProvider.STRIPE});
   const profilePicUrl = "profilePicUrl" in data ? data.profilePicUrl : getDefaultProfilePicUrl();
 
   const batch = admin.firestore().batch();
