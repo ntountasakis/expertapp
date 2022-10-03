@@ -6,14 +6,16 @@ import {PrivateUserInfo} from "../../models/private_user_info";
 
 export type PaymentIntentType = [paymentStatusId: string, paymentIntentClientSecret: string] | string;
 
-export async function paymentIntentHelperFunc({costInCents, privateUserInfo, uid, description, transaction}:
+export async function paymentIntentHelperFunc(
+    {costInCents, privateUserInfo, uid, transferGroup, description, transaction}:
     {costInCents: number, privateUserInfo: PrivateUserInfo, description: string,
-      uid: string, transaction: FirebaseFirestore.Transaction}):
+      uid: string, transferGroup: string, transaction: FirebaseFirestore.Transaction}):
     Promise<PaymentIntentType> {
   const paymentStatusId = uuidv4();
   const [paymentIntentValid, paymentIntentErrorMessage, _, paymentIntentClientSecret] =
-      await createStripePaymentIntent(privateUserInfo.stripeCustomerId, privateUserInfo.email,
-          costInCents, description, paymentStatusId);
+      await createStripePaymentIntent({customerId: privateUserInfo.stripeCustomerId,
+        customerEmail: privateUserInfo.email, amountToBillInCents: costInCents,
+        paymentDescription: description, paymentStatusId: paymentStatusId, transferGroup: transferGroup});
 
   if (!paymentIntentValid) {
     return `Cannot initiate payment start. ${paymentIntentErrorMessage}`;
@@ -22,6 +24,7 @@ export async function paymentIntentHelperFunc({costInCents, privateUserInfo, uid
   const callerCallStartPaymentStatus: PaymentStatus = {
     "uid": uid,
     "status": "awaiting_payment",
+    "transferGroup": transferGroup,
     "centsToCollect": costInCents,
     "centsCollected": 0,
   };

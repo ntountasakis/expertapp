@@ -2,8 +2,11 @@ import stripe from "stripe";
 import { StripeProvider } from "../../../shared/stripe/stripe_provider";
 import {StripeConstants} from "./constants";
 
-export default async function createStripePaymentIntent(customerId: string, customerEmail: string,
-    amountToBillInCents: number, paymentDescription: string, paymentStatusId: string):
+export default async function createStripePaymentIntent({customerId, customerEmail,
+  amountToBillInCents, paymentDescription, paymentStatusId,
+  transferGroup}: {customerId: string, customerEmail: string,
+    amountToBillInCents: number, paymentDescription: string, paymentStatusId: string,
+    transferGroup: string}):
     Promise<[valid: boolean, errorMessage: string, paymentIntentId: string, clientSecret: string]> {
 
   let errorMessage = `PaymentIntent create fail for customerId: ${customerId} \n`;
@@ -21,6 +24,7 @@ export default async function createStripePaymentIntent(customerId: string, cust
       payment_method_types: ["card"],
       receipt_email: customerEmail,
       statement_descriptor: paymentDescription,
+      transfer_group: transferGroup,
       metadata: {
         "payment_status_id": paymentStatusId,
       },

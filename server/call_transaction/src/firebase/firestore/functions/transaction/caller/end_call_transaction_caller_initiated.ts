@@ -4,14 +4,6 @@ import {getCallTransaction} from "../../util/model_fetchers";
 import {EndCallTransactionReturnType} from "../types/call_transaction_types";
 import {endCallTransactionCallerCommon} from "./end_call_transaction_caller_common";
 
-/* algorithm todo:
-    1) mark call end time in transaction -- done
-    2) calculate cost of call -- done
-    3) create stripe payment intent with these details -- done
-    4) create new message type and have client pay
-    5) pay expert
-    */
-
 export const endCallTransactionCallerInitiated = async (
     {terminateRequest}: {terminateRequest: ClientCallTerminateRequest}):
     Promise<EndCallTransactionReturnType> => {
@@ -46,6 +38,6 @@ export const endCallTransactionCallerInitiated = async (
 
 
 function failure(errorMessage: string): EndCallTransactionReturnType {
-  console.error(`Error in EndCallTransaction: ${errorMessage}`);
+  console.error(`Error in EndCallTransactionCallerInitiated: ${errorMessage}`);
   return errorMessage;
 }

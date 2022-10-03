@@ -1,5 +1,6 @@
 
 import {BaseCallState} from "../../call_state/common/base_call_state";
+import {endCallTransactionCalled} from "../../firebase/firestore/functions/transaction/called/end_call_transaction_called";
 import {CallTransaction} from "../../firebase/firestore/models/call_transaction";
 import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
 
@@ -8,6 +9,7 @@ export function onCalledTransactionUpdate(clientMessageSender: ClientMessageSend
   if (update.callHasEnded) {
     console.log("Called detected caller ended the call");
     clientMessageSender.sendCounterpartyLeftCall({});
+    endCallTransactionCalled({transactionId: update.callTransactionId});
     return Promise.resolve(true);
   } else if (update.calledHasJoined) {
     console.log("Called detected caller joined the call");
