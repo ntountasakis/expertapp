@@ -20,7 +20,7 @@ export async function handlePaymentIntentSucceeded(payload: any): Promise<void> 
 
   try {
   await admin.firestore().runTransaction(async (transaction) => {
-    updatePaymentStatus({transaction: transaction, paymentStatusId: paymentStatusId, amountReceived: amountReceived,
+    await updatePaymentStatus({transaction: transaction, paymentStatusId: paymentStatusId, amountReceived: amountReceived,
       status: status})});
   } catch (error) {
     console.error(`Error in HandlePaymentIntentSuceeded: ${error}`);
