@@ -4,9 +4,9 @@ import {handlePaymentIntentSucceeded} from "../cloud_functions/stripe/webhook/ha
 export const stripeWebhookListener = functions.https.onRequest(async (request, response) => {
   try {
     const eventType = request.body.type;
-    console.log(`Strip webhook event: ${eventType}`);
+    console.log(`Stripe webhook event: ${eventType}`);
     if (eventType == "payment_intent.succeeded") {
-      handlePaymentIntentSucceeded(request.body.data.object);
+      await handlePaymentIntentSucceeded(request.body.data.object);
     } else if (eventType == "payment_intent.failed") {
       console.log("payment intent failed");
     }

@@ -28,7 +28,10 @@ Promise<CallTransactionJoinReturnType> => {
 
     callTransaction.calledHasJoined = true;
     callTransaction.calledJoinTimeUtcMs = Date.now();
-    callTransactionRef.update(callTransaction);
+    callTransactionRef.update({
+      "calledHasJoined": true,
+      "calledJoinTimeUtcMs": Date.now()
+    });
 
     console.log(`CallTransaction joined. TransactionId: ${callTransaction.callTransactionId} 
         JoinedId: ${callTransaction.calledUid} `);
