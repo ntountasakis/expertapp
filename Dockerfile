@@ -1,8 +1,7 @@
-FROM ubuntu:20.04 AS base
+FROM ubuntu:22.04 AS base
 WORKDIR /node
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
-  nodejs \
   npm \
   protobuf-compiler \
   vim-tiny
@@ -20,6 +19,7 @@ FROM base AS production
 WORKDIR /server/
 COPY --from=0 ./node/call_transaction/package.json ./
 RUN npm install --only=production
+RUN apt-get -y install curl && npm install -g n && n 16
 COPY --from=base /node/call_transaction/dist .
 COPY ./conf ./src/conf/
 WORKDIR /server/call_transaction/src
