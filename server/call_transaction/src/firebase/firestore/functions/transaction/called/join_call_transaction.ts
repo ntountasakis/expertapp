@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin";
+import { getCallTransactionDocumentRef } from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import { CallTransaction } from "../../../../../../../shared/firebase/firestore/models/call_transaction";
 import {ClientCallJoinRequest} from "../../../../../protos/call_transaction_package/ClientCallJoinRequest";
-import {CallTransaction} from "../../../models/call_transaction";
 
 type CallTransactionJoinReturnType = [valid: boolean, errorMessage: string];
 
@@ -10,8 +11,7 @@ Promise<CallTransactionJoinReturnType> => {
     if (request.callTransactionId == null || request.joinerUid == null) {
       return callTransactionFailure("ClientCallJoinRequest has null fields");
     }
-    const callTransactionRef = admin.firestore()
-        .collection("call_transactions").doc(request.callTransactionId);
+    const callTransactionRef = getCallTransactionDocumentRef({transactionId: request.callTransactionId});
     const callTransactionDoc = await callTransactionRef.get();
 
     let errorMessage = `Call Transaction ID: ${request.callTransactionId} `;

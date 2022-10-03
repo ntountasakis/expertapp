@@ -1,4 +1,4 @@
-import {getPaymentStatusDocumentRef} from "../document_fetchers/fetchers";
+import { getPaymentStatusDocumentRef } from "../../../../../shared/firebase/firestore/document_fetchers/fetchers";
 
 export async function updatePaymentStatus({transaction, paymentStatusId, amountReceived, status}:
     {transaction: FirebaseFirestore.Transaction, paymentStatusId: string, amountReceived: number,

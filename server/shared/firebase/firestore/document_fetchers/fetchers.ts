@@ -26,6 +26,22 @@ FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.PAYMENT_STATUSES).doc(paymentStatusId);
 }
 
+function getExpertRateDocumentRef({expertUid}: {expertUid: string}):
+FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection(CollectionPaths.EXPERT_RATES).doc(expertUid);
+}
+
+function getCallTransactionDocumentRef({transactionId}: {transactionId: string}):
+FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection(CollectionPaths.CALL_TRANSACTIONS).doc(transactionId);
+}
+
+function getFcmTokenDocumentRef({uid}: {uid: string}):
+FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection(CollectionPaths.FCM_TOKENS).doc(uid);
+}
+
 
 export {getUserDocumentRef, getUserMetadataDocumentRef, getReviewsCollectionRef,
-  getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef};
+  getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
+  getCallTransactionDocumentRef, getFcmTokenDocumentRef};

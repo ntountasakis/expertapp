@@ -1,10 +1,9 @@
-import * as admin from "firebase-admin";
+import { getFcmTokenDocumentRef } from "../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
 
 export async function lookupUserFcmToken(
     {userId, transaction}: {userId: string, transaction: FirebaseFirestore.Transaction}):
     Promise<[success: boolean, errorMessage: string, token: string]> {
-  const tokenCollection = admin.firestore().collection("fcm_tokens");
-  const tokenDocument = await transaction.get(tokenCollection.doc(userId));
+  const tokenDocument = await transaction.get(getFcmTokenDocumentRef({uid: userId}));
   if (!tokenDocument.exists) {
     return [false, `Cannot find token for user: ${userId}`, ""];
   }

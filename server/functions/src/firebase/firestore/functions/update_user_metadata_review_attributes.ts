@@ -1,4 +1,4 @@
-import {getUserMetadataDocumentRef} from "../document_fetchers/fetchers";
+import { getUserMetadataDocumentRef } from "../../../../../shared/firebase/firestore/document_fetchers/fetchers";
 
 export function updateUserMetadataReviewAttributes(
     {transaction, reviewedUid, runningSumReviewRatings, numReviews}:

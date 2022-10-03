@@ -114,9 +114,11 @@ app.*.symbols
 
 # Generated Files
 lib/src/generated
+server/shared/node_modules
 server/call_transaction/node_modules
-server/generated
+server/functions/node_modules
 server/functions/out
+server/generated
 
 # Secrets
 conf/expert-app-localdev.json

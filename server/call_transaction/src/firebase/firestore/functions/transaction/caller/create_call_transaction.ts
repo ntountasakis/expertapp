@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
+import { CallTransaction } from "../../../../../../../shared/firebase/firestore/models/call_transaction";
 import {CallJoinRequest} from "../../../../fcm/messages/call_join_request";
-import {CallTransaction} from "../../../models/call_transaction";
 import {lookupUserFcmToken} from "../../util/lookup_user_fcm_token";
 import {getExpertRate, getPrivateUserInfo} from "../../util/model_fetchers";
 import {paymentIntentHelperFunc, PaymentIntentType} from "../../util/payment_intent_helper";

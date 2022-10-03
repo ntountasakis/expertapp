@@ -7,7 +7,7 @@
     "sourceMap": true,
     "strict": true,
     "target": "es2017",
-    "rootDirs": ["src", "generated", "../shared"],
+    "rootDirs": ["src", "generated"],
     "allowJs": true,
     "types": [
       "jest"

@@ -1,11 +1,11 @@
-import * as admin from "firebase-admin";
-import {PaymentStatus} from "../../models/payment_status";
+import { getPaymentStatusDocumentRef } from "../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import { PaymentStatus } from "../../../../../../shared/firebase/firestore/models/payment_status";
 import {FirestoreListenerManager} from "../firestore_listener_manager";
 import {FirestoreUnsubscribeInterface} from "../firestore_unsubscribe_interface";
 
 export function listenForPaymentStatusUpdates(
     paymentStatusId: string, listenerManager: FirestoreListenerManager): FirestoreUnsubscribeInterface {
-  const doc = admin.firestore().collection("payment_statuses").doc(paymentStatusId);
+  const doc = getPaymentStatusDocumentRef({paymentStatusId: paymentStatusId});
   const unsubscribeFn = doc.onSnapshot((docSnapshot) => {
     const paymentStatus = docSnapshot.data() as PaymentStatus;
     console.log(`On payment status update. PaymentStatusId: ${paymentStatusId} 

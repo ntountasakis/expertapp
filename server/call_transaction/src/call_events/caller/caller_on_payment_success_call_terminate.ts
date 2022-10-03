@@ -1,5 +1,5 @@
+import { PaymentStatus } from "../../../../shared/firebase/firestore/models/payment_status";
 import {BaseCallState} from "../../call_state/common/base_call_state";
-import {PaymentStatus} from "../../firebase/firestore/models/payment_status";
 import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
 
 import {ServerCallTerminatePaymentInitiateResolved} from "../../protos/call_transaction_package/ServerCallTerminatePaymentInitiateResolved";
