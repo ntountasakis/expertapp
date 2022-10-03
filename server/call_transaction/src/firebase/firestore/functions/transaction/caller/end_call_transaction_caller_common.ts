@@ -1,7 +1,8 @@
-import {CallTransaction} from "../../../models/call_transaction";
+import { getCallTransactionDocumentRef } from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import { CallTransaction } from "../../../../../../../shared/firebase/firestore/models/call_transaction";
 import {calculateCostOfCallInCents} from "../../util/call_cost_calculator";
 import {markCallEndIfNotAlready} from "../../util/call_transaction_complete";
-import {getCallTransactionRef, getPrivateUserInfo} from "../../util/model_fetchers";
+import { getPrivateUserInfo } from "../../util/model_fetchers";
 import {paymentIntentHelperFunc, PaymentIntentType} from "../../util/payment_intent_helper";
 import {EndCallTransactionReturnType} from "../types/call_transaction_types";
 
@@ -48,7 +49,7 @@ function failure(errorMessage: string): EndCallTransactionReturnType {
 
 function updateCallTransactionTerminateFields(callTransaction: CallTransaction,
     callTerminatePaymentStatusId: string, transaction: FirebaseFirestore.Transaction) {
-  const callTransactionRef = getCallTransactionRef(callTransaction.callTransactionId);
+  const callTransactionRef = getCallTransactionDocumentRef({transactionId: callTransaction.callTransactionId})
   transaction.update(callTransactionRef, {
     "callerCallTerminatePaymentStatusId": callTerminatePaymentStatusId,
   });

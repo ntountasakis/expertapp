@@ -3,12 +3,12 @@ import {ClientMessageSenderInterface} from "../../message_sender/client_message_
 
 import {sendFcmCallJoinRequest} from "../../server/client_communication/fcm/send_fcm_call_join_request";
 import {BaseCallState} from "../../call_state/common/base_call_state";
-import {PaymentStatus} from "../../firebase/firestore/models/payment_status";
 import {StripePaymentIntentStates} from "../../stripe/constants";
 
 import {ServerCallBeginPaymentInitiateResolved} from "../../protos/call_transaction_package/ServerCallBeginPaymentInitiateResolved";
 
 import {sendGrpcServerAgoraCredentials} from "../../server/client_communication/grpc/send_grpc_server_agora_credentials";
+import { PaymentStatus } from "../../../../shared/firebase/firestore/models/payment_status";
 
 export function onCallerPaymentSuccessCallInitiate(clientMessageSender: ClientMessageSenderInterface,
     callState : BaseCallState,

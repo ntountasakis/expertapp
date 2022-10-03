@@ -1,10 +1,10 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {UserMetadata} from "../firebase/firestore/models/user_metadata";
-import {getUserMetadataDocumentRef} from "../firebase/firestore/document_fetchers/fetchers";
+import {UserMetadata} from "../../../shared/firebase/firestore/models/user_metadata";
 import {createReview} from "../firebase/firestore/functions/create_review";
 import {updateReview} from "../firebase/firestore/functions/update_review";
 import {getReviewsFromAuthorForReviewed} from "../firebase/firestore/functions/get_reviews_from_author_for_reviewed";
+import { getUserMetadataDocumentRef } from "../../../shared/firebase/firestore/document_fetchers/fetchers";
 
 export const submitReview = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {

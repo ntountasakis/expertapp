@@ -7,8 +7,7 @@
     "strict": true,
     "target": "es2017",
     "sourceMap": true,
-    "rootDirs": ["src"]
+    "rootDirs": ["shared"]
   },
-  "compileOnSave": true,
-  "include": [ "src" , "../shared"]
+  "compileOnSave": true
 }

@@ -1,4 +1,4 @@
-import {getReviewsCollectionRef} from "../document_fetchers/fetchers";
+import { getReviewsCollectionRef } from "../../../../../shared/firebase/firestore/document_fetchers/fetchers";
 
 export function getReviewsFromAuthorForReviewed({authorUid, reviewedUid}: {authorUid: string, reviewedUid: string})
 : FirebaseFirestore.Query<FirebaseFirestore.DocumentData> {

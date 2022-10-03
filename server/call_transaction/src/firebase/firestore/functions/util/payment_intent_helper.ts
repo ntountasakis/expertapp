@@ -1,8 +1,8 @@
-import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
+import { getPaymentStatusDocumentRef } from "../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import { PaymentStatus } from "../../../../../../shared/firebase/firestore/models/payment_status";
+import { PrivateUserInfo } from "../../../../../../shared/firebase/firestore/models/private_user_info";
 import createStripePaymentIntent from "../../../../stripe/payment_intent_creator";
-import {PaymentStatus} from "../../models/payment_status";
-import {PrivateUserInfo} from "../../models/private_user_info";
 
 export type PaymentIntentType = [paymentStatusId: string, paymentIntentClientSecret: string] | string;
 
@@ -29,7 +29,7 @@ export async function paymentIntentHelperFunc(
     "centsCollected": 0,
   };
 
-  const callStartPaymentDoc = admin.firestore().collection("payment_statuses").doc(paymentStatusId);
+  const callStartPaymentDoc = getPaymentStatusDocumentRef({paymentStatusId: paymentStatusId});
   transaction.create(callStartPaymentDoc, callerCallStartPaymentStatus);
 
   console.log(`Created PaymentStatus. ID: ${paymentStatusId} CentsToCollect: ${costInCents} Uid: ${uid}`);
