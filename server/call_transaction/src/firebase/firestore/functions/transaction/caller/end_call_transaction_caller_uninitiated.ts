@@ -17,6 +17,6 @@ Promise<EndCallTransactionReturnType> => {
 };
 
 function failure(errorMessage: string): EndCallTransactionReturnType {
-  console.error(`Error in EndCallTransaction: ${errorMessage}`);
+  console.error(`Error in EndCallTransactionCallerUninitiated: ${errorMessage}`);
   return errorMessage;
 }

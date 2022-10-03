@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
-import {StripeProvider} from "../../../shared/stripe_provider";
 import {createAccountLinkOnboarding} from "../cloud_functions/stripe/util";
+import { StripeProvider } from "../../../shared/stripe/stripe_provider";
 
 export const stripeAccountLinkRefresh = functions.https.onRequest(async (request, response) => {
   const account = request.query.account;

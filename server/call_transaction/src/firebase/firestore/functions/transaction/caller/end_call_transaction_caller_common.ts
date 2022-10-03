@@ -24,7 +24,7 @@ export const endCallTransactionCallerCommon = async (
 
   const paymentIntentResult: PaymentIntentType = await paymentIntentHelperFunc(
       {costInCents: costOfCallInCents, privateUserInfo: privateCallerUserInfo,
-        uid: callTransaction.callerUid, transaction: transaction,
+        uid: callTransaction.callerUid, transferGroup: callTransaction.callerTransferGroup, transaction: transaction,
         description: "End Call"});
 
   if (typeof paymentIntentResult === "string") {

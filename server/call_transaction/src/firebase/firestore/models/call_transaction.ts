@@ -10,6 +10,7 @@ export interface CallTransaction
     agoraChannelName: string;
     callerCallStartPaymentStatusId: string;
     callerCallTerminatePaymentStatusId: string;
+    callerTransferGroup: string;
     calledHasJoined: boolean;
     calledJoinTimeUtcMs: number;
     callHasEnded: boolean;

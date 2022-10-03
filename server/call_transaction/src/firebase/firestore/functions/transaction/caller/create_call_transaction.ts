@@ -37,9 +37,10 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       return callTransactionFailure(tokenLookupErrorMessage);
     }
 
+    const transferGroup = uuidv4();
     const paymentIntentResult: PaymentIntentType = await paymentIntentHelperFunc(
         {costInCents: callRate.centsCallStart, privateUserInfo: privateCallerUserInfo,
-          uid: request.calledUid, transaction: transaction,
+          uid: request.calledUid, transferGroup: transferGroup, transaction: transaction,
           description: "Start Call"});
 
     if (typeof paymentIntentResult === "string") {
@@ -64,6 +65,7 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       "agoraChannelName": agoraChannelName,
       "callerCallStartPaymentStatusId": paymentStatusId,
       "callerCallTerminatePaymentStatusId": "",
+      "callerTransferGroup": transferGroup,
       "calledHasJoined": false,
       "calledJoinTimeUtcMs": 0,
       "callHasEnded": false,

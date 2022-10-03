@@ -7,7 +7,7 @@ export const endCallTransactionClientDisconnect = async (
   console.log(`Running endCallTransactionClientDisconnect for transactionId: ${transactionId}`);
 
   const errorMsgPrefix = "Error in endCallTransactionClientDisconnect. ";
-  admin.firestore().runTransaction(async (transaction) => {
+  await admin.firestore().runTransaction(async (transaction) => {
     const [callTransactionLookupErrorMessage, callTransaction] = await getCallTransaction(
         transactionId, transaction);
     if (callTransactionLookupErrorMessage !== "" || callTransaction === undefined) {
