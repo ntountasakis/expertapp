@@ -1,4 +1,4 @@
-import { getReviewsCollectionRef } from "../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {getReviewsCollectionRef} from "../../../../../shared/firebase/firestore/document_fetchers/fetchers";
 import {Review} from "../../../../../shared/firebase/firestore/models/review";
 import {UserMetadata} from "../../../../../shared/firebase/firestore/models/user_metadata";
 import {updateUserMetadataReviewAttributes} from "./update_user_metadata_review_attributes";

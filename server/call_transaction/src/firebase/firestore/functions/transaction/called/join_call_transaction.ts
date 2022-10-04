@@ -1,6 +1,5 @@
 import * as admin from "firebase-admin";
-import { getCallTransactionDocumentRef } from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import { CallTransaction } from "../../../../../../../shared/firebase/firestore/models/call_transaction";
+import {getCallTransactionDocument, getCallTransactionDocumentRef} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
 import {ClientCallJoinRequest} from "../../../../../protos/call_transaction_package/ClientCallJoinRequest";
 
 type CallTransactionJoinReturnType = [valid: boolean, errorMessage: string];
@@ -11,14 +10,8 @@ Promise<CallTransactionJoinReturnType> => {
     if (request.callTransactionId == null || request.joinerUid == null) {
       return callTransactionFailure("ClientCallJoinRequest has null fields");
     }
-    const callTransactionRef = getCallTransactionDocumentRef({transactionId: request.callTransactionId});
-    const callTransactionDoc = await callTransactionRef.get();
-
+    const callTransaction = await getCallTransactionDocument({transactionId: request.callTransactionId});
     let errorMessage = `Call Transaction ID: ${request.callTransactionId} `;
-    if (!callTransactionDoc.exists) {
-      return callTransactionFailure(errorMessage += "does not exist");
-    }
-    const callTransaction = callTransactionDoc.data() as CallTransaction;
 
     if (callTransaction.calledHasJoined || callTransaction.calledJoinTimeUtcMs !== 0) {
       errorMessage += `has invalid fields. CalledHasJoined: ${callTransaction.calledHasJoined}
@@ -28,9 +21,9 @@ Promise<CallTransactionJoinReturnType> => {
 
     callTransaction.calledHasJoined = true;
     callTransaction.calledJoinTimeUtcMs = Date.now();
-    callTransactionRef.update({
+    getCallTransactionDocumentRef({transactionId: request.callTransactionId}).update({
       "calledHasJoined": true,
-      "calledJoinTimeUtcMs": Date.now()
+      "calledJoinTimeUtcMs": Date.now(),
     });
 
     console.log(`CallTransaction joined. TransactionId: ${callTransaction.callTransactionId} 
