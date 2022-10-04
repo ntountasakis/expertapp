@@ -1,15 +1,17 @@
 import * as admin from "firebase-admin";
+import {getCallTransactionDocumentRef} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
 import createStripePaymentTransfer from "../../../../../stripe/payment_transfer_creator";
 import {calculateCostOfCallInCents} from "../../util/call_cost_calculator";
 import {markCallEnd} from "../../util/call_transaction_complete";
-import {getCallTransaction} from "../../util/model_fetchers";
 
 export const endCallTransactionCalled = async ({transactionId}: {transactionId: string}): Promise<string> => {
   return await admin.firestore().runTransaction(async (transaction) => {
-    const [callTransactionLookupErrorMessage, callTransaction] = await getCallTransaction(transactionId, transaction);
-    if (callTransactionLookupErrorMessage !== "" || callTransaction === undefined) {
-      return failure(callTransactionLookupErrorMessage);
+    const callTransactionDoc = await getCallTransactionDocumentRef({transactionId: transactionId}).get();
+    if (!callTransactionDoc.exists) {
+      return failure(`No call transaction for ${transactionId}`);
     }
+    const callTransaction = callTransactionDoc.data() as CallTransaction;
     if (!callTransaction.callHasEnded) {
       const nowMs = Date.now();
       markCallEnd(callTransaction.callTransactionId, nowMs, transaction);

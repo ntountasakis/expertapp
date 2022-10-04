@@ -1,7 +1,7 @@
 import {v4 as uuidv4} from "uuid";
-import { getPaymentStatusDocumentRef } from "../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import { PaymentStatus } from "../../../../../../shared/firebase/firestore/models/payment_status";
-import { PrivateUserInfo } from "../../../../../../shared/firebase/firestore/models/private_user_info";
+import {getPaymentStatusDocumentRef} from "../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {PaymentStatus} from "../../../../../../shared/firebase/firestore/models/payment_status";
+import {PrivateUserInfo} from "../../../../../../shared/firebase/firestore/models/private_user_info";
 import createStripePaymentIntent from "../../../../stripe/payment_intent_creator";
 
 export type PaymentIntentType = [paymentStatusId: string, paymentIntentClientSecret: string] | string;

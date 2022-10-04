@@ -1,8 +1,8 @@
-import {getCallTransactionDocumentRef} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {getCallTransactionDocumentRef, getUserMetadataDocumentRef} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
+import {PrivateUserInfo} from "../../../../../../../shared/firebase/firestore/models/private_user_info";
 import {calculateCostOfCallInCents} from "../../util/call_cost_calculator";
 import {markCallEnd} from "../../util/call_transaction_complete";
-import {getPrivateUserInfo} from "../../util/model_fetchers";
 import {paymentIntentHelperFunc, PaymentIntentType} from "../../util/payment_intent_helper";
 import {EndCallTransactionReturnType} from "../types/call_transaction_types";
 
@@ -18,11 +18,11 @@ export const endCallTransactionCallerCommon = async (
     centsPerMinute: callTransaction.expertRateCentsPerMinute,
   });
 
-  const [privateCallerInfoErrorMessage, privateCallerUserInfo] = await getPrivateUserInfo(
-      callTransaction.callerUid, transaction);
-  if (privateCallerInfoErrorMessage !== "" || privateCallerUserInfo === undefined) {
-    return failure(privateCallerInfoErrorMessage);
+  const privateCallerUserInfoDoc = await getUserMetadataDocumentRef({uid: callTransaction.callerUid}).get();
+  if (!privateCallerUserInfoDoc.exists) {
+    return failure(`No private user info for caller: ${callTransaction.callerUid}`);
   }
+  const privateCallerUserInfo = privateCallerUserInfoDoc.data() as PrivateUserInfo;
 
   const paymentIntentResult: PaymentIntentType = await paymentIntentHelperFunc(
       {costInCents: costOfCallInCents, privateUserInfo: privateCallerUserInfo,
