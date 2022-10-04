@@ -1,9 +1,11 @@
 import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
-import { CallTransaction } from "../../../../../../../shared/firebase/firestore/models/call_transaction";
+import {getExpertRateDocumentRef, getUserMetadataDocumentRef} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
+import {ExpertRate} from "../../../../../../../shared/firebase/firestore/models/expert_rate";
+import {PrivateUserInfo} from "../../../../../../../shared/firebase/firestore/models/private_user_info";
 import {CallJoinRequest} from "../../../../fcm/messages/call_join_request";
 import {lookupUserFcmToken} from "../../util/lookup_user_fcm_token";
-import {getExpertRate, getPrivateUserInfo} from "../../util/model_fetchers";
 import {paymentIntentHelperFunc, PaymentIntentType} from "../../util/payment_intent_helper";
 
 type CallTransactionReturnType = [valid: boolean, errorMessage: string,
@@ -19,16 +21,17 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       return callTransactionFailure(errorMessage);
     }
 
-    const [expertRateLookupErrorMessage, callRate] = await getExpertRate(request.calledUid, transaction);
-    if (expertRateLookupErrorMessage !== "" || callRate === undefined) {
-      return callTransactionFailure(expertRateLookupErrorMessage);
+    const expertRateDoc = await getExpertRateDocumentRef({expertUid: request.calledUid}).get();
+    if (!expertRateDoc.exists) {
+      return callTransactionFailure(`No expert rate for called: ${request.calledUid}`);
     }
+    const expertRate = expertRateDoc.data() as ExpertRate;
 
-    const [privateCallerInfoLookupErrorMessage, privateCallerUserInfo] = await getPrivateUserInfo(
-        request.calledUid, transaction);
-    if (privateCallerInfoLookupErrorMessage !== "" || privateCallerUserInfo === undefined) {
-      return callTransactionFailure(privateCallerInfoLookupErrorMessage);
+    const privateUserInfoDoc = await getUserMetadataDocumentRef({uid: request.callerUid}).get();
+    if (!privateUserInfoDoc.exists) {
+      return callTransactionFailure(`No private user info for caller: ${request.callerUid}`);
     }
+    const privateCallerUserInfo = privateUserInfoDoc.data() as PrivateUserInfo;
 
     const [tokenSuccess, tokenLookupErrorMessage, calledUserFcmToken] = await lookupUserFcmToken(
         {userId: request.calledUid, transaction: transaction});
@@ -39,7 +42,7 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
 
     const transferGroup = uuidv4();
     const paymentIntentResult: PaymentIntentType = await paymentIntentHelperFunc(
-        {costInCents: callRate.centsCallStart, privateUserInfo: privateCallerUserInfo,
+        {costInCents: expertRate.centsCallStart, privateUserInfo: privateCallerUserInfo,
           uid: request.calledUid, transferGroup: transferGroup, transaction: transaction,
           description: "Start Call"});
 
@@ -60,8 +63,8 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       "calledUid": request.calledUid,
       "calledFcmToken": calledUserFcmToken,
       "callRequestTimeUtcMs": callRequestTimeUtcMs,
-      "expertRateCentsPerMinute": callRate.centsPerMinute,
-      "expertRateCentsCallStart": callRate.centsCallStart,
+      "expertRateCentsPerMinute": expertRate.centsPerMinute,
+      "expertRateCentsCallStart": expertRate.centsCallStart,
       "agoraChannelName": agoraChannelName,
       "callerCallStartPaymentStatusId": paymentStatusId,
       "callerCallTerminatePaymentStatusId": "",
