@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import {getCallTransactionDocumentRef} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {getCallTransactionDocument} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
 import {ClientCallTerminateRequest} from "../../../../../protos/call_transaction_package/ClientCallTerminateRequest";
 import {EndCallTransactionReturnType} from "../types/call_transaction_types";
@@ -14,12 +14,8 @@ export const endCallTransactionCallerInitiated = async (
       CallTransactionId: ${terminateRequest.callTransactionId} Uid: ${terminateRequest.uid}`;
       return failure(errorMessage);
     }
-    const callTransactionDoc = await getCallTransactionDocumentRef({
-      transactionId: terminateRequest.callTransactionId}).get();
-    if (!callTransactionDoc.exists) {
-      return failure(`No call transaction for ${terminateRequest.callTransactionId}`);
-    }
-    const callTransaction = callTransactionDoc.data() as CallTransaction;
+    const callTransaction: CallTransaction =
+    await getCallTransactionDocument({transactionId: terminateRequest.callTransactionId});
 
     if (terminateRequest.uid !== callTransaction.callerUid) {
       const errorMessage = `Uid: ${terminateRequest.uid} cannot terminate call: ${callTransaction.callerUid} 
