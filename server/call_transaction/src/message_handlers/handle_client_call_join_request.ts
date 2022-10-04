@@ -19,11 +19,7 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
   const joinerId = callJoinRequest.joinerUid as string;
   console.log(`Got call join request from joinerId: ${joinerId} with transaction id: ${transactionId}`);
 
-  const [joinCallValid, _] = await joinCallTransaction({request: callJoinRequest});
-
-  if (!joinCallValid) {
-    return;
-  }
+  await joinCallTransaction({request: callJoinRequest});
 
   const newCalledState = calledCallManager.createCallStateOnCallJoin({
     userId: joinerId, transactionId: transactionId,

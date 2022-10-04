@@ -25,9 +25,14 @@ export class CallTransactionServer implements CallTransactionHandlers {
 
     call.on("data", async (aClientMessage: ClientMessageContainer) => {
       const messageSender = new GrpcClientMessageSender(call);
-      dispatchClientMessage({clientMessage: aClientMessage, invalidMessageHandler: invalidMessageCallback,
-        clientMessageSender: messageSender, clientCallManager: clientCallManager,
-        calledCallManager: calledCallManager});
+      try {
+        dispatchClientMessage({clientMessage: aClientMessage, invalidMessageHandler: invalidMessageCallback,
+          clientMessageSender: messageSender, clientCallManager: clientCallManager,
+          calledCallManager: calledCallManager});
+      } catch (error) {
+        console.error(`Error dispatching client message: ${error}. Terminating connection to ${userId}`);
+        call.end();
+      }
     });
     call.on("error", (error: Error) => {
       console.log(`Error Initiate Call: ${error}`);
