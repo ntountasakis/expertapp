@@ -12,7 +12,7 @@ export const endCallTransactionCallerInitiated = async (
     if (terminateRequest.callTransactionId == null || terminateRequest.uid == null) {
       const errorMessage = `Invalid ClientCallTerminateRequest, either ids are null.
       CallTransactionId: ${terminateRequest.callTransactionId} Uid: ${terminateRequest.uid}`;
-      return failure(errorMessage);
+      throw new Error(errorMessage);
     }
     const callTransaction: CallTransaction =
     await getCallTransactionDocument({transactionId: terminateRequest.callTransactionId});
@@ -20,22 +20,16 @@ export const endCallTransactionCallerInitiated = async (
     if (terminateRequest.uid !== callTransaction.callerUid) {
       const errorMessage = `Uid: ${terminateRequest.uid} cannot terminate call: ${callTransaction.callerUid} 
       because they are not the caller`;
-      return failure(errorMessage);
+      throw new Error(errorMessage);
     }
 
     if (callTransaction.callHasEnded || callTransaction.callEndTimeUtsMs !== 0) {
       const errorMessage = `Uid: ${terminateRequest.uid} cannot terminate call: ${callTransaction.callerUid} 
       because is already terminate`;
-      return failure(errorMessage);
+      throw new Error(errorMessage);
     }
 
     return endCallTransactionCallerCommon({callTransaction: callTransaction,
       transaction: transaction});
   });
 };
-
-
-function failure(errorMessage: string): EndCallTransactionReturnType {
-  console.error(`Error in EndCallTransactionCallerInitiated: ${errorMessage}`);
-  return errorMessage;
-}

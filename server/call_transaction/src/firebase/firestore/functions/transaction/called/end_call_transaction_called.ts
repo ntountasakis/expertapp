@@ -25,7 +25,7 @@ export const endCallTransactionCalled = async ({transactionId}: {transactionId: 
     CentsStartCall: ${callTransaction.expertRateCentsCallStart} TotalToTransfer: ${amountToTransferInCents}`);
 
     if (callTransaction.callerTransferGroup == "") {
-      return failure("Cannot transfer funds to expert. Empty caller Transfer");
+      throw new Error("Cannot transfer funds to expert. Empty caller Transfer");
     }
 
     // todo:
@@ -40,9 +40,3 @@ export const endCallTransactionCalled = async ({transactionId}: {transactionId: 
     return "";
   });
 };
-
-
-function failure(errorMessage: string): string {
-  console.error(`Error in EndCallTransaction: ${errorMessage}`);
-  return errorMessage;
-}

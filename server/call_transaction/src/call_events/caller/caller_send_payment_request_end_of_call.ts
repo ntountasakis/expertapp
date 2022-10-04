@@ -24,11 +24,6 @@ export async function callerSendPaymentRequestEndOfCall(clientMessageSender: Cli
   const endCallPromise: EndCallTransactionReturnType =
         await endCallTransactionCallerUninitiated({transactionId: callState.transactionId});
 
-  if (typeof endCallPromise === "string") {
-    console.error(endCallPromise);
-    return;
-  }
-
   const [, endCallPaymentIntentClientSecret,
     endCallPaymentStatusId, callerStripeCustomerId] = endCallPromise;
   sendGrpcServerCallTerminatePaymentInitiate({clientMessageSender: clientMessageSender,

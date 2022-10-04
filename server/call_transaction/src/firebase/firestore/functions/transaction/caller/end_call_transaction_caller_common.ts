@@ -25,7 +25,7 @@ export const endCallTransactionCallerCommon = async (
         description: "End Call"});
 
   if (typeof paymentIntentResult === "string") {
-    return failure(paymentIntentResult);
+    throw new Error(`Error procesing paymentIntent. ${paymentIntentResult}`);
   }
   const [paymentStatusId, paymentIntentClientSecret] = paymentIntentResult;
 
@@ -39,11 +39,6 @@ export const endCallTransactionCallerCommon = async (
   return [callTransaction.callTransactionId, paymentIntentClientSecret,
     paymentStatusId, privateCallerUserInfo.stripeCustomerId];
 };
-
-function failure(errorMessage: string): EndCallTransactionReturnType {
-  console.error(`Error in EndCallTransaction: ${errorMessage}`);
-  return errorMessage;
-}
 
 function updateCallTransactionTerminateFields(callTransaction: CallTransaction,
     callTerminatePaymentStatusId: string, transaction: FirebaseFirestore.Transaction) {

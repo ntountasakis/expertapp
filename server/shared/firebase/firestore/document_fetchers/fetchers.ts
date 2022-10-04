@@ -95,8 +95,6 @@ async function getFcmTokenDocument({uid}: {uid: string}): Promise<FcmToken> {
   return doc.data() as FcmToken;
 }
 
-
-
 export {getUserDocumentRef, getUserMetadataDocumentRef, getReviewsCollectionRef,
   getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
   getCallTransactionDocumentRef, getFcmTokenDocumentRef, getCallTransactionDocument,
