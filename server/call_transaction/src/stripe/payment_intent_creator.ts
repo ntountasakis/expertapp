@@ -1,5 +1,5 @@
 import stripe from "stripe";
-import { StripeProvider } from "../../../shared/stripe/stripe_provider";
+import {StripeProvider} from "../../../shared/stripe/stripe_provider";
 import {StripeConstants} from "./constants";
 
 export default async function createStripePaymentIntent({customerId, customerEmail,
@@ -8,7 +8,6 @@ export default async function createStripePaymentIntent({customerId, customerEma
     amountToBillInCents: number, paymentDescription: string, paymentStatusId: string,
     transferGroup: string}):
     Promise<[valid: boolean, errorMessage: string, paymentIntentId: string, clientSecret: string]> {
-
   let errorMessage = `PaymentIntent create fail for customerId: ${customerId} \n`;
 
   if (paymentDescription.length > StripeConstants.MAX_PAYMENT_INTENT_DESCRIPTION_LENGTH) {
@@ -28,6 +27,9 @@ export default async function createStripePaymentIntent({customerId, customerEma
       metadata: {
         "payment_status_id": paymentStatusId,
       },
+    },
+    {
+      idempotencyKey: paymentStatusId,
     });
     if (paymentIntentResponse.client_secret != null) {
       return [true, "", paymentIntentResponse.id, paymentIntentResponse.client_secret];

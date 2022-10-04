@@ -1,4 +1,4 @@
-import { StripeProvider } from "../../../shared/stripe/stripe_provider";
+import {StripeProvider} from "../../../shared/stripe/stripe_provider";
 export default async function createStripePaymentTransfer({connectedAccountId, amountToTransferInCents, transferGroup}:
     {connectedAccountId: string, amountToTransferInCents: number, transferGroup: string}): Promise<string> {
   // eslint-disable-next-line max-len
@@ -7,6 +7,9 @@ export default async function createStripePaymentTransfer({connectedAccountId, a
     currency: "usd",
     destination: connectedAccountId,
     transfer_group: transferGroup,
+  },
+  {
+    idempotencyKey: transferGroup,
   });
   return paymentTransferResponse.id;
 }

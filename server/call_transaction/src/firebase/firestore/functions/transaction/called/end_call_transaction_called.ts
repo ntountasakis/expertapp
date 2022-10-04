@@ -1,15 +1,19 @@
 import * as admin from "firebase-admin";
 import createStripePaymentTransfer from "../../../../../stripe/payment_transfer_creator";
 import {calculateCostOfCallInCents} from "../../util/call_cost_calculator";
+import {markCallEnd} from "../../util/call_transaction_complete";
 import {getCallTransaction} from "../../util/model_fetchers";
-
-// todo: make sure this is idempotent
 
 export const endCallTransactionCalled = async ({transactionId}: {transactionId: string}): Promise<string> => {
   return await admin.firestore().runTransaction(async (transaction) => {
     const [callTransactionLookupErrorMessage, callTransaction] = await getCallTransaction(transactionId, transaction);
     if (callTransactionLookupErrorMessage !== "" || callTransaction === undefined) {
       return failure(callTransactionLookupErrorMessage);
+    }
+    if (!callTransaction.callHasEnded) {
+      const nowMs = Date.now();
+      markCallEnd(callTransaction.callTransactionId, nowMs, transaction);
+      callTransaction.callEndTimeUtsMs = nowMs;
     }
     const costOfCallInCents = calculateCostOfCallInCents({
       beginTimeUtcMs: callTransaction.calledJoinTimeUtcMs,
