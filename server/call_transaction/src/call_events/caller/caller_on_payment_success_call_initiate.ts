@@ -1,9 +1,9 @@
 import {CallerCallState} from "../../call_state/caller/caller_call_state";
 import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
 
-import {sendFcmCallJoinRequest} from "../../server/client_communication/fcm/send_fcm_call_join_request";
+import {sendFcmCallJoinRequest} from "../../../../shared/firebase/fcm/functions/send_fcm_call_join_request";
 import {BaseCallState} from "../../call_state/common/base_call_state";
-import {StripePaymentIntentStates} from "../../stripe/constants";
+import {StripePaymentIntentStates} from "../../../../shared/stripe/constants";
 
 import {ServerCallBeginPaymentInitiateResolved} from "../../protos/call_transaction_package/ServerCallBeginPaymentInitiateResolved";
 

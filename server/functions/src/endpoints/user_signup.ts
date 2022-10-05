@@ -1,10 +1,10 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {createStripeCustomer} from "../cloud_functions/stripe/util";
-import {createUser} from "../firebase/firestore/functions/create_user";
-import {createUserMetadata} from "../firebase/firestore/functions/create_user_metadata";
-import {getDefaultProfilePicUrl} from "../firebase/storage/functions/get_default_profile_pic_url";
+import {createStripeCustomer} from "../../../shared/stripe/util";
 import {StripeProvider} from "../../../shared/stripe/stripe_provider";
+import {createUser} from "../../../shared/firebase/firestore/functions/create_user";
+import {createUserMetadata} from "../../../shared/firebase/firestore/functions/create_user_metadata";
+import {getDefaultProfilePicUrl} from "../../../shared/firebase/storage/functions/get_default_profile_pic_url";
 
 export const userSignup = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {

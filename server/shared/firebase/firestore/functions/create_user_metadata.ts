@@ -1,5 +1,5 @@
-import { getUserMetadataDocumentRef } from "../../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import {UserMetadata} from "../../../../../shared/firebase/firestore/models/user_metadata";
+import { getUserMetadataDocumentRef } from "../document_fetchers/fetchers";
+import { UserMetadata } from "../models/user_metadata";
 
 export function createUserMetadata({batch, uid, firstName, lastName, profilePicUrl}:
     {batch : FirebaseFirestore.WriteBatch, uid: string, firstName: string, lastName: string,

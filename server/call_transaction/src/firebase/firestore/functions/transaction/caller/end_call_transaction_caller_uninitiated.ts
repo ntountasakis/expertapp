@@ -7,7 +7,8 @@ import {endCallTransactionCallerCommon} from "./end_call_transaction_caller_comm
 export const endCallTransactionCallerUninitiated = async ({transactionId}: {transactionId: string}):
 Promise<EndCallTransactionReturnType> => {
   return admin.firestore().runTransaction(async (transaction) => {
-    const callTransaction: CallTransaction = await getCallTransactionDocument({transactionId: transactionId});
+    const callTransaction: CallTransaction = await getCallTransactionDocument(
+        {transaction: transaction, transactionId: transactionId});
     return endCallTransactionCallerCommon({callTransaction: callTransaction,
       transaction: transaction});
   });

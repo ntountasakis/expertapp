@@ -1,5 +1,5 @@
 import {createCallTransaction} from "../firebase/firestore/functions/transaction/caller/create_call_transaction";
-import {CallJoinRequest} from "../firebase/fcm/messages/call_join_request";
+import {CallJoinRequest} from "../../../shared/firebase/fcm/messages/call_join_request";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
 import {onCallerPaymentSuccessCallInitiate} from "../call_events/caller/caller_on_payment_success_call_initiate";

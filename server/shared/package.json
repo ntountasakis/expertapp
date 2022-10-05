@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/uuid": "^8.3.4",
     "firebase-admin": "^11.0.1",
-    "stripe": "^10.12.0"
+    "stripe": "^10.12.0",
+    "uuid": "^9.0.0"
   }
 }

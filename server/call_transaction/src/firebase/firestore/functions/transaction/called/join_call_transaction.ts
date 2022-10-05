@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import {getCallTransactionDocument, getCallTransactionDocumentRef} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
 import {ClientCallJoinRequest} from "../../../../../protos/call_transaction_package/ClientCallJoinRequest";
 
 export const joinCallTransaction = async ({request}: {request: ClientCallJoinRequest}):
@@ -8,7 +9,8 @@ Promise<void> => {
     if (request.callTransactionId == null || request.joinerUid == null) {
       throw new Error("ClientCallJoinRequest has null fields");
     }
-    const callTransaction = await getCallTransactionDocument({transactionId: request.callTransactionId});
+    const callTransaction: CallTransaction = await getCallTransactionDocument(
+        {transaction: transaction, transactionId: request.callTransactionId});
     let errorMessage = `Call Transaction ID: ${request.callTransactionId} `;
 
     if (callTransaction.calledHasJoined || callTransaction.calledJoinTimeUtcMs !== 0) {

@@ -4,7 +4,7 @@ import {ClientMessageSenderInterface} from "../../message_sender/client_message_
 
 import {ServerCallTerminatePaymentInitiateResolved} from "../../protos/call_transaction_package/ServerCallTerminatePaymentInitiateResolved";
 
-import {StripePaymentIntentStates} from "../../stripe/constants";
+import {StripePaymentIntentStates} from "../../../../shared/stripe/constants";
 
 export function onCallerPaymentSuccessCallTerminate(clientMessageSender: ClientMessageSenderInterface,
     callState : BaseCallState, update: PaymentStatus): Promise<boolean> {
