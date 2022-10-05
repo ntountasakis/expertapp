@@ -1,9 +1,10 @@
-import {getUserDocumentRef} from "../../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import {User} from "../../../../../shared/firebase/firestore/models/user";
+import { getUserDocumentRef } from "../document_fetchers/fetchers";
+import { PrivateUserInfo } from "../models/private_user_info";
+
 export function createUser({batch, uid, firstName, lastName, email, stripeCustomerId}:
     {batch : FirebaseFirestore.WriteBatch, uid: string, firstName: string, lastName: string, email: string,
         stripeCustomerId: string}): void {
-  const firebaseUser: User = {
+  const firebaseUser: PrivateUserInfo = {
     "firstName": firstName,
     "lastName": lastName,
     "email": email,

@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import {updatePaymentStatus} from "../../../firebase/firestore/functions/update_payment_status";
+import {updatePaymentStatus} from "../../../shared/firebase/firestore/functions/update_payment_status";
 
 export async function handlePaymentIntentSucceeded(payload: any): Promise<void> {
   const amount: number = payload.amount;

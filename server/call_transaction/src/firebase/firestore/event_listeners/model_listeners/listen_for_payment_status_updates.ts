@@ -1,5 +1,5 @@
-import { getPaymentStatusDocumentRef } from "../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import { PaymentStatus } from "../../../../../../shared/firebase/firestore/models/payment_status";
+import {getPaymentStatusDocumentRef} from "../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {PaymentStatus} from "../../../../../../shared/firebase/firestore/models/payment_status";
 import {FirestoreListenerManager} from "../firestore_listener_manager";
 import {FirestoreUnsubscribeInterface} from "../firestore_unsubscribe_interface";
 

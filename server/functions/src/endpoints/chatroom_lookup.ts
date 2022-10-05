@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {getChatroomId} from "../firebase/firestore/functions/get_chatroom_id";
-import {createChatroom} from "../firebase/firestore/functions/create_chatroom";
+import {getChatroomId} from "../../../shared/firebase/firestore/functions/get_chatroom_id";
+import {createChatroom} from "../../../shared/firebase/firestore/functions/create_chatroom";
 
 export const chatroomLookup = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {

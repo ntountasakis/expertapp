@@ -1,5 +1,5 @@
-import {CallJoinRequest} from "../../../firebase/fcm/messages/call_join_request";
-import {sendFcmMessage} from "../../../firebase/fcm/sender/fcm_token_sender";
+import {CallJoinRequest} from "../messages/call_join_request";
+import {sendFcmMessage} from "../sender/fcm_token_sender";
 
 export const sendFcmCallJoinRequest = function(fcmToken: string, joinRequest: CallJoinRequest,
     callTransactionId: string): void {

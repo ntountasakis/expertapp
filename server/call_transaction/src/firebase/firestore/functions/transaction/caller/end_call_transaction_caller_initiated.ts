@@ -15,7 +15,7 @@ export const endCallTransactionCallerInitiated = async (
       throw new Error(errorMessage);
     }
     const callTransaction: CallTransaction =
-    await getCallTransactionDocument({transactionId: terminateRequest.callTransactionId});
+    await getCallTransactionDocument({transaction: transaction, transactionId: terminateRequest.callTransactionId});
 
     if (terminateRequest.uid !== callTransaction.callerUid) {
       const errorMessage = `Uid: ${terminateRequest.uid} cannot terminate call: ${callTransaction.callerUid} 

@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import { UserMetadata } from "../models/user_metadata";
 import { CallTransaction } from "../models/call_transaction";
 import { ExpertRate } from "../models/expert_rate";
 import { FcmToken } from "../models/fcm_token";
@@ -6,9 +7,19 @@ import { PaymentStatus } from "../models/payment_status";
 import { PrivateUserInfo } from "../models/private_user_info";
 import {CollectionPaths} from "./collection_paths";
 
-function getUserDocumentRef({uid}: {uid: string}):
+function getPrivateUserDocumentRef({uid}: {uid: string}):
 FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.USERS).doc(uid);
+}
+
+async function getPrivateUserDocument({transaction, uid}: {transaction: FirebaseFirestore.Transaction, uid: string}): Promise<PrivateUserInfo>
+{
+  const doc = await transaction.get(getPrivateUserDocumentRef({uid: uid}));
+  if (!doc.exists)
+  {
+    throw new Error(`No user with uid: ${uid}`);
+  }
+  return doc.data() as PrivateUserInfo;
 }
 
 function getUserMetadataDocumentRef({uid}: {uid: string}):
@@ -16,14 +27,14 @@ FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.USER_METADATA).doc(uid);
 }
 
-async function getUserMetadataDocument({uid}: {uid: string}): Promise<PrivateUserInfo>
+async function getUserMetadataDocument({transaction, uid}: {transaction: FirebaseFirestore.Transaction, uid: string}): Promise<UserMetadata>
 {
-  const doc = await getUserMetadataDocumentRef({uid: uid}).get();
+  const doc = await transaction.get(getUserMetadataDocumentRef({uid: uid}));
   if (!doc.exists)
   {
     throw new Error(`No user metadata with uid: ${uid}`);
   }
-  return doc.data() as PrivateUserInfo;
+  return doc.data() as UserMetadata;
 }
 
 function getReviewsCollectionRef():
@@ -55,10 +66,10 @@ function getExpertRateDocumentRef({expertUid}: {expertUid: string}):
 FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.EXPERT_RATES).doc(expertUid);
 }
-
-async function getExpertRateDocument({expertUid}: {expertUid: string}): Promise<ExpertRate>
+ 
+async function getExpertRateDocument({transaction, expertUid}: {transaction: FirebaseFirestore.Transaction, expertUid: string}): Promise<ExpertRate>
 {
-  const doc = await getExpertRateDocumentRef({expertUid: expertUid}).get();
+  const doc = await transaction.get(getExpertRateDocumentRef({expertUid: expertUid}));
   if (!doc.exists)
   {
     throw new Error(`No expert rate exists for expert: ${expertUid}`);
@@ -71,9 +82,10 @@ FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.CALL_TRANSACTIONS).doc(transactionId);
 }
 
-async function getCallTransactionDocument({transactionId}: {transactionId: string}): Promise<CallTransaction>
+async function getCallTransactionDocument({transaction, transactionId}: 
+  {transaction: FirebaseFirestore.Transaction, transactionId: string}): Promise<CallTransaction>
 {
-  const doc = await getCallTransactionDocumentRef({transactionId: transactionId}).get();
+  const doc = await transaction.get(getCallTransactionDocumentRef({transactionId: transactionId}));
   if (!doc.exists)
   {
     throw new Error(`No CallTransaction with id: ${transactionId}`);
@@ -86,8 +98,8 @@ FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.FCM_TOKENS).doc(uid);
 }
 
-async function getFcmTokenDocument({uid}: {uid: string}): Promise<FcmToken> {
-  const doc = await getFcmTokenDocumentRef({uid: uid}).get();
+async function getFcmTokenDocument({transaction, uid}: {transaction: FirebaseFirestore.Transaction, uid: string}): Promise<FcmToken> {
+  const doc = await transaction.get(getFcmTokenDocumentRef({uid: uid}));
   if (!doc.exists)
   {
     throw new Error(`No fcm token for uid: ${uid}`);
@@ -95,7 +107,8 @@ async function getFcmTokenDocument({uid}: {uid: string}): Promise<FcmToken> {
   return doc.data() as FcmToken;
 }
 
-export {getUserDocumentRef, getUserMetadataDocumentRef, getReviewsCollectionRef,
+export {getPrivateUserDocumentRef as getUserDocumentRef, getUserMetadataDocumentRef, getReviewsCollectionRef,
   getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
   getCallTransactionDocumentRef, getFcmTokenDocumentRef, getCallTransactionDocument,
-  getPaymentStatusDocument, getExpertRateDocument, getUserMetadataDocument, getFcmTokenDocument};
+  getPaymentStatusDocument, getExpertRateDocument, getUserMetadataDocument, getFcmTokenDocument,
+  getPrivateUserDocument};

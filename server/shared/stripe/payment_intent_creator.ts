@@ -1,6 +1,6 @@
 import stripe from "stripe";
-import {StripeProvider} from "../../../shared/stripe/stripe_provider";
 import {StripeConstants} from "./constants";
+import { StripeProvider } from "./stripe_provider";
 
 export default async function createStripePaymentIntent({customerId, customerEmail,
   amountToBillInCents, paymentDescription, paymentStatusId,

@@ -1,11 +1,11 @@
 import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
-import {getExpertRateDocument, getFcmTokenDocument, getUserMetadataDocument} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {getExpertRateDocument, getFcmTokenDocument, getPrivateUserDocument} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
 import {ExpertRate} from "../../../../../../../shared/firebase/firestore/models/expert_rate";
 import {FcmToken} from "../../../../../../../shared/firebase/firestore/models/fcm_token";
 import {PrivateUserInfo} from "../../../../../../../shared/firebase/firestore/models/private_user_info";
-import {CallJoinRequest} from "../../../../fcm/messages/call_join_request";
+import {CallJoinRequest} from "../../../../../../../shared/firebase/fcm/messages/call_join_request";
 import {paymentIntentHelperFunc, PaymentIntentType} from "../../util/payment_intent_helper";
 
 type CallTransactionReturnType = [valid: boolean, errorMessage: string,
@@ -20,9 +20,11 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
       CalledUid: ${request.calledUid} CallerUid: ${request.callerUid}`;
       return callTransactionFailure(errorMessage);
     }
-    const expertRate: ExpertRate = await getExpertRateDocument({expertUid: request.calledUid});
-    const privateCallerUserInfo: PrivateUserInfo = await getUserMetadataDocument({uid: request.callerUid});
-    const calledUserFcmToken: FcmToken = await getFcmTokenDocument({uid: request.calledUid});
+    const expertRate: ExpertRate = await getExpertRateDocument(
+        {transaction: transaction, expertUid: request.calledUid});
+    const privateCallerUserInfo: PrivateUserInfo = await getPrivateUserDocument(
+        {transaction: transaction, uid: request.callerUid});
+    const calledUserFcmToken: FcmToken = await getFcmTokenDocument({transaction: transaction, uid: request.calledUid});
 
     const transferGroup = uuidv4();
     const paymentIntentResult: PaymentIntentType = await paymentIntentHelperFunc(

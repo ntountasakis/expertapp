@@ -1,13 +1,14 @@
 import * as admin from "firebase-admin";
 import {getCallTransactionDocument} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
-import createStripePaymentTransfer from "../../../../../stripe/payment_transfer_creator";
+import createStripePaymentTransfer from "../../../../../../../shared/stripe/payment_transfer_creator";
 import {calculateCostOfCallInCents} from "../../util/call_cost_calculator";
 import {markCallEnd} from "../../util/call_transaction_complete";
 
 export const endCallTransactionCalled = async ({transactionId}: {transactionId: string}): Promise<string> => {
   return await admin.firestore().runTransaction(async (transaction) => {
-    const callTransaction: CallTransaction = await getCallTransactionDocument({transactionId: transactionId});
+    const callTransaction: CallTransaction = await getCallTransactionDocument(
+        {transaction: transaction, transactionId: transactionId});
     if (!callTransaction.callHasEnded) {
       const nowMs = Date.now();
       markCallEnd(callTransaction.callTransactionId, nowMs, transaction);

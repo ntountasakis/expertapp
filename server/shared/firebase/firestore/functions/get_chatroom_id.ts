@@ -1,4 +1,4 @@
-import { getChatroomMetadataCollectionRef } from "../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import { getChatroomMetadataCollectionRef } from "../document_fetchers/fetchers";
 
 async function getChatroomIdOneSided({transaction, lhsUserUid, rhsUserUid}:
     {transaction: FirebaseFirestore.Transaction, lhsUserUid: string, rhsUserUid: string}):

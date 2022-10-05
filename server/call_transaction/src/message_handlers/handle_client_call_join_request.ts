@@ -10,7 +10,7 @@ import {onCalledTransactionUpdate} from "../call_events/called/called_on_transac
 import {listenForCallTransactionUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_call_transaction_updates";
 import {sendGrpcCallJoinOrRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_join_or_request_success";
 import {CallTransaction} from "../../../shared/firebase/firestore/models/call_transaction";
-import {getCallTransactionDocument} from "../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {getCallTransactionDocumentRef} from "../../../shared/firebase/firestore/document_fetchers/fetchers";
 
 export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
     clientMessageSender: ClientMessageSenderInterface,
@@ -32,7 +32,11 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
 
   sendGrpcCallJoinOrRequestSuccess(transactionId, clientMessageSender);
   // todo: put into joinCallTransactionFunction as duplicate checks and not transactional
-  const callTransaction: CallTransaction = await getCallTransactionDocument({transactionId: transactionId});
+  const callTransactionDoc = await getCallTransactionDocumentRef({transactionId: transactionId}).get();
+  if (!callTransactionDoc.exists) {
+    throw new Error(`No call transaction transaction: ${transactionId}`);
+  }
+  const callTransaction: CallTransaction = callTransactionDoc.data() as CallTransaction;
   if (callTransaction.agoraChannelName == "") {
     throw new Error(`No agora channel name for transaction: ${transactionId}`);
   }
