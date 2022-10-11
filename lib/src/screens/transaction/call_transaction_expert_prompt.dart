@@ -1,11 +1,9 @@
 import 'package:expertapp/src/call_server/call_server_manager.dart';
-import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/cloud_messaging/messages/call_join_request.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/screens/transaction/expert/call_transaction_expert_main.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CallTransactionExpertPrompt extends StatelessWidget {
   final CallJoinRequestTokenPayload callJoinRequest;
@@ -22,14 +20,11 @@ class CallTransactionExpertPrompt extends StatelessWidget {
         currentUserId: currentUserId,
         otherUserId: callerUserMetadata.documentId);
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return ChangeNotifierProvider<CallServerModel>(
-        create: (context) => CallServerModel(),
-        child: CallTransactionExpertMain(
-          callTransactionId: callJoinRequest.callTransactionId,
-          currentUserId: currentUserId,
-          callerClientMetadata: callerUserMetadata,
-          callServerManager: callManager,
-        ),
+      return CallTransactionExpertMain(
+        callTransactionId: callJoinRequest.callTransactionId,
+        currentUserId: currentUserId,
+        callerClientMetadata: callerUserMetadata,
+        callServerManager: callManager,
       );
     }));
   }

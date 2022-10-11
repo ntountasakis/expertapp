@@ -55,13 +55,11 @@ class CallClientPreview extends StatelessWidget {
               otherUserId: expertUserMetadata.documentId);
 
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return ChangeNotifierProvider<CallServerModel>(
-                create: (_) => new CallServerModel(),
-                child: CallBeginClientPaymentPage(
-                  currentUserId: currentUserId,
-                  expertUserMetadata: expertUserMetadata,
-                  callServerManager: callManager,
-                ));
+            return CallBeginClientPaymentPage(
+              currentUserId: currentUserId,
+              expertUserMetadata: expertUserMetadata,
+              callServerManager: callManager,
+            );
           }));
         },
         child: const Text('Begin Call'),
