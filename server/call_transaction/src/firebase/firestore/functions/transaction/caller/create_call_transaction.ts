@@ -1,12 +1,12 @@
 import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
-import {ExpertRate} from "../../../../../../../shared/firebase/firestore/models/expert_rate";
-import {FcmToken} from "../../../../../../../shared/firebase/firestore/models/fcm_token";
-import {CallJoinRequest} from "../../../../../../../shared/firebase/fcm/messages/call_join_request";
-import {createPaymentStatus} from "../../../../../../../shared/firebase/firestore/functions/create_payment_status";
-import {createCallTransactionDocument} from "../../../../../../../shared/firebase/firestore/functions/create_call_transaction_document";
-import {getExpertRateDocument, getFcmTokenDocument} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
+import {ExpertRate} from "../../../../../../../shared/src/firebase/firestore/models/expert_rate";
+import {FcmToken} from "../../../../../../../shared/src/firebase/firestore/models/fcm_token";
+import {CallJoinRequest} from "../../../../../../../shared/src/firebase/fcm/messages/call_join_request";
+import {createPaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/create_payment_status";
+import {createCallTransactionDocument} from "../../../../../../../shared/src/firebase/firestore/functions/create_call_transaction_document";
+import {getExpertRateDocument, getFcmTokenDocument} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
 
 export const createCallTransaction = async ({request}: {request: CallJoinRequest}): Promise<CallTransaction> => {
   return await admin.firestore().runTransaction(async (transaction) => {

@@ -4,7 +4,7 @@ import {ClientCallJoinRequest} from "../protos/call_transaction_package/ClientCa
 import {joinCallTransaction} from "../firebase/firestore/functions/transaction/called/join_call_transaction";
 import {CalledCallManager} from "../call_state/called/called_call_manager";
 import {sendGrpcCallJoinOrRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_join_or_request_success";
-import {CallTransaction} from "../../../shared/firebase/firestore/models/call_transaction";
+import {CallTransaction} from "../../../shared/src/firebase/firestore/models/call_transaction";
 import {CalledCallState} from "../call_state/called/called_call_state";
 import {onCalledTransactionUpdate} from "../call_events/called/called_on_transaction_update";
 import {listenForCallTransactionUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_call_transaction_updates";

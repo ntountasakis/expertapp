@@ -1,7 +1,7 @@
-import {getPrivateUserDocumentNoTransact} from "../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import {CallTransaction} from "../../../../shared/firebase/firestore/models/call_transaction";
-import {PrivateUserInfo} from "../../../../shared/firebase/firestore/models/private_user_info";
-import createStripePaymentIntent from "../../../../shared/stripe/payment_intent_creator";
+import {getPrivateUserDocumentNoTransact} from "../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../shared/src/firebase/firestore/models/call_transaction";
+import {PrivateUserInfo} from "../../../../shared/src/firebase/firestore/models/private_user_info";
+import createStripePaymentIntent from "../../../../shared/src/stripe/payment_intent_creator";
 import {BaseCallState} from "../../call_state/common/base_call_state";
 
 import {listenForPaymentStatusUpdates} from "../../firebase/firestore/event_listeners/model_listeners/listen_for_payment_status_updates";

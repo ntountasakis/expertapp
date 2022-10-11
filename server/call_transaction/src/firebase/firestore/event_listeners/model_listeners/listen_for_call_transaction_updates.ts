@@ -1,5 +1,5 @@
-import {getCallTransactionDocumentRef} from "../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import {CallTransaction} from "../../../../../../shared/firebase/firestore/models/call_transaction";
+import {getCallTransactionDocumentRef} from "../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../../../shared/src/firebase/firestore/models/call_transaction";
 import {FirestoreListenerManager} from "../firestore_listener_manager";
 import {FirestoreUnsubscribeInterface} from "../firestore_unsubscribe_interface";
 

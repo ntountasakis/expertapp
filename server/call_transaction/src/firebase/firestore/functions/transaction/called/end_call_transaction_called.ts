@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
-import {getCallTransactionDocument} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
+import {getCallTransactionDocument} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
 import {markCallEnd} from "../../util/call_transaction_complete";
 
 export const endCallTransactionCalled = async ({transactionId}: {transactionId: string}): Promise<CallTransaction> => {

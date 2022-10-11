@@ -1,6 +1,6 @@
 import * as admin from "firebase-admin";
-import {getCallTransactionDocument, getCallTransactionDocumentRef} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
+import {getCallTransactionDocument, getCallTransactionDocumentRef} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
 import {ClientCallJoinRequest} from "../../../../../protos/call_transaction_package/ClientCallJoinRequest";
 
 export const joinCallTransaction = async ({request}: {request: ClientCallJoinRequest}):

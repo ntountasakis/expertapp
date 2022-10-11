@@ -1,5 +1,5 @@
 import {createCallTransaction} from "../firebase/firestore/functions/transaction/caller/create_call_transaction";
-import {CallJoinRequest} from "../../../shared/firebase/fcm/messages/call_join_request";
+import {CallJoinRequest} from "../../../shared/src/firebase/fcm/messages/call_join_request";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
 import {onCallerPaymentSuccessCallInitiate} from "../call_events/caller/caller_on_payment_success_call_initiate";
@@ -14,10 +14,10 @@ import {onCallerTransactionUpdate} from "../call_events/caller/caller_on_transac
 import {listenForPaymentStatusUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_payment_status_updates";
 
 import {listenForCallTransactionUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_call_transaction_updates";
-import {CallTransaction} from "../../../shared/firebase/firestore/models/call_transaction";
-import createStripePaymentIntent from "../../../shared/stripe/payment_intent_creator";
-import {PrivateUserInfo} from "../../../shared/firebase/firestore/models/private_user_info";
-import {getPrivateUserDocumentNoTransact} from "../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../shared/src/firebase/firestore/models/call_transaction";
+import createStripePaymentIntent from "../../../shared/src/stripe/payment_intent_creator";
+import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
+import {getPrivateUserDocumentNoTransact} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallerCallState} from "../call_state/caller/caller_call_state";
 import {callerFinishCallTransaction} from "../call_events/caller/caller_finish_call_transaction";
 

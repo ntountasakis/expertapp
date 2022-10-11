@@ -1,4 +1,4 @@
-import {getCallTransactionDocumentRef} from "../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {getCallTransactionDocumentRef} from "../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 
 export async function markCallEnd(transactionId: string,
     callEndTimeUtcMs: number, transaction: FirebaseFirestore.Transaction): Promise<void> {

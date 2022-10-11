@@ -1,5 +1,5 @@
-import {CallTransaction} from "../../../../shared/firebase/firestore/models/call_transaction";
-import createStripePaymentTransfer from "../../../../shared/stripe/payment_transfer_creator";
+import {CallTransaction} from "../../../../shared/src/firebase/firestore/models/call_transaction";
+import createStripePaymentTransfer from "../../../../shared/src/stripe/payment_transfer_creator";
 import {calculateCostOfCallInCents} from "../../firebase/firestore/functions/util/call_cost_calculator";
 
 export async function calledSendPaymentTransferEndOfCall(

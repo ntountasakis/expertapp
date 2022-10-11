@@ -1,10 +1,10 @@
 import {v4 as uuidv4} from "uuid";
 import * as admin from "firebase-admin";
-import {getCallTransactionDocument, getCallTransactionDocumentRef} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
+import {getCallTransactionDocument, getCallTransactionDocumentRef} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
 import {calculateCostOfCallInCents} from "../../util/call_cost_calculator";
 import {markCallEnd} from "../../util/call_transaction_complete";
-import {createPaymentStatus} from "../../../../../../../shared/firebase/firestore/functions/create_payment_status";
+import {createPaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/create_payment_status";
 
 export const endCallTransactionCaller = async ({transactionId} : {transactionId: string}): Promise<CallTransaction> => {
   const paymentStatusId = uuidv4();
