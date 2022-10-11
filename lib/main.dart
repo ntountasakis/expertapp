@@ -1,3 +1,4 @@
+import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/firebase/cloud_messaging/message_handler.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -23,9 +25,15 @@ void main() async {
   initFirebaseMessagingForegroundHandler();
   initFirebaseMessagingOpenedApp();
 
-  Stripe.publishableKey = "pk_test_51LLQIdAoQ8pfRhfFNyVrKysmtjgsXqW2zjx6IxcVpKjvq8iMqTTGRl8BCUnTYiIzq5HUkbnZ9dXtiibhdum3Ozfv00lOhg3RyX";
+  Stripe.publishableKey =
+      "pk_test_51LLQIdAoQ8pfRhfFNyVrKysmtjgsXqW2zjx6IxcVpKjvq8iMqTTGRl8BCUnTYiIzq5HUkbnZ9dXtiibhdum3Ozfv00lOhg3RyX";
 
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => CallServerModel(),
+      child: MyApp(),
+    ),
+  );
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
