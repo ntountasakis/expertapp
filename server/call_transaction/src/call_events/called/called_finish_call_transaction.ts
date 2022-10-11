@@ -1,4 +1,4 @@
-import {CallTransaction} from "../../../../shared/firebase/firestore/models/call_transaction";
+import {CallTransaction} from "../../../../shared/src/firebase/firestore/models/call_transaction";
 import {CalledCallState} from "../../call_state/called/called_call_state";
 import {BaseCallState} from "../../call_state/common/base_call_state";
 import {endCallTransactionCalled} from "../../firebase/firestore/functions/transaction/called/end_call_transaction_called";
