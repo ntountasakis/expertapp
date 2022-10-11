@@ -1,3 +1,8 @@
+import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
+import {BaseCallState} from "../common/base_call_state";
+
 export interface CallOnDisconnectInterface {
-    ({transactionId}: {transactionId: string}): void;
+    ({transactionId, clientMessageSender, callState}:
+        {transactionId: string, clientMessageSender: ClientMessageSenderInterface, callState: BaseCallState}):
+        Promise<void>;
 }

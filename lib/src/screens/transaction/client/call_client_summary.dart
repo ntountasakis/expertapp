@@ -1,7 +1,6 @@
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
-import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
 import 'package:flutter/material.dart';
 
 class CallClientSummary extends StatelessWidget {

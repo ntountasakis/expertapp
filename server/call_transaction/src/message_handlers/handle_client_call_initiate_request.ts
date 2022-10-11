@@ -6,16 +6,20 @@ import {onCallerPaymentSuccessCallInitiate} from "../call_events/caller/caller_o
 import {CallerCallManager} from "../call_state/caller/caller_call_manager";
 
 import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_begin_payment_initiate";
-import {sendGrpcCallJoinOrRequestFailure} from "../server/client_communication/grpc/send_grpc_call_join_or_request_failure";
 import {sendGrpcCallJoinOrRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_join_or_request_success";
 import {CallerBeginCallContext} from "../call_state/caller/caller_begin_call_context";
 
-import {endCallTransactionClientDisconnect} from "../firebase/firestore/functions/transaction/common/end_call_transaction_client_disconnect";
 import {onCallerTransactionUpdate} from "../call_events/caller/caller_on_transaction_update";
 
 import {listenForPaymentStatusUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_payment_status_updates";
 
 import {listenForCallTransactionUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_call_transaction_updates";
+import {CallTransaction} from "../../../shared/firebase/firestore/models/call_transaction";
+import createStripePaymentIntent from "../../../shared/stripe/payment_intent_creator";
+import {PrivateUserInfo} from "../../../shared/firebase/firestore/models/private_user_info";
+import {getPrivateUserDocumentNoTransact} from "../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {CallerCallState} from "../call_state/caller/caller_call_state";
+import {callerFinishCallTransaction} from "../call_events/caller/caller_finish_call_transaction";
 
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
@@ -23,39 +27,62 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   console.log(`InitiateCall request begin. Caller Uid: ${callInitiateRequest.callerUid} 
       Called Uid: ${callInitiateRequest.calledUid}`);
 
+  // todo: call join request poor name as the caller isnt the joiner, also used for fcm not for this context
+
   const calledUid = callInitiateRequest.calledUid as string;
   const callerUid = callInitiateRequest.callerUid as string;
   const request = new CallJoinRequest({callerUid: callerUid, calledUid: calledUid});
-  const [transactionValid, transactionErrorMessage,
-    callerPaymentIntentClientSecret, callerStripeCustomerId, transaction] =
-    await createCallTransaction({request: request});
+  const callTransaction: CallTransaction = await createCallTransaction({request: request});
+  const callerPrivateUserInfo: PrivateUserInfo = await getPrivateUserDocumentNoTransact({uid: callerUid});
+  const paymentIntentClientSecret: string = await _createCallStartPaymentIntent(
+      {callerPrivateUserInfo: callerPrivateUserInfo, callTransaction: callTransaction});
+  const newClientCallState: CallerCallState = _createNewCallState(
+      {callManager: clientCallManager, callTransaction: callTransaction,
+        callJoinRequest: request, clientMessageSender: clientMessageSender});
 
-  if (!transactionValid || transaction == undefined) {
-    sendGrpcCallJoinOrRequestFailure(`Unable to create call transaction. Error: ${transactionErrorMessage}`,
-        clientMessageSender);
-    return;
-  }
+  _listenForPaymentSuccess({callState: newClientCallState, callTransaction: callTransaction});
+  _listenForCallTransactionUpdates({callState: newClientCallState, callTransaction: callTransaction});
 
-  // todo: call join request poor name as the caller isnt the joiner
-  // todo: named params
+  sendGrpcCallJoinOrRequestSuccess(callTransaction.callTransactionId, clientMessageSender);
+  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret,
+      callerPrivateUserInfo.stripeCustomerId);
+}
 
-  const callBeginCallerContext = new CallerBeginCallContext({transactionId: transaction.callTransactionId,
-    agoraChannelName: transaction.agoraChannelName, calledFcmToken: transaction.calledFcmToken,
-    callJoinRequest: request});
-  const newClientCallState = clientCallManager.createCallStateOnCallerBegin({
-    userId: callerUid, callerBeginCallContext: callBeginCallerContext,
-    callerDisconnectFunction: endCallTransactionClientDisconnect,
+function _createNewCallState({callTransaction, callJoinRequest, clientMessageSender, callManager}:
+  {callManager: CallerCallManager, callTransaction: CallTransaction, callJoinRequest: CallJoinRequest,
+  clientMessageSender: ClientMessageSenderInterface}): CallerCallState {
+  const callBeginCallerContext = new CallerBeginCallContext({transactionId: callTransaction.callTransactionId,
+    agoraChannelName: callTransaction.agoraChannelName, calledFcmToken: callTransaction.calledFcmToken,
+    callJoinRequest: callJoinRequest});
+  return callManager.createCallStateOnCallerBegin({
+    userId: callTransaction.callerUid, callerBeginCallContext: callBeginCallerContext,
+    callerDisconnectFunction: callerFinishCallTransaction,
     clientMessageSender: clientMessageSender});
-  newClientCallState.eventListenerManager.listenForEventUpdates({key: transaction?.callerCallStartPaymentStatusId,
+}
+
+function _listenForPaymentSuccess({callState, callTransaction}:
+  {callState: CallerCallState, callTransaction: CallTransaction}) {
+  callState.eventListenerManager.listenForEventUpdates({key: callTransaction.callerCallStartPaymentStatusId,
     updateCallback: onCallerPaymentSuccessCallInitiate,
     unsubscribeFn: listenForPaymentStatusUpdates(
-        transaction.callerCallStartPaymentStatusId, newClientCallState.eventListenerManager)});
-  newClientCallState.eventListenerManager.listenForEventUpdates({key: transaction?.callTransactionId,
+        callTransaction.callerCallStartPaymentStatusId, callState.eventListenerManager)});
+}
+
+function _listenForCallTransactionUpdates({callState, callTransaction}:
+  {callState: CallerCallState, callTransaction: CallTransaction}) {
+  callState.eventListenerManager.listenForEventUpdates({key: callTransaction.callTransactionId,
     updateCallback: onCallerTransactionUpdate,
     unsubscribeFn: listenForCallTransactionUpdates(
-        transaction.callTransactionId, newClientCallState.eventListenerManager)});
+        callTransaction.callTransactionId, callState.eventListenerManager)});
+}
 
-  sendGrpcCallJoinOrRequestSuccess(transaction.callTransactionId, clientMessageSender);
-  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, callerPaymentIntentClientSecret, callerStripeCustomerId);
+async function _createCallStartPaymentIntent({callerPrivateUserInfo, callTransaction}:
+  {callerPrivateUserInfo: PrivateUserInfo, callTransaction: CallTransaction}): Promise<string> {
+  const [_, paymentIntentClientSecret] =
+      await createStripePaymentIntent({customerId: callerPrivateUserInfo.stripeCustomerId,
+        customerEmail: callerPrivateUserInfo.email, amountToBillInCents: callTransaction.expertRateCentsCallStart,
+        paymentDescription: "Begin Call", paymentStatusId: callTransaction.callerCallStartPaymentStatusId,
+        transferGroup: callTransaction.callerTransferGroup});
+  return paymentIntentClientSecret;
 }
 

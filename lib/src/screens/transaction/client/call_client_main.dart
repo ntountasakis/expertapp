@@ -31,9 +31,10 @@ class CallClientMain extends StatelessWidget {
       BuildContext context, CallServerModel model) {
     callServerManager.sendTerminateCallRequest(model.callTransactionId);
     Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => callTerminatePaymentPage()),
-    );
+        context,
+        MaterialPageRoute(
+            builder: (context) => ListenableProvider<CallServerModel>.value(
+                value: model, child: callTerminatePaymentPage())));
   }
 
   Widget callTerminatePaymentPage() {
