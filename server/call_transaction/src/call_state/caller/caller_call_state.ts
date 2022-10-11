@@ -5,7 +5,7 @@ import {ClientMessageSenderInterface} from "../../message_sender/client_message_
 
 export class CallerCallState extends BaseCallState {
   callerBeginCallContext: CallerBeginCallContext;
-  hasInitiatedCallTerminatePayment: boolean;
+  hasInitiatedCallFinish: boolean;
 
   constructor({callerBeginCallContext, clientMessageSender, onDisconnect}:
     {callerBeginCallContext: CallerBeginCallContext, clientMessageSender: ClientMessageSenderInterface,
@@ -13,6 +13,6 @@ export class CallerCallState extends BaseCallState {
     super({transactionId: callerBeginCallContext.transactionId, clientMessageSender: clientMessageSender,
       onDisconnect: onDisconnect});
     this.callerBeginCallContext = callerBeginCallContext;
-    this.hasInitiatedCallTerminatePayment = false;
+    this.hasInitiatedCallFinish = false;
   }
 }

@@ -22,6 +22,16 @@ async function getPrivateUserDocument({transaction, uid}: {transaction: Firebase
   return doc.data() as PrivateUserInfo;
 }
 
+async function getPrivateUserDocumentNoTransact({uid}: {uid: string}): Promise<PrivateUserInfo>
+{
+  const doc = await getPrivateUserDocumentRef({uid: uid}).get();
+  if (!doc.exists)
+  {
+    throw new Error(`No user with uid: ${uid}`);
+  }
+  return doc.data() as PrivateUserInfo;
+}
+
 function getUserMetadataDocumentRef({uid}: {uid: string}):
 FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.USER_METADATA).doc(uid);
@@ -111,4 +121,4 @@ export {getPrivateUserDocumentRef as getUserDocumentRef, getUserMetadataDocument
   getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
   getCallTransactionDocumentRef, getFcmTokenDocumentRef, getCallTransactionDocument,
   getPaymentStatusDocument, getExpertRateDocument, getUserMetadataDocument, getFcmTokenDocument,
-  getPrivateUserDocument};
+  getPrivateUserDocument, getPrivateUserDocumentNoTransact};

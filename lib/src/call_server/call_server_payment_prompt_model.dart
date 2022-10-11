@@ -1,3 +1,5 @@
+import 'package:flutter_stripe/flutter_stripe.dart';
+
 import '../generated/protos/call_transaction.pb.dart';
 
 enum PaymentState {
@@ -16,11 +18,20 @@ class CallServerPaymentPromptModel {
   String get clientSecret => _clientSecret;
   String get stripeCustomerId => _stripeCustomerId;
 
-  void onPaymentDetails(
-      {required String clientSecret, required String stripeCustomerId}) {
+  Future<void> onPaymentDetails(
+      {required String clientSecret, required String stripeCustomerId}) async {
     _clientSecret = clientSecret;
     _stripeCustomerId = stripeCustomerId;
     _state = PaymentState.READY_TO_PRESENT_PAYMENT;
+
+    await Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: SetupPaymentSheetParameters(
+        merchantDisplayName: 'Flutter Stripe Store Demo',
+        paymentIntentClientSecret: _clientSecret,
+        customerId: stripeCustomerId,
+      ),
+    );
+     await Stripe.instance.presentPaymentSheet();
   }
 
   void onPaymentComplete() {

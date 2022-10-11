@@ -8,7 +8,7 @@ import {StripePaymentIntentStates} from "../../../../shared/stripe/constants";
 import {ServerCallBeginPaymentInitiateResolved} from "../../protos/call_transaction_package/ServerCallBeginPaymentInitiateResolved";
 
 import {sendGrpcServerAgoraCredentials} from "../../server/client_communication/grpc/send_grpc_server_agora_credentials";
-import { PaymentStatus } from "../../../../shared/firebase/firestore/models/payment_status";
+import {PaymentStatus} from "../../../../shared/firebase/firestore/models/payment_status";
 
 export function onCallerPaymentSuccessCallInitiate(clientMessageSender: ClientMessageSenderInterface,
     callState : BaseCallState,

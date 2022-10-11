@@ -1,76 +1,33 @@
 import * as admin from "firebase-admin";
 import {v4 as uuidv4} from "uuid";
-import {getExpertRateDocument, getFcmTokenDocument, getPrivateUserDocument} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
-import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
 import {ExpertRate} from "../../../../../../../shared/firebase/firestore/models/expert_rate";
 import {FcmToken} from "../../../../../../../shared/firebase/firestore/models/fcm_token";
-import {PrivateUserInfo} from "../../../../../../../shared/firebase/firestore/models/private_user_info";
 import {CallJoinRequest} from "../../../../../../../shared/firebase/fcm/messages/call_join_request";
-import {paymentIntentHelperFunc, PaymentIntentType} from "../../util/payment_intent_helper";
+import {createPaymentStatus} from "../../../../../../../shared/firebase/firestore/functions/create_payment_status";
+import {createCallTransactionDocument} from "../../../../../../../shared/firebase/firestore/functions/create_call_transaction_document";
+import {getExpertRateDocument, getFcmTokenDocument} from "../../../../../../../shared/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../../../../shared/firebase/firestore/models/call_transaction";
 
-type CallTransactionReturnType = [valid: boolean, errorMessage: string,
-  callStartPaymentIntentClientSecret: string, callerStripeCustomerId: string,
-  transaction: CallTransaction | undefined];
-
-export const createCallTransaction = async ({request}: {request: CallJoinRequest}):
-  Promise<CallTransactionReturnType> => {
+export const createCallTransaction = async ({request}: {request: CallJoinRequest}): Promise<CallTransaction> => {
   return await admin.firestore().runTransaction(async (transaction) => {
     if (request.calledUid == null || request.calledUid == null) {
       const errorMessage = `Invalid Call Transaction Request, either ids are null.
       CalledUid: ${request.calledUid} CallerUid: ${request.callerUid}`;
-      return callTransactionFailure(errorMessage);
+      throw new Error(errorMessage);
     }
     const expertRate: ExpertRate = await getExpertRateDocument(
         {transaction: transaction, expertUid: request.calledUid});
-    const privateCallerUserInfo: PrivateUserInfo = await getPrivateUserDocument(
-        {transaction: transaction, uid: request.callerUid});
     const calledUserFcmToken: FcmToken = await getFcmTokenDocument({transaction: transaction, uid: request.calledUid});
 
-    const transferGroup = uuidv4();
-    const paymentIntentResult: PaymentIntentType = await paymentIntentHelperFunc(
-        {costInCents: expertRate.centsCallStart, privateUserInfo: privateCallerUserInfo,
-          uid: request.calledUid, transferGroup: transferGroup, transaction: transaction,
-          description: "Start Call"});
-
-    if (typeof paymentIntentResult === "string") {
-      return callTransactionFailure(paymentIntentResult);
-    }
-    const [paymentStatusId, paymentIntentClientSecret] = paymentIntentResult;
-
-    console.log(`Found token ${calledUserFcmToken} for ${request.calledUid}`);
-
-    const callRequestTimeUtcMs = Date.now();
     const transactionId = uuidv4();
-    const agoraChannelName = uuidv4();
-
-    const newTransaction: CallTransaction = {
-      "callTransactionId": transactionId,
-      "callerUid": request.callerUid,
-      "calledUid": request.calledUid,
-      "calledFcmToken": calledUserFcmToken.token,
-      "callRequestTimeUtcMs": callRequestTimeUtcMs,
-      "expertRateCentsPerMinute": expertRate.centsPerMinute,
-      "expertRateCentsCallStart": expertRate.centsCallStart,
-      "agoraChannelName": agoraChannelName,
-      "callerCallStartPaymentStatusId": paymentStatusId,
-      "callerCallTerminatePaymentStatusId": "",
-      "callerTransferGroup": transferGroup,
-      "calledHasJoined": false,
-      "calledJoinTimeUtcMs": 0,
-      "callHasEnded": false,
-      "callEndTimeUtsMs": 0,
-    };
-
-    const callTransactionDoc = admin.firestore()
-        .collection("call_transactions").doc(transactionId);
-
-    transaction.create(callTransactionDoc, newTransaction);
-
-    return [true, "", paymentIntentClientSecret, privateCallerUserInfo.stripeCustomerId, newTransaction];
+    const paymentStatusId = uuidv4();
+    const transferGroup = uuidv4();
+    createPaymentStatus({transaction: transaction, uid: request.callerUid,
+      paymentStatusId: paymentStatusId, transferGroup: transferGroup,
+      costInCents: expertRate.centsCallStart});
+    return createCallTransactionDocument({transaction: transaction, transactionId: transactionId,
+      callerUid: request.callerUid, calledUid: request.calledUid, calledUserFcmToken: calledUserFcmToken,
+      expertRate: expertRate, transferGroup: transferGroup, callRequestTimeUtcMs: Date.now(),
+      agoraChannelName: uuidv4(), paymentStatusId: paymentStatusId});
   });
 };
-
-function callTransactionFailure(errorMessage: string): CallTransactionReturnType {
-  console.error(`Error in CreateCallTransaction: ${errorMessage}`);
-  return [false, errorMessage, "", "", undefined];
-}

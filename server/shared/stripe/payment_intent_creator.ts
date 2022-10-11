@@ -7,13 +7,13 @@ export default async function createStripePaymentIntent({customerId, customerEma
   transferGroup}: {customerId: string, customerEmail: string,
     amountToBillInCents: number, paymentDescription: string, paymentStatusId: string,
     transferGroup: string}):
-    Promise<[valid: boolean, errorMessage: string, paymentIntentId: string, clientSecret: string]> {
+    Promise<[paymentIntentId: string, clientSecret: string]> {
   let errorMessage = `PaymentIntent create fail for customerId: ${customerId} \n`;
 
   if (paymentDescription.length > StripeConstants.MAX_PAYMENT_INTENT_DESCRIPTION_LENGTH) {
     errorMessage += `Payment descripton too long. Length :${paymentDescription.length} > 
         Max length: ${StripeConstants.MAX_PAYMENT_INTENT_DESCRIPTION_LENGTH}`;
-    return [false, errorMessage, "", ""];
+    throw new Error(errorMessage);
   }
   try {
     const paymentIntentResponse = await StripeProvider.STRIPE.paymentIntents.create({
@@ -32,7 +32,7 @@ export default async function createStripePaymentIntent({customerId, customerEma
       idempotencyKey: paymentStatusId,
     });
     if (paymentIntentResponse.client_secret != null) {
-      return [true, "", paymentIntentResponse.id, paymentIntentResponse.client_secret];
+      return [paymentIntentResponse.id, paymentIntentResponse.client_secret];
     }
     errorMessage += "Null client_secret";
   } catch (error) {
@@ -48,5 +48,5 @@ export default async function createStripePaymentIntent({customerId, customerEma
       errorMessage += `Unhandled Error Type ${error}`;
     }
   }
-  return [false, errorMessage, "", ""];
+  throw new Error(errorMessage);
 }

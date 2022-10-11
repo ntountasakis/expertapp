@@ -17,6 +17,8 @@ export class BaseCallState {
 
   onDisconnect(): void {
     this.eventListenerManager.onDisconnect();
-    this.onDisconnectFunction({transactionId: this.transactionId});
+    this.onDisconnectFunction({transactionId: this.transactionId,
+      clientMessageSender: this.eventListenerManager.clientMessageSender,
+      callState: this.eventListenerManager.callState});
   }
 }

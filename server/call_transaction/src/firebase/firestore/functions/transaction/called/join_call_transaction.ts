@@ -4,13 +4,14 @@ import {CallTransaction} from "../../../../../../../shared/firebase/firestore/mo
 import {ClientCallJoinRequest} from "../../../../../protos/call_transaction_package/ClientCallJoinRequest";
 
 export const joinCallTransaction = async ({request}: {request: ClientCallJoinRequest}):
-Promise<void> => {
-  return await admin.firestore().runTransaction(async (transaction) => {
-    if (request.callTransactionId == null || request.joinerUid == null) {
-      throw new Error("ClientCallJoinRequest has null fields");
-    }
+Promise<CallTransaction> => {
+  if (request.callTransactionId == null) {
+    throw new Error("ClientCallJoinRequest has null fields");
+  }
+  const transactionId = request.callTransactionId;
+  await admin.firestore().runTransaction(async (transaction) => {
     const callTransaction: CallTransaction = await getCallTransactionDocument(
-        {transaction: transaction, transactionId: request.callTransactionId});
+        {transaction: transaction, transactionId: transactionId});
     let errorMessage = `Call Transaction ID: ${request.callTransactionId} `;
 
     if (callTransaction.calledHasJoined || callTransaction.calledJoinTimeUtcMs !== 0) {
@@ -21,12 +22,15 @@ Promise<void> => {
 
     callTransaction.calledHasJoined = true;
     callTransaction.calledJoinTimeUtcMs = Date.now();
-    getCallTransactionDocumentRef({transactionId: request.callTransactionId}).update({
+    getCallTransactionDocumentRef({transactionId: transactionId}).update({
       "calledHasJoined": true,
       "calledJoinTimeUtcMs": Date.now(),
     });
 
     console.log(`CallTransaction joined. TransactionId: ${callTransaction.callTransactionId} 
         JoinedId: ${callTransaction.calledUid} `);
+  });
+  return await admin.firestore().runTransaction(async (transaction) => {
+    return getCallTransactionDocument({transaction: transaction, transactionId: transactionId});
   });
 };

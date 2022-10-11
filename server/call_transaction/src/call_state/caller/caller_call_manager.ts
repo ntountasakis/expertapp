@@ -6,8 +6,7 @@ import {ClientMessageSenderInterface} from "../../message_sender/client_message_
 
 export class CallerCallManager extends BaseCallManager {
   createCallStateOnCallerBegin({userId, callerBeginCallContext, callerDisconnectFunction,
-    clientMessageSender}:
-      {userId: string, callerBeginCallContext: CallerBeginCallContext,
+    clientMessageSender}: {userId: string, callerBeginCallContext: CallerBeginCallContext,
       callerDisconnectFunction: CallOnDisconnectInterface,
     clientMessageSender: ClientMessageSenderInterface}): CallerCallState {
     const callState = new CallerCallState(
