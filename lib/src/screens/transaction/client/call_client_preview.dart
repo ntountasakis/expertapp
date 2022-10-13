@@ -1,5 +1,4 @@
 import 'package:expertapp/src/call_server/call_server_manager.dart';
-import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
@@ -7,7 +6,6 @@ import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
 import 'package:expertapp/src/screens/transaction/client/call_begin_client_payment_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CallClientPreview extends StatelessWidget {
   final String currentUserId;

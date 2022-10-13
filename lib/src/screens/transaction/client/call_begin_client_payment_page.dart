@@ -41,7 +41,7 @@ class _CallBeginClientPaymentPageState
       body: Consumer<CallServerModel>(
         builder: (context, model, child) {
           switch (model.callBeginPaymentPromptModel.paymentState) {
-            case PaymentState.READY_TO_PRESENT_PAYMENT:
+            case PaymentState.PAYMENT_PROMPT_PRESENTED:
               log("Payment ready");
               break;
             case PaymentState.PAYMENT_COMPLETE:
