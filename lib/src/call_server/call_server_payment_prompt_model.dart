@@ -4,7 +4,7 @@ import '../generated/protos/call_transaction.pb.dart';
 
 enum PaymentState {
   WAITING_FOR_PAYMENT_DETAILS,
-  READY_TO_PRESENT_PAYMENT,
+  PAYMENT_PROMPT_PRESENTED,
   PAYMENT_COMPLETE,
   PAYMENT_FAILURE
 }
@@ -22,7 +22,7 @@ class CallServerPaymentPromptModel {
       {required String clientSecret, required String stripeCustomerId}) async {
     _clientSecret = clientSecret;
     _stripeCustomerId = stripeCustomerId;
-    _state = PaymentState.READY_TO_PRESENT_PAYMENT;
+    _state = PaymentState.PAYMENT_PROMPT_PRESENTED;
 
     await Stripe.instance.initPaymentSheet(
       paymentSheetParameters: SetupPaymentSheetParameters(
@@ -31,7 +31,7 @@ class CallServerPaymentPromptModel {
         customerId: stripeCustomerId,
       ),
     );
-     await Stripe.instance.presentPaymentSheet();
+    await Stripe.instance.presentPaymentSheet();
   }
 
   void onPaymentComplete() {
