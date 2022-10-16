@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
@@ -9,15 +8,16 @@ import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:expertapp/src/screens/transaction/client/call_client_preview.dart';
+import 'package:expertapp/src/screens/transaction/client/call_transaction_page_enum.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'expert_review_submit_page.dart';
 
 class ExpertProfilePage extends StatelessWidget {
   final String _currentUserUid;
   final DocumentWrapper<UserMetadata> _expertUserMetadata;
-  ExpertProfilePage(this._currentUserUid, this._expertUserMetadata);
+  final Function(CallTransactionPageEnum) onPageTransitionRequest;
+  
+  ExpertProfilePage(this._currentUserUid, this._expertUserMetadata,
+  this.onPageTransitionRequest);
 
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
@@ -90,7 +90,8 @@ class ExpertProfilePage extends StatelessWidget {
         }
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return CallClientPreview(
-              _currentUserUid, _expertUserMetadata, expertRate.documentType);
+              _currentUserUid, _expertUserMetadata, expertRate.documentType,
+              onPageTransitionRequest);
         }));
       },
       child: Text('Call ${_expertUserMetadata.documentType.firstName}'),

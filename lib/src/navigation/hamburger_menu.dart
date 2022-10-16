@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 
 class HamburgerMenu extends StatelessWidget {
   final DocumentWrapper<UserMetadata> _currentUserMetadata;
+  final Function(DocumentWrapper<UserMetadata>) _onExpertSelected;
 
-  const HamburgerMenu(this._currentUserMetadata);
+  const HamburgerMenu(this._currentUserMetadata, this._onExpertSelected);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class HamburgerMenu extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ExpertListingsPage(
-                        _currentUserMetadata,
+                        _currentUserMetadata, _onExpertSelected
                       ),
                     ));
               }),

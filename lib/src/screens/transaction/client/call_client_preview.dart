@@ -5,15 +5,18 @@ import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.d
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
 import 'package:expertapp/src/screens/transaction/client/call_begin_client_payment_page.dart';
+import 'package:expertapp/src/screens/transaction/client/call_transaction_page_enum.dart';
 import 'package:flutter/material.dart';
 
 class CallClientPreview extends StatelessWidget {
   final String currentUserId;
   final DocumentWrapper<UserMetadata> expertUserMetadata;
   final ExpertRate expertRate;
+  final Function(CallTransactionPageEnum) onPageTransitionRequest;
 
   CallClientPreview(
-      this.currentUserId, this.expertUserMetadata, this.expertRate);
+      this.currentUserId, this.expertUserMetadata, this.expertRate,
+      this.onPageTransitionRequest);
 
   final explanationBlurbStyle = TextStyle(
     fontSize: 12,

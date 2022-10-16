@@ -5,9 +5,11 @@ import 'package:expertapp/src/firebase/cloud_messaging/message_handler.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/generated/protos/call_transaction.pbgrpc.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
-import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:expertapp/src/screens/expert_listings_page.dart';
+import 'package:expertapp/src/screens/expert_profile_page.dart';
+import 'package:expertapp/src/screens/transaction/client/call_transaction_page_enum.dart';
 import 'package:expertapp/src/screens/user_signup_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -53,16 +55,14 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   final appLifecycle = AppLifecycle();
   final authStateProvider = AuthStateProvider();
-  var authState = AuthStateEnum.NEED_TO_SIGN_IN;
+  var authState = AuthStateEnum.START;
   DocumentWrapper<UserMetadata>? userMetadata;
+  DocumentWrapper<UserMetadata>? selectedExpertUserMetadata;
 
   void authStateCallback(AuthStateEnum state) async {
-    DocumentWrapper<UserMetadata>? potentialExistingUser = null;
-    if (state == AuthStateEnum.SIGNED_IN) {
-      potentialExistingUser =
-          await UserMetadata.get(authStateProvider.currentUser!.uid);
-    }
-    userAndAuthState(authState, potentialExistingUser);
+    DocumentWrapper<UserMetadata>? potentialExistingUser =
+        await UserMetadata.get(authStateProvider.currentUser!.uid);
+    userAndAuthState(state, potentialExistingUser);
   }
 
   void userCreated(DocumentWrapper<UserMetadata> userCreatedMetadata) {
@@ -78,6 +78,16 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void onExpertPreviewSelected(
+      DocumentWrapper<UserMetadata> expertUserMetadata) {
+    setState(() {
+      selectedExpertUserMetadata = expertUserMetadata;
+    });
+  }
+
+  void onCallClientPageTransitionRequest(CallTransactionPageEnum request) {
+  }
+
   @override
   void initState() {
     super.initState();
@@ -90,23 +100,20 @@ class _MyAppState extends State<MyApp> {
         title: 'Flutter Demo',
         navigatorKey: navigatorKey,
         theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
           primarySwatch: Colors.blue,
         ),
         home: Navigator(
           pages: [
-            if (userMetadata != null)
+            if (authState == AuthStateEnum.START)
               MaterialPage(
-                  key: ValueKey('ExpertListingsPage'),
-                  child: ExpertListingsPage(userMetadata!))
+                key: ValueKey('START'),
+                child: Scaffold(
+                  appBar: AppBar(),
+                  body: Container(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              )
             else if (authState == AuthStateEnum.NEED_TO_SIGN_IN)
               MaterialPage(
                   key: ValueKey('SignInScreen'),
@@ -120,12 +127,36 @@ class _MyAppState extends State<MyApp> {
                       clientId: '294313229392786',
                     )
                   ]))
-            else
+            else if (userMetadata == null)
               MaterialPage(
                   key: ValueKey('UserCreationGatePage'),
                   child: UserSignupPage(appLifecycle,
                       authStateProvider.currentUser!, userCreated))
+            else
+              MaterialPage(
+                  key: ValueKey('ExpertListingsPage'),
+                  child: ExpertListingsPage(
+                      userMetadata!, onExpertPreviewSelected)),
+            if (selectedExpertUserMetadata != null && userMetadata != null)
+              MaterialPage(
+                  key: ValueKey('ExpertProfilePage' +
+                      selectedExpertUserMetadata!.documentId),
+                  name: 'ExpertProfilePage',
+                  child: ExpertProfilePage(
+                      userMetadata!.documentId, selectedExpertUserMetadata!,
+                      onCallClientPageTransitionRequest))
           ],
+          onPopPage: (route, result) {
+            if (!route.didPop(result)) {
+              return false;
+            }
+            if (route.settings.name == 'ExpertProfilePage') {
+              setState(() {
+                selectedExpertUserMetadata = null;
+              });
+            }
+            return true;
+          },
         ));
   }
 }
