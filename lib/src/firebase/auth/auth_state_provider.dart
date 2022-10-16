@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-enum AuthStateEnum { NEED_TO_SIGN_IN, SIGNED_IN }
+enum AuthStateEnum { START, NEED_TO_SIGN_IN, SIGNED_IN }
 
 class AuthStateProvider {
   User? currentUser;

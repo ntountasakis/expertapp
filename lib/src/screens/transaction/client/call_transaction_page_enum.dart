@@ -1,0 +1,1 @@
+enum CallTransactionPageEnum {NA, CALL_PREVIEW, BEGIN_PAYMENT_PAGE}

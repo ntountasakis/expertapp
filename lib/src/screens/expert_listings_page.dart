@@ -4,18 +4,13 @@ import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.d
 import 'package:expertapp/src/navigation/hamburger_menu.dart';
 import 'package:flutter/material.dart';
 
-class ExpertListingsPage extends StatefulWidget {
-  final DocumentWrapper<UserMetadata> _currentUserMetadata;
-
-  const ExpertListingsPage(this._currentUserMetadata);
-
-  @override
-  _ExpertListingsPageState createState() => _ExpertListingsPageState();
-}
-
-class _ExpertListingsPageState extends State<ExpertListingsPage> {
-  final ButtonStyle style =
+class ExpertListingsPage extends StatelessWidget {
+  static final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 8));
+  final DocumentWrapper<UserMetadata> _currentUserMetadata;
+  final Function(DocumentWrapper<UserMetadata>) _onExpertSelected;
+
+  const ExpertListingsPage(this._currentUserMetadata, this._onExpertSelected);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +18,7 @@ class _ExpertListingsPageState extends State<ExpertListingsPage> {
         appBar: AppBar(
           title: Text('Expert Listings'),
         ),
-        drawer: HamburgerMenu(widget._currentUserMetadata),
+        drawer: HamburgerMenu(_currentUserMetadata, _onExpertSelected),
         body: StreamBuilder(
             stream: UserMetadata.getStream(),
             builder: (BuildContext context,
@@ -34,8 +29,8 @@ class _ExpertListingsPageState extends State<ExpertListingsPage> {
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
                       return ExpertListingPreview(
-                        widget._currentUserMetadata.documentId,
                         snapshot.data!.elementAt(index),
+                        _onExpertSelected,
                       );
                     });
               } else {
