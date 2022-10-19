@@ -1,6 +1,8 @@
+import 'dart:developer';
+
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/environment/environment_config.dart';
-import 'package:expertapp/src/firebase/auth/auth_state_provider.dart';
+import 'package:expertapp/src/firebase/auth/auth_state_listener.dart';
 import 'package:expertapp/src/firebase/cloud_messaging/message_handler.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
@@ -9,6 +11,8 @@ import 'package:expertapp/src/generated/protos/call_transaction.pbgrpc.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/expert_listings_page.dart';
 import 'package:expertapp/src/screens/expert_profile_page.dart';
+import 'package:expertapp/src/screens/navigation/routes.dart';
+import 'package:expertapp/src/screens/navigation/sign_in_flow.dart';
 import 'package:expertapp/src/screens/transaction/client/call_transaction_page_enum.dart';
 import 'package:expertapp/src/screens/user_signup_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -44,7 +48,7 @@ void main() async {
   );
 }
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatefulWidget {
   @override
@@ -54,29 +58,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   final appLifecycle = AppLifecycle();
-  final authStateProvider = AuthStateProvider();
-  var authState = AuthStateEnum.START;
-  DocumentWrapper<UserMetadata>? userMetadata;
   DocumentWrapper<UserMetadata>? selectedExpertUserMetadata;
-
-  void authStateCallback(AuthStateEnum state) async {
-    DocumentWrapper<UserMetadata>? potentialExistingUser =
-        await UserMetadata.get(authStateProvider.currentUser!.uid);
-    userAndAuthState(state, potentialExistingUser);
-  }
-
-  void userCreated(DocumentWrapper<UserMetadata> userCreatedMetadata) {
-    appLifecycle.onUserLogin(userCreatedMetadata);
-    userAndAuthState(authState, userCreatedMetadata);
-  }
-
-  void userAndAuthState(
-      AuthStateEnum authState, DocumentWrapper<UserMetadata>? userMetadata) {
-    setState(() {
-      this.userMetadata = userMetadata;
-      this.authState = authState;
-    });
-  }
 
   void onExpertPreviewSelected(
       DocumentWrapper<UserMetadata> expertUserMetadata) {
@@ -85,78 +67,36 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void onCallClientPageTransitionRequest(CallTransactionPageEnum request) {
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    authStateProvider.listenForAuthChanges(authStateCallback);
-  }
+  void onCallClientPageTransitionRequest(CallTransactionPageEnum request) {}
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Demo',
-        navigatorKey: navigatorKey,
+        navigatorKey: rootNavigatorKey,
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: Navigator(
-          pages: [
-            if (authState == AuthStateEnum.START)
-              MaterialPage(
-                key: ValueKey('START'),
-                child: Scaffold(
-                  appBar: AppBar(),
-                  body: Container(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-              )
-            else if (authState == AuthStateEnum.NEED_TO_SIGN_IN)
-              MaterialPage(
-                  key: ValueKey('SignInScreen'),
-                  child: SignInScreen(providerConfigs: [
-                    EmailProviderConfiguration(),
-                    GoogleProviderConfiguration(
-                      clientId:
-                          '111394228371-4slr6ceip09bqefipq2ikbvribtj93qj.apps.googleusercontent.com',
-                    ),
-                    FacebookProviderConfiguration(
-                      clientId: '294313229392786',
-                    )
-                  ]))
-            else if (userMetadata == null)
-              MaterialPage(
-                  key: ValueKey('UserCreationGatePage'),
-                  child: UserSignupPage(appLifecycle,
-                      authStateProvider.currentUser!, userCreated))
-            else
-              MaterialPage(
-                  key: ValueKey('ExpertListingsPage'),
-                  child: ExpertListingsPage(
-                      userMetadata!, onExpertPreviewSelected)),
-            if (selectedExpertUserMetadata != null && userMetadata != null)
-              MaterialPage(
-                  key: ValueKey('ExpertProfilePage' +
-                      selectedExpertUserMetadata!.documentId),
-                  name: 'ExpertProfilePage',
-                  child: ExpertProfilePage(
-                      userMetadata!.documentId, selectedExpertUserMetadata!,
-                      onCallClientPageTransitionRequest))
-          ],
-          onPopPage: (route, result) {
-            if (!route.didPop(result)) {
-              return false;
-            }
-            if (route.settings.name == 'ExpertProfilePage') {
-              setState(() {
-                selectedExpertUserMetadata = null;
-              });
-            }
-            return true;
-          },
-        ));
+        initialRoute: Routes.SIGN_IN_START,
+        onGenerateRoute: (settings) {
+          late Widget page;
+          if (settings.name == Routes.HOME) {
+            page = ExpertListingsPage(
+                appLifecycle.theUserMetadata!, onExpertPreviewSelected);
+          } else if (settings.name!.startsWith(Routes.SIGN_IN_PREFIX)) {
+            log("Calling Signin main name: ${settings.name}");
+            final subRoute = Routes.subRouteSignIn(settings.name!);
+            page = SignInFlow(appLifecycle, subRoute, rootNavigatorKey);
+          } else {
+            throw Exception("Unknown route: ${settings.name}");
+          }
+
+          return MaterialPageRoute(
+            builder: (context) {
+              return page;
+            },
+            settings: settings,
+          );
+        });
   }
 }

@@ -3,17 +3,15 @@ import 'dart:developer';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
-import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide UserMetadata;
 import 'package:flutter/material.dart';
 
 class UserSignupPage extends StatefulWidget {
-  final AppLifecycle _appLifecycle;
   final User _authenticatedUser;
   final Function(DocumentWrapper<UserMetadata>) onUserCreated;
-  UserSignupPage(this._appLifecycle, this._authenticatedUser, this.onUserCreated);
+  UserSignupPage(this._authenticatedUser, this.onUserCreated);
 
   @override
   State<UserSignupPage> createState() => _UserSignupPageState();

@@ -40,8 +40,7 @@ void initFirebaseMessagingForegroundHandler() {
       log("Cannot accept call join request from unknown user: ${callJoinRequest.callerUid}");
       return;
     }
-    navigatorKey.currentState?.push(
-      MaterialPageRoute(
+    rootNavigatorKey.currentState?.push(MaterialPageRoute(
       builder: (context) => CallTransactionExpertPrompt(
         callJoinRequest: callJoinRequest,
         currentUserId: callJoinRequest.calledUid,
