@@ -1,18 +1,19 @@
 class Routes {
-  static const SIGN_IN_PREFIX = 'signin';
-  static const SIGN_IN_START = '$SIGN_IN_PREFIX:$signInStartPage';
-  static const signInStartPage = 'start';
-  static const signInAuthPage = 'auth';
-  static const signInUserCreatePage = 'user_create';
-
   static const HOME = '/';
 
-  static String subRouteSignIn(String route) {
-    final routes = route.split(':');
-    if (routes.length != 2) {
-      throw new Exception(
-          "Invalid Signin route: ${route}. Cannot deduce subroute");
-    }
-    return routes[1];
-  }
+  static const SIGN_IN_PREFIX = '/signin';
+  static const SIGN_IN_START = '$SIGN_IN_PREFIX:start';
+  static const SIGN_IN_AUTH = '$SIGN_IN_PREFIX:auth';
+  static const SIGN_IN_USER_CREATE = '$SIGN_IN_PREFIX:user_create';
+
+  static const EXPERT_LISTINGS = '/expertlistings';
+  static const EXPERT_PROFILE_PAGE = '$EXPERT_LISTINGS/expertProfilePage';
+  static const EXPERT_CALL_PREVIEW = '$EXPERT_LISTINGS/expertCallPreview';
+
+  static const CLIENT_CALL_PREFIX = '/clientcall';
+  static const CLIENT_CALL_PAYMENT_BEGIN = '$CLIENT_CALL_PREFIX:paymentbegin';
+  static const CLIENT_CALL_MAIN = '$CLIENT_CALL_PREFIX:main';
+  static const CLIENT_CALL_CHAT = '$CLIENT_CALL_PREFIX:chat?room_id=';
+  static const CLIENT_CALL_PAYMENT_END = '$CLIENT_CALL_PREFIX:paymentEnd';
+  static const CLIENT_CALL_SUMMARY = '$CLIENT_CALL_PREFIX:summary';
 }

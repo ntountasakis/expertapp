@@ -1,18 +1,17 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:expertapp/src/screens/expert_listings_page.dart';
 import 'package:expertapp/src/screens/user_profile_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HamburgerMenu extends StatelessWidget {
-  final DocumentWrapper<UserMetadata> _currentUserMetadata;
-  final Function(DocumentWrapper<UserMetadata>) _onExpertSelected;
-
-  const HamburgerMenu(this._currentUserMetadata, this._onExpertSelected);
-
   @override
   Widget build(BuildContext context) {
+    DocumentWrapper<UserMetadata> currentUserMetadata =
+        Provider.of<AppLifecycle>(context, listen: false).theUserMetadata!;
     return Drawer(
       child: ListView(
         children: [
@@ -29,24 +28,14 @@ class HamburgerMenu extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => UserProfilePage(
-                        _currentUserMetadata,
-                      ),
-                    ));
-              }),
-          ListTile(
-              title: Text("Expert Listings"),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ExpertListingsPage(
-                        _currentUserMetadata, _onExpertSelected
+                        currentUserMetadata,
                       ),
                     ));
               }),
           ListTile(
               title: Text("Sign Out"),
               onTap: () async {
+                // todo: sign out broken
                 await AuthGatePage.signOut();
               }),
         ],

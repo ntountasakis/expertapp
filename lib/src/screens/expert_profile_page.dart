@@ -7,17 +7,15 @@ import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
-import 'package:expertapp/src/screens/transaction/client/call_client_preview.dart';
-import 'package:expertapp/src/screens/transaction/client/call_transaction_page_enum.dart';
+import 'package:expertapp/src/screens/navigation/expert_call_preview_arguments.dart';
 import 'package:flutter/material.dart';
 
+import 'navigation/routes.dart';
+
 class ExpertProfilePage extends StatelessWidget {
-  final String _currentUserUid;
   final DocumentWrapper<UserMetadata> _expertUserMetadata;
-  final Function(CallTransactionPageEnum) onPageTransitionRequest;
-  
-  ExpertProfilePage(this._currentUserUid, this._expertUserMetadata,
-  this.onPageTransitionRequest);
+
+  ExpertProfilePage(this._expertUserMetadata);
 
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
@@ -88,11 +86,9 @@ class ExpertProfilePage extends StatelessWidget {
           log('Cant find expert rate for ${_expertUserMetadata.documentId}');
           return;
         }
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return CallClientPreview(
-              _currentUserUid, _expertUserMetadata, expertRate.documentType,
-              onPageTransitionRequest);
-        }));
+        Navigator.pushNamed(context, Routes.EXPERT_CALL_PREVIEW,
+            arguments: ExpertCallPreviewArguments(
+                this._expertUserMetadata, expertRate));
       },
       child: Text('Call ${_expertUserMetadata.documentType.firstName}'),
     );

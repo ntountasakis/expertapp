@@ -1,9 +1,11 @@
 import 'dart:developer';
 
+import 'package:expertapp/main.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/firebase/auth/auth_state_listener.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
+import 'package:expertapp/src/screens/navigation/root_page.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:expertapp/src/screens/user_signup_page.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
@@ -14,8 +16,7 @@ import 'package:flutterfire_ui/auth.dart';
 class SignInFlow extends StatefulWidget {
   final AppLifecycle appLifecycle;
   final String initRoute;
-  final GlobalKey<NavigatorState> rootNavigatorKey;
-  SignInFlow(this.appLifecycle, this.initRoute, this.rootNavigatorKey);
+  SignInFlow(this.appLifecycle, this.initRoute);
 
   @override
   State<SignInFlow> createState() => _SignInFlowState();
@@ -35,30 +36,35 @@ class _SignInFlowState extends State<SignInFlow> {
     DocumentWrapper<UserMetadata>? potentialExistingUser = null;
     widget.appLifecycle.onAuthStatusChange(currentUser);
     if (state == AuthStateEnum.NEED_TO_SIGN_IN) {
-      _signInFlowNavigatorKey.currentState!.pushNamed(Routes.signInAuthPage);
+      _signInFlowNavigatorKey.currentState!.pushNamed(Routes.SIGN_IN_AUTH);
     } else {
       assert(state == AuthStateEnum.SIGNED_IN);
       potentialExistingUser = await UserMetadata.get(currentUser!.uid);
       if (potentialExistingUser != null) {
         widget.appLifecycle.onUserLogin(potentialExistingUser);
-        // Navigator.of(context).pop();
-        widget.rootNavigatorKey.currentState!.popAndPushNamed(Routes.HOME);
+        rootNavigatorKey.currentState!
+            .popAndPushNamed(Routes.EXPERT_LISTINGS);
       } else {
-        _signInFlowNavigatorKey.currentState!.popAndPushNamed(Routes.signInUserCreatePage);
+        _signInFlowNavigatorKey.currentState!
+            .popAndPushNamed(Routes.SIGN_IN_USER_CREATE);
       }
     }
   }
 
   void onUserCreated(DocumentWrapper<UserMetadata> userCreatedMetadata) {
     widget.appLifecycle.onUserLogin(userCreatedMetadata);
-    widget.rootNavigatorKey.currentState!.popAndPushNamed(Routes.HOME);
+    rootNavigatorKey.currentState!
+        .popAndPushNamed(Routes.EXPERT_LISTINGS);
   }
 
   Route _onGenerateRoute(RouteSettings settings) {
     late Widget page;
     log("Signin flow name: ${settings.name}");
     switch (settings.name) {
-      case Routes.signInAuthPage:
+      case Routes.HOME:
+        page = RootPage();
+        break;
+      case Routes.SIGN_IN_AUTH:
         page = SignInScreen(providerConfigs: [
           EmailProviderConfiguration(),
           GoogleProviderConfiguration(
@@ -70,11 +76,11 @@ class _SignInFlowState extends State<SignInFlow> {
           )
         ]);
         break;
-      case Routes.signInUserCreatePage:
+      case Routes.SIGN_IN_USER_CREATE:
         page = UserSignupPage(
             widget.appLifecycle.theAuthenticatedUser!, onUserCreated);
         break;
-      case Routes.signInStartPage:
+      case Routes.SIGN_IN_START:
         page = Scaffold(
           body: Container(
             child: Text("Sign in start"),

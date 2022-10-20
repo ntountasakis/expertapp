@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:typed_data';
 
 import 'package:expertapp/src/firebase/storage/storage_paths.dart';
 import 'package:expertapp/src/firebase/storage/storage_util.dart';
