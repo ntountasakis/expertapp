@@ -1,22 +1,22 @@
+import 'package:expertapp/main.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
+import 'package:expertapp/src/screens/navigation/expert_profile_arguments.dart';
+import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:expertapp/src/screens/transaction/client/call_begin_client_payment_page.dart';
-import 'package:expertapp/src/screens/transaction/client/call_transaction_page_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CallClientPreview extends StatelessWidget {
-  final String currentUserId;
   final DocumentWrapper<UserMetadata> expertUserMetadata;
-  final ExpertRate expertRate;
-  final Function(CallTransactionPageEnum) onPageTransitionRequest;
+  final DocumentWrapper<ExpertRate> expertRate;
 
-  CallClientPreview(
-      this.currentUserId, this.expertUserMetadata, this.expertRate,
-      this.onPageTransitionRequest);
+  CallClientPreview(this.expertUserMetadata, this.expertRate);
 
   final explanationBlurbStyle = TextStyle(
     fontSize: 12,
@@ -51,17 +51,11 @@ class CallClientPreview extends StatelessWidget {
       child: ElevatedButton(
         style: callButtonStyle,
         onPressed: () {
-          CallServerManager callManager = new CallServerManager(
-              currentUserId: currentUserId,
-              otherUserId: expertUserMetadata.documentId);
-
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return CallBeginClientPaymentPage(
-              currentUserId: currentUserId,
-              expertUserMetadata: expertUserMetadata,
-              callServerManager: callManager,
-            );
-          }));
+          final selectedExpert = this.expertUserMetadata;
+          rootNavigatorKey.currentState!.popUntil((route) => route.isFirst);
+          rootNavigatorKey.currentState!.pushNamed(
+              Routes.CLIENT_CALL_PAYMENT_BEGIN,
+              arguments: ExpertProfileArguments(selectedExpert));
         },
         child: const Text('Begin Call'),
       ),
@@ -69,7 +63,7 @@ class CallClientPreview extends StatelessWidget {
   }
 
   Widget buildPricingCard() {
-    return ExpertPricingCard(expertRate);
+    return ExpertPricingCard(expertRate.documentType);
   }
 
   @override

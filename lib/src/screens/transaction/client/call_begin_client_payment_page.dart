@@ -6,7 +6,7 @@ import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart'
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
-import 'package:expertapp/src/screens/transaction/client/call_client_main.dart';
+import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,10 +45,8 @@ class _CallBeginClientPaymentPageState
               log("Payment ready");
               break;
             case PaymentState.PAYMENT_COMPLETE:
-              return CallClientMain(
-                  currentUserId: widget.currentUserId,
-                  connectedExpertMetadata: widget.expertUserMetadata,
-                  callServerManager: widget.callServerManager);
+              Navigator.of(context).popAndPushNamed(Routes.CLIENT_CALL_MAIN);
+              break;
             case PaymentState.PAYMENT_FAILURE:
               log("CallClientPaymentBeginPage: Payment failure error");
               break;

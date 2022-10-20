@@ -10,6 +10,7 @@ import 'package:expertapp/src/call_server/widgets/call_server_video_call_button.
 import 'package:expertapp/src/call_server/widgets/call_server_wrap_up_call_button.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,14 +29,7 @@ class CallClientMain extends StatelessWidget {
   void navigateTerminatePaymentPage(BuildContext context) {
     callServerManager.sendTerminateCallRequest(
         Provider.of<CallServerModel>(context, listen: false).callTransactionId);
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => callTerminatePaymentPage()));
-  }
-
-  Widget callTerminatePaymentPage() {
-    return CallClientTerminatePaymentPage(
-        connectedExpertMetadata: connectedExpertMetadata,
-        callServerManager: callServerManager);
+    Navigator.popAndPushNamed(context, Routes.CLIENT_CALL_PAYMENT_END);
   }
 
   @override
@@ -44,7 +38,7 @@ class CallClientMain extends StatelessWidget {
       builder: (context, model, child) {
         if (model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.LEFT) {
-          return callTerminatePaymentPage();
+          Navigator.popAndPushNamed(context, Routes.CLIENT_CALL_PAYMENT_END);
         }
         return Column(children: [
           Container(
