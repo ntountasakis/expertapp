@@ -47,7 +47,8 @@ class CallServerModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onServerCallJoinOrRequestResponse(ServerCallJoinOrRequestResponse response) {
+  void onServerCallJoinOrRequestResponse(
+      ServerCallJoinOrRequestResponse response) {
     _callTransactionId = response.callTransactionId;
   }
 

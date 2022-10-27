@@ -1,22 +1,16 @@
-import 'package:expertapp/main.dart';
-import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
-import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
-import 'package:expertapp/src/screens/navigation/expert_profile_arguments.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
-import 'package:expertapp/src/screens/transaction/client/call_begin_client_payment_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class CallClientPreview extends StatelessWidget {
-  final DocumentWrapper<UserMetadata> expertUserMetadata;
-  final DocumentWrapper<ExpertRate> expertRate;
+  final String _expertUid;
 
-  CallClientPreview(this.expertUserMetadata, this.expertRate);
+  CallClientPreview(this._expertUid);
 
   final explanationBlurbStyle = TextStyle(
     fontSize: 12,
@@ -24,9 +18,9 @@ class CallClientPreview extends StatelessWidget {
   final ButtonStyle callButtonStyle =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
-  String blurbText() {
+  String blurbText(UserMetadata expertUserMetadata) {
     String longText =
-        '''Clicking begin will begin your call with ${expertUserMetadata.documentType.firstName}.
+        '''Clicking begin will begin your call with ${expertUserMetadata.firstName}.
         You will be charged at the rate listed above. At anytime you may
         end the call and will be shown a screen summarizing the charges.
         During the call you can navigate to the in-call screen that will
@@ -35,11 +29,11 @@ class CallClientPreview extends StatelessWidget {
     return longText.replaceAll('\n', '').replaceAll(RegExp(' {2,}'), ' ');
   }
 
-  Widget buildExplanationBlurb() {
+  Widget buildExplanationBlurb(UserMetadata expertUserMetadata) {
     return Container(
       padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
       child: Text(
-        blurbText(),
+        blurbText(expertUserMetadata),
         style: explanationBlurbStyle,
       ),
     );
@@ -51,39 +45,50 @@ class CallClientPreview extends StatelessWidget {
       child: ElevatedButton(
         style: callButtonStyle,
         onPressed: () {
-          final selectedExpert = this.expertUserMetadata;
-          rootNavigatorKey.currentState!.popUntil((route) => route.isFirst);
-          rootNavigatorKey.currentState!.pushNamed(
-              Routes.CLIENT_CALL_PAYMENT_BEGIN,
-              arguments: ExpertProfileArguments(selectedExpert));
+          context.goNamed(Routes.EXPERT_CALL_HOME_PAGE,
+              params: {Routes.EXPERT_ID_PARAM: _expertUid});
         },
         child: const Text('Begin Call'),
       ),
     );
   }
 
-  Widget buildPricingCard() {
-    return ExpertPricingCard(expertRate.documentType);
+  Widget buildPricingCard(ExpertRate rate) {
+    return ExpertPricingCard(rate);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: UserPreviewAppbar(expertUserMetadata),
-      body: Container(
-        padding: EdgeInsets.all(8.0),
-        child: Column(children: [
-          buildPricingCard(),
-          SizedBox(
-            height: 20,
-          ),
-          buildExplanationBlurb(),
-          SizedBox(
-            height: 20,
-          ),
-          buildBeginCallButton(context)
-        ]),
-      ),
-    );
+    return FutureBuilder<List<dynamic>>(
+        future: Future.wait(
+            [UserMetadata.get(_expertUid), ExpertRate.get(_expertUid)]),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if (snapshot.hasData) {
+            final expertUserMetadata =
+                snapshot.data![0] as DocumentWrapper<UserMetadata>?;
+            final expertRate =
+                snapshot.data![1] as DocumentWrapper<ExpertRate>?;
+            return Scaffold(
+                appBar: UserPreviewAppbar(expertUserMetadata!),
+                body: Container(
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(children: [
+                    buildPricingCard(expertRate!.documentType),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    buildExplanationBlurb(expertUserMetadata.documentType),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    buildBeginCallButton(context)
+                  ]),
+                ));
+          } else {
+            return Scaffold(
+              body: CircularProgressIndicator(),
+            );
+          }
+        });
   }
 }

@@ -2,15 +2,10 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 
 import '../generated/protos/call_transaction.pb.dart';
 
-enum PaymentState {
-  WAITING_FOR_PAYMENT_DETAILS,
-  PAYMENT_PROMPT_PRESENTED,
-  PAYMENT_COMPLETE,
-  PAYMENT_FAILURE
-}
+enum PaymentState { NA, AWAITING_PAYMENT, PAYMENT_COMPLETE, PAYMENT_FAILURE }
 
 class CallServerPaymentPromptModel {
-  PaymentState _state = PaymentState.WAITING_FOR_PAYMENT_DETAILS;
+  PaymentState _state = PaymentState.NA;
   late String _clientSecret;
   late String _stripeCustomerId;
 
@@ -22,7 +17,7 @@ class CallServerPaymentPromptModel {
       {required String clientSecret, required String stripeCustomerId}) async {
     _clientSecret = clientSecret;
     _stripeCustomerId = stripeCustomerId;
-    _state = PaymentState.PAYMENT_PROMPT_PRESENTED;
+    _state = PaymentState.AWAITING_PAYMENT;
 
     await Stripe.instance.initPaymentSheet(
       paymentSheetParameters: SetupPaymentSheetParameters(

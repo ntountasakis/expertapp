@@ -3,16 +3,13 @@ import 'dart:developer';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide UserMetadata;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UserSignupPage extends StatefulWidget {
-  final User _authenticatedUser;
-  final Function(DocumentWrapper<UserMetadata>) onUserCreated;
-  UserSignupPage(this._authenticatedUser, this.onUserCreated);
-
   @override
   State<UserSignupPage> createState() => _UserSignupPageState();
 }
@@ -68,7 +65,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
         });
   }
 
-  Widget _buildSubmitButton() {
+  Widget _buildSubmitButton(AppLifecycle lifecycle) {
     return ElevatedButton(
         style: buttonStyle,
         onPressed: () async {
@@ -77,22 +74,27 @@ class _UserSignupPageState extends State<UserSignupPage> {
           }
           _formKey.currentState!.save();
 
-          await onUserSignup(
-              _firstName, _lastName, _email, widget._authenticatedUser.photoURL);
+          await onUserSignup(_firstName, _lastName, _email,
+              lifecycle.authenticatedUser!.photoURL);
 
           log('New User Signup');
 
           DocumentWrapper<UserMetadata>? userMetadataWrapper =
-              await UserMetadata.get(widget._authenticatedUser.uid);
+              await UserMetadata.get(lifecycle.authenticatedUser!.uid);
 
           if (userMetadataWrapper == null) {
             throw Exception(
-                'Expected ${widget._authenticatedUser.uid} to exist');
+                'Expected ${lifecycle.authenticatedUser!.uid} to exist');
           }
 
-          widget.onUserCreated(userMetadataWrapper);
+          onUserCreated(lifecycle, userMetadataWrapper);
         },
         child: const Text('Submit'));
+  }
+
+  void onUserCreated(AppLifecycle lifecycle,
+      DocumentWrapper<UserMetadata> userMetadataWrapper) {
+    lifecycle.onUserLogin(userMetadataWrapper);
   }
 
   @override
@@ -107,14 +109,16 @@ class _UserSignupPageState extends State<UserSignupPage> {
             child: const Text('Sign Out'),
           ),
         ),
-        body: Container(
-            child: Form(
-                key: _formKey,
-                child: Column(children: [
-                  _buildFirstName(),
-                  _buildLastName(),
-                  _buildEmail(),
-                  _buildSubmitButton()
-                ]))));
+        body: Consumer<AppLifecycle>(builder: (context, lifecycle, child) {
+          return Container(
+              child: Form(
+                  key: _formKey,
+                  child: Column(children: [
+                    _buildFirstName(),
+                    _buildLastName(),
+                    _buildEmail(),
+                    _buildSubmitButton(lifecycle)
+                  ])));
+        }));
   }
 }

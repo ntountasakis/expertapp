@@ -4,21 +4,28 @@ import 'dart:io';
 import 'package:expertapp/src/firebase/cloud_messaging/fcm_token_updater.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:flutter/material.dart';
 import 'package:google_api_availability/google_api_availability.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
-import 'package:expertapp/src/firebase/auth/auth_state_listener.dart' as Auth;
 
-class AppLifecycle {
+class AppLifecycle extends ChangeNotifier {
   final _tokenUpdater = FcmTokenUpdater();
-  FirebaseAuth.User? theAuthenticatedUser;
-  DocumentWrapper<UserMetadata>? theUserMetadata;
+  FirebaseAuth.User? _theAuthenticatedUser = null;
+  DocumentWrapper<UserMetadata>? _theUserMetadata = null;
 
-  void onAuthStatusChange(FirebaseAuth.User? aAuthenticatedUser) {
-    theAuthenticatedUser = aAuthenticatedUser;
+  FirebaseAuth.User? get authenticatedUser => _theAuthenticatedUser;
+  DocumentWrapper<UserMetadata>? get userMetadata => _theUserMetadata;
+
+  Future<void> onAuthStatusChange(FirebaseAuth.User? aAuthenticatedUser) async {
+    _theAuthenticatedUser = aAuthenticatedUser;
+    if (_theAuthenticatedUser != null) {
+      _theUserMetadata = await UserMetadata.get(_theAuthenticatedUser!.uid);
+    }
+    notifyListeners();
   }
 
   void onUserLogin(DocumentWrapper<UserMetadata> currentUser) async {
-    theUserMetadata = currentUser;
+    _theUserMetadata = currentUser;
     if (Platform.isAndroid) {
       GooglePlayServicesAvailability availability = await GoogleApiAvailability
           .instance
@@ -32,5 +39,7 @@ class AppLifecycle {
     }
     _tokenUpdater.putCurrentToken(currentUser);
     _tokenUpdater.updateTokensOnRefresh(currentUser);
+
+    notifyListeners();
   }
 }

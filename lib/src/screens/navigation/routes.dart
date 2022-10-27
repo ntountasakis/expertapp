@@ -1,19 +1,27 @@
 class Routes {
   static const HOME = '/';
 
-  static const SIGN_IN_PREFIX = '/signin';
-  static const SIGN_IN_START = '$SIGN_IN_PREFIX:start';
-  static const SIGN_IN_AUTH = '$SIGN_IN_PREFIX:auth';
-  static const SIGN_IN_USER_CREATE = '$SIGN_IN_PREFIX:user_create';
+  static const SIGN_IN_PAGE = '/signin';
+  static const USER_CREATE_PAGE = '/usercreate';
 
-  static const EXPERT_LISTINGS = '/expertlistings';
-  static const EXPERT_PROFILE_PAGE = '$EXPERT_LISTINGS/expertProfilePage';
-  static const EXPERT_CALL_PREVIEW = '$EXPERT_LISTINGS/expertCallPreview';
+  static const EXPERT_LISTINGS_PAGE = '/expertlistings';
+  static const EXPERT_PROFILE_PAGE = 'expertProfilePage';
+  static const EXPERT_ID_PARAM = 'id';
+  static const EXPERT_CALL_PREVIEW_PAGE = 'expertCallPreview';
 
-  static const CLIENT_CALL_PREFIX = '/clientcall';
-  static const CLIENT_CALL_PAYMENT_BEGIN = '$CLIENT_CALL_PREFIX:paymentbegin';
-  static const CLIENT_CALL_MAIN = '$CLIENT_CALL_PREFIX:main';
-  static const CLIENT_CALL_CHAT = '$CLIENT_CALL_PREFIX:chat?room_id=';
-  static const CLIENT_CALL_PAYMENT_END = '$CLIENT_CALL_PREFIX:paymentEnd';
-  static const CLIENT_CALL_SUMMARY = '$CLIENT_CALL_PREFIX:summary';
+  static const EXPERT_CALL_HOME_PAGE = '/expertCallHome';
+  static const EXPERT_CALL_CHAT_PAGE = 'expertCallChatPage';
+  static const EXPERT_CALL_VIDEO_PAGE = 'expertCallVideoPage';
+  static const AGORA_CHANNEL_NAME_PARM = 'channelName';
+  static const AGORA_TOKEN_PARM = 'token';
+  static const AGORA_UID = 'uid';
+
+
+  static String chatroomId(String aRoute) {
+    final split = aRoute.split('?');
+    if (split.length != 2) {
+      throw new Exception("Cannot parse chatroom id: ${aRoute}");
+    }
+    return split[1];
+  }
 }
