@@ -32,7 +32,7 @@ class CallServerManager {
   }
 
   void sendTerminateCallRequest(String callTransactionId) {
-    log('Sending terminate call request'); // think duplicate
+    log('Sending terminate call request');
     final terminateRequest = ClientCallTerminateRequest(
         callTransactionId: callTransactionId, uid: currentUserId);
     final messageContainer =

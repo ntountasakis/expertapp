@@ -1,3 +1,4 @@
+import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/chat_message.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
@@ -10,10 +11,9 @@ import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
   final String currentUserUid;
-  final DocumentWrapper<UserMetadata> recipientUserMetadata;
-  final String chatroomId;
+  final String otherUserUid;
 
-  ChatPage(this.currentUserUid, this.recipientUserMetadata, this.chatroomId);
+  ChatPage({required this.currentUserUid, required this.otherUserUid});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -23,20 +23,17 @@ class _ChatPageState extends State<ChatPage> {
   final chatTextController = TextEditingController();
   String _currentChatMessage = '';
 
-  Future<void> submitChatMessage() async {
+  Future<void> submitChatMessage(String chatroomId) async {
     if (_currentChatMessage.isEmpty) return;
     final msSinceEpochUtc = DateTime.now().millisecondsSinceEpoch;
-    final newMessage = ChatMessage(
-        widget.currentUserUid,
-        widget.recipientUserMetadata.documentId,
-        _currentChatMessage,
-        msSinceEpochUtc);
-    await newMessage.put(widget.chatroomId);
+    final newMessage = ChatMessage(widget.currentUserUid, widget.otherUserUid,
+        _currentChatMessage, msSinceEpochUtc);
+    await newMessage.put(chatroomId);
     _currentChatMessage = '';
     chatTextController.clear();
   }
 
-  Widget buildChatBar() => TextField(
+  Widget buildChatBar(String chatroomId) => TextField(
       controller: chatTextController,
       minLines: 1,
       maxLines: 5,
@@ -46,7 +43,7 @@ class _ChatPageState extends State<ChatPage> {
           suffixIcon: IconButton(
             icon: Icon(Icons.send),
             onPressed: () async {
-              await submitChatMessage();
+              await submitChatMessage(chatroomId);
             },
           )),
       onChanged: (String chatMessage) {
@@ -124,38 +121,52 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: UserPreviewAppbar(widget.recipientUserMetadata),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder(
-              stream: ChatMessage.getStream(
-                widget.chatroomId,
+    return FutureBuilder<List<dynamic>>(
+        future: Future.wait([
+          UserMetadata.get(widget.otherUserUid),
+          lookupChatroomId(widget.otherUserUid)
+        ]),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if (snapshot.hasData) {
+            final otherUserMetadata =
+                snapshot.data![0] as DocumentWrapper<UserMetadata>;
+            final chatroomId = snapshot.data![1] as String;
+            return Scaffold(
+              appBar: UserPreviewAppbar(otherUserMetadata),
+              body: Column(
+                children: [
+                  Expanded(
+                    child: StreamBuilder(
+                      stream: ChatMessage.getStream(chatroomId),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Iterable<DocumentWrapper<ChatMessage>>>
+                              snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (context, index) {
+                                DocumentWrapper<ChatMessage> chatMessage =
+                                    snapshot.data!.elementAt(index);
+                                return buildChatBubble(chatMessage);
+                              });
+                        } else {
+                          return Text("Loading.....");
+                        }
+                      },
+                    ),
+                  ),
+                  buildChatBar(chatroomId),
+                  SizedBox(
+                    height: 100,
+                  )
+                ],
               ),
-              builder: (BuildContext context,
-                  AsyncSnapshot<Iterable<DocumentWrapper<ChatMessage>>>
-                      snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        DocumentWrapper<ChatMessage> chatMessage =
-                            snapshot.data!.elementAt(index);
-                        return buildChatBubble(chatMessage);
-                      });
-                } else {
-                  return Text("Loading.....");
-                }
-              },
-            ),
-          ),
-          buildChatBar(),
-          SizedBox(
-            height: 100,
-          )
-        ],
-      ),
-    );
+            );
+          } else {
+            return Scaffold(
+              body: CircularProgressIndicator(),
+            );
+          }
+        });
   }
 }

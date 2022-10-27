@@ -11,7 +11,7 @@ class HamburgerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DocumentWrapper<UserMetadata> currentUserMetadata =
-        Provider.of<AppLifecycle>(context, listen: false).theUserMetadata!;
+        Provider.of<AppLifecycle>(context, listen: false).userMetadata!;
     return Drawer(
       child: ListView(
         children: [
