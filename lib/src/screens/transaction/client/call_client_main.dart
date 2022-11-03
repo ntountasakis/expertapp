@@ -87,9 +87,10 @@ class _CallClientMainState extends State<CallClientMain> {
   Widget buildCallSummary(BuildContext context) {
     return Container(
         child: ElevatedButton(
-      child: const Text("Exit call"),
+      child: const Text("Exit call & submit review"),
       onPressed: () {
-        context.goNamed(Routes.HOME);
+        context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
+            params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
       },
     ));
   }
