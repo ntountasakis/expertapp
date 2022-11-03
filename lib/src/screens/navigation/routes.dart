@@ -20,6 +20,8 @@ class Routes {
   static const EXPERT_CALL_CHAT_PAGE = 'expertCallChatPage';
   static const EXPERT_CALL_VIDEO_PAGE = 'expertCallVideoPage';
 
+  static const EXPERT_REVIEW_SUBMIT_PAGE = '/expertReviewSubmitPage';
+
   static const CALL_JOIN_PROMPT_PAGE = '/calljoinprompt';
 
   static const CLIENT_CALL_HOME = '/clientCallHome';

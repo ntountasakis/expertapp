@@ -94,20 +94,4 @@ class ExpertProfilePage extends StatelessWidget {
           }),
     );
   }
-
-  // TODO revive in call transaction
-  // Widget buildReviewSubmitButton(BuildContext context) {
-  //   return ElevatedButton(
-  //     style: style,
-  //     onPressed: () {
-  //       Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //               builder: (context) => ExpertReviewSubmitPage(
-  //                   widget._currentUserUid, widget._expertUserMetadata)));
-  //     },
-  //     child: const Text('Write a Review'),
-  //   );
-  // }
-
 }

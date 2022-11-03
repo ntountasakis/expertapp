@@ -3,6 +3,7 @@ import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/chat_page.dart';
 import 'package:expertapp/src/screens/expert_listings_page.dart';
 import 'package:expertapp/src/screens/expert_profile_page.dart';
+import 'package:expertapp/src/screens/expert_review_submit_page.dart';
 import 'package:expertapp/src/screens/home_page.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:expertapp/src/screens/transaction/call_transaction_expert_prompt.dart';
@@ -144,6 +145,16 @@ class AppRouter {
               },
             ),
           ]),
+      GoRoute(
+          name: Routes.EXPERT_REVIEW_SUBMIT_PAGE,
+          path:
+              Routes.EXPERT_REVIEW_SUBMIT_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
+          builder: (BuildContext context, GoRouterState state) {
+            final expertUid = state.params[Routes.EXPERT_ID_PARAM];
+            return ExpertReviewSubmitPage(
+                currentUserId: lifecycle.userMetadata!.documentId,
+                expertUserId: expertUid!);
+          }),
       GoRoute(
           name: Routes.CALL_JOIN_PROMPT_PAGE,
           path: Routes.CALL_JOIN_PROMPT_PAGE +
