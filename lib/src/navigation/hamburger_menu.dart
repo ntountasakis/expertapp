@@ -2,10 +2,10 @@ import 'package:expertapp/src/firebase/firestore/document_models/document_wrappe
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/auth_gate_page.dart';
-import 'package:expertapp/src/screens/expert_listings_page.dart';
-import 'package:expertapp/src/screens/user_profile_page.dart';
+import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class HamburgerMenu extends StatelessWidget {
   @override
@@ -24,18 +24,11 @@ class HamburgerMenu extends StatelessWidget {
           ListTile(
               title: Text("My Profile"),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UserProfilePage(
-                        currentUserMetadata,
-                      ),
-                    ));
+                context.pushNamed(Routes.USER_PROFILE_PAGE);
               }),
           ListTile(
               title: Text("Sign Out"),
               onTap: () async {
-                // todo: sign out broken
                 await AuthGatePage.signOut();
               }),
         ],

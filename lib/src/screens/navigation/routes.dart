@@ -4,6 +4,8 @@ class Routes {
   static const SIGN_IN_PAGE = '/signin';
   static const USER_CREATE_PAGE = '/usercreate';
 
+  static const USER_PROFILE_PAGE = '/userprofilepage';
+
   static const AGORA_CHANNEL_NAME_PARAM = 'channelName';
   static const AGORA_TOKEN_PARAM = 'token';
   static const AGORA_UID_PARAM = 'uid';
