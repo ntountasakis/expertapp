@@ -10,6 +10,7 @@ import 'package:expertapp/src/screens/transaction/call_transaction_expert_prompt
 import 'package:expertapp/src/screens/transaction/client/call_client_main.dart';
 import 'package:expertapp/src/screens/transaction/client/call_client_preview.dart';
 import 'package:expertapp/src/screens/transaction/expert/call_transaction_expert_main.dart';
+import 'package:expertapp/src/screens/user_profile_page.dart';
 import 'package:expertapp/src/screens/user_signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
@@ -75,6 +76,13 @@ class AppRouter {
         path: Routes.USER_CREATE_PAGE,
         builder: (BuildContext context, GoRouterState state) {
           return UserSignupPage();
+        },
+      ),
+      GoRoute(
+        name: Routes.USER_PROFILE_PAGE,
+        path: Routes.USER_PROFILE_PAGE,
+        builder: (BuildContext context, GoRouterState state) {
+          return UserProfilePage(lifecycle.userMetadata!);
         },
       ),
       GoRoute(

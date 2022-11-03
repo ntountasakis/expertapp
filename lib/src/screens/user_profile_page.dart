@@ -40,7 +40,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("User Profile"),
+        title: const Text("My Profile"),
       ),
       body: Column(
         children: [
