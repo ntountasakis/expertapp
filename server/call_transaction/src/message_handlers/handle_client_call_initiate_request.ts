@@ -3,7 +3,7 @@ import {CallJoinRequest} from "../../../shared/src/firebase/fcm/messages/call_jo
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
 import {onCallerPaymentSuccessCallInitiate} from "../call_events/caller/caller_on_payment_success_call_initiate";
-import {CallerCallManager} from "../call_state/caller/caller_call_manager";
+import {CallManager} from "../call_state/common/call_manager";
 
 import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_begin_payment_initiate";
 import {sendGrpcCallJoinOrRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_join_or_request_success";
@@ -23,7 +23,7 @@ import {callerFinishCallTransaction} from "../call_events/caller/caller_finish_c
 
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
-    clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallerCallManager): Promise<void> {
+    clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallManager): Promise<void> {
   console.log(`InitiateCall request begin. Caller Uid: ${callInitiateRequest.callerUid} 
       Called Uid: ${callInitiateRequest.calledUid}`);
 
@@ -49,7 +49,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
 }
 
 function _createNewCallState({callTransaction, callJoinRequest, clientMessageSender, callManager}:
-  {callManager: CallerCallManager, callTransaction: CallTransaction, callJoinRequest: CallJoinRequest,
+  {callManager: CallManager, callTransaction: CallTransaction, callJoinRequest: CallJoinRequest,
   clientMessageSender: ClientMessageSenderInterface}): CallerCallState {
   const callBeginCallerContext = new CallerBeginCallContext({transactionId: callTransaction.callTransactionId,
     agoraChannelName: callTransaction.agoraChannelName, calledFcmToken: callTransaction.calledFcmToken,
