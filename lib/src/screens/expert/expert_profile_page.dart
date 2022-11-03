@@ -6,7 +6,7 @@ import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'navigation/routes.dart';
+import '../navigation/routes.dart';
 
 class ExpertProfilePage extends StatelessWidget {
   final String _expertUid;
