@@ -1,14 +1,12 @@
 import * as grpc from "@grpc/grpc-js";
-import {CalledCallManager} from "../../call_state/called/called_call_manager";
-import {CallerCallManager} from "../../call_state/caller/caller_call_manager";
+import {CallManager} from "../../call_state/common/call_manager";
 import {dispatchClientMessage} from "../../message_handlers/client_message_dispatcher";
 import {GrpcClientMessageSender} from "../../message_sender/grpc_client_message_sender";
 import {CallTransactionHandlers} from "../../protos/call_transaction_package/CallTransaction";
 import {ClientMessageContainer} from "../../protos/call_transaction_package/ClientMessageContainer";
 import {ServerMessageContainer} from "../../protos/call_transaction_package/ServerMessageContainer";
 
-const clientCallManager = new CallerCallManager();
-const calledCallManager = new CalledCallManager();
+const callManager = new CallManager();
 
 export class CallTransactionServer implements CallTransactionHandlers {
   [name: string]: grpc.UntypedHandleCall;
@@ -27,8 +25,7 @@ export class CallTransactionServer implements CallTransactionHandlers {
       const messageSender = new GrpcClientMessageSender(call);
       try {
         dispatchClientMessage({clientMessage: aClientMessage, invalidMessageHandler: invalidMessageCallback,
-          clientMessageSender: messageSender, clientCallManager: clientCallManager,
-          calledCallManager: calledCallManager});
+          clientMessageSender: messageSender, callManager: callManager});
       } catch (error) {
         console.error(`Error dispatching client message: ${error}. Terminating connection to ${userId}`);
         call.end();
@@ -43,11 +40,7 @@ export class CallTransactionServer implements CallTransactionHandlers {
     });
     call.on("cancelled", () => {
       console.log(`UserId: ${userId} cancelled call. IsCaller: ${isCaller}`);
-      if (isCaller) {
-        clientCallManager.onClientDisconnect({userId: userId});
-      } else {
-        calledCallManager.onClientDisconnect({userId: userId});
-      }
+      callManager.onClientDisconnect({userId: userId});
     });
   }
 }
