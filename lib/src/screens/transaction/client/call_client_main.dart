@@ -45,7 +45,7 @@ class _CallClientMainState extends State<CallClientMain> {
         width: 200,
         height: 100,
       ),
-      FloatingActionButton(
+      ElevatedButton(
         child: Text("Finish call"),
         onPressed: () {
           callServerManager.sendTerminateCallRequest(model.callTransactionId);
@@ -55,7 +55,7 @@ class _CallClientMainState extends State<CallClientMain> {
         width: 200,
         height: 100,
       ),
-      FloatingActionButton(
+      ElevatedButton(
         child: Text("Chat"),
         onPressed: () {
           context.pushNamed(Routes.EXPERT_CALL_CHAT_PAGE,
@@ -66,7 +66,7 @@ class _CallClientMainState extends State<CallClientMain> {
         width: 200,
         height: 100,
       ),
-      FloatingActionButton(
+      ElevatedButton(
           child: Text("Video"),
           onPressed: () {
             if (model.agoraCredentials == null) {
@@ -74,10 +74,10 @@ class _CallClientMainState extends State<CallClientMain> {
             } else {
               context.pushNamed(Routes.EXPERT_CALL_VIDEO_PAGE, params: {
                 Routes.EXPERT_ID_PARAM: widget.otherUserId,
-                Routes.AGORA_CHANNEL_NAME_PARM:
+                Routes.AGORA_CHANNEL_NAME_PARAM:
                     model.agoraCredentials!.channelName,
-                Routes.AGORA_TOKEN_PARM: model.agoraCredentials!.token,
-                Routes.AGORA_UID: model.agoraCredentials!.uid.toString()
+                Routes.AGORA_TOKEN_PARAM: model.agoraCredentials!.token,
+                Routes.AGORA_UID_PARAM: model.agoraCredentials!.uid.toString()
               });
             }
           }),
@@ -86,16 +86,16 @@ class _CallClientMainState extends State<CallClientMain> {
 
   Widget buildCallSummary(BuildContext context) {
     return Container(
-        child: FloatingActionButton(
+        child: ElevatedButton(
       child: const Text("Exit call"),
       onPressed: () {
-        context.pushNamed(Routes.EXPERT_LISTINGS_PAGE);
+        context.goNamed(Routes.HOME);
       },
     ));
   }
 
   Widget buildStartCallButton(BuildContext context) {
-    return FloatingActionButton(
+    return ElevatedButton(
       child: const Text("Pay to start call"),
       onPressed: () {
         callServerManager.initiateCall(context);

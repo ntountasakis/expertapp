@@ -7,11 +7,19 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: ElevatedButton(
-          child: Text("Go to listings"),
-          onPressed: (() {
-            context.go(Routes.EXPERT_LISTINGS_PAGE);
-          }),
+        child: Column(
+          children: [
+            SizedBox(
+              width: 100,
+              height: 200,
+            ),
+            ElevatedButton(
+              child: Text("Go to listings"),
+              onPressed: (() {
+                context.goNamed(Routes.EXPERT_LISTINGS_PAGE);
+              }),
+            ),
+          ],
         ),
       ),
     );

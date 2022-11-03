@@ -20,12 +20,20 @@ class AppLifecycle extends ChangeNotifier {
     _theAuthenticatedUser = aAuthenticatedUser;
     if (_theAuthenticatedUser != null) {
       _theUserMetadata = await UserMetadata.get(_theAuthenticatedUser!.uid);
+      if (_theUserMetadata != null) {
+        _updateFcmTokens();
+      }
     }
     notifyListeners();
   }
 
   void onUserLogin(DocumentWrapper<UserMetadata> currentUser) async {
     _theUserMetadata = currentUser;
+    await _updateFcmTokens();
+    notifyListeners();
+  }
+
+  Future<void> _updateFcmTokens() async {
     if (Platform.isAndroid) {
       GooglePlayServicesAvailability availability = await GoogleApiAvailability
           .instance
@@ -37,9 +45,7 @@ class AppLifecycle extends ChangeNotifier {
         throw Exception("Google Play services unavailable");
       }
     }
-    _tokenUpdater.putCurrentToken(currentUser);
-    _tokenUpdater.updateTokensOnRefresh(currentUser);
-
-    notifyListeners();
+    _tokenUpdater.putCurrentToken(_theUserMetadata!);
+    _tokenUpdater.updateTokensOnRefresh(_theUserMetadata!);
   }
 }
