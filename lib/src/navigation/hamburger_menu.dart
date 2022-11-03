@@ -1,17 +1,11 @@
-import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
-import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
-import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
+import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
 class HamburgerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    DocumentWrapper<UserMetadata> currentUserMetadata =
-        Provider.of<AppLifecycle>(context, listen: false).userMetadata!;
     return Drawer(
       child: ListView(
         children: [
@@ -29,7 +23,7 @@ class HamburgerMenu extends StatelessWidget {
           ListTile(
               title: Text("Sign Out"),
               onTap: () async {
-                await AuthGatePage.signOut();
+                await FirebaseAuth.FirebaseAuth.instance.signOut();
               }),
         ],
       ),

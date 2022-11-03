@@ -4,8 +4,8 @@ import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
-import 'package:expertapp/src/screens/auth_gate_page.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -104,7 +104,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
           title: const Text("Sign Up"),
           leading: ElevatedButton(
             onPressed: () async {
-              await AuthGatePage.signOut();
+              await FirebaseAuth.FirebaseAuth.instance.signOut();
             },
             child: const Text('Sign Out'),
           ),
