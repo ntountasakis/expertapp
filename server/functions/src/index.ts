@@ -13,6 +13,9 @@ export {userSignup};
 import {chatroomLookup} from "./endpoints/chatroom_lookup";
 export {chatroomLookup};
 
+// import {checkOutstandingBalance} from "./endpoints/check_outstanding_balance";
+// export {checkOutstandingBalance};
+
 import {stripeWebhookListener} from "./endpoints/stripe_webhook_listener";
 export {stripeWebhookListener};
 

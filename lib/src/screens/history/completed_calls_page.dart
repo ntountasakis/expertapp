@@ -43,12 +43,9 @@ class CompletedCallsPage extends StatelessWidget {
               return SizedBox();
             }
 
-            String title = 'Call';
+            String title = 'Completed Call';
             if (expertMetadata != null) {
-              title += ' with ' +
-                  expertMetadata.documentType.firstName +
-                  ' ' +
-                  expertMetadata.documentType.lastName;
+              title += ' with ' + expertMetadata.documentType.fullName();
             }
 
             final endTime =
