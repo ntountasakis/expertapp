@@ -32,6 +32,10 @@ class UserMetadata {
     return fieldsMap;
   }
 
+  String fullName() {
+    return firstName + lastName;
+  }
+
   double getAverageReviewRating() {
     if (numReviews == 0) return 0;
     return runningSumReviewRatings / numReviews;

@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import {Bucket} from "@google-cloud/storage";
-import {generateProfilePicName} from "../../../shared/firebase/storage/functions/generate_profile_pic_name";
-import {getProfilePicBucket} from "../../../shared/firebase/storage/functions/get_profile_pic_bucket_ref";
+import {generateProfilePicName} from "../../../shared/src/firebase/storage/functions/generate_profile_pic_name";
+import {getProfilePicBucket} from "../../../shared/src/firebase/storage/functions/get_profile_pic_bucket_ref";
 
 export const updateProfilePicture = functions.https.onCall(
     async (data, context) => {

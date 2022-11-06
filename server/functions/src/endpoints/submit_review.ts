@@ -1,10 +1,10 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {getUserMetadataDocument} from "../../../shared/firebase/firestore/document_fetchers/fetchers";
-import {UserMetadata} from "../../../shared/firebase/firestore/models/user_metadata";
-import {createReview} from "../../../shared/firebase/firestore/functions/create_review";
-import {getReviewsFromAuthorForReviewed} from "../../../shared/firebase/firestore/functions/get_reviews_from_author_for_reviewed";
-import {updateReview} from "../../../shared/firebase/firestore/functions/update_review";
+import {getUserMetadataDocument} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {createReview} from "../../../shared/src/firebase/firestore/functions/create_review";
+import {getReviewsFromAuthorForReviewed} from "../../../shared/src/firebase/firestore/functions/get_reviews_from_author_for_reviewed";
+import {updateReview} from "../../../shared/src/firebase/firestore/functions/update_review";
+import {UserMetadata} from "../../../shared/src/firebase/firestore/models/user_metadata";
 
 export const submitReview = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
