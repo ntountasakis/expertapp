@@ -11,6 +11,18 @@ class CompletedCallsPage extends StatelessWidget {
 
   CompletedCallsPage(this.userMetadata);
 
+  Widget buildCallPopup(CallTransaction call, String transactionId) {
+    String helpText = '''If you need assistance with this call,
+    please refer to  this call using this ID:
+    ${transactionId}
+    when contacting customer service.''';
+
+    return AlertDialog(
+      title: const Text("Call Details"),
+      content: Text(helpText),
+    );
+  }
+
   Widget buildCallCard(CallTransaction call, String transactionId) {
     return FutureBuilder(
         future: Future.wait([
@@ -31,7 +43,7 @@ class CompletedCallsPage extends StatelessWidget {
               return SizedBox();
             }
 
-            String title = 'Completed call';
+            String title = 'Call';
             if (expertMetadata != null) {
               title += ' with ' +
                   expertMetadata.documentType.firstName +
@@ -41,42 +53,34 @@ class CompletedCallsPage extends StatelessWidget {
 
             final endTime =
                 DateTime.fromMillisecondsSinceEpoch(call.callEndTimeUtsMs);
-
-            String formattedDate = DateFormat.yMd().add_jm().format(endTime);
-
-            String subtitle = 'Ended on ${formattedDate}';
-            int amountOwedCents = endPayment.documentType.centsToCollect -
+            int amountSpentCents = startPayment.documentType.centsToCollect +
                 endPayment.documentType.centsCollected;
 
-            if (amountOwedCents != 0) {
-              final dollarFormat = new NumberFormat('#,##0.00', "en_US");
-              subtitle +=
-                  '. You owe: \$${dollarFormat.format(amountOwedCents / 100)}';
-            }
+            String dateFormat = DateFormat.yMd().add_jm().format(endTime);
+            final dollarFormat = new NumberFormat('#,##0.00', "en_US");
+            String subtitle =
+                'Ended on ${dateFormat}. Paid \$${dollarFormat.format(amountSpentCents / 100)}';
 
             return Card(
-              key: Key(transactionId),
-              child: ListTile(
+                key: Key(transactionId),
+                child: ListTile(
                   title: Text(title),
                   subtitle: Text(subtitle),
-                  leading: GestureDetector(
-                    onTap: () {},
-                    child: SizedBox(
+                  leading: SizedBox(
                       width: 50,
                       child: ProfilePicture(
-                          expertMetadata!.documentType.profilePicUrl),
-                    ),
+                          expertMetadata!.documentType.profilePicUrl)),
+                  trailing: GestureDetector(
+                    onTap: () {
+                      showDialog<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return buildCallPopup(call, transactionId);
+                          });
+                    },
+                    child: Icon(Icons.more_vert),
                   ),
-                  trailing: amountOwedCents != 0
-                      ? Icon(
-                          Icons.error,
-                          color: Colors.red,
-                        )
-                      : Icon(
-                          Icons.check,
-                          color: Colors.green,
-                        )),
-            );
+                ));
           }
           return SizedBox();
         });
@@ -85,7 +89,7 @@ class CompletedCallsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Completed Payments")),
+      appBar: AppBar(title: Text("Completed Calls")),
       body: StreamBuilder(
         stream: CallTransaction.getStream(userMetadata.documentId),
         builder: (BuildContext context,
