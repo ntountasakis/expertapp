@@ -1,5 +1,6 @@
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
+import 'package:expertapp/src/screens/history/completed_calls_page.dart';
 import 'package:expertapp/src/screens/transaction/common/chat_page.dart';
 import 'package:expertapp/src/screens/expert/expert_listings_page.dart';
 import 'package:expertapp/src/screens/expert/expert_profile_page.dart';
@@ -83,6 +84,13 @@ class AppRouter {
         path: Routes.USER_PROFILE_PAGE,
         builder: (BuildContext context, GoRouterState state) {
           return UserProfilePage(lifecycle.userMetadata!);
+        },
+      ),
+      GoRoute(
+        name: Routes.USER_COMPLETED_CALLS,
+        path: Routes.USER_COMPLETED_CALLS,
+        builder: (BuildContext context, GoRouterState state) {
+          return CompletedCallsPage(lifecycle.userMetadata!);
         },
       ),
       GoRoute(

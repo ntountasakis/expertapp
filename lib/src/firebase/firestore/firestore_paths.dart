@@ -6,4 +6,6 @@ class CollectionPaths {
   static final String CHAT_ROOMS = 'chat_rooms';
   static final String EXPERT_RATES = 'expert_rates';
   static final String FCM_TOKENS = 'fcm_tokens';
+  static final String PAYMENT_STATUSES = 'payment_statuses';
+  static final String CALL_TRANSACTIONS = 'call_transactions';
 }

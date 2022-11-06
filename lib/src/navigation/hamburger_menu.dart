@@ -21,6 +21,11 @@ class HamburgerMenu extends StatelessWidget {
                 context.pushNamed(Routes.USER_PROFILE_PAGE);
               }),
           ListTile(
+              title: Text("Past Calls"),
+              onTap: () {
+                context.pushNamed(Routes.USER_COMPLETED_CALLS);
+              }),
+          ListTile(
               title: Text("Sign Out"),
               onTap: () async {
                 await FirebaseAuth.FirebaseAuth.instance.signOut();
