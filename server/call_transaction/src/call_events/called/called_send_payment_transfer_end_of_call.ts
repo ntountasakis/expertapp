@@ -19,8 +19,7 @@ export async function calledSendPaymentTransferEndOfCall(
   const stripeConnectedAccountId = "acct_1LmpLYPKLydnyIBv";
 
   const transferId: string = await createStripePaymentTransfer({connectedAccountId: stripeConnectedAccountId,
-    amountToTransferInCents: amountToTransferInCents,
-    transferGroup: callTransaction.callerTransferGroup});
+    amountToTransferInCents: amountToTransferInCents, transferGroup: callTransaction.callerTransferGroup});
 
   console.log(`Successfully issued transfer with id: ${transferId} to account: ${stripeConnectedAccountId}`);
 }

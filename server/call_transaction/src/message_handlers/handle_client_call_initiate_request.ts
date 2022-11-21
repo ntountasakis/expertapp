@@ -15,9 +15,6 @@ import {listenForPaymentStatusUpdates} from "../firebase/firestore/event_listene
 
 import {listenForCallTransactionUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_call_transaction_updates";
 import {CallTransaction} from "../../../shared/src/firebase/firestore/models/call_transaction";
-import createStripePaymentIntent from "../../../shared/src/stripe/payment_intent_creator";
-import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
-import {getPrivateUserDocumentNoTransact} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallerCallState} from "../call_state/caller/caller_call_state";
 import {callerFinishCallTransaction} from "../call_events/caller/caller_finish_call_transaction";
 
@@ -32,20 +29,18 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   const calledUid = callInitiateRequest.calledUid as string;
   const callerUid = callInitiateRequest.callerUid as string;
   const request = new CallJoinRequest({callerUid: callerUid, calledUid: calledUid});
-  const callTransaction: CallTransaction = await createCallTransaction({request: request});
-  const callerPrivateUserInfo: PrivateUserInfo = await getPrivateUserDocumentNoTransact({uid: callerUid});
-  const paymentIntentClientSecret: string = await _createCallStartPaymentIntent(
-      {callerPrivateUserInfo: callerPrivateUserInfo, callTransaction: callTransaction});
+
+  const [callTransaction, stripeCustomerId, paymentIntentClientSecret] = await createCallTransaction({request: request});
   const newClientCallState: CallerCallState = _createNewCallState(
       {callManager: clientCallManager, callTransaction: callTransaction,
         callJoinRequest: request, clientMessageSender: clientMessageSender});
+
 
   _listenForPaymentSuccess({callState: newClientCallState, callTransaction: callTransaction});
   _listenForCallTransactionUpdates({callState: newClientCallState, callTransaction: callTransaction});
 
   sendGrpcCallJoinOrRequestSuccess(callTransaction.callTransactionId, clientMessageSender);
-  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret,
-      callerPrivateUserInfo.stripeCustomerId);
+  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret, stripeCustomerId);
 }
 
 function _createNewCallState({callTransaction, callJoinRequest, clientMessageSender, callManager}:
@@ -75,14 +70,3 @@ function _listenForCallTransactionUpdates({callState, callTransaction}:
     unsubscribeFn: listenForCallTransactionUpdates(
         callTransaction.callTransactionId, callState.eventListenerManager)});
 }
-
-async function _createCallStartPaymentIntent({callerPrivateUserInfo, callTransaction}:
-  {callerPrivateUserInfo: PrivateUserInfo, callTransaction: CallTransaction}): Promise<string> {
-  const [_, paymentIntentClientSecret] =
-      await createStripePaymentIntent({customerId: callerPrivateUserInfo.stripeCustomerId,
-        customerEmail: callerPrivateUserInfo.email, amountToBillInCents: callTransaction.expertRateCentsCallStart,
-        paymentDescription: "Begin Call", paymentStatusId: callTransaction.callerCallStartPaymentStatusId,
-        transferGroup: callTransaction.callerTransferGroup});
-  return paymentIntentClientSecret;
-}
-

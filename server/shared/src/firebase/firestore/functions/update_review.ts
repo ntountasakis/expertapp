@@ -14,7 +14,7 @@ export function updateReview(
   const reviewedUserNewReviewSum = reviewedUserMetadata.runningSumReviewRatings + thisReviewSumDifference;
 
   transaction.update(existingReviewDocumentReference.ref, "reviewText", newReviewText);
-  transaction.update(existingReviewDocumentReference.ref, "rating", newReviewText);
+  transaction.update(existingReviewDocumentReference.ref, "rating", newReviewRating);
   transaction.update(getUserMetadataDocumentRef({uid: reviewedUid}),
       "runningSumReviewRatings", reviewedUserNewReviewSum);
   updateUserMetadataReviewAttributes({transaction: transaction, reviewedUid: reviewedUid,

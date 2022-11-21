@@ -10,7 +10,10 @@ export async function callerFinishCallTransaction({transactionId, clientMessageS
   const callerCallState = callState as CallerCallState;
   if (!callerCallState.hasInitiatedCallFinish) {
     callerCallState.hasInitiatedCallFinish = true; // todo: atomic?
-    const callTransaction = await endCallTransactionCaller({transactionId: transactionId});
-    await callerSendPaymentRequestEndOfCall(clientMessageSender, callState, callTransaction);
+    const [callTransaction, stripeCustomerId, paymentClientSecret, amountOwedCents] = await endCallTransactionCaller({transactionId: transactionId});
+    if (amountOwedCents != 0) {
+      await callerSendPaymentRequestEndOfCall({clientMessageSender: clientMessageSender, callState: callState, paymentClientSecret: paymentClientSecret,
+        stripeCustomerId: stripeCustomerId, callTransaction: callTransaction});
+    }
   }
 }

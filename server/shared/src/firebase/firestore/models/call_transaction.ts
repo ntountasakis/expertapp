@@ -7,7 +7,6 @@ export interface CallTransaction
     callRequestTimeUtcMs: number;
     expertRateCentsPerMinute: number;
     expertRateCentsCallStart: number;
-    callerFinalCostCallTerminate: number;
     agoraChannelName: string;
     callerCallStartPaymentStatusId: string;
     callerCallTerminatePaymentStatusId: string;

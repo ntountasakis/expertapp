@@ -6,6 +6,7 @@ import { FcmToken } from "../models/fcm_token";
 import { PaymentStatus } from "../models/payment_status";
 import { PrivateUserInfo } from "../models/private_user_info";
 import {CollectionPaths} from "./collection_paths";
+import { UserOwedBalance } from "../models/user_owed_balance";
 
 function getPrivateUserDocumentRef({uid}: {uid: string}):
 FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
@@ -62,6 +63,11 @@ FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.PAYMENT_STATUSES).doc(paymentStatusId);
 }
 
+function getUserOwedBalanceDocumentRef({uid}: {uid: string}):
+FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection(CollectionPaths.USER_OWED_BALANCES).doc(uid);
+}
+
 async function getPaymentStatusDocument({paymentStatusId}: {paymentStatusId: string}): Promise<PaymentStatus>
 {
   const doc = await getPaymentStatusDocumentRef({paymentStatusId: paymentStatusId}).get();
@@ -70,6 +76,16 @@ async function getPaymentStatusDocument({paymentStatusId}: {paymentStatusId: str
     throw new Error(`No payment status with id: ${paymentStatusId}`);
   }
   return doc.data() as PaymentStatus;
+}
+
+async function getUserOwedBalanceDocument({uid}: {uid: string}): Promise<UserOwedBalance>
+{
+  const doc = await getUserOwedBalanceDocumentRef({uid: uid}).get();
+  if (!doc.exists)
+  {
+    throw new Error(`No owed balance with id: ${uid}`);
+  }
+  return doc.data() as UserOwedBalance;
 }
 
 function getExpertRateDocumentRef({expertUid}: {expertUid: string}):
@@ -87,9 +103,24 @@ async function getExpertRateDocument({transaction, expertUid}: {transaction: Fir
   return doc.data() as ExpertRate;
 }
 
+async function getExpertRateDocumentNoTransact({expertUid}: {expertUid: string}): Promise<ExpertRate>
+{
+  const doc = await getExpertRateDocumentRef({expertUid: expertUid}).get();
+  if (!doc.exists)
+  {
+    throw new Error(`No expert rate exists for expert: ${expertUid}`);
+  }
+  return doc.data() as ExpertRate;
+}
+
+function getCallTransactionCollectionRef():
+FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection(CollectionPaths.CALL_TRANSACTIONS);
+}
+
 function getCallTransactionDocumentRef({transactionId}: {transactionId: string}):
 FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
-  return admin.firestore().collection(CollectionPaths.CALL_TRANSACTIONS).doc(transactionId);
+  return getCallTransactionCollectionRef().doc(transactionId);
 }
 
 async function getCallTransactionDocument({transaction, transactionId}: 
@@ -119,6 +150,7 @@ async function getFcmTokenDocument({transaction, uid}: {transaction: FirebaseFir
 
 export {getPrivateUserDocumentRef as getUserDocumentRef, getUserMetadataDocumentRef, getReviewsCollectionRef,
   getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
-  getCallTransactionDocumentRef, getFcmTokenDocumentRef, getCallTransactionDocument,
+  getCallTransactionDocumentRef, getCallTransactionCollectionRef, getFcmTokenDocumentRef, getCallTransactionDocument,
   getPaymentStatusDocument, getExpertRateDocument, getUserMetadataDocument, getFcmTokenDocument,
-  getPrivateUserDocument, getPrivateUserDocumentNoTransact};
+  getPrivateUserDocument, getPrivateUserDocumentNoTransact, getUserOwedBalanceDocument, getUserOwedBalanceDocumentRef,
+getExpertRateDocumentNoTransact};

@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:flutter/material.dart';
@@ -29,6 +32,12 @@ class HamburgerMenu extends StatelessWidget {
               title: Text("Sign Out"),
               onTap: () async {
                 await FirebaseAuth.FirebaseAuth.instance.signOut();
+              }),
+          ListTile(
+              title: Text("Check balance"),
+              onTap: () async {
+                final owedCents = await lookupBalancedOwedCents();
+                log('You owe ${owedCents}');
               }),
         ],
       ),
