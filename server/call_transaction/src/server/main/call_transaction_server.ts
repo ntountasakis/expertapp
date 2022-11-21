@@ -24,8 +24,11 @@ export class CallTransactionServer implements CallTransactionHandlers {
     call.on("data", async (aClientMessage: ClientMessageContainer) => {
       const messageSender = new GrpcClientMessageSender(call);
       try {
-        dispatchClientMessage({clientMessage: aClientMessage, invalidMessageHandler: invalidMessageCallback,
+        const isValid = await dispatchClientMessage({clientMessage: aClientMessage, invalidMessageHandler: invalidMessageCallback,
           clientMessageSender: messageSender, callManager: callManager});
+        if (!isValid) {
+          call.end();
+        }
       } catch (error) {
         console.error(`Error dispatching client message: ${error}. Terminating connection to ${userId}`);
         call.end();
@@ -33,16 +36,23 @@ export class CallTransactionServer implements CallTransactionHandlers {
     });
     call.on("error", (error: Error) => {
       console.log(`Error Initiate Call: ${error}`);
+      call.end();
     });
     call.on("end", () => {
       console.log("End Initiate Call Stream");
-      call.end();
+      disconnectClient({userId: userId, call: call});
     });
     call.on("cancelled", () => {
       console.log(`UserId: ${userId} cancelled call. IsCaller: ${isCaller}`);
-      callManager.onClientDisconnect({userId: userId});
+      call.end();
     });
   }
+}
+
+function disconnectClient({userId, call}: {userId: string, call: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>}) {
+  console.log(`Disconnecting from ${userId}`);
+  call.end();
+  callManager.onClientDisconnect({userId: userId});
 }
 
 function isMetadataValid(metadata: { [key: string]: grpc.MetadataValue; }): boolean {
