@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/cloud_messaging/fcm_token_updater.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
@@ -12,25 +13,39 @@ class AppLifecycle extends ChangeNotifier {
   final _tokenUpdater = FcmTokenUpdater();
   FirebaseAuth.User? _theAuthenticatedUser = null;
   DocumentWrapper<UserMetadata>? _theUserMetadata = null;
+  int _owedBalanceCents = 0;
 
   FirebaseAuth.User? get authenticatedUser => _theAuthenticatedUser;
   DocumentWrapper<UserMetadata>? get userMetadata => _theUserMetadata;
+  int get owedBalanceCents => _owedBalanceCents;
 
   Future<void> onAuthStatusChange(FirebaseAuth.User? aAuthenticatedUser) async {
     _theAuthenticatedUser = aAuthenticatedUser;
     if (_theAuthenticatedUser != null) {
-      _theUserMetadata = await UserMetadata.get(_theAuthenticatedUser!.uid);
-      if (_theUserMetadata != null) {
-        _updateFcmTokens();
-      }
+      onUserLogin(await UserMetadata.get(_theAuthenticatedUser!.uid));
+    } else {
+      notifyListeners();
+    }
+  }
+
+  void onUserLogin(DocumentWrapper<UserMetadata>? currentUser) async {
+    _theUserMetadata = currentUser;
+    if (currentUser != null) {
+      await _onUserConfirmation();
     }
     notifyListeners();
   }
 
-  void onUserLogin(DocumentWrapper<UserMetadata> currentUser) async {
-    _theUserMetadata = currentUser;
+  Future<void> _onUserConfirmation() async {
     await _updateFcmTokens();
-    notifyListeners();
+    await refreshOwedBalance();
+  }
+
+  Future<void> refreshOwedBalance() async {
+    _owedBalanceCents = await lookupBalancedOwedCents();
+    if (_owedBalanceCents != 0) {
+      log("User owes ${_owedBalanceCents} cents");
+    }
   }
 
   Future<void> _updateFcmTokens() async {

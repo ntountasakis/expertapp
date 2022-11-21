@@ -84,11 +84,12 @@ class _CallClientMainState extends State<CallClientMain> {
     ]);
   }
 
-  Widget buildCallSummary(BuildContext context) {
+  Widget buildCallSummary(BuildContext context, CallServerModel model) {
     return Container(
         child: ElevatedButton(
-      child: const Text("Exit call & submit review"),
+      child: const Text("Exit call and submit review"),
       onPressed: () {
+        model.reset();
         context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
             params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
       },
@@ -129,7 +130,7 @@ class _CallClientMainState extends State<CallClientMain> {
                   case PaymentState.AWAITING_PAYMENT:
                     return const Text("Awaiting payment end call");
                   case PaymentState.PAYMENT_COMPLETE:
-                    return buildCallSummary(context);
+                    return buildCallSummary(context, model);
                   case PaymentState.PAYMENT_FAILURE:
                     return const Text("End call payment failure");
                 }

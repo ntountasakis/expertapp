@@ -7,10 +7,11 @@ class PaymentStatus {
   final int centsToCollect;
   final String status;
   final String transferGroup;
+  final String idempotencyKey;
   final String uid;
 
   PaymentStatus(this.centsCollected, this.centsToCollect, this.status,
-      this.transferGroup, this.uid);
+      this.transferGroup, this.idempotencyKey, this.uid);
 
   PaymentStatus.fromJson(Map<String, dynamic> json)
       : this(
@@ -18,6 +19,7 @@ class PaymentStatus {
           json['centsToCollect'] as int,
           json['status'] as String,
           json['transferGroup'] as String,
+          json['idempotencyKey'] as String,
           json['uid'] as String,
         );
 
@@ -27,6 +29,7 @@ class PaymentStatus {
       'centsToCollect': centsToCollect,
       'status': status,
       'transferGroup': transferGroup,
+      'idempotencyKey': idempotencyKey,
       'uid': uid,
     };
     return fieldsMap;
@@ -34,6 +37,10 @@ class PaymentStatus {
 
   bool paymentComplete() {
     return centsCollected == centsToCollect;
+  }
+
+  int amountOwedCents() {
+    return centsToCollect - centsCollected;
   }
 
   static Future<DocumentWrapper<PaymentStatus>?> get(String documentId) async {
@@ -44,8 +51,8 @@ class PaymentStatus {
     return null;
   }
 
-  static Stream<Iterable<DocumentWrapper<PaymentStatus>>> getStream(
-      String currentUserId) {
+  static Stream<Iterable<DocumentWrapper<PaymentStatus>>>
+      getStreamOfPaymentsForUser(String currentUserId) {
     return _paymentStatusRef()
         .where("uid", isEqualTo: currentUserId)
         .snapshots()
@@ -54,6 +61,16 @@ class PaymentStatus {
           .map((QueryDocumentSnapshot<PaymentStatus> documentSnapshot) {
         return DocumentWrapper(documentSnapshot.id, documentSnapshot.data());
       });
+    });
+  }
+
+  static Stream<DocumentWrapper<PaymentStatus?>> getStreamOfUpdatesForPayments(
+      String paymentStatusId) {
+    return _paymentStatusRef()
+        .doc(paymentStatusId)
+        .snapshots()
+        .map((DocumentSnapshot<PaymentStatus> documentSnapshot) {
+      return DocumentWrapper(documentSnapshot.id, documentSnapshot.data());
     });
   }
 

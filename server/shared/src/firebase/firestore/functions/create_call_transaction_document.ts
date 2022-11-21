@@ -1,37 +1,32 @@
+import {v4 as uuidv4} from "uuid";
 import { getCallTransactionDocumentRef } from "../document_fetchers/fetchers";
 import { CallTransaction } from "../models/call_transaction";
 import { ExpertRate } from "../models/expert_rate";
 import { FcmToken } from "../models/fcm_token";
 
-export function createCallTransactionDocument({transaction, transactionId, callerUid, calledUid,
-calledUserFcmToken, expertRate, transferGroup, callRequestTimeUtcMs, agoraChannelName,
-paymentStatusId}:
-{ transaction: FirebaseFirestore.Transaction,
-transactionId: string, callerUid: string, calledUid: string,
-calledUserFcmToken: FcmToken, expertRate: ExpertRate, transferGroup: string, 
-callRequestTimeUtcMs: number, agoraChannelName: string,
-paymentStatusId: string}): CallTransaction
+export function createCallTransactionDocument({transaction, callerUid, calledUid, calledUserFcmToken, expertRate}:
+{ transaction: FirebaseFirestore.Transaction, callerUid: string, calledUid: string,
+calledUserFcmToken: FcmToken, expertRate: ExpertRate}): CallTransaction
 {
     const newTransaction: CallTransaction = {
-      "callTransactionId": transactionId,
+      "callTransactionId": uuidv4(),
       "callerUid": callerUid,
       "calledUid": calledUid,
       "calledFcmToken": calledUserFcmToken.token,
-      "callRequestTimeUtcMs": callRequestTimeUtcMs,
+      "callRequestTimeUtcMs": Date.now(),
       "expertRateCentsPerMinute": expertRate.centsPerMinute,
       "expertRateCentsCallStart": expertRate.centsCallStart,
-      "callerFinalCostCallTerminate": 0,
-      "agoraChannelName": agoraChannelName,
-      "callerCallStartPaymentStatusId": paymentStatusId,
-      "callerCallTerminatePaymentStatusId": "",
-      "callerTransferGroup": transferGroup,
+      "agoraChannelName": uuidv4(),
+      "callerCallStartPaymentStatusId": uuidv4(),
+      "callerCallTerminatePaymentStatusId": uuidv4(),
+      "callerTransferGroup": uuidv4(),
       "calledHasJoined": false,
       "calledJoinTimeUtcMs": 0,
       "callHasEnded": false,
       "callEndTimeUtsMs": 0,
     };
 
-    transaction.create(getCallTransactionDocumentRef({transactionId: transactionId}), newTransaction);
+    transaction.create(getCallTransactionDocumentRef({transactionId: newTransaction.callTransactionId}), newTransaction);
 
     return newTransaction;
 }

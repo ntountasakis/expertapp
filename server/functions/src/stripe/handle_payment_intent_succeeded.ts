@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import {updatePaymentStatus} from "../../../shared/src/firebase/firestore/functions/update_payment_status";
+import {resolvePaymentStatusAndUpdateBalance} from "../../../shared/src/firebase/firestore/functions/resolve_payment_status_and_update_balance";
 
 export async function handlePaymentIntentSucceeded(payload: any): Promise<void> {
   const amount: number = payload.amount;
@@ -7,9 +7,14 @@ export async function handlePaymentIntentSucceeded(payload: any): Promise<void> 
   //   const livemode: boolean = payload.livemode;
   const status = payload.status;
   const paymentStatusId: string = payload.metadata.payment_status_id;
+  const uid: string = payload.metadata.uid;
 
   if (paymentStatusId == undefined) {
     console.error("Cannot handle PaymentIntent Success. PaymentId undefined");
+    return;
+  }
+  if (uid == undefined) {
+    console.error("Cannot handle PaymentIntent Success. Uid undefined");
     return;
   }
   if (amount != amountReceived) {
@@ -20,8 +25,8 @@ export async function handlePaymentIntentSucceeded(payload: any): Promise<void> 
 
   try {
     await admin.firestore().runTransaction(async (transaction) => {
-      await updatePaymentStatus({transaction: transaction, paymentStatusId: paymentStatusId,
-        amountReceived: amountReceived, status: status});
+      await resolvePaymentStatusAndUpdateBalance({transaction: transaction, paymentStatusId: paymentStatusId,
+        amountReceived: amountReceived, status: status, uid: uid});
     });
   } catch (error) {
     console.error(`Error in HandlePaymentIntentSuceeded: ${error}`);
