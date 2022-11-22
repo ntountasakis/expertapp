@@ -35,7 +35,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   if (await _hasOutstandingBalance({uid: callerUid})) {
     return false;
   }
-  const [callTransaction, stripeCustomerId, paymentIntentClientSecret] = await createCallTransaction({request: request});
+  const [callTransaction, stripeCustomerId, paymentIntentClientSecret, ephemeralKey] = await createCallTransaction({request: request});
   const newClientCallState: CallerCallState = _createNewCallState(
       {callManager: clientCallManager, callTransaction: callTransaction,
         callJoinRequest: request, clientMessageSender: clientMessageSender});
@@ -45,7 +45,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   _listenForCallTransactionUpdates({callState: newClientCallState, callTransaction: callTransaction});
 
   sendGrpcCallJoinOrRequestSuccess(callTransaction.callTransactionId, clientMessageSender);
-  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret, stripeCustomerId);
+  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret, ephemeralKey, stripeCustomerId);
 
   return true;
 }

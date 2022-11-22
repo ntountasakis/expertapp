@@ -34,7 +34,8 @@ class _UserPayBalancePageState extends State<UserPayBalancePage> {
     if (paymentInfo.hasOutstandingBalance()) {
       await paymentPromptModel.onPaymentDetails(
           clientSecret: paymentInfo.clientSecret,
-          stripeCustomerId: paymentInfo.customerId);
+          stripeCustomerId: paymentInfo.customerId,
+          ephemeralKey: paymentInfo.ephemeralKey);
     }
   }
 

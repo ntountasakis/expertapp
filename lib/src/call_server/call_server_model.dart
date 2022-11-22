@@ -72,7 +72,8 @@ class CallServerModel extends ChangeNotifier {
       ServerCallBeginPaymentInitiate callBeginPaymentInitiate) {
     _callBeginPaymentPromptModel.onPaymentDetails(
         stripeCustomerId: callBeginPaymentInitiate.customerId,
-        clientSecret: callBeginPaymentInitiate.clientSecret);
+        clientSecret: callBeginPaymentInitiate.clientSecret,
+        ephemeralKey: callBeginPaymentInitiate.ephemeralKey);
     notifyListeners();
   }
 
@@ -85,7 +86,8 @@ class CallServerModel extends ChangeNotifier {
       ServerCallTerminatePaymentInitiate callTerminatePaymentInitiate) {
     _callTerminatePaymentPromptModel.onPaymentDetails(
         stripeCustomerId: callTerminatePaymentInitiate.customerId,
-        clientSecret: callTerminatePaymentInitiate.clientSecret);
+        clientSecret: callTerminatePaymentInitiate.clientSecret,
+        ephemeralKey: callTerminatePaymentInitiate.ephemeralKey);
     notifyListeners();
   }
 

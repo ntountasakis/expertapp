@@ -1,4 +1,4 @@
-// Original file: /Users/ntountas/Code/expertapp/protos/call_transaction.proto
+// Original file: /home/ntountas/Code/expertapp/protos/call_transaction.proto
 
 import type { ServerCallJoinOrRequestResponse as _call_transaction_package_ServerCallJoinOrRequestResponse, ServerCallJoinOrRequestResponse__Output as _call_transaction_package_ServerCallJoinOrRequestResponse__Output } from '../call_transaction_package/ServerCallJoinOrRequestResponse';
 import type { ServerAgoraCredentials as _call_transaction_package_ServerAgoraCredentials, ServerAgoraCredentials__Output as _call_transaction_package_ServerAgoraCredentials__Output } from '../call_transaction_package/ServerAgoraCredentials';

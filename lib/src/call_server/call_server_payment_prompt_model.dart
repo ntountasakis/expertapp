@@ -14,7 +14,9 @@ class CallServerPaymentPromptModel {
   String get stripeCustomerId => _stripeCustomerId;
 
   Future<void> onPaymentDetails(
-      {required String clientSecret, required String stripeCustomerId}) async {
+      {required String clientSecret,
+      required String stripeCustomerId,
+      required String ephemeralKey}) async {
     _clientSecret = clientSecret;
     _stripeCustomerId = stripeCustomerId;
     _state = PaymentState.AWAITING_PAYMENT;
@@ -23,6 +25,7 @@ class CallServerPaymentPromptModel {
       paymentSheetParameters: SetupPaymentSheetParameters(
         merchantDisplayName: 'Flutter Stripe Store Demo',
         paymentIntentClientSecret: _clientSecret,
+        customerEphemeralKeySecret: ephemeralKey,
         customerId: stripeCustomerId,
       ),
     );

@@ -6,9 +6,10 @@ import {markCallEnd} from "../../util/call_transaction_complete";
 import {PrivateUserInfo} from "../../../../../../../shared/src/firebase/firestore/models/private_user_info";
 import createStripePaymentIntent from "../../../../../../../shared/src/stripe/payment_intent_creator";
 import {createPaymentStatusAndUpdateBalance} from "../../../../../../../shared/src/firebase/firestore/functions/create_payment_status_update_balance";
+import createCustomerEphemeralKey from "../../../../../../../shared/src/stripe/create_customer_ephemeral_key";
 
 export const endCallTransactionCaller = async ({transactionId} : {transactionId: string})
-: Promise<[CallTransaction, string, string, number]> => {
+: Promise<[CallTransaction, string, string, string, number]> => {
   const [callTransaction, paymentStatus, userInfo] = await admin.firestore().runTransaction(async (transaction) => {
     const callTransaction: CallTransaction = await getCallTransactionDocument(
         {transaction: transaction, transactionId: transactionId});
@@ -35,6 +36,7 @@ export const endCallTransactionCaller = async ({transactionId} : {transactionId:
     return [callTransaction, paymentStatus, userInfo];
   });
   let clientSecret = "";
+  let ephemeralKey = "";
   let amountOwedCents = 0;
   if (paymentStatus != null) {
     const [paymentIntentId, paymentIntentClientSecret] = await createStripePaymentIntent({
@@ -43,10 +45,11 @@ export const endCallTransactionCaller = async ({transactionId} : {transactionId:
       idempotencyKey: paymentStatus.idempotencyKey, transferGroup: paymentStatus.transferGroup,
       paymentStatusId: callTransaction.callerCallTerminatePaymentStatusId, paymentDescription: "Call Begin",
       uid: callTransaction.callerUid});
+    ephemeralKey = await createCustomerEphemeralKey({customerId: userInfo.stripeCustomerId});
     await getPaymentStatusDocumentRef({paymentStatusId: callTransaction.callerCallTerminatePaymentStatusId}).update("paymentIntentId", paymentIntentId);
     clientSecret = paymentIntentClientSecret;
     amountOwedCents = paymentStatus.centsToCollect;
   }
 
-  return [callTransaction, userInfo.stripeCustomerId, clientSecret, amountOwedCents];
+  return [callTransaction, userInfo.stripeCustomerId, clientSecret, ephemeralKey, amountOwedCents];
 };

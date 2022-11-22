@@ -15,71 +15,71 @@ import {ServerMessageContainer} from "../protos/call_transaction_package/ServerM
 import {ClientMessageSenderInterface} from "./client_message_sender_interface";
 
 export class GrpcClientMessageSender extends ClientMessageSenderInterface {
-    sendingStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>;
+  sendingStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>;
 
-    constructor(sendingStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>) {
-      super();
-      this.sendingStream = sendingStream;
-    }
-    sendCallJoinOrRequestResponse(callRequestResponse: ServerCallJoinOrRequestResponse): void {
-      const clientMessageContainer: ServerMessageContainer = {
-        "serverCallJoinOrRequestResponse": callRequestResponse,
-        "messageWrapper": "serverCallJoinOrRequestResponse",
-      };
-      this.sendingStream.write(clientMessageContainer);
-    }
-    sendCallAgoraCredentials(callAgoraCredentials: ServerAgoraCredentials): void {
-      const clientMessageContainer: ServerMessageContainer = {
-        "serverAgoraCredentials": callAgoraCredentials,
-        "messageWrapper": "serverAgoraCredentials",
-      };
-      this.sendingStream.write(clientMessageContainer);
-    }
-    sendCallBeginPaymentInitiate(callBeginPaymentInitiate: ServerCallBeginPaymentInitiate): void {
-      const clientMessageContainer: ServerMessageContainer = {
-        "serverCallBeginPaymentInitiate": callBeginPaymentInitiate,
-        "messageWrapper": "serverCallBeginPaymentInitiate",
-      };
-      this.sendingStream.write(clientMessageContainer);
-    }
-    sendCallBeginPaymentInitiateResolved(
-        callBeginPaymentInitiateResolved: ServerCallBeginPaymentInitiateResolved): void {
-      const clientMessageContainer: ServerMessageContainer = {
-        "serverCallBeginPaymentInitiateResolved": callBeginPaymentInitiateResolved,
-        "messageWrapper": "serverCallBeginPaymentInitiateResolved",
-      };
-      this.sendingStream.write(clientMessageContainer);
-    }
-    sendCallTerminatePaymentInitiate(callTerminatePaymentInitiate: ServerCallTerminatePaymentInitiate):
+  constructor(sendingStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>) {
+    super();
+    this.sendingStream = sendingStream;
+  }
+  sendCallJoinOrRequestResponse(callRequestResponse: ServerCallJoinOrRequestResponse): void {
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverCallJoinOrRequestResponse": callRequestResponse,
+      "messageWrapper": "serverCallJoinOrRequestResponse",
+    };
+    this.sendingStream.write(clientMessageContainer);
+  }
+  sendCallAgoraCredentials(callAgoraCredentials: ServerAgoraCredentials): void {
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverAgoraCredentials": callAgoraCredentials,
+      "messageWrapper": "serverAgoraCredentials",
+    };
+    this.sendingStream.write(clientMessageContainer);
+  }
+  sendCallBeginPaymentInitiate(callBeginPaymentInitiate: ServerCallBeginPaymentInitiate): void {
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverCallBeginPaymentInitiate": callBeginPaymentInitiate,
+      "messageWrapper": "serverCallBeginPaymentInitiate",
+    };
+    this.sendingStream.write(clientMessageContainer);
+  }
+  sendCallBeginPaymentInitiateResolved(
+      callBeginPaymentInitiateResolved: ServerCallBeginPaymentInitiateResolved): void {
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverCallBeginPaymentInitiateResolved": callBeginPaymentInitiateResolved,
+      "messageWrapper": "serverCallBeginPaymentInitiateResolved",
+    };
+    this.sendingStream.write(clientMessageContainer);
+  }
+  sendCallTerminatePaymentInitiate(callTerminatePaymentInitiate: ServerCallTerminatePaymentInitiate):
       void {
-      const clientMessageContainer: ServerMessageContainer = {
-        "serverCallTerminatePaymentInitiate": callTerminatePaymentInitiate,
-        "messageWrapper": "serverCallTerminatePaymentInitiate",
-      };
-      this.sendingStream.write(clientMessageContainer);
-    }
-    sendCallTerminatePaymentInitiateResolved(
-        callTerminatePaymentInitiateResolved: ServerCallTerminatePaymentInitiateResolved): void {
-      const clientMessageContainer: ServerMessageContainer = {
-        "serverCallTerminatePaymentInitiateResolved": callTerminatePaymentInitiateResolved,
-        "messageWrapper": "serverCallTerminatePaymentInitiateResolved",
-      };
-      this.sendingStream.write(clientMessageContainer);
-    }
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverCallTerminatePaymentInitiate": callTerminatePaymentInitiate,
+      "messageWrapper": "serverCallTerminatePaymentInitiate",
+    };
+    this.sendingStream.write(clientMessageContainer);
+  }
+  sendCallTerminatePaymentInitiateResolved(
+      callTerminatePaymentInitiateResolved: ServerCallTerminatePaymentInitiateResolved): void {
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverCallTerminatePaymentInitiateResolved": callTerminatePaymentInitiateResolved,
+      "messageWrapper": "serverCallTerminatePaymentInitiateResolved",
+    };
+    this.sendingStream.write(clientMessageContainer);
+  }
 
-    sendCounterpartyJoinedCall(counterpartyJoinedCall: ServerCounterpartyJoinedCall): void {
-      const clientMessageContainer: ServerMessageContainer = {
-        "serverCounterpartyJoinedCall": counterpartyJoinedCall,
-        "messageWrapper": "serverCounterpartyJoinedCall",
-      };
-      this.sendingStream.write(clientMessageContainer);
-    }
+  sendCounterpartyJoinedCall(counterpartyJoinedCall: ServerCounterpartyJoinedCall): void {
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverCounterpartyJoinedCall": counterpartyJoinedCall,
+      "messageWrapper": "serverCounterpartyJoinedCall",
+    };
+    this.sendingStream.write(clientMessageContainer);
+  }
 
-    sendCounterpartyLeftCall(counterpartyLeftCall: ServerCounterpartyLeftCall): void {
-      const clientMessageContainer: ServerMessageContainer = {
-        "serverCounterpartyLeftCall": counterpartyLeftCall,
-        "messageWrapper": "serverCounterpartyLeftCall",
-      };
-      this.sendingStream.write(clientMessageContainer);
-    }
+  sendCounterpartyLeftCall(counterpartyLeftCall: ServerCounterpartyLeftCall): void {
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverCounterpartyLeftCall": counterpartyLeftCall,
+      "messageWrapper": "serverCounterpartyLeftCall",
+    };
+    this.sendingStream.write(clientMessageContainer);
+  }
 }
