@@ -8,6 +8,7 @@ import {createPaymentStatusAndUpdateBalance} from "../../../shared/src/firebase/
 import createStripePaymentIntent from "../../../shared/src/stripe/payment_intent_creator";
 import cancelStripePaymentIntent from "../../../shared/src/stripe/cancel_payment_intent";
 import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
+import createCustomerEphemeralKey from "../../../shared/src/stripe/create_customer_ephemeral_key";
 
 export const payOutstandingBalance = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -63,6 +64,7 @@ export const payOutstandingBalance = functions.https.onCall(async (data, context
     paymentDescription: "Pay Balance", uid: userUid});
   await getPaymentStatusDocumentRef({paymentStatusId: newPaymentStatusId}).update("paymentIntentId", paymentIntentId);
 
+  const ephemeralKey = await createCustomerEphemeralKey({customerId: userInfo.stripeCustomerId});
   return {owedBalanceCents: newPaymentStatus.centsToCollect, clientSecret: paymentIntentClientSecret, stripeCustomerId: userInfo.stripeCustomerId,
-    paymentStatusId: newPaymentStatusId};
+    paymentStatusId: newPaymentStatusId, ephemeralKey: ephemeralKey};
 });

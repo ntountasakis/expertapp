@@ -1,4 +1,4 @@
-// Original file: /Users/ntountas/Code/expertapp/protos/call_transaction.proto
+// Original file: /home/ntountas/Code/expertapp/protos/call_transaction.proto
 
 import type * as grpc from '@grpc/grpc-js'
 import type { MethodDefinition } from '@grpc/proto-loader'

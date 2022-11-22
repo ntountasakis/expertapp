@@ -5,13 +5,14 @@ import {ClientMessageSenderInterface} from "../../message_sender/client_message_
 import {sendGrpcServerCallTerminatePaymentInitiate} from "../../server/client_communication/grpc/send_grpc_server_call_terminate_payment_initiate";
 import {onCallerPaymentSuccessCallTerminate} from "./caller_on_payment_success_call_terminate";
 
-export async function callerSendPaymentRequestEndOfCall({clientMessageSender, callState, callTransaction, paymentClientSecret, stripeCustomerId}:
+export async function callerSendPaymentRequestEndOfCall({clientMessageSender, callState, callTransaction,
+  paymentClientSecret, stripeCustomerId, ephemeralKey}:
   {clientMessageSender: ClientMessageSenderInterface, callState: BaseCallState, callTransaction: CallTransaction,
-  paymentClientSecret: string, stripeCustomerId: string}): Promise<void> {
+  paymentClientSecret: string, stripeCustomerId: string, ephemeralKey: string}): Promise<void> {
   console.log(`Sending payment request for ${callState.transactionId} to client on end of call.`);
   _listenForPaymentSuccess({callState, callTransaction});
   sendGrpcServerCallTerminatePaymentInitiate({clientMessageSender: clientMessageSender,
-    customerId: stripeCustomerId, clientSecret: paymentClientSecret});
+    customerId: stripeCustomerId, clientSecret: paymentClientSecret, ephemeralKey: ephemeralKey});
 }
 
 function _listenForPaymentSuccess({callState, callTransaction}:

@@ -69,9 +69,10 @@ class OutstandingBalanceDetails {
   final String customerId;
   final String clientSecret;
   final String paymentStatusId;
+  final String ephemeralKey;
 
   OutstandingBalanceDetails(this.balanceOwedCents, this.customerId,
-  this.clientSecret, this.paymentStatusId);
+      this.clientSecret, this.paymentStatusId, this.ephemeralKey);
 
   bool hasOutstandingBalance() {
     return balanceOwedCents != 0;
@@ -82,7 +83,10 @@ Future<OutstandingBalanceDetails> getInfoToPayOutstandingBalance() async {
   HttpsCallableResult result =
       await getCallable(CallableFunctions.PAY_OUTSTANDING_BALANCE).call();
 
-  return OutstandingBalanceDetails(result.data['owedBalanceCents'],
-    result.data['stripeCustomerId'], result.data['clientSecret'],
-    result.data['paymentStatusId']);
+  return OutstandingBalanceDetails(
+      result.data['owedBalanceCents'],
+      result.data['stripeCustomerId'],
+      result.data['clientSecret'],
+      result.data['paymentStatusId'],
+      result.data['ephemeralKey']);
 }

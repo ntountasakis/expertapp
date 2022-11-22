@@ -10,9 +10,10 @@ import {PaymentStatus} from "../../../../../../../shared/src/firebase/firestore/
 import {PrivateUserInfo} from "../../../../../../../shared/src/firebase/firestore/models/private_user_info";
 import createStripePaymentIntent from "../../../../../../../shared/src/stripe/payment_intent_creator";
 import {createPaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/create_payment_status";
+import createCustomerEphemeralKey from "../../../../../../../shared/src/stripe/create_customer_ephemeral_key";
 
 export const createCallTransaction = async ({request}: {request: CallJoinRequest}):
-  Promise<[CallTransaction, string, string]> => {
+  Promise<[CallTransaction, string, string, string]> => {
   const [callTransaction, paymentStatus, userInfo] = await admin.firestore().runTransaction(async (transaction) => {
     if (request.calledUid == null || request.calledUid == null) {
       const errorMessage = `Invalid Call Transaction Request, either ids are null.
@@ -40,5 +41,6 @@ export const createCallTransaction = async ({request}: {request: CallJoinRequest
     paymentDescription: "Call Begin", uid: request.callerUid});
   await getPaymentStatusDocumentRef({paymentStatusId: callTransaction.callerCallStartPaymentStatusId}).update("paymentIntentId", paymentIntentId);
 
-  return [callTransaction, userInfo.stripeCustomerId, paymentIntentClientSecret];
+  const ephemeralKey = await createCustomerEphemeralKey({customerId: userInfo.stripeCustomerId});
+  return [callTransaction, userInfo.stripeCustomerId, paymentIntentClientSecret, ephemeralKey];
 };

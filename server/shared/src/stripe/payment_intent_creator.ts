@@ -18,12 +18,15 @@ export default async function createStripePaymentIntent({customerId, customerEma
   try {
     const paymentIntentResponse = await StripeProvider.STRIPE.paymentIntents.create({
       customer: customerId,
+      setup_future_usage: 'on_session',
       amount: amountToBillInCents,
       currency: "usd",
-      payment_method_types: ["card"],
       receipt_email: customerEmail,
       statement_descriptor: paymentDescription,
       transfer_group: transferGroup,
+      automatic_payment_methods: {
+        enabled: true,
+      },
       metadata: {
         "payment_status_id": paymentStatusId,
         "uid": uid,
