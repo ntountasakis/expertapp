@@ -1,17 +1,26 @@
 import * as admin from "firebase-admin";
-import {getCallTransactionDocument, getCallTransactionDocumentRef} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {isStringDefined} from "../../../../../../../shared/src/general/utils";
+import {getCallTransactionDocument, getCallTransactionDocumentRef, getPrivateUserDocument} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
+import {PrivateUserInfo} from "../../../../../../../shared/src/firebase/firestore/models/private_user_info";
 import {ClientCallJoinRequest} from "../../../../../protos/call_transaction_package/ClientCallJoinRequest";
 
 export const joinCallTransaction = async ({request}: {request: ClientCallJoinRequest}):
-Promise<CallTransaction> => {
+Promise<[boolean, CallTransaction]> => {
   if (request.callTransactionId == null) {
     throw new Error("ClientCallJoinRequest has null fields");
   }
   const transactionId = request.callTransactionId;
-  await admin.firestore().runTransaction(async (transaction) => {
+  return await admin.firestore().runTransaction(async (transaction) => {
     const callTransaction: CallTransaction = await getCallTransactionDocument(
         {transaction: transaction, transactionId: transactionId});
+    const userInfo: PrivateUserInfo = await getPrivateUserDocument({transaction: transaction, uid: callTransaction.calledUid});
+
+    if (!isStringDefined(userInfo.stripeConnectedId)) {
+      console.error(`Uid ${callTransaction.calledUid} has no connected stripe account. Cannot join call`);
+      return [false, callTransaction];
+    }
+
     let errorMessage = `Call Transaction ID: ${request.callTransactionId} `;
 
     if (callTransaction.calledHasJoined || callTransaction.calledJoinTimeUtcMs !== 0) {
@@ -23,14 +32,13 @@ Promise<CallTransaction> => {
     callTransaction.calledHasJoined = true;
     callTransaction.calledJoinTimeUtcMs = Date.now();
     getCallTransactionDocumentRef({transactionId: transactionId}).update({
-      "calledHasJoined": true,
-      "calledJoinTimeUtcMs": Date.now(),
+      "calledHasJoined": callTransaction.calledHasJoined,
+      "calledJoinTimeUtcMs": callTransaction.calledJoinTimeUtcMs,
     });
 
     console.log(`CallTransaction joined. TransactionId: ${callTransaction.callTransactionId} 
         JoinedId: ${callTransaction.calledUid} `);
-  });
-  return await admin.firestore().runTransaction(async (transaction) => {
-    return getCallTransactionDocument({transaction: transaction, transactionId: transactionId});
+
+    return [true, callTransaction];
   });
 };

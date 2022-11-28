@@ -4,4 +4,5 @@ export interface PrivateUserInfo
     lastName: string;
     email: string;
     stripeCustomerId: string;
+    stripeConnectedId: string;
 }

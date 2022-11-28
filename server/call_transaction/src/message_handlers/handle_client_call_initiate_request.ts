@@ -16,8 +16,6 @@ import {listenForCallTransactionUpdates} from "../firebase/firestore/event_liste
 import {CallTransaction} from "../../../shared/src/firebase/firestore/models/call_transaction";
 import {CallerCallState} from "../call_state/caller/caller_call_state";
 import {callerFinishCallTransaction} from "../call_events/caller/caller_finish_call_transaction";
-import {UserOwedBalance} from "../../../shared/src/firebase/firestore/models/user_owed_balance";
-import {getUserOwedBalanceDocumentRef} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallerBeginCallContext} from "../call_state/caller/caller_begin_call_context";
 
 
@@ -32,10 +30,12 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   const callerUid = callInitiateRequest.callerUid as string;
   const request = new CallJoinRequest({callerUid: callerUid, calledUid: calledUid});
 
-  if (await _hasOutstandingBalance({uid: callerUid})) {
+  const [didCreateCall, stripeCustomerId, paymentIntentClientSecret, ephemeralKey, optCallTransaction] = await createCallTransaction({request: request});
+  if (!didCreateCall) {
     return false;
   }
-  const [callTransaction, stripeCustomerId, paymentIntentClientSecret, ephemeralKey] = await createCallTransaction({request: request});
+  const callTransaction = optCallTransaction as CallTransaction;
+
   const newClientCallState: CallerCallState = _createNewCallState(
       {callManager: clientCallManager, callTransaction: callTransaction,
         callJoinRequest: request, clientMessageSender: clientMessageSender});
@@ -48,18 +48,6 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret, ephemeralKey, stripeCustomerId);
 
   return true;
-}
-
-async function _hasOutstandingBalance({uid}: {uid: string}): Promise<boolean> {
-  const balanceDoc = await getUserOwedBalanceDocumentRef({uid: uid}).get();
-  if (balanceDoc.exists) {
-    const owedBalance = balanceDoc.data() as UserOwedBalance;
-    if (owedBalance.owedBalanceCents != 0) {
-      console.error(`User: ${uid} has a balance of ${owedBalance.owedBalanceCents} cents. Disconnecting from call server`);
-      return true;
-    }
-  }
-  return false;
 }
 
 function _createNewCallState({callTransaction, callJoinRequest, clientMessageSender, callManager}:
