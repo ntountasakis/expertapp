@@ -68,8 +68,7 @@ async function dispatchCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
     invalidMessageHandler(callJoinRequestInvalidErrorMessage);
     return false;
   }
-  await handleClientCallJoinRequest(callJoinRequest, clientMessageSender, CallManager);
-  return true;
+  return await handleClientCallJoinRequest(callJoinRequest, clientMessageSender, CallManager);
 }
 
 async function dispatchCallTerminateRequest(callTerminateRequest: ClientCallTerminateRequest,

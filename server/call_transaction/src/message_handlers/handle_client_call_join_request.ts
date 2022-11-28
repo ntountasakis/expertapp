@@ -12,13 +12,15 @@ import {CallManager} from "../call_state/common/call_manager";
 
 export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
     clientMessageSender: ClientMessageSenderInterface,
-    CallManager: CallManager): Promise<void> {
+    CallManager: CallManager): Promise<boolean> {
   const transactionId = callJoinRequest.callTransactionId as string;
   const joinerId = callJoinRequest.joinerUid as string;
   console.log(`Got call join request from joinerId: ${joinerId} with transaction id: ${transactionId}`);
 
-  const callTransaction: CallTransaction = await joinCallTransaction({request: callJoinRequest});
-
+  const [allowedToJoin, callTransaction] = await joinCallTransaction({request: callJoinRequest});
+  if (!allowedToJoin) {
+    return false;
+  }
   const newCalledState: CalledCallState = _createNewCallState(
       {CallManager: CallManager, transactionId: transactionId,
         joinerId: joinerId, clientMessageSender: clientMessageSender});
@@ -26,6 +28,8 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
 
   sendGrpcCallJoinOrRequestSuccess(transactionId, clientMessageSender);
   sendGrpcServerAgoraCredentials(clientMessageSender, callTransaction.agoraChannelName, joinerId);
+
+  return true;
 }
 
 function _createNewCallState({CallManager, transactionId, joinerId, clientMessageSender}:

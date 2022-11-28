@@ -9,6 +9,7 @@ export function createUser({batch, uid, firstName, lastName, email, stripeCustom
     "lastName": lastName,
     "email": email,
     "stripeCustomerId": stripeCustomerId,
+    "stripeConnectedId": ""
   };
   batch.set(getUserDocumentRef({uid: uid}), firebaseUser);
 }
