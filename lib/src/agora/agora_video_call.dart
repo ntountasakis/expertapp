@@ -14,11 +14,15 @@ class AgoraVideoCall extends StatefulWidget {
   final String agoraChannelName;
   final String agoraToken;
   final int agoraUid;
+  final VoidCallback onChatButtonTap;
+  final VoidCallback onEndCallButtonTap;
 
   AgoraVideoCall(
       {required this.agoraChannelName,
       required this.agoraToken,
-      required this.agoraUid});
+      required this.agoraUid,
+      required this.onChatButtonTap,
+      required this.onEndCallButtonTap});
 
   @override
   _AgoraVideoCallState createState() => _AgoraVideoCallState();
@@ -86,7 +90,7 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
 
   void onEndCallTap() async {
     await _engine.destroy();
-    Navigator.pop(context);
+    widget.onEndCallButtonTap();
   }
 
   Widget localVideoView() {
@@ -113,32 +117,27 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text('Video Call'),
-        ),
-        body: Stack(
-          children: [
-            Center(
-              child: _remoteVideo(),
-            ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: localVideoView(),
-            ),
-            Positioned(
-              bottom: 30,
-              left: 0,
-              child: agoraVideoButtons(
-                  callButtonState: buttonState,
-                  onCameraMuteTap: onCameraMuteTap,
-                  onMicMuteTap: onMicButtonMuteTap,
-                  onEndCalTap: onEndCallTap,
-                  context: context),
-            )
-          ],
-        ),
+      child: Stack(
+        children: [
+          Center(
+            child: _remoteVideo(),
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: localVideoView(),
+          ),
+          Positioned(
+            bottom: 30,
+            left: 0,
+            child: agoraVideoButtons(
+                callButtonState: buttonState,
+                onCameraMuteTap: onCameraMuteTap,
+                onMicMuteTap: onMicButtonMuteTap,
+                onEndCallTap: onEndCallTap,
+                onChatButtonTap: widget.onChatButtonTap,
+                context: context),
+          )
+        ],
       ),
     );
   }

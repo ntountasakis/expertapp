@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
@@ -39,50 +40,6 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
         padding: EdgeInsets.all(8.0),
         child: callServerCounterpartyConnectionStateView(model),
       ),
-      SizedBox(
-        width: 200,
-        height: 100,
-      ),
-      ElevatedButton(
-        child: Text("Finish call"),
-        onPressed: () {
-          callServerManager.sendTerminateCallRequest(widget.callTransactionId);
-          context.goNamed(Routes.HOME);
-        },
-      ),
-      SizedBox(
-        width: 200,
-        height: 100,
-      ),
-      ElevatedButton(
-        child: Text("Chat"),
-        onPressed: () {
-          context.pushNamed(Routes.CLIENT_CALL_CHAT_PAGE, params: {
-            Routes.CALLER_UID_PARAM: widget.callerUserId,
-            Routes.CALL_TRANSACTION_ID_PARAM: widget.callTransactionId,
-          });
-        },
-      ),
-      SizedBox(
-        width: 200,
-        height: 100,
-      ),
-      ElevatedButton(
-          child: Text("Video"),
-          onPressed: () {
-            if (model.agoraCredentials == null) {
-              log("No agora credentials");
-            } else {
-              context.pushNamed(Routes.CLIENT_CALL_VIDEO_PAGE, params: {
-                Routes.CALLER_UID_PARAM: widget.callerUserId,
-                Routes.CALL_TRANSACTION_ID_PARAM: widget.callTransactionId,
-                Routes.AGORA_CHANNEL_NAME_PARAM:
-                    model.agoraCredentials!.channelName,
-                Routes.AGORA_TOKEN_PARAM: model.agoraCredentials!.token,
-                Routes.AGORA_UID_PARAM: model.agoraCredentials!.uid.toString()
-              });
-            }
-          }),
     ]);
   }
 
@@ -94,6 +51,34 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
             context: context, callTransactionId: widget.callTransactionId);
       },
     );
+  }
+
+  Widget buildVideoCallView(BuildContext context, CallServerModel model) {
+    if (model.agoraCredentials == null) {
+      return CircularProgressIndicator();
+    }
+    final agoraChannelName = model.agoraCredentials!.channelName;
+    final agoraToken = model.agoraCredentials!.token;
+    final agoraUid = model.agoraCredentials!.uid;
+    return AgoraVideoCall(
+      agoraChannelName: agoraChannelName,
+      agoraToken: agoraToken,
+      agoraUid: agoraUid,
+      onChatButtonTap: onChatButtonTap,
+      onEndCallButtonTap: onEndCallTap,
+    );
+  }
+
+  void onChatButtonTap() {
+    context.pushNamed(Routes.CLIENT_CALL_CHAT_PAGE, params: {
+      Routes.CALLER_UID_PARAM: widget.callerUserId,
+      Routes.CALL_TRANSACTION_ID_PARAM: widget.callTransactionId,
+    });
+  }
+
+  void onEndCallTap() {
+    callServerManager.sendTerminateCallRequest(widget.callTransactionId);
+    context.goNamed(Routes.HOME);
   }
 
   @override
@@ -112,7 +97,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
                       CallServerConnectionState.DISCONNECTED) {
                     return buildJoinCallButton(context);
                   }
-                  return buildCallView(context, model);
+                  return buildVideoCallView(context, model);
                 },
               ),
             );

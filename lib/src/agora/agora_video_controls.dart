@@ -6,7 +6,6 @@ class AgoraVideoCallButtonState {
 }
 
 typedef void VideoCallButtonToggleTap(bool isDisabled);
-typedef void VideoCallButtonEndTap();
 
 const videoButtonTextStyle = TextStyle(fontSize: 10);
 
@@ -55,7 +54,7 @@ Widget agoraMicMuteButton(AgoraVideoCallButtonState buttonState,
   );
 }
 
-Widget agoraEndCallButton(VideoCallButtonEndTap onEndCalTap) {
+Widget agoraEndCallButton(VoidCallback onEndCallTap) {
   return Container(
     decoration: BoxDecoration(
       color: Colors.red,
@@ -68,7 +67,26 @@ Widget agoraEndCallButton(VideoCallButtonEndTap onEndCalTap) {
         color: Colors.white,
       ),
       onPressed: () async {
-        onEndCalTap();
+        onEndCallTap();
+      },
+    ),
+  );
+}
+
+Widget chatButton(VoidCallback onChatButtonTap) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.green,
+      shape: BoxShape.circle,
+    ),
+    child: IconButton(
+      icon: Icon(
+        Icons.chat_bubble_rounded,
+        size: 25,
+        color: Colors.white,
+      ),
+      onPressed: () async {
+        onChatButtonTap();
       },
     ),
   );
@@ -78,7 +96,8 @@ Widget agoraVideoButtons(
     {required AgoraVideoCallButtonState callButtonState,
     required VideoCallButtonToggleTap onCameraMuteTap,
     required VideoCallButtonToggleTap onMicMuteTap,
-    required VideoCallButtonEndTap onEndCalTap,
+    required VoidCallback onEndCallTap,
+    required VoidCallback onChatButtonTap,
     required BuildContext context}) {
   return SizedBox(
     width: MediaQuery.of(context).size.width,
@@ -96,7 +115,9 @@ Widget agoraVideoButtons(
             SizedBox(width: 20),
             agoraMicMuteButton(callButtonState, onMicMuteTap),
             SizedBox(width: 20),
-            agoraEndCallButton(onEndCalTap)
+            agoraEndCallButton(onEndCallTap),
+            SizedBox(width: 20),
+            chatButton(onChatButtonTap)
           ],
         ),
       ),

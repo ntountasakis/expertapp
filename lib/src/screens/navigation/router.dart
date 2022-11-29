@@ -1,4 +1,3 @@
-import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/history/completed_calls_page.dart';
 import 'package:expertapp/src/screens/transaction/common/chat_page.dart';
@@ -151,27 +150,6 @@ class AppRouter {
                     otherUserUid: expertId!);
               },
             ),
-            GoRoute(
-              name: Routes.EXPERT_CALL_VIDEO_PAGE,
-              path: Routes.EXPERT_CALL_VIDEO_PAGE +
-                  '/:' +
-                  Routes.AGORA_CHANNEL_NAME_PARAM +
-                  '/:' +
-                  Routes.AGORA_TOKEN_PARAM +
-                  '/:' +
-                  Routes.AGORA_UID_PARAM,
-              builder: (BuildContext context, GoRouterState state) {
-                final agoraChannelName =
-                    state.params[Routes.AGORA_CHANNEL_NAME_PARAM];
-                final agoraToken = state.params[Routes.AGORA_TOKEN_PARAM];
-                final agoraUid = state.params[Routes.AGORA_UID_PARAM];
-                return AgoraVideoCall(
-                  agoraChannelName: agoraChannelName!,
-                  agoraToken: agoraToken!,
-                  agoraUid: int.parse(agoraUid!),
-                );
-              },
-            ),
           ]),
       GoRoute(
           name: Routes.EXPERT_REVIEW_SUBMIT_PAGE,
@@ -226,27 +204,6 @@ class AppRouter {
                 return ChatPage(
                     currentUserUid: lifecycle.userMetadata!.documentId,
                     otherUserUid: callerUid!);
-              },
-            ),
-            GoRoute(
-              name: Routes.CLIENT_CALL_VIDEO_PAGE,
-              path: Routes.CLIENT_CALL_VIDEO_PAGE +
-                  '/:' +
-                  Routes.AGORA_CHANNEL_NAME_PARAM +
-                  '/:' +
-                  Routes.AGORA_TOKEN_PARAM +
-                  '/:' +
-                  Routes.AGORA_UID_PARAM,
-              builder: (BuildContext context, GoRouterState state) {
-                final agoraChannelName =
-                    state.params[Routes.AGORA_CHANNEL_NAME_PARAM];
-                final agoraToken = state.params[Routes.AGORA_TOKEN_PARAM];
-                final agoraUid = state.params[Routes.AGORA_UID_PARAM];
-                return AgoraVideoCall(
-                  agoraChannelName: agoraChannelName!,
-                  agoraToken: agoraToken!,
-                  agoraUid: int.parse(agoraUid!),
-                );
               },
             ),
           ]),
