@@ -4,8 +4,6 @@ import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
-import 'package:expertapp/src/call_server/widgets/call_server_connection_state_view.dart';
-import 'package:expertapp/src/call_server/widgets/call_server_counterparty_connection_state_view.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
@@ -31,33 +29,6 @@ class _CallClientMainState extends State<CallClientMain> {
   final CallServerManager callServerManager;
 
   _CallClientMainState(this.callServerManager);
-
-  Widget buildCallView(BuildContext context, CallServerModel model) {
-    return Column(children: [
-      Container(
-        padding: EdgeInsets.all(8.0),
-        child: callServerConnectionStateView(model),
-      ),
-      Container(
-        padding: EdgeInsets.all(8.0),
-        child: callServerCounterpartyConnectionStateView(model),
-      ),
-      SizedBox(
-        width: 200,
-        height: 100,
-      ),
-      ElevatedButton(
-        child: Text("Finish call"),
-        onPressed: () {
-          callServerManager.sendTerminateCallRequest(model.callTransactionId);
-        },
-      ),
-      SizedBox(
-        width: 200,
-        height: 100,
-      ),
-    ]);
-  }
 
   Widget buildCallSummary(BuildContext context, CallServerModel model) {
     return Container(
@@ -102,7 +73,8 @@ class _CallClientMainState extends State<CallClientMain> {
   }
 
   void onEndCallTap() {
-    final transactionId = Provider.of<CallServerModel>(context, listen: false).callTransactionId;
+    final transactionId =
+        Provider.of<CallServerModel>(context, listen: false).callTransactionId;
     callServerManager.sendTerminateCallRequest(transactionId);
   }
 
