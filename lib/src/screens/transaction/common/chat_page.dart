@@ -132,7 +132,7 @@ class _ChatPageState extends State<ChatPage> {
                 snapshot.data![0] as DocumentWrapper<UserMetadata>;
             final chatroomId = snapshot.data![1] as String;
             return Scaffold(
-              appBar: UserPreviewAppbar(otherUserMetadata),
+              appBar: UserPreviewAppbar(otherUserMetadata, ""),
               body: Column(
                 children: [
                   Expanded(
