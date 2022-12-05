@@ -9,6 +9,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.d
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -33,14 +34,13 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
 
   _CallTransactionExpertMainState(this.callServerManager);
 
-  Widget buildJoinCallButton(BuildContext context) {
-    return ElevatedButton(
-      child: const Text("Join call"),
-      onPressed: () {
-        callServerManager.joinCall(
-            context: context, callTransactionId: widget.callTransactionId);
-      },
-    );
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      callServerManager.joinCall(
+          context: context, callTransactionId: widget.callTransactionId);
+    });
   }
 
   Widget buildVideoCallView(BuildContext context, CallServerModel model) {
