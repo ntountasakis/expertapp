@@ -53,7 +53,9 @@ void initFirebaseMessagingForegroundHandler(
     navigatorKey.currentContext!.goNamed(Routes.CALL_JOIN_PROMPT_PAGE, params: {
       Routes.CALLED_UID_PARAM: callJoinRequest.calledUid,
       Routes.CALLER_UID_PARAM: callJoinRequest.callerUid,
-      Routes.CALL_TRANSACTION_ID_PARAM: callJoinRequest.callTransactionId
+      Routes.CALL_TRANSACTION_ID_PARAM: callJoinRequest.callTransactionId,
+      Routes.CALL_RATE_START_PARAM: callJoinRequest.callRateStartCents,
+      Routes.CALL_RATE_PER_MINUTE_PARAM: callJoinRequest.callRatePerMinuteCents,
     });
   });
 }

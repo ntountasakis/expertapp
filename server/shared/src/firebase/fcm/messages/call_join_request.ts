@@ -1,10 +1,15 @@
 export class CallJoinRequest {
   callerUid: string;
   calledUid: string;
+  rateCentsStart: string;
+  rateCentsPerMinute: string;
 
-  constructor({callerUid, calledUid}: {callerUid: string, calledUid: string}) {
+  constructor({ callerUid, calledUid, rateCentsStart, rateCentsPerMinute }:
+    { callerUid: string, calledUid: string, rateCentsStart: string, rateCentsPerMinute: string }) {
     this.callerUid = callerUid;
     this.calledUid = calledUid;
+    this.rateCentsStart = rateCentsStart;
+    this.rateCentsPerMinute = rateCentsPerMinute;
   }
 
   messageType(): string {

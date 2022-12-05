@@ -1,5 +1,4 @@
 import {createCallTransaction} from "../firebase/firestore/functions/transaction/caller/create_call_transaction";
-import {CallJoinRequest} from "../../../shared/src/firebase/fcm/messages/call_join_request";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
 import {onCallerPaymentSuccessCallInitiate} from "../call_events/caller/caller_on_payment_success_call_initiate";
@@ -17,6 +16,7 @@ import {CallTransaction} from "../../../shared/src/firebase/firestore/models/cal
 import {CallerCallState} from "../call_state/caller/caller_call_state";
 import {callerFinishCallTransaction} from "../call_events/caller/caller_finish_call_transaction";
 import {CallerBeginCallContext} from "../call_state/caller/caller_begin_call_context";
+import {ExpertRate} from "../../../shared/src/firebase/firestore/models/expert_rate";
 
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
@@ -28,18 +28,17 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
 
   const calledUid = callInitiateRequest.calledUid as string;
   const callerUid = callInitiateRequest.callerUid as string;
-  const request = new CallJoinRequest({callerUid: callerUid, calledUid: calledUid});
 
-  const [didCreateCall, stripeCustomerId, paymentIntentClientSecret, ephemeralKey, optCallTransaction] = await createCallTransaction({request: request});
+  const [didCreateCall, stripeCustomerId, paymentIntentClientSecret, ephemeralKey, optCallTransaction, optExpertRate] =
+    await createCallTransaction({callerUid: callerUid, calledUid: calledUid});
   if (!didCreateCall) {
     return false;
   }
   const callTransaction = optCallTransaction as CallTransaction;
+  const expertRate = optExpertRate as ExpertRate;
 
-  const newClientCallState: CallerCallState = _createNewCallState(
-      {callManager: clientCallManager, callTransaction: callTransaction,
-        callJoinRequest: request, clientMessageSender: clientMessageSender});
-
+  const newClientCallState: CallerCallState = _createNewCallState({callManager: clientCallManager, callTransaction: callTransaction,
+    calledUid: calledUid, callerUid: callerUid, expertRate: expertRate, clientMessageSender: clientMessageSender});
 
   _listenForPaymentSuccess({callState: newClientCallState, callTransaction: callTransaction});
   _listenForCallTransactionUpdates({callState: newClientCallState, callTransaction: callTransaction});
@@ -50,12 +49,12 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   return true;
 }
 
-function _createNewCallState({callTransaction, callJoinRequest, clientMessageSender, callManager}:
-  {callManager: CallManager, callTransaction: CallTransaction, callJoinRequest: CallJoinRequest,
-  clientMessageSender: ClientMessageSenderInterface}): CallerCallState {
+function _createNewCallState({callTransaction, callerUid, calledUid, expertRate, clientMessageSender, callManager}:
+  {callManager: CallManager, callTransaction: CallTransaction, callerUid: string, calledUid: string,
+    expertRate: ExpertRate, clientMessageSender: ClientMessageSenderInterface}): CallerCallState {
   const callBeginCallerContext = new CallerBeginCallContext({transactionId: callTransaction.callTransactionId,
     agoraChannelName: callTransaction.agoraChannelName, calledFcmToken: callTransaction.calledFcmToken,
-    callJoinRequest: callJoinRequest});
+    callerUid: callerUid, calledUid: calledUid, expertRate: expertRate});
   return callManager.createCallStateOnCallerBegin({
     userId: callTransaction.callerUid, callerBeginCallContext: callBeginCallerContext,
     callerDisconnectFunction: callerFinishCallTransaction,

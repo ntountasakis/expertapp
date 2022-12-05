@@ -3,7 +3,13 @@ import 'package:expertapp/src/firebase/cloud_messaging/messages/call_join_reques
 class MessageDecoder {
   static CallJoinRequestTokenPayload callJoinRequestFromJson(
       Map<String, dynamic> json) {
-    final keys = ['callerUid', 'calledUid', 'callTransactionId'];
+    final keys = [
+      'callerUid',
+      'calledUid',
+      'callTransactionId',
+      'callRateStartCents',
+      'callRatePerMinuteCents'
+    ];
 
     for (String k in keys) {
       if (!json.containsKey(k)) {
@@ -13,6 +19,9 @@ class MessageDecoder {
     }
     return CallJoinRequestTokenPayload(
         callerUid: json['callerUid'],
-        calledUid: json['calledUid'], callTransactionId: json['callTransactionId']);
+        calledUid: json['calledUid'],
+        callTransactionId: json['callTransactionId'],
+        callRateStartCents: json['callRateStartCents'],
+        callRatePerMinuteCents: json['callRatePerMinuteCents']);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/history/completed_calls_page.dart';
 import 'package:expertapp/src/screens/transaction/common/chat_page.dart';
@@ -169,15 +170,26 @@ class AppRouter {
               '/:' +
               Routes.CALLER_UID_PARAM +
               '/:' +
-              Routes.CALL_TRANSACTION_ID_PARAM,
+              Routes.CALL_TRANSACTION_ID_PARAM +
+              '/:' +
+              Routes.CALL_RATE_START_PARAM +
+              '/:' +
+              Routes.CALL_RATE_PER_MINUTE_PARAM,
           builder: (BuildContext context, GoRouterState state) {
             final callerUid = state.params[Routes.CALLER_UID_PARAM];
             final transactionId =
                 state.params[Routes.CALL_TRANSACTION_ID_PARAM];
+            final rateStartCents = state.params[Routes.CALL_RATE_START_PARAM];
+            final ratePerMinuteCents =
+                state.params[Routes.CALL_RATE_PER_MINUTE_PARAM];
             return CallTransactionExpertPrompt(
-                transactionId: transactionId!,
-                currentUserId: lifecycle.userMetadata!.documentId,
-                callerUserId: callerUid!);
+              transactionId: transactionId!,
+              currentUserId: lifecycle.userMetadata!.documentId,
+              callerUserId: callerUid!,
+              expertRate: ExpertRate(
+                  centsCallStart: int.parse(rateStartCents!),
+                  centsPerMinute: int.parse(ratePerMinuteCents!)),
+            );
           }),
       GoRoute(
           name: Routes.CLIENT_CALL_HOME,

@@ -7,10 +7,12 @@ class ExpertRate {
   final num centsPerMinute;
   final num centsCallStart;
 
-  ExpertRate(this.centsPerMinute, this.centsCallStart);
+  ExpertRate({required this.centsPerMinute, required this.centsCallStart});
 
   ExpertRate.fromJson(Map<String, dynamic> json)
-      : this(json['centsPerMinute'] as num, json['centsCallStart'] as num);
+      : this(
+            centsPerMinute: json['centsPerMinute'] as num,
+            centsCallStart: json['centsCallStart'] as num);
 
   Map<String, dynamic> _toJson() {
     var fieldsMap = {
