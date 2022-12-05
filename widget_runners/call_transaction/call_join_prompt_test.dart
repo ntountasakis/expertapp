@@ -1,5 +1,6 @@
 import 'package:expertapp/firebase_options.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/screens/transaction/expert/call_transaction_expert_prompt.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class MyTestApp extends StatelessWidget {
           transactionId: "",
           currentUserId: "mpKZBT949r8LM9wkzIvfl6GQQ2OQ",
           callerUserId: "US8xSI8IkEZH0TFrQPt7yA700lhR",
+          expertRate: ExpertRate(centsCallStart: 80, centsPerMinute: 180),
         ));
   }
 }

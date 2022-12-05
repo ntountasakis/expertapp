@@ -1,4 +1,5 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
@@ -11,11 +12,13 @@ class CallTransactionExpertPrompt extends StatefulWidget {
   final String transactionId;
   final String currentUserId;
   final String callerUserId;
+  final ExpertRate expertRate;
 
   const CallTransactionExpertPrompt(
       {required this.transactionId,
       required this.currentUserId,
-      required this.callerUserId});
+      required this.callerUserId,
+      required this.expertRate});
 
   @override
   State<CallTransactionExpertPrompt> createState() =>
@@ -26,8 +29,8 @@ class _CallTransactionExpertPromptState
     extends State<CallTransactionExpertPrompt> {
   Widget buildCallPrompt(DocumentWrapper<UserMetadata> caller) {
     String promptText =
-        '${caller.documentType.firstName} will pay you \$1.40 to start the call'
-        ' and \$6.80 for each minute thereafter.  The billed time will stop if'
+        '${caller.documentType.firstName} will pay you ${widget.expertRate.formattedStartCallFee()} to start the call'
+        ' and ${widget.expertRate.formattedPerMinuteFee()} for each minute thereafter.  The billed time will stop if'
         ' either of you end the call or get disconnected.';
     final style = TextStyle(
       fontSize: 14,

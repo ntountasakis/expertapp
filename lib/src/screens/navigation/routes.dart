@@ -15,6 +15,8 @@ class Routes {
   static const CALLER_UID_PARAM = 'callerUid';
   static const CALL_TRANSACTION_ID_PARAM = 'callTransactionId';
   static const EXPERT_ID_PARAM = 'id';
+  static const CALL_RATE_START_PARAM = 'callRateStart';
+  static const CALL_RATE_PER_MINUTE_PARAM = 'callRatePerMinute';
 
   static const EXPERT_LISTINGS_PAGE = '/expertlistings';
   static const EXPERT_PROFILE_PAGE = 'expertProfilePage';
