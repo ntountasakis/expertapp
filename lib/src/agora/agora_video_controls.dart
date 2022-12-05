@@ -1,3 +1,4 @@
+import 'package:expertapp/src/util/call_buttons.dart';
 import 'package:flutter/material.dart';
 
 class AgoraVideoCallButtonState {
@@ -54,25 +55,6 @@ Widget agoraMicMuteButton(AgoraVideoCallButtonState buttonState,
   );
 }
 
-Widget agoraEndCallButton(VoidCallback onEndCallTap) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.red,
-      shape: BoxShape.circle,
-    ),
-    child: IconButton(
-      icon: Icon(
-        Icons.call_end_rounded,
-        size: 25,
-        color: Colors.white,
-      ),
-      onPressed: () async {
-        onEndCallTap();
-      },
-    ),
-  );
-}
-
 Widget chatButton(VoidCallback onChatButtonTap) {
   return Container(
     decoration: BoxDecoration(
@@ -99,28 +81,13 @@ Widget agoraVideoButtons(
     required VoidCallback onEndCallTap,
     required VoidCallback onChatButtonTap,
     required BuildContext context}) {
-  return SizedBox(
-    width: MediaQuery.of(context).size.width,
-    child: Center(
-      child: Container(
-        padding: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade700,
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            agoraCameraMuteButton(callButtonState, onCameraMuteTap),
-            SizedBox(width: 20),
-            agoraMicMuteButton(callButtonState, onMicMuteTap),
-            SizedBox(width: 20),
-            agoraEndCallButton(onEndCallTap),
-            SizedBox(width: 20),
-            chatButton(onChatButtonTap)
-          ],
-        ),
-      ),
-    ),
-  );
+  return callButtonRow(context, [
+    agoraCameraMuteButton(callButtonState, onCameraMuteTap),
+    SizedBox(width: 20),
+    agoraMicMuteButton(callButtonState, onMicMuteTap),
+    SizedBox(width: 20),
+    endCallButton(onEndCallTap),
+    SizedBox(width: 20),
+    chatButton(onChatButtonTap)
+  ]);
 }

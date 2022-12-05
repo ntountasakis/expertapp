@@ -80,7 +80,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
           if (snapshot.hasData) {
             final callerUserMetadata = snapshot.data;
             return Scaffold(
-              appBar: UserPreviewAppbar(callerUserMetadata!),
+              appBar: UserPreviewAppbar(callerUserMetadata!, ""),
               body: Consumer<CallServerModel>(
                 builder: (context, model, child) {
                   if (model.callConnectionState ==

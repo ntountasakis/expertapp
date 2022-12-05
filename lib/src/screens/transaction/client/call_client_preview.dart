@@ -69,7 +69,7 @@ class CallClientPreview extends StatelessWidget {
             final expertRate =
                 snapshot.data![1] as DocumentWrapper<ExpertRate>?;
             return Scaffold(
-                appBar: UserPreviewAppbar(expertUserMetadata!),
+                appBar: UserPreviewAppbar(expertUserMetadata!, ""),
                 body: Container(
                   padding: EdgeInsets.all(8.0),
                   child: Column(children: [

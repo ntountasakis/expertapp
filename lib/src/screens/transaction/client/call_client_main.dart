@@ -87,7 +87,7 @@ class _CallClientMainState extends State<CallClientMain> {
           if (snapshot.hasData) {
             final expertUserMetadata = snapshot.data;
             return Scaffold(
-              appBar: UserPreviewAppbar(expertUserMetadata!),
+              appBar: UserPreviewAppbar(expertUserMetadata!, ""),
               body: Consumer<CallServerModel>(builder: (context, model, child) {
                 if (model.callBeginPaymentPromptModel.paymentState !=
                     PaymentState.PAYMENT_COMPLETE) {
