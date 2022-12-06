@@ -83,10 +83,6 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
               appBar: UserPreviewAppbar(callerUserMetadata!, ""),
               body: Consumer<CallServerModel>(
                 builder: (context, model, child) {
-                  if (model.callConnectionState ==
-                      CallServerConnectionState.DISCONNECTED) {
-                    return buildJoinCallButton(context);
-                  }
                   return buildVideoCallView(context, model);
                 },
               ),
