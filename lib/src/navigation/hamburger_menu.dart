@@ -33,12 +33,6 @@ class HamburgerMenu extends StatelessWidget {
               onTap: () async {
                 await FirebaseAuth.FirebaseAuth.instance.signOut();
               }),
-          ListTile(
-              title: Text("Check balance"),
-              onTap: () async {
-                final owedCents = await lookupBalancedOwedCents();
-                log('You owe ${owedCents}');
-              }),
         ],
       ),
     );
