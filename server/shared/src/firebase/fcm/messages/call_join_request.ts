@@ -12,7 +12,7 @@ export class CallJoinRequest {
     this.rateCentsPerMinute = rateCentsPerMinute;
   }
 
-  messageType(): string {
+  static messageType(): string {
     return "call_join_request";
   }
 }
