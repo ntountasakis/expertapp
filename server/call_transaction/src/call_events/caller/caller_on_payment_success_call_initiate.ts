@@ -27,12 +27,13 @@ export async function onCallerPaymentSuccessCallInitiate(clientMessageSender: Cl
     const perMinuteRateString = callTransaction.expertRateCentsPerMinute.toString();
 
     sendFcmCallJoinRequest({fcmToken: callerCallState.callerBeginCallContext.calledFcmToken,
-      joinRequest: callerCallState.callerBeginCallContext.callJoinRequest,
+      callerUid: callerCallState.callerBeginCallContext.callerUid,
+      calledUid: callerCallState.callerBeginCallContext.calledUid,
       callTransactionId: callerCallState.callerBeginCallContext.transactionId,
       callRateStartCents: startRateString,
       callRatePerMinuteCents: perMinuteRateString});
     sendGrpcServerAgoraCredentials(clientMessageSender, callerCallState.callerBeginCallContext.agoraChannelName,
-        callerCallState.callerBeginCallContext.callJoinRequest.callerUid);
+        callerCallState.callerBeginCallContext.callerUid);
     return Promise.resolve(true);
   }
   return Promise.resolve(false);

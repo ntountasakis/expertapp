@@ -1,16 +1,16 @@
 import { CallJoinRequest } from "../messages/call_join_request";
 import { sendFcmMessage } from "../sender/fcm_token_sender";
 
-export const sendFcmCallJoinRequest = function ({ fcmToken, joinRequest, callTransactionId, callRateStartCents, callRatePerMinuteCents }: {
-  fcmToken: string, joinRequest: CallJoinRequest,
+export const sendFcmCallJoinRequest = function ({ fcmToken, callerUid, calledUid, callTransactionId, callRateStartCents, callRatePerMinuteCents }: {
+  fcmToken: string, callerUid: string, calledUid: string,
   callTransactionId: string, callRateStartCents: string,
   callRatePerMinuteCents: string,
 }): void {
   const payload = {
     data: {
-      messageType: joinRequest.messageType(),
-      callerUid: joinRequest.callerUid,
-      calledUid: joinRequest.calledUid,
+      messageType: CallJoinRequest.messageType(),
+      callerUid: callerUid,
+      calledUid: calledUid,
       callTransactionId: callTransactionId,
       callRateStartCents: callRateStartCents,
       callRatePerMinuteCents: callRatePerMinuteCents,
