@@ -6,6 +6,7 @@ import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +17,12 @@ import 'package:go_router/go_router.dart';
 class CallClientMain extends StatefulWidget {
   final String currentUserId;
   final String otherUserId;
+  final AppLifecycle lifecycle;
 
   const CallClientMain(
-      {required this.currentUserId, required this.otherUserId});
+      {required this.currentUserId,
+      required this.otherUserId,
+      required this.lifecycle});
 
   @override
   State<CallClientMain> createState() =>
@@ -28,6 +32,7 @@ class CallClientMain extends StatefulWidget {
 
 class _CallClientMainState extends State<CallClientMain> {
   final CallServerManager callServerManager;
+  bool exitingOnPaymentCanceled = false;
 
   _CallClientMainState(this.callServerManager);
 
@@ -78,10 +83,16 @@ class _CallClientMainState extends State<CallClientMain> {
     callServerManager.sendTerminateCallRequest(transactionId);
   }
 
-  void onPaymentBeginCancelled(BuildContext context) {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      context.goNamed(Routes.HOME);
-    });
+  Future<void> onPaymentCancelled(
+      BuildContext context, CallServerModel model) async {
+    if (!exitingOnPaymentCanceled) {
+      exitingOnPaymentCanceled = true;
+      SchedulerBinding.instance.addPostFrameCallback((_) async {
+        model.reset();
+        await widget.lifecycle.refreshOwedBalance();
+        context.goNamed(Routes.HOME);
+      });
+    }
   }
 
   @override
@@ -97,7 +108,8 @@ class _CallClientMainState extends State<CallClientMain> {
               body: Consumer<CallServerModel>(builder: (context, model, child) {
                 if (model.callBeginPaymentPromptModel.paymentState ==
                     PaymentState.PAYMENT_CANCELLED) {
-                  onPaymentBeginCancelled(context);
+                  onPaymentCancelled(context, model);
+                  return SizedBox();
                 }
                 if (model.callBeginPaymentPromptModel.paymentState !=
                     PaymentState.PAYMENT_COMPLETE) {
@@ -113,7 +125,10 @@ class _CallClientMainState extends State<CallClientMain> {
                   case PaymentState.PAYMENT_FAILURE:
                     return const Text("End call payment failure");
                   case PaymentState.PAYMENT_CANCELLED:
-                    return const Text("End call payment cancelled");
+                    {
+                      onPaymentCancelled(context, model);
+                      return SizedBox();
+                    }
                 }
               }),
             );
