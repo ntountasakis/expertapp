@@ -1,8 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 import '../generated/protos/call_transaction.pb.dart';
 
-enum PaymentState { NA, AWAITING_PAYMENT, PAYMENT_COMPLETE, PAYMENT_FAILURE }
+enum PaymentState {
+  NA,
+  AWAITING_PAYMENT,
+  PAYMENT_COMPLETE,
+  PAYMENT_FAILURE,
+  PAYMENT_CANCELLED
+}
 
 class CallServerPaymentPromptModel {
   PaymentState _state = PaymentState.NA;
@@ -29,7 +36,13 @@ class CallServerPaymentPromptModel {
         customerId: stripeCustomerId,
       ),
     );
-    await Stripe.instance.presentPaymentSheet();
+    try {
+      await Stripe.instance.presentPaymentSheet();
+    } on StripeException catch (exception) {
+      if (exception.error.code == FailureCode.Canceled) {
+        onPaymentCanceled();
+      }
+    }
   }
 
   void onPaymentComplete() {
@@ -38,5 +51,9 @@ class CallServerPaymentPromptModel {
 
   void onPaymentFailure() {
     _state = PaymentState.PAYMENT_FAILURE;
+  }
+
+  void onPaymentCanceled() {
+    _state = PaymentState.PAYMENT_CANCELLED;
   }
 }

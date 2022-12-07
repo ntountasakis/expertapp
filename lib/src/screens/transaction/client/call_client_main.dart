@@ -78,6 +78,12 @@ class _CallClientMainState extends State<CallClientMain> {
     callServerManager.sendTerminateCallRequest(transactionId);
   }
 
+  void onPaymentBeginCancelled(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      context.goNamed(Routes.HOME);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentWrapper<UserMetadata>?>(
@@ -87,21 +93,27 @@ class _CallClientMainState extends State<CallClientMain> {
           if (snapshot.hasData) {
             final expertUserMetadata = snapshot.data;
             return Scaffold(
-              appBar: UserPreviewAppbar(expertUserMetadata!, ""),
+              appBar: UserPreviewAppbar(expertUserMetadata!, "Call"),
               body: Consumer<CallServerModel>(builder: (context, model, child) {
+                if (model.callBeginPaymentPromptModel.paymentState ==
+                    PaymentState.PAYMENT_CANCELLED) {
+                  onPaymentBeginCancelled(context);
+                }
                 if (model.callBeginPaymentPromptModel.paymentState !=
                     PaymentState.PAYMENT_COMPLETE) {
-                  return const Text("Awaiting payment to start call");
+                  return SizedBox();
                 }
                 switch (model.callTerminatePaymentPromptModel.paymentState) {
                   case PaymentState.NA:
                     return buildVideoCallView(context, model);
                   case PaymentState.AWAITING_PAYMENT:
-                    return const Text("Awaiting payment end call");
+                    return SizedBox();
                   case PaymentState.PAYMENT_COMPLETE:
                     return buildCallSummary(context, model);
                   case PaymentState.PAYMENT_FAILURE:
                     return const Text("End call payment failure");
+                  case PaymentState.PAYMENT_CANCELLED:
+                    return const Text("End call payment cancelled");
                 }
               }),
             );
