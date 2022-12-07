@@ -138,7 +138,8 @@ class AppRouter {
             final expertId = state.params[Routes.EXPERT_ID_PARAM];
             return CallClientMain(
                 currentUserId: lifecycle.userMetadata!.documentId,
-                otherUserId: expertId!);
+                otherUserId: expertId!,
+                lifecycle: lifecycle);
           },
           routes: <GoRoute>[
             GoRoute(
