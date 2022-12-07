@@ -68,9 +68,9 @@ class CallServerModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onServerCallBeginPaymentInitiate(
-      ServerCallBeginPaymentInitiate callBeginPaymentInitiate) {
-    _callBeginPaymentPromptModel.onPaymentDetails(
+  Future<void> onServerCallBeginPaymentInitiate(
+      ServerCallBeginPaymentInitiate callBeginPaymentInitiate) async {
+    await _callBeginPaymentPromptModel.onPaymentDetails(
         stripeCustomerId: callBeginPaymentInitiate.customerId,
         clientSecret: callBeginPaymentInitiate.clientSecret,
         ephemeralKey: callBeginPaymentInitiate.ephemeralKey);
@@ -82,9 +82,9 @@ class CallServerModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onServerCallTerminatePaymentInitiate(
-      ServerCallTerminatePaymentInitiate callTerminatePaymentInitiate) {
-    _callTerminatePaymentPromptModel.onPaymentDetails(
+  Future<void> onServerCallTerminatePaymentInitiate(
+      ServerCallTerminatePaymentInitiate callTerminatePaymentInitiate) async {
+    await _callTerminatePaymentPromptModel.onPaymentDetails(
         stripeCustomerId: callTerminatePaymentInitiate.customerId,
         clientSecret: callTerminatePaymentInitiate.clientSecret,
         ephemeralKey: callTerminatePaymentInitiate.ephemeralKey);
