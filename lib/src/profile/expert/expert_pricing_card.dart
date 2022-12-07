@@ -6,7 +6,7 @@ class ExpertPricingCard extends StatelessWidget {
   final TextStyle pricingHeader =
       TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
   final TextStyle pricingContent =
-      TextStyle(fontSize: 12, fontWeight: FontWeight.w500);
+      TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
 
   ExpertPricingCard(this.expertRate);
 
@@ -16,7 +16,7 @@ class ExpertPricingCard extends StatelessWidget {
         child: Column(
       children: [
         Text(
-          'Call Pricing',
+          'Pricing',
           style: pricingHeader,
         ),
         Text(

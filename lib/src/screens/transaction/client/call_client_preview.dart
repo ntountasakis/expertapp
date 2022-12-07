@@ -13,18 +13,20 @@ class CallClientPreview extends StatelessWidget {
   CallClientPreview(this._expertUid);
 
   final explanationBlurbStyle = TextStyle(
-    fontSize: 12,
+    fontSize: 14,
+    color: Colors.grey[800],
+    fontWeight: FontWeight.w500,
   );
   final ButtonStyle callButtonStyle =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
   String blurbText(UserMetadata expertUserMetadata) {
     String longText =
-        '''Clicking begin will begin your call with ${expertUserMetadata.firstName}.
-        You will be charged at the rate listed above. At anytime you may
-        end the call and will be shown a screen summarizing the charges.
-        During the call you can navigate to the in-call screen that will
-        show your real-time charges.
+        '''Click begin to video call ${expertUserMetadata.firstName}.
+        The call meter will stop once you or ${expertUserMetadata.firstName}
+        end the call. We will charge your payment method at the next screen
+        and once the call is over for the time-based charges. If ${expertUserMetadata.firstName}
+        does not answer, all charges will be refunded immediately.
         ''';
     return longText.replaceAll('\n', '').replaceAll(RegExp(' {2,}'), ' ');
   }
@@ -69,7 +71,7 @@ class CallClientPreview extends StatelessWidget {
             final expertRate =
                 snapshot.data![1] as DocumentWrapper<ExpertRate>?;
             return Scaffold(
-                appBar: UserPreviewAppbar(expertUserMetadata!, ""),
+                appBar: UserPreviewAppbar(expertUserMetadata!, "Call"),
                 body: Container(
                   padding: EdgeInsets.all(8.0),
                   child: Column(children: [
