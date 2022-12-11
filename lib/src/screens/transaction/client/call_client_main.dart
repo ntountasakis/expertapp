@@ -44,18 +44,6 @@ class _CallClientMainState extends State<CallClientMain> {
     });
   }
 
-  Widget buildCallSummary(BuildContext context, CallServerModel model) {
-    return Container(
-        child: ElevatedButton(
-      child: const Text("Exit call and submit review"),
-      onPressed: () {
-        model.reset();
-        context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
-            params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
-      },
-    ));
-  }
-
   Widget buildVideoCallView(BuildContext context, CallServerModel model) {
     if (model.agoraCredentials == null) {
       return CircularProgressIndicator();
@@ -82,6 +70,15 @@ class _CallClientMainState extends State<CallClientMain> {
         Provider.of<CallServerModel>(context, listen: false).callTransactionId;
     callServerManager.sendTerminateCallRequest(transactionId);
   }
+
+  void navigateToSubmitReview(CallServerModel model) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      model.reset();
+      context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
+          params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
+    });
+  }
+
 
   Future<void> onPaymentCancelled(
       BuildContext context, CallServerModel model) async {
@@ -121,7 +118,10 @@ class _CallClientMainState extends State<CallClientMain> {
                   case PaymentState.AWAITING_PAYMENT:
                     return SizedBox();
                   case PaymentState.PAYMENT_COMPLETE:
-                    return buildCallSummary(context, model);
+                    {
+                      navigateToSubmitReview(model);
+                      return SizedBox();
+                    }
                   case PaymentState.PAYMENT_FAILURE:
                     return const Text("End call payment failure");
                   case PaymentState.PAYMENT_CANCELLED:
