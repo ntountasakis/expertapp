@@ -68,7 +68,7 @@ class ClientInCallAppbar extends StatelessWidget with PreferredSizeWidget {
   int timeChargesCents(ServerFeeBreakdowns fees, int callLengthSec) {
     int centsRunningTime =
         (fees.earnedCentsPerMinute * (callLengthSec / 60.0)).round();
-    return centsRunningTime + fees.earnedCentsStartCall;
+    return centsRunningTime;
   }
 
   int totalCents(ServerFeeBreakdowns fees, int callLengthSec) {
