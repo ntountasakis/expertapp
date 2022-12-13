@@ -17,14 +17,13 @@ import {CallerCallState} from "../call_state/caller/caller_call_state";
 import {callerFinishCallTransaction} from "../call_events/caller/caller_finish_call_transaction";
 import {CallerBeginCallContext} from "../call_state/caller/caller_begin_call_context";
 import {ExpertRate} from "../../../shared/src/firebase/firestore/models/expert_rate";
+import {sendGrpcServerFeeBreakdowns} from "../server/client_communication/grpc/send_grpc_server_fee_breakdowns";
 
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallManager): Promise<boolean> {
   console.log(`InitiateCall request begin. Caller Uid: ${callInitiateRequest.callerUid} 
       Called Uid: ${callInitiateRequest.calledUid}`);
-
-  // todo: call join request poor name as the caller isnt the joiner, also used for fcm not for this context
 
   const calledUid = callInitiateRequest.calledUid as string;
   const callerUid = callInitiateRequest.callerUid as string;
@@ -45,6 +44,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
 
   sendGrpcCallJoinOrRequestSuccess(callTransaction.callTransactionId, clientMessageSender);
   sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret, ephemeralKey, stripeCustomerId);
+  sendGrpcServerFeeBreakdowns(clientMessageSender, callTransaction);
 
   return true;
 }

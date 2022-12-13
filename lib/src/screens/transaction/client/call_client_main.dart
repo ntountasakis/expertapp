@@ -7,7 +7,7 @@ import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart'
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
-import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
+import 'package:expertapp/src/screens/appbars/client_in_call_appbar.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -79,7 +79,6 @@ class _CallClientMainState extends State<CallClientMain> {
     });
   }
 
-
   Future<void> onPaymentCancelled(
       BuildContext context, CallServerModel model) async {
     if (!exitingOnPaymentCanceled) {
@@ -92,6 +91,36 @@ class _CallClientMainState extends State<CallClientMain> {
     }
   }
 
+  Widget buildCallView(BuildContext context, CallServerModel model) {
+    if (model.callBeginPaymentPromptModel.paymentState ==
+        PaymentState.PAYMENT_CANCELLED) {
+      onPaymentCancelled(context, model);
+      return SizedBox();
+    }
+    if (model.callBeginPaymentPromptModel.paymentState !=
+        PaymentState.PAYMENT_COMPLETE) {
+      return SizedBox();
+    }
+    switch (model.callTerminatePaymentPromptModel.paymentState) {
+      case PaymentState.NA:
+        return buildVideoCallView(context, model);
+      case PaymentState.AWAITING_PAYMENT:
+        return SizedBox();
+      case PaymentState.PAYMENT_COMPLETE:
+        {
+          navigateToSubmitReview(model);
+          return SizedBox();
+        }
+      case PaymentState.PAYMENT_FAILURE:
+        return const Text("End call payment failure");
+      case PaymentState.PAYMENT_CANCELLED:
+        {
+          onPaymentCancelled(context, model);
+          return SizedBox();
+        }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentWrapper<UserMetadata>?>(
@@ -100,38 +129,13 @@ class _CallClientMainState extends State<CallClientMain> {
             AsyncSnapshot<DocumentWrapper<UserMetadata>?> snapshot) {
           if (snapshot.hasData) {
             final expertUserMetadata = snapshot.data;
-            return Scaffold(
-              appBar: UserPreviewAppbar(expertUserMetadata!, "Call"),
-              body: Consumer<CallServerModel>(builder: (context, model, child) {
-                if (model.callBeginPaymentPromptModel.paymentState ==
-                    PaymentState.PAYMENT_CANCELLED) {
-                  onPaymentCancelled(context, model);
-                  return SizedBox();
-                }
-                if (model.callBeginPaymentPromptModel.paymentState !=
-                    PaymentState.PAYMENT_COMPLETE) {
-                  return SizedBox();
-                }
-                switch (model.callTerminatePaymentPromptModel.paymentState) {
-                  case PaymentState.NA:
-                    return buildVideoCallView(context, model);
-                  case PaymentState.AWAITING_PAYMENT:
-                    return SizedBox();
-                  case PaymentState.PAYMENT_COMPLETE:
-                    {
-                      navigateToSubmitReview(model);
-                      return SizedBox();
-                    }
-                  case PaymentState.PAYMENT_FAILURE:
-                    return const Text("End call payment failure");
-                  case PaymentState.PAYMENT_CANCELLED:
-                    {
-                      onPaymentCancelled(context, model);
-                      return SizedBox();
-                    }
-                }
-              }),
-            );
+            return Consumer<CallServerModel>(builder: (context, model, child) {
+              return Scaffold(
+                appBar:
+                    ClientInCallAppbar(expertUserMetadata!, "In-Call", model),
+                body: buildCallView(context, model),
+              );
+            });
           } else {
             return Scaffold(
               appBar: AppBar(title: const Text("Expert Call")),
