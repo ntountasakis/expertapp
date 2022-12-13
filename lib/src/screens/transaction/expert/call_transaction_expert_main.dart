@@ -69,6 +69,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
 
   void onEndCallTap() {
     callServerManager.sendTerminateCallRequest(widget.callTransactionId);
+    Provider.of<CallServerModel>(context, listen: false).reset();
     context.goNamed(Routes.HOME);
   }
 
