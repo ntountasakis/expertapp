@@ -22,6 +22,7 @@ export interface ProtoGrpcType {
     ServerCallTerminatePaymentInitiateResolved: MessageTypeDefinition
     ServerCounterpartyJoinedCall: MessageTypeDefinition
     ServerCounterpartyLeftCall: MessageTypeDefinition
+    ServerFeeBreakdowns: MessageTypeDefinition
     ServerMessageContainer: MessageTypeDefinition
   }
 }

@@ -26,6 +26,8 @@ class CallServerMessageListener {
       }
     } else if (aMessage.hasServerAgoraCredentials()) {
       model.onAgoraCredentials(aMessage.serverAgoraCredentials);
+    } else if (aMessage.hasServerFeeBreakdowns()) {
+      model.onFeeBreakdowns(aMessage.serverFeeBreakdowns);
     } else if (aMessage.hasServerCallBeginPaymentInitiate()) {
       model.onServerCallBeginPaymentInitiate(
           aMessage.serverCallBeginPaymentInitiate);

@@ -8,6 +8,7 @@ class CallServerModel extends ChangeNotifier {
   String _errorMessage = "";
   String _callTransactionId = "";
   ServerAgoraCredentials? _agoraCredentials;
+  ServerFeeBreakdowns? _feeBreakdowns;
   CallServerPaymentPromptModel _callBeginPaymentPromptModel =
       new CallServerPaymentPromptModel();
   CallServerPaymentPromptModel _callTerminatePaymentPromptModel =
@@ -23,6 +24,7 @@ class CallServerModel extends ChangeNotifier {
   String get errorMsg => _errorMessage;
   String get callTransactionId => _callTransactionId;
   ServerAgoraCredentials? get agoraCredentials => _agoraCredentials;
+  ServerFeeBreakdowns? get feeBreakdowns => _feeBreakdowns;
   CallServerPaymentPromptModel get callBeginPaymentPromptModel =>
       _callBeginPaymentPromptModel;
   CallServerPaymentPromptModel get callTerminatePaymentPromptModel =>
@@ -30,6 +32,23 @@ class CallServerModel extends ChangeNotifier {
 
   CallServerCounterpartyConnectionState get callCounterpartyConnectionState =>
       _counterpartyConnectionState;
+
+  int _msEpochOfCounterpartyConnected = 0;
+  int _msEpochCounterpartyDisconnected = 0;
+
+  int callLengthSeconds() {
+    if (_msEpochOfCounterpartyConnected == 0) return 0;
+    if (_msEpochCounterpartyDisconnected != 0) {
+      return ((_msEpochCounterpartyDisconnected -
+                  _msEpochOfCounterpartyConnected) /
+              1000)
+          .round();
+    }
+    return ((DateTime.now().millisecondsSinceEpoch -
+                _msEpochOfCounterpartyConnected) /
+            1000)
+        .round();
+  }
 
   void reset() {
     _errorMessage = "";
@@ -40,6 +59,8 @@ class CallServerModel extends ChangeNotifier {
     _connectionState = CallServerConnectionState.DISCONNECTED;
     _counterpartyConnectionState =
         CallServerCounterpartyConnectionState.DISCONNECTED;
+    _msEpochOfCounterpartyConnected = 0;
+    _msEpochCounterpartyDisconnected = 0;
   }
 
   void onConnected() {
@@ -65,6 +86,11 @@ class CallServerModel extends ChangeNotifier {
 
   void onAgoraCredentials(ServerAgoraCredentials agoraCredentials) {
     _agoraCredentials = agoraCredentials;
+    notifyListeners();
+  }
+
+  void onFeeBreakdowns(ServerFeeBreakdowns feeBreakdowns) {
+    _feeBreakdowns = feeBreakdowns;
     notifyListeners();
   }
 
@@ -98,11 +124,13 @@ class CallServerModel extends ChangeNotifier {
 
   void onServerCounterpartyJoinedCall() {
     _counterpartyConnectionState = CallServerCounterpartyConnectionState.JOINED;
+    _msEpochOfCounterpartyConnected = DateTime.now().millisecondsSinceEpoch;
     notifyListeners();
   }
 
   void onServerCounterpartyLeftCall() {
     _counterpartyConnectionState = CallServerCounterpartyConnectionState.LEFT;
+    _msEpochCounterpartyDisconnected = DateTime.now().millisecondsSinceEpoch;
     notifyListeners();
   }
 }

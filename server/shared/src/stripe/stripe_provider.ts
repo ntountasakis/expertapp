@@ -6,6 +6,10 @@ export class StripeProvider {
     apiVersion: StripeProvider.API_VERSION,
   });
 
+  static PLATFORM_PERCENT_FEE = 8.0;
+  static STRIPE_PERCENT_FEE = 2.9;
+  static STRIPE_FLAT_FEE_CENTS = 30;
+
   static getAccountLinkRefreshUrl({ hostname, account }: { hostname: string, account: string }): string {
     return "https://" + hostname + "/stripeAccountLinkRefresh?account=" + account;
   }
