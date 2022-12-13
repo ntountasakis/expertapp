@@ -8,6 +8,7 @@ import type { ServerCallTerminatePaymentInitiate as _call_transaction_package_Se
 import type { ServerCallTerminatePaymentInitiateResolved as _call_transaction_package_ServerCallTerminatePaymentInitiateResolved, ServerCallTerminatePaymentInitiateResolved__Output as _call_transaction_package_ServerCallTerminatePaymentInitiateResolved__Output } from '../call_transaction_package/ServerCallTerminatePaymentInitiateResolved';
 import type { ServerCounterpartyLeftCall as _call_transaction_package_ServerCounterpartyLeftCall, ServerCounterpartyLeftCall__Output as _call_transaction_package_ServerCounterpartyLeftCall__Output } from '../call_transaction_package/ServerCounterpartyLeftCall';
 import type { ServerCounterpartyJoinedCall as _call_transaction_package_ServerCounterpartyJoinedCall, ServerCounterpartyJoinedCall__Output as _call_transaction_package_ServerCounterpartyJoinedCall__Output } from '../call_transaction_package/ServerCounterpartyJoinedCall';
+import type { ServerFeeBreakdowns as _call_transaction_package_ServerFeeBreakdowns, ServerFeeBreakdowns__Output as _call_transaction_package_ServerFeeBreakdowns__Output } from '../call_transaction_package/ServerFeeBreakdowns';
 
 export interface ServerMessageContainer {
   'serverCallJoinOrRequestResponse'?: (_call_transaction_package_ServerCallJoinOrRequestResponse | null);
@@ -18,7 +19,8 @@ export interface ServerMessageContainer {
   'serverCallTerminatePaymentInitiateResolved'?: (_call_transaction_package_ServerCallTerminatePaymentInitiateResolved | null);
   'serverCounterpartyLeftCall'?: (_call_transaction_package_ServerCounterpartyLeftCall | null);
   'serverCounterpartyJoinedCall'?: (_call_transaction_package_ServerCounterpartyJoinedCall | null);
-  'messageWrapper'?: "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentInitiate"|"serverCallBeginPaymentInitiateResolved"|"serverCallTerminatePaymentInitiate"|"serverCallTerminatePaymentInitiateResolved"|"serverCounterpartyLeftCall"|"serverCounterpartyJoinedCall";
+  'serverFeeBreakdowns'?: (_call_transaction_package_ServerFeeBreakdowns | null);
+  'messageWrapper'?: "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentInitiate"|"serverCallBeginPaymentInitiateResolved"|"serverCallTerminatePaymentInitiate"|"serverCallTerminatePaymentInitiateResolved"|"serverCounterpartyLeftCall"|"serverCounterpartyJoinedCall"|"serverFeeBreakdowns";
 }
 
 export interface ServerMessageContainer__Output {
@@ -30,5 +32,6 @@ export interface ServerMessageContainer__Output {
   'serverCallTerminatePaymentInitiateResolved'?: (_call_transaction_package_ServerCallTerminatePaymentInitiateResolved__Output | null);
   'serverCounterpartyLeftCall'?: (_call_transaction_package_ServerCounterpartyLeftCall__Output | null);
   'serverCounterpartyJoinedCall'?: (_call_transaction_package_ServerCounterpartyJoinedCall__Output | null);
-  'messageWrapper': "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentInitiate"|"serverCallBeginPaymentInitiateResolved"|"serverCallTerminatePaymentInitiate"|"serverCallTerminatePaymentInitiateResolved"|"serverCounterpartyLeftCall"|"serverCounterpartyJoinedCall";
+  'serverFeeBreakdowns'?: (_call_transaction_package_ServerFeeBreakdowns__Output | null);
+  'messageWrapper': "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentInitiate"|"serverCallBeginPaymentInitiateResolved"|"serverCallTerminatePaymentInitiate"|"serverCallTerminatePaymentInitiateResolved"|"serverCounterpartyLeftCall"|"serverCounterpartyJoinedCall"|"serverFeeBreakdowns";
 }

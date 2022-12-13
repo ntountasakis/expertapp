@@ -44,6 +44,7 @@ dependencies:
   grpc: ^3.0.2
   image_picker: ^0.8.4
   intl: ^0.17.0
+  mocktail: ^0.3.0
   protobuf: ^2.0.1
   provider: ^6.0.3
   uuid: ^3.0.5

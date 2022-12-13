@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
+import 'package:expertapp/src/util/currency_util.dart';
 import 'package:intl/intl.dart';
 
 class ExpertRate {
@@ -23,19 +24,11 @@ class ExpertRate {
   }
 
   String formattedStartCallFee() {
-    return _formattedRate(centsCallStart);
+    return formattedRate(centsCallStart);
   }
 
   String formattedPerMinuteFee() {
-    return _formattedRate(centsPerMinute);
-  }
-
-  String _formattedRate(num centsFee) {
-    final dollarFormat = new NumberFormat("#,##0.00", "en_US");
-    int dollars = (centsFee / 100).truncate();
-    num cents = centsFee % 100;
-    num decimalAmount = dollars + (cents / 100);
-    return '\$${dollarFormat.format(decimalAmount)} per minute';
+    return formattedRate(centsPerMinute);
   }
 
   static Future<DocumentWrapper<ExpertRate>?> get(String documentId) async {

@@ -11,6 +11,7 @@ import {ServerCallTerminatePaymentInitiate} from "../protos/call_transaction_pac
 import {ServerCallTerminatePaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiateResolved";
 import {ServerCounterpartyJoinedCall} from "../protos/call_transaction_package/ServerCounterpartyJoinedCall";
 import {ServerCounterpartyLeftCall} from "../protos/call_transaction_package/ServerCounterpartyLeftCall";
+import {ServerFeeBreakdowns} from "../protos/call_transaction_package/ServerFeeBreakdowns";
 import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
 import {ClientMessageSenderInterface} from "./client_message_sender_interface";
 
@@ -79,6 +80,13 @@ export class GrpcClientMessageSender extends ClientMessageSenderInterface {
     const clientMessageContainer: ServerMessageContainer = {
       "serverCounterpartyLeftCall": counterpartyLeftCall,
       "messageWrapper": "serverCounterpartyLeftCall",
+    };
+    this.sendingStream.write(clientMessageContainer);
+  }
+  sendServerFeeBreakdowns(feeBreakdowns: ServerFeeBreakdowns): void {
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverFeeBreakdowns": feeBreakdowns,
+      "messageWrapper": "serverFeeBreakdowns",
     };
     this.sendingStream.write(clientMessageContainer);
   }

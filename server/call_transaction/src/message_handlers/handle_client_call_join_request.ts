@@ -9,6 +9,7 @@ import {onCalledTransactionUpdate} from "../call_events/called/called_on_transac
 import {listenForCallTransactionUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_call_transaction_updates";
 import {calledFinishCallTransaction} from "../call_events/called/called_finish_call_transaction";
 import {CallManager} from "../call_state/common/call_manager";
+import {sendGrpcServerFeeBreakdowns} from "../server/client_communication/grpc/send_grpc_server_fee_breakdowns";
 
 export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
     clientMessageSender: ClientMessageSenderInterface,
@@ -28,7 +29,7 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
 
   sendGrpcCallJoinOrRequestSuccess(transactionId, clientMessageSender);
   sendGrpcServerAgoraCredentials(clientMessageSender, callTransaction.agoraChannelName, joinerId);
-
+  sendGrpcServerFeeBreakdowns(clientMessageSender, callTransaction);
   return true;
 }
 

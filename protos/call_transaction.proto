@@ -66,6 +66,14 @@ message ServerCounterpartyJoinedCall {
 message ServerCounterpartyLeftCall {
 }
 
+message ServerFeeBreakdowns {
+    float paymentProcessorPercentFee = 1;
+    uint32 paymentProcessorCentsFlatFee = 2;
+    float platformPercentFee = 3;
+    uint32 earnedCentsStartCall = 4;
+    uint32 earnedCentsPerMinute = 5;
+}
+
 
 message ServerMessageContainer {
     oneof messageWrapper {
@@ -77,5 +85,6 @@ message ServerMessageContainer {
         ServerCallTerminatePaymentInitiateResolved serverCallTerminatePaymentInitiateResolved = 6;
         ServerCounterpartyLeftCall serverCounterpartyLeftCall = 7;
         ServerCounterpartyJoinedCall serverCounterpartyJoinedCall = 8;
+        ServerFeeBreakdowns serverFeeBreakdowns = 9;
     }
 }

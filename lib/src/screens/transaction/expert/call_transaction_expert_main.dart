@@ -6,6 +6,7 @@ import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/screens/appbars/expert_in_call_appbar.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
@@ -79,14 +80,13 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
             AsyncSnapshot<DocumentWrapper<UserMetadata>?> snapshot) {
           if (snapshot.hasData) {
             final callerUserMetadata = snapshot.data;
-            return Scaffold(
-              appBar: UserPreviewAppbar(callerUserMetadata!, ""),
-              body: Consumer<CallServerModel>(
-                builder: (context, model, child) {
-                  return buildVideoCallView(context, model);
-                },
-              ),
-            );
+            return Consumer<CallServerModel>(builder: (context, model, child) {
+              return Scaffold(
+                appBar:
+                    ExpertInCallAppbar(callerUserMetadata!, "In-Call", model),
+                body: buildVideoCallView(context, model),
+              );
+            });
           }
           return Scaffold(body: CircularProgressIndicator());
         });
