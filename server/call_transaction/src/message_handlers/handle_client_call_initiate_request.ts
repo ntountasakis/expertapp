@@ -1,10 +1,10 @@
 import {createCallTransaction} from "../firebase/firestore/functions/transaction/caller/create_call_transaction";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
-import {onCallerPaymentSuccessCallInitiate} from "../call_events/caller/caller_on_payment_success_call_initiate";
+import {onCallerPaymentPreAuthSuccessCallInitiate} from "../call_events/caller/caller_on_payment_pre_auth_success_call_initiate";
 import {CallManager} from "../call_state/common/call_manager";
 
-import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_begin_payment_initiate";
+import {sendGrpcServerCallBeginPaymentInitiate} from "../server/client_communication/grpc/send_grpc_server_call_begin_payment_pre_auth";
 import {sendGrpcCallJoinOrRequestSuccess} from "../server/client_communication/grpc/send_grpc_call_join_or_request_success";
 
 import {onCallerTransactionUpdate} from "../call_events/caller/caller_on_transaction_update";
@@ -63,10 +63,10 @@ function _createNewCallState({callTransaction, callerUid, calledUid, expertRate,
 
 function _listenForPaymentSuccess({callState, callTransaction}:
   {callState: CallerCallState, callTransaction: CallTransaction}) {
-  callState.eventListenerManager.listenForEventUpdates({key: callTransaction.callerCallStartPaymentStatusId,
-    updateCallback: onCallerPaymentSuccessCallInitiate,
+  callState.eventListenerManager.listenForEventUpdates({key: callTransaction.callerPaymentStatusId,
+    updateCallback: onCallerPaymentPreAuthSuccessCallInitiate,
     unsubscribeFn: listenForPaymentStatusUpdates(
-        callTransaction.callerCallStartPaymentStatusId, callState.eventListenerManager)});
+        callTransaction.callerPaymentStatusId, callState.eventListenerManager)});
 }
 
 function _listenForCallTransactionUpdates({callState, callTransaction}:

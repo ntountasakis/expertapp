@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:expertapp/src/agora/agora_video_call.dart';
+import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
@@ -92,30 +93,22 @@ class _CallClientMainState extends State<CallClientMain> {
   }
 
   Widget buildCallView(BuildContext context, CallServerModel model) {
-    if (model.callBeginPaymentPromptModel.paymentState ==
+    if (model.callPaymentPromptModel.paymentState ==
         PaymentState.PAYMENT_CANCELLED) {
       onPaymentCancelled(context, model);
       return SizedBox();
     }
-    if (model.callBeginPaymentPromptModel.paymentState !=
+    if (model.callPaymentPromptModel.paymentState !=
         PaymentState.PAYMENT_COMPLETE) {
       return SizedBox();
     }
-    switch (model.callTerminatePaymentPromptModel.paymentState) {
-      case PaymentState.NA:
+    switch (model.callCounterpartyConnectionState) {
+      case CallServerCounterpartyConnectionState.DISCONNECTED:
+      case CallServerCounterpartyConnectionState.JOINED:
         return buildVideoCallView(context, model);
-      case PaymentState.AWAITING_PAYMENT:
-        return SizedBox();
-      case PaymentState.PAYMENT_COMPLETE:
+      case CallServerCounterpartyConnectionState.LEFT:
         {
           navigateToSubmitReview(model);
-          return SizedBox();
-        }
-      case PaymentState.PAYMENT_FAILURE:
-        return const Text("End call payment failure");
-      case PaymentState.PAYMENT_CANCELLED:
-        {
-          onPaymentCancelled(context, model);
           return SizedBox();
         }
     }

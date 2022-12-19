@@ -1,14 +1,9 @@
 import * as grpc from "@grpc/grpc-js";
 import {ClientMessageContainer} from "../protos/call_transaction_package/ClientMessageContainer";
 import {ServerAgoraCredentials} from "../protos/call_transaction_package/ServerAgoraCredentials";
-import {ServerCallBeginPaymentInitiate} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiate";
-
-import {ServerCallBeginPaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentInitiateResolved";
+import {ServerCallBeginPaymentPreAuth} from "../protos/call_transaction_package/ServerCallBeginPaymentPreAuth";
+import {ServerCallBeginPaymentPreAuthResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentPreAuthResolved";
 import {ServerCallJoinOrRequestResponse} from "../protos/call_transaction_package/ServerCallJoinOrRequestResponse";
-
-import {ServerCallTerminatePaymentInitiate} from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiate";
-
-import {ServerCallTerminatePaymentInitiateResolved} from "../protos/call_transaction_package/ServerCallTerminatePaymentInitiateResolved";
 import {ServerCounterpartyJoinedCall} from "../protos/call_transaction_package/ServerCounterpartyJoinedCall";
 import {ServerCounterpartyLeftCall} from "../protos/call_transaction_package/ServerCounterpartyLeftCall";
 import {ServerFeeBreakdowns} from "../protos/call_transaction_package/ServerFeeBreakdowns";
@@ -36,34 +31,18 @@ export class GrpcClientMessageSender extends ClientMessageSenderInterface {
     };
     this.sendingStream.write(clientMessageContainer);
   }
-  sendCallBeginPaymentInitiate(callBeginPaymentInitiate: ServerCallBeginPaymentInitiate): void {
+  sendCallBeginPaymentPreAuth(callBeginPaymentPreAuth: ServerCallBeginPaymentPreAuth): void {
     const clientMessageContainer: ServerMessageContainer = {
-      "serverCallBeginPaymentInitiate": callBeginPaymentInitiate,
-      "messageWrapper": "serverCallBeginPaymentInitiate",
+      "serverCallBeginPaymentPreAuth": callBeginPaymentPreAuth,
+      "messageWrapper": "serverCallBeginPaymentPreAuth",
     };
     this.sendingStream.write(clientMessageContainer);
   }
-  sendCallBeginPaymentInitiateResolved(
-      callBeginPaymentInitiateResolved: ServerCallBeginPaymentInitiateResolved): void {
+
+  sendCallBeginPaymentPreAuthResolved(callBeginPaymentPreAuthResolved: ServerCallBeginPaymentPreAuthResolved): void {
     const clientMessageContainer: ServerMessageContainer = {
-      "serverCallBeginPaymentInitiateResolved": callBeginPaymentInitiateResolved,
-      "messageWrapper": "serverCallBeginPaymentInitiateResolved",
-    };
-    this.sendingStream.write(clientMessageContainer);
-  }
-  sendCallTerminatePaymentInitiate(callTerminatePaymentInitiate: ServerCallTerminatePaymentInitiate):
-      void {
-    const clientMessageContainer: ServerMessageContainer = {
-      "serverCallTerminatePaymentInitiate": callTerminatePaymentInitiate,
-      "messageWrapper": "serverCallTerminatePaymentInitiate",
-    };
-    this.sendingStream.write(clientMessageContainer);
-  }
-  sendCallTerminatePaymentInitiateResolved(
-      callTerminatePaymentInitiateResolved: ServerCallTerminatePaymentInitiateResolved): void {
-    const clientMessageContainer: ServerMessageContainer = {
-      "serverCallTerminatePaymentInitiateResolved": callTerminatePaymentInitiateResolved,
-      "messageWrapper": "serverCallTerminatePaymentInitiateResolved",
+      "serverCallBeginPaymentPreAuthResolved": callBeginPaymentPreAuthResolved,
+      "messageWrapper": "serverCallBeginPaymentPreAuthResolved",
     };
     this.sendingStream.write(clientMessageContainer);
   }

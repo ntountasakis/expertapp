@@ -28,16 +28,10 @@ class CallServerMessageListener {
       model.onAgoraCredentials(aMessage.serverAgoraCredentials);
     } else if (aMessage.hasServerFeeBreakdowns()) {
       model.onFeeBreakdowns(aMessage.serverFeeBreakdowns);
-    } else if (aMessage.hasServerCallBeginPaymentInitiate()) {
-      model.onServerCallBeginPaymentInitiate(
-          aMessage.serverCallBeginPaymentInitiate);
-    } else if (aMessage.hasServerCallBeginPaymentInitiateResolved()) {
-      model.onServerCallBeginPaymentInitiateResolved();
-    } else if (aMessage.hasServerCallTerminatePaymentInitiate()) {
-      model.onServerCallTerminatePaymentInitiate(
-          aMessage.serverCallTerminatePaymentInitiate);
-    } else if (aMessage.hasServerCallTerminatePaymentInitiateResolved()) {
-      model.onServerCallTerminatePaymentInitiateResolved();
+    } else if (aMessage.hasServerCallBeginPaymentPreAuth()) {
+      model.onServerCallBeginPaymentPreAuth(aMessage.serverCallBeginPaymentPreAuth);
+    } else if (aMessage.hasServerCallBeginPaymentPreAuthResolved()) {
+      model.onServerCallBeginPaymentPreAuthResolved();
     } else if (aMessage.hasServerCounterpartyLeftCall()) {
       model.onServerCounterpartyLeftCall();
     } else if (aMessage.hasServerCounterpartyJoinedCall()) {

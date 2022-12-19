@@ -1,22 +1,30 @@
 import * as admin from "firebase-admin";
-import {getCallTransactionDocument, getPaymentStatusDocumentRef, getPrivateUserDocument} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {getCallTransactionDocument, getPaymentStatusDocumentTransaction, getUserOwedBalanceDocumentTransaction} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
 import {calculateCostOfCallInCents} from "../../util/call_cost_calculator";
 import {markCallEnd} from "../../util/call_transaction_complete";
-import {PrivateUserInfo} from "../../../../../../../shared/src/firebase/firestore/models/private_user_info";
-import createStripePaymentIntent from "../../../../../../../shared/src/stripe/payment_intent_creator";
-import {createPaymentStatusAndUpdateBalance} from "../../../../../../../shared/src/firebase/firestore/functions/create_payment_status_update_balance";
-import createCustomerEphemeralKey from "../../../../../../../shared/src/stripe/create_customer_ephemeral_key";
+import {chargeStripePaymentIntent} from "../../../../../../../shared/src/stripe/payment_intent_creator";
+import {increaseBalanceOwed} from "../../../../../../../shared/src/firebase/firestore/functions/increase_balance_owed";
+import {PaymentStatus, PaymentStatusCancellationReason, PaymentStatusStates} from "../../../../../../../shared/src/firebase/firestore/models/payment_status";
+import cancelStripePaymentIntent from "../../../../../../../shared/src/stripe/cancel_payment_intent";
+import {UserOwedBalance} from "../../../../../../../shared/src/firebase/firestore/models/user_owed_balance";
+import {updatePaymentStatusAmountCharged} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status_charged";
+import {updatePaymentStatusAmountAuthorized} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status_authorized";
+import {updatePaymentStatusCancelled} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status_cancelled";
 
 export const endCallTransactionCaller = async ({transactionId} : {transactionId: string})
-: Promise<[CallTransaction, string, string, string, number]> => {
-  const [callTransaction, paymentStatus, userInfo] = await admin.firestore().runTransaction(async (transaction) => {
+: Promise<void> => {
+  const [paymentStatus, callTransaction] = await admin.firestore().runTransaction(async (transaction) => {
     const callTransaction: CallTransaction = await getCallTransactionDocument(
         {transaction: transaction, transactionId: transactionId});
 
+    const paymentStatus: PaymentStatus = await getPaymentStatusDocumentTransaction({
+      paymentStatusId: callTransaction.callerPaymentStatusId, transaction: transaction});
+
+    const userOwed: UserOwedBalance = await getUserOwedBalanceDocumentTransaction({
+      uid: callTransaction.callerUid, transaction: transaction});
+
     const endTimeUtcMs = callTransaction.callHasEnded ? callTransaction.callEndTimeUtsMs : Date.now();
-    const userInfo: PrivateUserInfo = await getPrivateUserDocument({transaction, uid: callTransaction.callerUid});
-    let paymentStatus = null;
 
     if (callTransaction.calledHasJoined) {
       const costOfCallInCents = calculateCostOfCallInCents({
@@ -24,32 +32,24 @@ export const endCallTransactionCaller = async ({transactionId} : {transactionId:
         endTimeUtcMs: endTimeUtcMs,
         centsPerMinute: callTransaction.expertRateCentsPerMinute,
       });
-      paymentStatus = await createPaymentStatusAndUpdateBalance({transaction: transaction,
-        uid: callTransaction.callerUid, transferGroup: callTransaction.callerTransferGroup, centsCollect: costOfCallInCents,
-        paymentStatusId: callTransaction.callerCallTerminatePaymentStatusId, errorOnExistingBalance: true});
+      await increaseBalanceOwed({owedBalance: userOwed, uid: callTransaction.callerUid,
+        centsCollect: costOfCallInCents, paymentStatusId: callTransaction.callerPaymentStatusId, errorOnExistingBalance: true});
+      await updatePaymentStatusAmountCharged({transaction: transaction, paymentStatus: paymentStatus,
+        paymentStatusId: callTransaction.callerPaymentStatusId, amountChargedCents: costOfCallInCents, status: PaymentStatusStates.CHARGE_REQUESTED});
+    } else {
+      await updatePaymentStatusCancelled({transaction: transaction, paymentStatusId: callTransaction.callerPaymentStatusId,
+        reason: PaymentStatusCancellationReason.CALLED_NEVER_JOINED});
     }
-
     if (!callTransaction.callHasEnded) {
       markCallEnd(callTransaction.callTransactionId, endTimeUtcMs, transaction);
     }
-
-    return [callTransaction, paymentStatus, userInfo];
+    return [paymentStatus, callTransaction];
   });
-  let clientSecret = "";
-  let ephemeralKey = "";
-  let amountOwedCents = 0;
   if (paymentStatus != null) {
-    const [paymentIntentId, paymentIntentClientSecret] = await createStripePaymentIntent({
-      customerId: userInfo.stripeCustomerId,
-      customerEmail: userInfo.email, amountToBillInCents: paymentStatus.centsToCollect,
-      idempotencyKey: paymentStatus.idempotencyKey, transferGroup: paymentStatus.transferGroup,
-      paymentStatusId: callTransaction.callerCallTerminatePaymentStatusId, paymentDescription: "Call Begin",
-      uid: callTransaction.callerUid});
-    ephemeralKey = await createCustomerEphemeralKey({customerId: userInfo.stripeCustomerId});
-    await getPaymentStatusDocumentRef({paymentStatusId: callTransaction.callerCallTerminatePaymentStatusId}).update("paymentIntentId", paymentIntentId);
-    clientSecret = paymentIntentClientSecret;
-    amountOwedCents = paymentStatus.centsToCollect;
+    if (callTransaction.calledHasJoined) {
+      await chargeStripePaymentIntent({amountToCaptureInCents: paymentStatus.centsCharged, paymentIntentId: paymentStatus.paymentIntentId});
+    } else {
+      await cancelStripePaymentIntent({paymentIntentId: paymentStatus.paymentIntentId});
+    }
   }
-
-  return [callTransaction, userInfo.stripeCustomerId, clientSecret, ephemeralKey, amountOwedCents];
 };

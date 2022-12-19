@@ -3,7 +3,6 @@ import 'package:expertapp/src/call_server/call_server_counterparty_connection_st
 import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:flutter/material.dart';
-
 class CallServerModel extends ChangeNotifier {
   String _errorMessage = "";
   String _callTransactionId = "";
@@ -25,10 +24,8 @@ class CallServerModel extends ChangeNotifier {
   String get callTransactionId => _callTransactionId;
   ServerAgoraCredentials? get agoraCredentials => _agoraCredentials;
   ServerFeeBreakdowns? get feeBreakdowns => _feeBreakdowns;
-  CallServerPaymentPromptModel get callBeginPaymentPromptModel =>
+  CallServerPaymentPromptModel get callPaymentPromptModel =>
       _callBeginPaymentPromptModel;
-  CallServerPaymentPromptModel get callTerminatePaymentPromptModel =>
-      _callTerminatePaymentPromptModel;
 
   CallServerCounterpartyConnectionState get callCounterpartyConnectionState =>
       _counterpartyConnectionState;
@@ -94,31 +91,17 @@ class CallServerModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> onServerCallBeginPaymentInitiate(
-      ServerCallBeginPaymentInitiate callBeginPaymentInitiate) async {
+  Future<void> onServerCallBeginPaymentPreAuth(
+      ServerCallBeginPaymentPreAuth callBeginPaymentPreAuth) async {
     await _callBeginPaymentPromptModel.onPaymentDetails(
-        stripeCustomerId: callBeginPaymentInitiate.customerId,
-        clientSecret: callBeginPaymentInitiate.clientSecret,
-        ephemeralKey: callBeginPaymentInitiate.ephemeralKey);
+        stripeCustomerId: callBeginPaymentPreAuth.customerId,
+        clientSecret: callBeginPaymentPreAuth.clientSecret,
+        ephemeralKey: callBeginPaymentPreAuth.ephemeralKey);
     notifyListeners();
   }
 
-  void onServerCallBeginPaymentInitiateResolved() {
+  void onServerCallBeginPaymentPreAuthResolved() {
     _callBeginPaymentPromptModel.onPaymentComplete();
-    notifyListeners();
-  }
-
-  Future<void> onServerCallTerminatePaymentInitiate(
-      ServerCallTerminatePaymentInitiate callTerminatePaymentInitiate) async {
-    await _callTerminatePaymentPromptModel.onPaymentDetails(
-        stripeCustomerId: callTerminatePaymentInitiate.customerId,
-        clientSecret: callTerminatePaymentInitiate.clientSecret,
-        ephemeralKey: callTerminatePaymentInitiate.ephemeralKey);
-    notifyListeners();
-  }
-
-  void onServerCallTerminatePaymentInitiateResolved() {
-    _callTerminatePaymentPromptModel.onPaymentComplete();
     notifyListeners();
   }
 
