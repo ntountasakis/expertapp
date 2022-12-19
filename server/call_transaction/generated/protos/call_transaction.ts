@@ -15,11 +15,9 @@ export interface ProtoGrpcType {
     ClientCallTerminateRequest: MessageTypeDefinition
     ClientMessageContainer: MessageTypeDefinition
     ServerAgoraCredentials: MessageTypeDefinition
-    ServerCallBeginPaymentInitiate: MessageTypeDefinition
-    ServerCallBeginPaymentInitiateResolved: MessageTypeDefinition
+    ServerCallBeginPaymentPreAuth: MessageTypeDefinition
+    ServerCallBeginPaymentPreAuthResolved: MessageTypeDefinition
     ServerCallJoinOrRequestResponse: MessageTypeDefinition
-    ServerCallTerminatePaymentInitiate: MessageTypeDefinition
-    ServerCallTerminatePaymentInitiateResolved: MessageTypeDefinition
     ServerCounterpartyJoinedCall: MessageTypeDefinition
     ServerCounterpartyLeftCall: MessageTypeDefinition
     ServerFeeBreakdowns: MessageTypeDefinition

@@ -5,7 +5,7 @@ import {getPaymentStatusDocumentRef, getPrivateUserDocument, getUserOwedBalanceD
 import {UserOwedBalance} from "../../../shared/src/firebase/firestore/models/user_owed_balance";
 import {PaymentStatus} from "../../../shared/src/firebase/firestore/models/payment_status";
 import {createPaymentStatusAndUpdateBalance} from "../../../shared/src/firebase/firestore/functions/create_payment_status_update_balance";
-import createStripePaymentIntent from "../../../shared/src/stripe/payment_intent_creator";
+import {createStripePaymentIntent} from "../../../shared/src/stripe/payment_intent_creator";
 import cancelStripePaymentIntent from "../../../shared/src/stripe/cancel_payment_intent";
 import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
 import createCustomerEphemeralKey from "../../../shared/src/stripe/create_customer_ephemeral_key";

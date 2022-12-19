@@ -8,8 +8,7 @@ export interface CallTransaction
     expertRateCentsPerMinute: number;
     expertRateCentsCallStart: number;
     agoraChannelName: string;
-    callerCallStartPaymentStatusId: string;
-    callerCallTerminatePaymentStatusId: string;
+    callerPaymentStatusId: string;
     callerTransferGroup: string;
     calledHasJoined: boolean;
     calledJoinTimeUtcMs: number;

@@ -1,24 +1,30 @@
 import { getPaymentStatusDocumentRef } from "../document_fetchers/fetchers";
-import { PaymentStatus } from "../models/payment_status";
+import { PaymentContext, PaymentStatus, PaymentStatusCancellationReason, PaymentStatusStates } from "../models/payment_status";
 
-export function createPaymentStatus({transaction, uid, paymentStatusId, transferGroup, idempotencyKey, costInCents}:
-    {transaction: FirebaseFirestore.Transaction, uid: string, paymentStatusId: string,
-        idempotencyKey: string, transferGroup: string, costInCents: number}): PaymentStatus
-{
+export function createPaymentStatus({ transaction, uid, paymentStatusId, transferGroup, idempotencyKey,
+  centsRequestedAuthorized: centsRequestedAuthorized }: {
+    transaction: FirebaseFirestore.Transaction, uid: string, paymentStatusId: string,
+    idempotencyKey: string, transferGroup: string, centsRequestedAuthorized: number
+  }): PaymentStatus {
   const callerCallStartPaymentStatus: PaymentStatus = {
+    "paymentContext": PaymentContext.IN_CALL,
+    "paymentStatusCancellationReason": PaymentStatusCancellationReason.NOT_CANCELLED,
     "uid": uid,
     "paymentIntentId": "",
-    "status": "awaiting_payment",
+    "status": PaymentStatusStates.PRE_AUTH_REQUESTED,
     "transferGroup": transferGroup,
     "idempotencyKey": idempotencyKey,
-    "centsToCollect": costInCents,
-    "centsCollected": 0,
+    "centsRequestedAuthorized": centsRequestedAuthorized,
+    "centsAuthorized": centsRequestedAuthorized,
+    "centsCaptured": 0,
+    "centsCharged": 0,
+    "centsPaid": 0,
   };
 
-  const callStartPaymentDoc = getPaymentStatusDocumentRef({paymentStatusId: paymentStatusId});
+  const callStartPaymentDoc = getPaymentStatusDocumentRef({ paymentStatusId: paymentStatusId });
   transaction.create(callStartPaymentDoc, callerCallStartPaymentStatus);
 
-  console.log(`Created PaymentStatus. ID: ${paymentStatusId} CentsToCollect: ${costInCents} Uid: ${uid}`);
+  console.log(`Created PaymentStatus. ID: ${paymentStatusId} CentsRequestedAuthorized: ${centsRequestedAuthorized} Uid: ${uid}`);
 
   return callerCallStartPaymentStatus;
 

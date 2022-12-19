@@ -78,6 +78,16 @@ async function getPaymentStatusDocument({paymentStatusId}: {paymentStatusId: str
   return doc.data() as PaymentStatus;
 }
 
+async function getPaymentStatusDocumentTransaction({paymentStatusId, transaction}: {paymentStatusId: string, transaction: FirebaseFirestore.Transaction}): Promise<PaymentStatus>
+{
+  const doc = await transaction.get(getPaymentStatusDocumentRef({paymentStatusId: paymentStatusId}));
+  if (!doc.exists)
+  {
+    throw new Error(`No payment status with id: ${paymentStatusId}`);
+  }
+  return doc.data() as PaymentStatus;
+}
+
 async function getUserOwedBalanceDocument({uid}: {uid: string}): Promise<UserOwedBalance>
 {
   const doc = await getUserOwedBalanceDocumentRef({uid: uid}).get();
@@ -87,6 +97,17 @@ async function getUserOwedBalanceDocument({uid}: {uid: string}): Promise<UserOwe
   }
   return doc.data() as UserOwedBalance;
 }
+
+async function getUserOwedBalanceDocumentTransaction({uid, transaction}: {uid: string, transaction: FirebaseFirestore.Transaction}): Promise<UserOwedBalance>
+{
+  const doc = await transaction.get(getUserOwedBalanceDocumentRef({uid: uid}));
+  if (!doc.exists)
+  {
+    throw new Error(`No owed balance with id: ${uid}`);
+  }
+  return doc.data() as UserOwedBalance;
+}
+
 
 function getExpertRateDocumentRef({expertUid}: {expertUid: string}):
 FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
@@ -151,6 +172,6 @@ async function getFcmTokenDocument({transaction, uid}: {transaction: FirebaseFir
 export {getPrivateUserDocumentRef as getUserDocumentRef, getUserMetadataDocumentRef, getReviewsCollectionRef,
   getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
   getCallTransactionDocumentRef, getCallTransactionCollectionRef, getFcmTokenDocumentRef, getCallTransactionDocument,
-  getPaymentStatusDocument, getExpertRateDocument, getUserMetadataDocument, getFcmTokenDocument,
+  getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getUserMetadataDocument, getFcmTokenDocument,
   getPrivateUserDocument, getPrivateUserDocumentNoTransact, getUserOwedBalanceDocument, getUserOwedBalanceDocumentRef,
-getExpertRateDocumentNoTransact};
+getExpertRateDocumentNoTransact, getUserOwedBalanceDocumentTransaction};

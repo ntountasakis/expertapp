@@ -1,5 +1,4 @@
 syntax = "proto3";
-
 package call_transaction_package;
 
 service CallTransaction
@@ -42,22 +41,13 @@ message ServerAgoraCredentials {
     uint32 uid = 3;
 }
 
-message ServerCallBeginPaymentInitiate {
+message ServerCallBeginPaymentPreAuth {
     string clientSecret = 1;
     string customerId = 2;
     string ephemeralKey = 3;
 }
 
-message ServerCallBeginPaymentInitiateResolved {
-}
-
-message ServerCallTerminatePaymentInitiate {
-    string clientSecret = 1;
-    string customerId = 2;
-    string ephemeralKey = 3;
-}
-
-message ServerCallTerminatePaymentInitiateResolved {
+message ServerCallBeginPaymentPreAuthResolved {
 }
 
 message ServerCounterpartyJoinedCall {
@@ -79,12 +69,10 @@ message ServerMessageContainer {
     oneof messageWrapper {
         ServerCallJoinOrRequestResponse serverCallJoinOrRequestResponse = 1;
         ServerAgoraCredentials serverAgoraCredentials = 2;
-        ServerCallBeginPaymentInitiate serverCallBeginPaymentInitiate = 3;
-        ServerCallBeginPaymentInitiateResolved serverCallBeginPaymentInitiateResolved = 4;
-        ServerCallTerminatePaymentInitiate serverCallTerminatePaymentInitiate = 5;
-        ServerCallTerminatePaymentInitiateResolved serverCallTerminatePaymentInitiateResolved = 6;
-        ServerCounterpartyLeftCall serverCounterpartyLeftCall = 7;
-        ServerCounterpartyJoinedCall serverCounterpartyJoinedCall = 8;
-        ServerFeeBreakdowns serverFeeBreakdowns = 9;
+        ServerCallBeginPaymentPreAuth serverCallBeginPaymentPreAuth = 3;
+        ServerCallBeginPaymentPreAuthResolved serverCallBeginPaymentPreAuthResolved = 4;
+        ServerCounterpartyLeftCall serverCounterpartyLeftCall = 5;
+        ServerCounterpartyJoinedCall serverCounterpartyJoinedCall = 6;
+        ServerFeeBreakdowns serverFeeBreakdowns = 7;
     }
 }

@@ -7,7 +7,7 @@ import {getExpertRateDocument, getFcmTokenDocument, getPaymentStatusDocumentRef,
 import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
 import {PaymentStatus} from "../../../../../../../shared/src/firebase/firestore/models/payment_status";
 import {PrivateUserInfo} from "../../../../../../../shared/src/firebase/firestore/models/private_user_info";
-import createStripePaymentIntent from "../../../../../../../shared/src/stripe/payment_intent_creator";
+import {createStripePaymentIntentPreAuth} from "../../../../../../../shared/src/stripe/payment_intent_creator";
 import {createPaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/create_payment_status";
 import createCustomerEphemeralKey from "../../../../../../../shared/src/stripe/create_customer_ephemeral_key";
 import callAllowedStripeConfigValid from "../../util/call_allowed_stripe_config_valid";
@@ -15,6 +15,7 @@ import {UserOwedBalance} from "../../../../../../../shared/src/firebase/firestor
 
 export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: string, calledUid: string}):
   Promise<[boolean, string, string, string, CallTransaction?, ExpertRate?]> => {
+  const amountCentsPreAuth = 100 * 100;
   const [canCreateCall, callTransaction, paymentStatus, userInfo, expertRate] = await admin.firestore().runTransaction(async (transaction) => {
     if (calledUid == null || calledUid == null) {
       const errorMessage = `Invalid Call Transaction Request, either ids are null.
@@ -43,18 +44,18 @@ export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: 
       calledUid: calledUid, calledUserFcmToken: calledUserFcmToken, expertRate: expertRate});
     // starting call doesnt add to user balance, if they dont pay we just dont connect them
     const paymentStatus : PaymentStatus = await createPaymentStatus({transaction: transaction, uid: callerUid,
-      transferGroup: callTransaction.callerTransferGroup, costInCents: callTransaction.expertRateCentsCallStart,
-      paymentStatusId: callTransaction.callerCallStartPaymentStatusId, idempotencyKey: uuidv4()});
+      transferGroup: callTransaction.callerTransferGroup, centsRequestedAuthorized: amountCentsPreAuth,
+      paymentStatusId: callTransaction.callerPaymentStatusId, idempotencyKey: uuidv4()});
     return [true, callTransaction, paymentStatus, callerUserInfo, expertRate];
   });
 
   if (canCreateCall && userInfo != null && callTransaction != null && paymentStatus != null) {
-    const [paymentIntentId, paymentIntentClientSecret] = await createStripePaymentIntent({
+    const [paymentIntentId, paymentIntentClientSecret] = await createStripePaymentIntentPreAuth({
       customerId: userInfo.stripeCustomerId,
-      customerEmail: userInfo.email, amountToBillInCents: paymentStatus.centsToCollect,
-      idempotencyKey: paymentStatus.idempotencyKey, transferGroup: paymentStatus.transferGroup, paymentStatusId: callTransaction.callerCallStartPaymentStatusId,
+      customerEmail: userInfo.email, amountToAuthInCents: amountCentsPreAuth,
+      idempotencyKey: paymentStatus.idempotencyKey, transferGroup: paymentStatus.transferGroup, paymentStatusId: callTransaction.callerPaymentStatusId,
       paymentDescription: "Call Begin", uid: callerUid});
-    await getPaymentStatusDocumentRef({paymentStatusId: callTransaction.callerCallStartPaymentStatusId}).update("paymentIntentId", paymentIntentId);
+    await getPaymentStatusDocumentRef({paymentStatusId: callTransaction.callerPaymentStatusId}).update("paymentIntentId", paymentIntentId);
 
     const ephemeralKey = await createCustomerEphemeralKey({customerId: userInfo.stripeCustomerId});
     return [true, userInfo.stripeCustomerId, paymentIntentClientSecret, ephemeralKey, callTransaction, expertRate];

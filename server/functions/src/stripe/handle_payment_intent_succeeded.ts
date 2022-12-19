@@ -1,11 +1,12 @@
 import * as admin from "firebase-admin";
-import {resolvePaymentStatusAndUpdateBalance} from "../../../shared/src/firebase/firestore/functions/resolve_payment_status_and_update_balance";
+import {getUserOwedBalanceDocumentTransaction} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {decreaseBalanceOwed} from "../../../shared/src/firebase/firestore/functions/decrease_balance_owed";
+import {updatePaymentStatusAmountPaid} from "../../../shared/src/firebase/firestore/functions/update_payment_status_paid";
 
 export async function handlePaymentIntentSucceeded(payload: any): Promise<void> {
   const amount: number = payload.amount;
   const amountReceived: number = payload.amount_received;
   //   const livemode: boolean = payload.livemode;
-  const status = payload.status;
   const paymentStatusId: string = payload.metadata.payment_status_id;
   const uid: string = payload.metadata.uid;
 
@@ -25,8 +26,9 @@ export async function handlePaymentIntentSucceeded(payload: any): Promise<void> 
 
   try {
     await admin.firestore().runTransaction(async (transaction) => {
-      await resolvePaymentStatusAndUpdateBalance({transaction: transaction, paymentStatusId: paymentStatusId,
-        amountReceived: amountReceived, status: status, uid: uid});
+      const owedBalance = await getUserOwedBalanceDocumentTransaction({transaction: transaction, uid: uid});
+      await decreaseBalanceOwed({transaction: transaction, uid: uid, amountPaidCents: amountReceived, owedBalance: owedBalance});
+      await updatePaymentStatusAmountPaid({transaction: transaction, paymentStatusId: paymentStatusId, amountPaidCents: amountReceived});
     });
   } catch (error) {
     console.error(`Error in HandlePaymentIntentSuceeded: ${error}`);
