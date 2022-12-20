@@ -7,8 +7,7 @@ class CallTransaction {
   final String calledUid;
   final int expertRateCentsPerMinute;
   final int expertRateCentsCallStart;
-  final String callerCallStartPaymentStatusId;
-  final String callerCallTerminatePaymentStatusId;
+  final String callerPaymentStatusId;
   final int callRequestTimeUtcMs;
   final int calledJoinTimeUtcMs;
   final int callEndTimeUtsMs;
@@ -18,8 +17,7 @@ class CallTransaction {
       this.calledUid,
       this.expertRateCentsPerMinute,
       this.expertRateCentsCallStart,
-      this.callerCallStartPaymentStatusId,
-      this.callerCallTerminatePaymentStatusId,
+      this.callerPaymentStatusId,
       this.callRequestTimeUtcMs,
       this.calledJoinTimeUtcMs,
       this.callEndTimeUtsMs);
@@ -30,8 +28,7 @@ class CallTransaction {
             json["calledUid"] as String,
             json["expertRateCentsPerMinute"] as int,
             json["expertRateCentsCallStart"] as int,
-            json["callerCallStartPaymentStatusId"] as String,
-            json["callerCallTerminatePaymentStatusId"] as String,
+            json["callerPaymentStatusId"] as String,
             json["callRequestTimeUtcMs"] as int,
             json["calledJoinTimeUtcMs"] as int,
             json["callEndTimeUtsMs"] as int);
@@ -42,8 +39,7 @@ class CallTransaction {
       'calledUid': calledUid,
       'expertRateCentsPerMinute': expertRateCentsPerMinute,
       'expertRateCentsCallStart': expertRateCentsCallStart,
-      'callerCallStartPaymentStatusId': callerCallStartPaymentStatusId,
-      'callerCallTerminatePaymentStatusId': callerCallTerminatePaymentStatusId,
+      'callerPaymentStatusId': callerPaymentStatusId,
       'callRequestTimeUtcMs': callRequestTimeUtcMs,
       'calledJoinTimeUtcMs': calledJoinTimeUtcMs,
       'callEndTimeUtsMs': calledJoinTimeUtcMs,

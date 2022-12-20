@@ -8,9 +8,7 @@ import {increaseBalanceOwed} from "../../../../../../../shared/src/firebase/fire
 import {PaymentStatus, PaymentStatusCancellationReason, PaymentStatusStates} from "../../../../../../../shared/src/firebase/firestore/models/payment_status";
 import cancelStripePaymentIntent from "../../../../../../../shared/src/stripe/cancel_payment_intent";
 import {UserOwedBalance} from "../../../../../../../shared/src/firebase/firestore/models/user_owed_balance";
-import {updatePaymentStatusAmountCharged} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status_charged";
-import {updatePaymentStatusAmountAuthorized} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status_authorized";
-import {updatePaymentStatusCancelled} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status_cancelled";
+import {updatePaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status";
 
 export const endCallTransactionCaller = async ({transactionId} : {transactionId: string})
 : Promise<void> => {
@@ -25,20 +23,23 @@ export const endCallTransactionCaller = async ({transactionId} : {transactionId:
       uid: callTransaction.callerUid, transaction: transaction});
 
     const endTimeUtcMs = callTransaction.callHasEnded ? callTransaction.callEndTimeUtsMs : Date.now();
-
     if (callTransaction.calledHasJoined) {
       const costOfCallInCents = calculateCostOfCallInCents({
         beginTimeUtcMs: callTransaction.calledJoinTimeUtcMs,
         endTimeUtcMs: endTimeUtcMs,
         centsPerMinute: callTransaction.expertRateCentsPerMinute,
       });
-      await increaseBalanceOwed({owedBalance: userOwed, uid: callTransaction.callerUid,
+      await increaseBalanceOwed({transaction: transaction, owedBalance: userOwed, uid: callTransaction.callerUid,
         centsCollect: costOfCallInCents, paymentStatusId: callTransaction.callerPaymentStatusId, errorOnExistingBalance: true});
-      await updatePaymentStatusAmountCharged({transaction: transaction, paymentStatus: paymentStatus,
-        paymentStatusId: callTransaction.callerPaymentStatusId, amountChargedCents: costOfCallInCents, status: PaymentStatusStates.CHARGE_REQUESTED});
+      await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
+        centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: paymentStatus.centsPaid,
+        centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: costOfCallInCents,
+        paymentStatusId: callTransaction.callerPaymentStatusId, status: PaymentStatusStates.CAPTURABLE_CHANGE_REQUESTED});
     } else {
-      await updatePaymentStatusCancelled({transaction: transaction, paymentStatusId: callTransaction.callerPaymentStatusId,
-        reason: PaymentStatusCancellationReason.CALLED_NEVER_JOINED});
+      await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: PaymentStatusCancellationReason.CALLED_NEVER_JOINED,
+        centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: paymentStatus.centsPaid,
+        centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
+        paymentStatusId: callTransaction.callerPaymentStatusId, status: PaymentStatusStates.CANCELLATION_REQUESTED});
     }
     if (!callTransaction.callHasEnded) {
       markCallEnd(callTransaction.callTransactionId, endTimeUtcMs, transaction);
@@ -47,7 +48,7 @@ export const endCallTransactionCaller = async ({transactionId} : {transactionId:
   });
   if (paymentStatus != null) {
     if (callTransaction.calledHasJoined) {
-      await chargeStripePaymentIntent({amountToCaptureInCents: paymentStatus.centsCharged, paymentIntentId: paymentStatus.paymentIntentId});
+      await chargeStripePaymentIntent({amountToCaptureInCents: paymentStatus.centsRequestedCapture, paymentIntentId: paymentStatus.paymentIntentId});
     } else {
       await cancelStripePaymentIntent({paymentIntentId: paymentStatus.paymentIntentId});
     }

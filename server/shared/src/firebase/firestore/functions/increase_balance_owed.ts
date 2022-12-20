@@ -1,8 +1,8 @@
 import { getUserOwedBalanceDocumentRef } from "../document_fetchers/fetchers";
 import { UserOwedBalance } from "../models/user_owed_balance";
 
-export async function increaseBalanceOwed({ uid, paymentStatusId, centsCollect, errorOnExistingBalance, owedBalance }:
-  { owedBalance: UserOwedBalance, uid: string, paymentStatusId: string, centsCollect: number,
+export async function increaseBalanceOwed({ transaction, uid, paymentStatusId, centsCollect, errorOnExistingBalance, owedBalance }:
+  { transaction: FirebaseFirestore.Transaction, owedBalance: UserOwedBalance, uid: string, paymentStatusId: string, centsCollect: number,
     errorOnExistingBalance: boolean }): Promise<void> {
 
   if (owedBalance.owedBalanceCents != 0 && errorOnExistingBalance) {
@@ -12,5 +12,5 @@ export async function increaseBalanceOwed({ uid, paymentStatusId, centsCollect, 
     "owedBalanceCents": centsCollect,
     "paymentStatusIdWaitingForPayment": paymentStatusId,
   };
-  getUserOwedBalanceDocumentRef({ uid: uid }).set(newOwedBalance);
+  transaction.set(getUserOwedBalanceDocumentRef({ uid: uid }), newOwedBalance);
 }
