@@ -3,44 +3,34 @@ import 'package:expertapp/src/firebase/firestore/document_models/document_wrappe
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
 
 class PaymentStatus {
-  final int centsCollected;
-  final int centsToCollect;
-  final String status;
-  final String transferGroup;
-  final String idempotencyKey;
   final String uid;
+  final int centsRequestedCapture;
+  final int centsPaid;
 
-  PaymentStatus(this.centsCollected, this.centsToCollect, this.status,
-      this.transferGroup, this.idempotencyKey, this.uid);
+  PaymentStatus(this.uid, this.centsRequestedCapture, this.centsPaid);
 
   PaymentStatus.fromJson(Map<String, dynamic> json)
       : this(
-          json['centsCollected'] as int,
-          json['centsToCollect'] as int,
-          json['status'] as String,
-          json['transferGroup'] as String,
-          json['idempotencyKey'] as String,
           json['uid'] as String,
+          json['centsRequestedCapture'] as int,
+          json['centsPaid'] as int,
         );
 
   Map<String, dynamic> _toJson() {
     var fieldsMap = {
-      'centsCollected': centsCollected,
-      'centsToCollect': centsToCollect,
-      'status': status,
-      'transferGroup': transferGroup,
-      'idempotencyKey': idempotencyKey,
       'uid': uid,
+      'centsRequestedCapture': centsRequestedCapture,
+      'centsPaid': centsPaid,
     };
     return fieldsMap;
   }
 
   bool paymentComplete() {
-    return centsCollected == centsToCollect;
+    return centsRequestedCapture == centsPaid;
   }
 
   int amountOwedCents() {
-    return centsToCollect - centsCollected;
+    return centsPaid - centsRequestedCapture;
   }
 
   static Future<DocumentWrapper<PaymentStatus>?> get(String documentId) async {

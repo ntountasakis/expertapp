@@ -26,20 +26,17 @@ class CompletedCallsPage extends StatelessWidget {
   Widget buildCallCard(CallTransaction call, String transactionId) {
     return FutureBuilder(
         future: Future.wait([
-          PaymentStatus.get(call.callerCallStartPaymentStatusId),
-          PaymentStatus.get(call.callerCallTerminatePaymentStatusId),
+          PaymentStatus.get(call.callerPaymentStatusId),
           UserMetadata.get(call.calledUid)
         ]),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
-            final startPayment =
+            final payment =
                 snapshot.data![0] as DocumentWrapper<PaymentStatus>?;
-            final endPayment =
-                snapshot.data![1] as DocumentWrapper<PaymentStatus>?;
             final expertMetadata =
-                snapshot.data![2] as DocumentWrapper<UserMetadata>?;
+                snapshot.data![1] as DocumentWrapper<UserMetadata>?;
 
-            if (startPayment == null || endPayment == null) {
+            if (payment == null) {
               return SizedBox();
             }
 
@@ -50,8 +47,7 @@ class CompletedCallsPage extends StatelessWidget {
 
             final endTime =
                 DateTime.fromMillisecondsSinceEpoch(call.callEndTimeUtsMs);
-            int amountSpentCents = startPayment.documentType.centsToCollect +
-                endPayment.documentType.centsCollected;
+            int amountSpentCents = payment.documentType.centsPaid;
 
             String dateFormat = DateFormat.yMd().add_jm().format(endTime);
             final dollarFormat = new NumberFormat('#,##0.00', "en_US");

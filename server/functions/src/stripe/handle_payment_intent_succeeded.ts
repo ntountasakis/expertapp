@@ -1,12 +1,12 @@
 import * as admin from "firebase-admin";
-import {getUserOwedBalanceDocumentTransaction} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {getPaymentStatusDocumentTransaction, getUserOwedBalanceDocumentTransaction} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {decreaseBalanceOwed} from "../../../shared/src/firebase/firestore/functions/decrease_balance_owed";
-import {updatePaymentStatusAmountPaid} from "../../../shared/src/firebase/firestore/functions/update_payment_status_paid";
+import {updatePaymentStatus} from "../../../shared/src/firebase/firestore/functions/update_payment_status";
+import {PaymentStatusStates} from "../../../shared/src/firebase/firestore/models/payment_status";
 
 export async function handlePaymentIntentSucceeded(payload: any): Promise<void> {
-  const amount: number = payload.amount;
-  const amountReceived: number = payload.amount_received;
   //   const livemode: boolean = payload.livemode;
+  const amountPaid: number = payload.amount_received;
   const paymentStatusId: string = payload.metadata.payment_status_id;
   const uid: string = payload.metadata.uid;
 
@@ -18,17 +18,16 @@ export async function handlePaymentIntentSucceeded(payload: any): Promise<void> 
     console.error("Cannot handle PaymentIntent Success. Uid undefined");
     return;
   }
-  if (amount != amountReceived) {
-    console.error(`PaymentStatus ID: ${paymentStatusId} Not paid in full. 
-        Expected: ${amount} Received: ${amountReceived}`);
-    return;
-  }
 
   try {
     await admin.firestore().runTransaction(async (transaction) => {
       const owedBalance = await getUserOwedBalanceDocumentTransaction({transaction: transaction, uid: uid});
-      await decreaseBalanceOwed({transaction: transaction, uid: uid, amountPaidCents: amountReceived, owedBalance: owedBalance});
-      await updatePaymentStatusAmountPaid({transaction: transaction, paymentStatusId: paymentStatusId, amountPaidCents: amountReceived});
+      const paymentStatus = await getPaymentStatusDocumentTransaction({transaction: transaction, paymentStatusId: paymentStatusId});
+      await decreaseBalanceOwed({transaction: transaction, uid: uid, amountPaidCents: amountPaid, owedBalance: owedBalance});
+      await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
+        centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: amountPaid,
+        centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
+        paymentStatusId: paymentStatusId, status: PaymentStatusStates.PAID});
     });
   } catch (error) {
     console.error(`Error in HandlePaymentIntentSuceeded: ${error}`);

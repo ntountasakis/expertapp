@@ -4,11 +4,11 @@ import * as admin from "firebase-admin";
 import {getPaymentStatusDocumentRef, getPrivateUserDocument, getUserOwedBalanceDocumentRef} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {UserOwedBalance} from "../../../shared/src/firebase/firestore/models/user_owed_balance";
 import {PaymentStatus} from "../../../shared/src/firebase/firestore/models/payment_status";
-import {createPaymentStatusAndUpdateBalance} from "../../../shared/src/firebase/firestore/functions/create_payment_status_update_balance";
-import {createStripePaymentIntent} from "../../../shared/src/stripe/payment_intent_creator";
 import cancelStripePaymentIntent from "../../../shared/src/stripe/cancel_payment_intent";
 import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
 import createCustomerEphemeralKey from "../../../shared/src/stripe/create_customer_ephemeral_key";
+import {createStripePaymentIntentImmediate} from "../../../shared/src/stripe/payment_intent_creator";
+import {createPaymentStatus} from "../../../shared/src/firebase/firestore/functions/create_payment_status";
 
 export const payOutstandingBalance = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -44,12 +44,10 @@ export const payOutstandingBalance = functions.https.onCall(async (data, context
     const newPaymentStatusId = uuidv4();
     transaction.update(balanceRef, {"paymentStatusIdWaitingForPayment": newPaymentStatusId});
 
-
-    const newPaymentStatus: PaymentStatus = await createPaymentStatusAndUpdateBalance({transaction: transaction, uid: userUid,
-      transferGroup: existingPaymentStatus.transferGroup, centsCollect: existingBalance.owedBalanceCents,
-      paymentStatusId: newPaymentStatusId, errorOnExistingBalance: false});
+    const newPaymentStatus = await createPaymentStatus({transaction: transaction, uid: userUid,
+      paymentStatusId: newPaymentStatusId, transferGroup: existingPaymentStatus.transferGroup, idempotencyKey: uuidv4(),
+      centsRequestedAuthorized: existingBalance.owedBalanceCents, centsRequestedCapture: existingBalance.owedBalanceCents});
     const paymentIntentIdToCancel = existingPaymentStatus.paymentIntentId;
-
     return [newPaymentStatus, userInfo, newPaymentStatusId, paymentIntentIdToCancel];
   });
 
@@ -57,14 +55,14 @@ export const payOutstandingBalance = functions.https.onCall(async (data, context
     return {owedBalanceCents: 0, clientSecret: "", stripeCustomerId: "", paymentStatusId: ""};
   }
   await cancelStripePaymentIntent({paymentIntentId: paymentIntentToCancel});
-  const [paymentIntentId, paymentIntentClientSecret] = await createStripePaymentIntent({
+  const [paymentIntentId, paymentIntentClientSecret] = await createStripePaymentIntentImmediate({
     customerId: userInfo.stripeCustomerId,
-    customerEmail: userInfo.email, amountToBillInCents: newPaymentStatus.centsToCollect,
+    customerEmail: userInfo.email, amountToRequestInCents: newPaymentStatus.centsRequestedCapture,
     idempotencyKey: newPaymentStatus.idempotencyKey, transferGroup: newPaymentStatus.transferGroup, paymentStatusId: newPaymentStatusId,
     paymentDescription: "Pay Balance", uid: userUid});
   await getPaymentStatusDocumentRef({paymentStatusId: newPaymentStatusId}).update("paymentIntentId", paymentIntentId);
 
   const ephemeralKey = await createCustomerEphemeralKey({customerId: userInfo.stripeCustomerId});
-  return {owedBalanceCents: newPaymentStatus.centsToCollect, clientSecret: paymentIntentClientSecret, stripeCustomerId: userInfo.stripeCustomerId,
-    paymentStatusId: newPaymentStatusId, ephemeralKey: ephemeralKey};
+  return {owedBalanceCents: newPaymentStatus.centsRequestedCapture, clientSecret: paymentIntentClientSecret,
+    stripeCustomerId: userInfo.stripeCustomerId, paymentStatusId: newPaymentStatusId, ephemeralKey: ephemeralKey};
 });

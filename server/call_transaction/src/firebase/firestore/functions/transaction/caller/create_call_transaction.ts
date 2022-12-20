@@ -5,7 +5,6 @@ import {FcmToken} from "../../../../../../../shared/src/firebase/firestore/model
 import {createCallTransactionDocument} from "../../../../../../../shared/src/firebase/firestore/functions/create_call_transaction_document";
 import {getExpertRateDocument, getFcmTokenDocument, getPaymentStatusDocumentRef, getPrivateUserDocument, getUserOwedBalanceDocumentRef} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
-import {PaymentStatus} from "../../../../../../../shared/src/firebase/firestore/models/payment_status";
 import {PrivateUserInfo} from "../../../../../../../shared/src/firebase/firestore/models/private_user_info";
 import {createStripePaymentIntentPreAuth} from "../../../../../../../shared/src/stripe/payment_intent_creator";
 import {createPaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/create_payment_status";
@@ -42,10 +41,9 @@ export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: 
 
     const callTransaction: CallTransaction = createCallTransactionDocument({transaction: transaction, callerUid: callerUid,
       calledUid: calledUid, calledUserFcmToken: calledUserFcmToken, expertRate: expertRate});
-    // starting call doesnt add to user balance, if they dont pay we just dont connect them
-    const paymentStatus : PaymentStatus = await createPaymentStatus({transaction: transaction, uid: callerUid,
-      transferGroup: callTransaction.callerTransferGroup, centsRequestedAuthorized: amountCentsPreAuth,
-      paymentStatusId: callTransaction.callerPaymentStatusId, idempotencyKey: uuidv4()});
+    const paymentStatus = await createPaymentStatus({transaction: transaction, uid: callerUid,
+      paymentStatusId: callTransaction.callerPaymentStatusId, transferGroup: callTransaction.callerTransferGroup, idempotencyKey: uuidv4(),
+      centsRequestedAuthorized: amountCentsPreAuth, centsRequestedCapture: 0});
     return [true, callTransaction, paymentStatus, callerUserInfo, expertRate];
   });
 

@@ -10,7 +10,7 @@ export function listenForPaymentStatusUpdates(
     const paymentStatus = docSnapshot.data() as PaymentStatus;
     console.log(`On payment status update. PaymentStatusId: ${paymentStatusId} 
       Uid: ${paymentStatus.uid} Status: ${paymentStatus.status} 
-      CentsToCollect: ${paymentStatus.centsToCollect} CentsCollected: ${paymentStatus.centsCaptured}`);
+      CentsRequestedCapture: ${paymentStatus.centsRequestedCapture} CentsPaid: ${paymentStatus.centsPaid}`);
     listenerManager.onEventUpdate({key: docSnapshot.id, type: "PaymentStatus", update: paymentStatus});
   }, (err) => {
     console.log(`Encountered error: ${err}`);
