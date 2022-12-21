@@ -15,7 +15,7 @@ export async function createStripePaymentIntentPreAuth({ customerId, customerEma
     customerId: customerId, customerEmail: customerEmail,
     amountCents: amountToAuthInCents, paymentDescription: paymentDescription,
     idempotencyKey: idempotencyKey, transferGroup: transferGroup, paymentStatusId: paymentStatusId,
-    uid: uid, captureMethod: "automatic",
+    uid: uid, captureMethod: "manual",
   });
 }
 
@@ -31,7 +31,7 @@ export async function createStripePaymentIntentImmediate({ customerId, customerE
     customerId: customerId, customerEmail: customerEmail,
     amountCents: amountToRequestInCents, paymentDescription: paymentDescription,
     idempotencyKey: idempotencyKey, transferGroup: transferGroup, paymentStatusId: paymentStatusId,
-    uid: uid, captureMethod: "manual",
+    uid: uid, captureMethod: "automatic",
   });
 }
 

@@ -11,6 +11,7 @@ import {createPaymentStatus} from "../../../../../../../shared/src/firebase/fire
 import createCustomerEphemeralKey from "../../../../../../../shared/src/stripe/create_customer_ephemeral_key";
 import callAllowedStripeConfigValid from "../../util/call_allowed_stripe_config_valid";
 import {UserOwedBalance} from "../../../../../../../shared/src/firebase/firestore/models/user_owed_balance";
+import { PaymentContext } from "../../../../../../../shared/src/firebase/firestore/models/payment_status";
 
 export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: string, calledUid: string}):
   Promise<[boolean, string, string, string, CallTransaction?, ExpertRate?]> => {
@@ -43,7 +44,7 @@ export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: 
       calledUid: calledUid, calledUserFcmToken: calledUserFcmToken, expertRate: expertRate});
     const paymentStatus = await createPaymentStatus({transaction: transaction, uid: callerUid,
       paymentStatusId: callTransaction.callerPaymentStatusId, transferGroup: callTransaction.callerTransferGroup, idempotencyKey: uuidv4(),
-      centsRequestedAuthorized: amountCentsPreAuth, centsRequestedCapture: 0});
+      centsRequestedAuthorized: amountCentsPreAuth, centsRequestedCapture: 0, paymentContext: PaymentContext.IN_CALL});
     return [true, callTransaction, paymentStatus, callerUserInfo, expertRate];
   });
 
