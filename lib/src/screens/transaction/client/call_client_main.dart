@@ -33,7 +33,7 @@ class CallClientMain extends StatefulWidget {
 
 class _CallClientMainState extends State<CallClientMain> {
   final CallServerManager callServerManager;
-  bool exitingOnPaymentCanceled = false;
+  bool requestedExit = false;
 
   _CallClientMainState(this.callServerManager);
 
@@ -57,7 +57,7 @@ class _CallClientMainState extends State<CallClientMain> {
       agoraToken: agoraToken,
       agoraUid: agoraUid,
       onChatButtonTap: onChatButtonTap,
-      onEndCallButtonTap: onEndCall,
+      onEndCallButtonTap: onEndCallTap,
     );
   }
 
@@ -66,30 +66,38 @@ class _CallClientMainState extends State<CallClientMain> {
         params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
   }
 
-  Future<void> onEndCall() async {
-    final transactionId =
-        Provider.of<CallServerModel>(context, listen: false).callTransactionId;
-    callServerManager.sendTerminateCallRequest(transactionId);
+  Future<void> disconnectFromServer(CallServerModel model) async {
+    callServerManager.sendTerminateCallRequest(model.callTransactionId);
     await callServerManager.disconnect();
+    model.reset();
+    await widget.lifecycle.refreshOwedBalance();
   }
 
-  void navigateToSubmitReview(CallServerModel model) {
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      model.reset();
-      context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
-          params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
-    });
+  Future<void> onEndCallTap() async {
+    final model = Provider.of<CallServerModel>(context, listen: false);
+    await disconnectFromServer(model);
+    context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
+        params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
   }
 
   Future<void> onPaymentCancelled(
       BuildContext context, CallServerModel model) async {
-    if (!exitingOnPaymentCanceled) {
-      exitingOnPaymentCanceled = true;
+    if (!requestedExit) {
+      requestedExit = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
-        await onEndCall();
-        model.reset();
-        await widget.lifecycle.refreshOwedBalance();
+        await disconnectFromServer(model);
         context.goNamed(Routes.HOME);
+      });
+    }
+  }
+
+  void onCounterpartyLeft(CallServerModel model) {
+    if (!requestedExit) {
+      requestedExit = true;
+      SchedulerBinding.instance.addPostFrameCallback((_) async {
+        await disconnectFromServer(model);
+        context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
+            params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
       });
     }
   }
@@ -110,7 +118,7 @@ class _CallClientMainState extends State<CallClientMain> {
         return buildVideoCallView(context, model);
       case CallServerCounterpartyConnectionState.LEFT:
         {
-          navigateToSubmitReview(model);
+          onCounterpartyLeft(model);
           return SizedBox();
         }
     }
