@@ -57,7 +57,7 @@ class _CallClientMainState extends State<CallClientMain> {
       agoraToken: agoraToken,
       agoraUid: agoraUid,
       onChatButtonTap: onChatButtonTap,
-      onEndCallButtonTap: onEndCallTap,
+      onEndCallButtonTap: onEndCall,
     );
   }
 
@@ -66,10 +66,11 @@ class _CallClientMainState extends State<CallClientMain> {
         params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
   }
 
-  void onEndCallTap() {
+  Future<void> onEndCall() async {
     final transactionId =
         Provider.of<CallServerModel>(context, listen: false).callTransactionId;
     callServerManager.sendTerminateCallRequest(transactionId);
+    await callServerManager.disconnect();
   }
 
   void navigateToSubmitReview(CallServerModel model) {
@@ -85,6 +86,7 @@ class _CallClientMainState extends State<CallClientMain> {
     if (!exitingOnPaymentCanceled) {
       exitingOnPaymentCanceled = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
+        await onEndCall();
         model.reset();
         await widget.lifecycle.refreshOwedBalance();
         context.goNamed(Routes.HOME);

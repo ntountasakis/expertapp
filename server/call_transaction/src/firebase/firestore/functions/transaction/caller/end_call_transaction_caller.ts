@@ -9,8 +9,9 @@ import {PaymentStatus, PaymentStatusCancellationReason, PaymentStatusStates} fro
 import cancelStripePaymentIntent from "../../../../../../../shared/src/stripe/cancel_payment_intent";
 import {UserOwedBalance} from "../../../../../../../shared/src/firebase/firestore/models/user_owed_balance";
 import {updatePaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status";
+import {CallerCallState} from "../../../../../call_state/caller/caller_call_state";
 
-export const endCallTransactionCaller = async ({transactionId} : {transactionId: string})
+export const endCallTransactionCaller = async ({transactionId, callState} : {transactionId: string, callState: CallerCallState})
 : Promise<void> => {
   const [paymentIntentId, costOfCallInCents, calledJoined] = await admin.firestore().runTransaction(async (transaction) => {
     const callTransaction: CallTransaction = await getCallTransactionDocument(
@@ -38,7 +39,9 @@ export const endCallTransactionCaller = async ({transactionId} : {transactionId:
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: costOfCallInCents,
         paymentStatusId: callTransaction.callerPaymentStatusId, status: PaymentStatusStates.CAPTURABLE_CHANGE_REQUESTED});
     } else {
-      await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: PaymentStatusCancellationReason.CALLED_NEVER_JOINED,
+      const cancelReason = callState.isConnected ? PaymentStatusCancellationReason.CALLED_NEVER_JOINED :
+                                                   PaymentStatusCancellationReason.CALLER_ENDED_CALL_BEFORE_START;
+      await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: cancelReason,
         centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: paymentStatus.centsPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
         paymentStatusId: callTransaction.callerPaymentStatusId, status: PaymentStatusStates.CANCELLATION_REQUESTED});
