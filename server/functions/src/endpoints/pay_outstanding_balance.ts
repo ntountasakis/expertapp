@@ -3,7 +3,7 @@ import {v4 as uuidv4} from "uuid";
 import * as admin from "firebase-admin";
 import {getPaymentStatusDocumentRef, getPrivateUserDocument, getUserOwedBalanceDocumentRef} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {UserOwedBalance} from "../../../shared/src/firebase/firestore/models/user_owed_balance";
-import {PaymentStatus} from "../../../shared/src/firebase/firestore/models/payment_status";
+import {PaymentContext, PaymentStatus} from "../../../shared/src/firebase/firestore/models/payment_status";
 import cancelStripePaymentIntent from "../../../shared/src/stripe/cancel_payment_intent";
 import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
 import createCustomerEphemeralKey from "../../../shared/src/stripe/create_customer_ephemeral_key";
@@ -44,9 +44,12 @@ export const payOutstandingBalance = functions.https.onCall(async (data, context
     const newPaymentStatusId = uuidv4();
     transaction.update(balanceRef, {"paymentStatusIdWaitingForPayment": newPaymentStatusId});
 
+    // todo: test fully, cancel old one
+
     const newPaymentStatus = await createPaymentStatus({transaction: transaction, uid: userUid,
       paymentStatusId: newPaymentStatusId, transferGroup: existingPaymentStatus.transferGroup, idempotencyKey: uuidv4(),
-      centsRequestedAuthorized: existingBalance.owedBalanceCents, centsRequestedCapture: existingBalance.owedBalanceCents});
+      centsRequestedAuthorized: existingBalance.owedBalanceCents, centsRequestedCapture: existingBalance.owedBalanceCents,
+      paymentContext: PaymentContext.PAY_OUTSTANDING_BALANCE});
     const paymentIntentIdToCancel = existingPaymentStatus.paymentIntentId;
     return [newPaymentStatus, userInfo, newPaymentStatusId, paymentIntentIdToCancel];
   });

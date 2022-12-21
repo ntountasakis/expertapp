@@ -3,9 +3,8 @@ import {ClientMessageSenderInterface} from "../../message_sender/client_message_
 
 import {sendFcmCallJoinRequest} from "../../../../shared/src/firebase/fcm/functions/send_fcm_call_join_request";
 import {BaseCallState} from "../../call_state/common/base_call_state";
-import {StripePaymentIntentStates} from "../../../../shared/src/stripe/constants";
 import {sendGrpcServerAgoraCredentials} from "../../server/client_communication/grpc/send_grpc_server_agora_credentials";
-import {PaymentStatus} from "../../../../shared/src/firebase/firestore/models/payment_status";
+import {PaymentStatus, PaymentStatusStates} from "../../../../shared/src/firebase/firestore/models/payment_status";
 import {getCallTransactionDocumentRef} from "../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../shared/src/firebase/firestore/models/call_transaction";
 import {ServerCallBeginPaymentPreAuthResolved} from "../../protos/call_transaction_package/ServerCallBeginPaymentPreAuthResolved";
@@ -13,7 +12,7 @@ import {ServerCallBeginPaymentPreAuthResolved} from "../../protos/call_transacti
 export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSender: ClientMessageSenderInterface,
     callState : BaseCallState,
     update: PaymentStatus): Promise<boolean> {
-  if (update.status == StripePaymentIntentStates.SUCCEEDED) {
+  if (update.status == PaymentStatusStates.CHARGE_CONFIRMED) {
     const paymentPreAuthResolved: ServerCallBeginPaymentPreAuthResolved = {};
     clientMessageSender.sendCallBeginPaymentPreAuthResolved(paymentPreAuthResolved);
 

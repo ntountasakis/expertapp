@@ -1,5 +1,5 @@
-export function calculateCostOfCallInCents({beginTimeUtcMs, endTimeUtcMs, centsPerMinute}:
-    {beginTimeUtcMs: number, endTimeUtcMs: number, centsPerMinute: number}): number {
+export function calculateCostOfCallInCents({beginTimeUtcMs, endTimeUtcMs, centsPerMinute, centsStartCall}:
+    {beginTimeUtcMs: number, endTimeUtcMs: number, centsPerMinute: number, centsStartCall: number}): number {
   if (beginTimeUtcMs == 0) {
     throw new Error("Cannot calculate cost of call. Begin time is 0");
   }
@@ -11,8 +11,9 @@ export function calculateCostOfCallInCents({beginTimeUtcMs, endTimeUtcMs, centsP
   }
   const roundedElapsedTimeSeconds = Math.floor((endTimeUtcMs - beginTimeUtcMs) / 1000);
   const centsPerSecond = centsPerMinute / 60;
-  const roundedCost = Math.floor(roundedElapsedTimeSeconds * centsPerSecond);
+  const roundedTimeBasedCost = Math.floor(roundedElapsedTimeSeconds * centsPerSecond);
+  const totalCost = roundedTimeBasedCost + centsStartCall;
 
-  console.log(`Call length (s): ${roundedElapsedTimeSeconds}. Cost (cents): ${roundedCost}`);
-  return roundedCost;
+  console.log(`Call length (s): ${roundedElapsedTimeSeconds}. Cost (cents): ${totalCost}`);
+  return totalCost;
 }
