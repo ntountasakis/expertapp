@@ -21,10 +21,12 @@ export async function handleChargeCaptured(payload: any): Promise<void> {
   try {
     await admin.firestore().runTransaction(async (transaction) => {
       const paymentStatus = await getPaymentStatusDocumentTransaction({transaction: transaction, paymentStatusId: paymentStatusId});
+      // the final payment indication can come out of order with charge captured, but paid is the final state we care about
+      const status = paymentStatus.status == PaymentStatusStates.PAID ? PaymentStatusStates.PAID : PaymentStatusStates.CAPTURABLE_CHANGE_CONFIRMED;
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
         centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: amountCaptured, centsPaid: paymentStatus.centsPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
-        paymentStatusId: paymentStatusId, status: PaymentStatusStates.CAPTURABLE_CHANGE_CONFIRMED});
+        paymentStatusId: paymentStatusId, status: status});
     });
   } catch (error) {
     console.error(`Error in PaymentIntentAmountCapturableUpdated: ${error}`);
