@@ -31,4 +31,5 @@ export enum PaymentContext {
 export enum PaymentStatusCancellationReason {
     NOT_CANCELLED = "not_cancelled",
     CALLED_NEVER_JOINED = "called_never_joined",
+    CALLER_ENDED_CALL_BEFORE_START = "caller_ended_call_before_start",
 }

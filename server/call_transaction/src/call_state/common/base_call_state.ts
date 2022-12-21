@@ -4,6 +4,7 @@ import {CallOnDisconnectInterface} from "../functions/call_on_disconnect_interfa
 
 export class BaseCallState {
   transactionId: string;
+  isConnected: boolean;
   eventListenerManager: FirestoreListenerManager;
   onDisconnectFunction: CallOnDisconnectInterface;
 
@@ -13,9 +14,11 @@ export class BaseCallState {
     this.transactionId = transactionId;
     this.eventListenerManager = new FirestoreListenerManager(clientMessageSender, this);
     this.onDisconnectFunction = onDisconnect;
+    this.isConnected = true;
   }
 
   onDisconnect(): void {
+    this.isConnected = false;
     this.eventListenerManager.onDisconnect();
     this.onDisconnectFunction({transactionId: this.transactionId,
       clientMessageSender: this.eventListenerManager.clientMessageSender,

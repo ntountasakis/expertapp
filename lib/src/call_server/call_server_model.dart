@@ -10,8 +10,6 @@ class CallServerModel extends ChangeNotifier {
   ServerFeeBreakdowns? _feeBreakdowns;
   CallServerPaymentPromptModel _callBeginPaymentPromptModel =
       new CallServerPaymentPromptModel();
-  CallServerPaymentPromptModel _callTerminatePaymentPromptModel =
-      new CallServerPaymentPromptModel();
 
   CallServerConnectionState _connectionState =
       CallServerConnectionState.DISCONNECTED;
@@ -52,7 +50,6 @@ class CallServerModel extends ChangeNotifier {
     _callTransactionId = "";
     _agoraCredentials;
     _callBeginPaymentPromptModel = new CallServerPaymentPromptModel();
-    _callTerminatePaymentPromptModel = new CallServerPaymentPromptModel();
     _connectionState = CallServerConnectionState.DISCONNECTED;
     _counterpartyConnectionState =
         CallServerCounterpartyConnectionState.DISCONNECTED;
