@@ -9,13 +9,13 @@ export async function handleChargeSuceeded(payload: any): Promise<void> {
   const amountAuthorized: number = payload.amount;
   const amountCaptured: number = payload.amount_captured;
   const paymentStatusId: string = payload.metadata.payment_status_id;
-  const uid: string = payload.metadata.uid;
+  const callerUid: string = payload.metadata.caller_uid;
 
   if (paymentStatusId == undefined) {
     console.error("Cannot handle ChargeSuceeded. PaymentId undefined");
     return;
   }
-  if (uid == undefined) {
+  if (callerUid == undefined) {
     console.error("Cannot handle ChargeSuceeded. Uid undefined");
     return;
   }

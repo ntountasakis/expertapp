@@ -6,13 +6,13 @@ import {PaymentStatusStates} from "../../../shared/src/firebase/firestore/models
 export async function handlePaymentIntentCanceled(payload: any): Promise<void> {
   //   const livemode: boolean = payload.livemode;
   const paymentStatusId: string = payload.metadata.payment_status_id;
-  const uid: string = payload.metadata.uid;
+  const callerUid: string = payload.metadata.caller_uid;
 
   if (paymentStatusId == undefined) {
     console.error("Cannot handle PaymentIntent Success. PaymentId undefined");
     return;
   }
-  if (uid == undefined) {
+  if (callerUid == undefined) {
     console.error("Cannot handle PaymentIntent Success. Uid undefined");
     return;
   }

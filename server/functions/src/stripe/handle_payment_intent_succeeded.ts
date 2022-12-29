@@ -8,22 +8,22 @@ export async function handlePaymentIntentSucceeded(payload: any): Promise<void> 
   //   const livemode: boolean = payload.livemode;
   const amountPaid: number = payload.amount_received;
   const paymentStatusId: string = payload.metadata.payment_status_id;
-  const uid: string = payload.metadata.uid;
+  const callerUid: string = payload.metadata.caller_uid;
 
   if (paymentStatusId == undefined) {
     console.error("Cannot handle PaymentIntent Success. PaymentId undefined");
     return;
   }
-  if (uid == undefined) {
+  if (callerUid == undefined) {
     console.error("Cannot handle PaymentIntent Success. Uid undefined");
     return;
   }
 
   try {
     await admin.firestore().runTransaction(async (transaction) => {
-      const owedBalance = await getUserOwedBalanceDocumentTransaction({transaction: transaction, uid: uid});
+      const owedBalance = await getUserOwedBalanceDocumentTransaction({transaction: transaction, uid: callerUid});
       const paymentStatus = await getPaymentStatusDocumentTransaction({transaction: transaction, paymentStatusId: paymentStatusId});
-      await decreaseBalanceOwed({transaction: transaction, uid: uid, amountPaidCents: amountPaid, owedBalance: owedBalance});
+      await decreaseBalanceOwed({transaction: transaction, uid: callerUid, amountPaidCents: amountPaid, owedBalance: owedBalance});
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
         centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: amountPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
