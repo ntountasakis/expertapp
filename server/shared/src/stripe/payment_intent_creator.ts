@@ -5,33 +5,33 @@ import { StripeProvider } from "./stripe_provider";
 
 export async function createStripePaymentIntentPreAuth({ customerId, customerEmail,
   amountToAuthInCents: amountToAuthInCents, paymentDescription, idempotencyKey,
-  transferGroup, paymentStatusId, uid }: {
+  transferGroup, paymentStatusId, callerUid, calledUid }: {
     customerId: string, customerEmail: string,
     amountToAuthInCents: number, paymentDescription: string, idempotencyKey: string,
-    transferGroup: string, paymentStatusId: string, uid: string
+    transferGroup: string, paymentStatusId: string, callerUid: string, calledUid: string,
   }):
   Promise<[paymentIntentId: string, clientSecret: string]> {
   return paymentIntentCreateHelper({
     customerId: customerId, customerEmail: customerEmail,
     amountCents: amountToAuthInCents, paymentDescription: paymentDescription,
     idempotencyKey: idempotencyKey, transferGroup: transferGroup, paymentStatusId: paymentStatusId,
-    uid: uid, captureMethod: "manual",
+    callerUid: callerUid, captureMethod: "manual", calledUid: calledUid
   });
 }
 
 export async function createStripePaymentIntentImmediate({ customerId, customerEmail,
   amountToRequestInCents: amountToRequestInCents, paymentDescription, idempotencyKey,
-  transferGroup, paymentStatusId, uid }: {
+  transferGroup, paymentStatusId, callerUid, calledUid }: {
     customerId: string, customerEmail: string,
     amountToRequestInCents: number, paymentDescription: string, idempotencyKey: string,
-    transferGroup: string, paymentStatusId: string, uid: string
+    transferGroup: string, paymentStatusId: string, callerUid: string, calledUid: string,
   }):
   Promise<[paymentIntentId: string, clientSecret: string]> {
   return paymentIntentCreateHelper({
     customerId: customerId, customerEmail: customerEmail,
     amountCents: amountToRequestInCents, paymentDescription: paymentDescription,
     idempotencyKey: idempotencyKey, transferGroup: transferGroup, paymentStatusId: paymentStatusId,
-    uid: uid, captureMethod: "automatic",
+    callerUid: callerUid, captureMethod: "automatic", calledUid: calledUid,
   });
 }
 
@@ -54,10 +54,13 @@ export async function chargeStripePaymentIntent({ amountToCaptureInCents, paymen
 
 async function paymentIntentCreateHelper({ customerId, customerEmail,
   amountCents: amountCents, paymentDescription, idempotencyKey,
-  transferGroup, paymentStatusId, uid, captureMethod: captureMethod }: {
+  transferGroup, paymentStatusId, callerUid, captureMethod: captureMethod,
+  calledUid }: {
     customerId: string, customerEmail: string,
     amountCents: number, paymentDescription: string, idempotencyKey: string,
-    transferGroup: string, paymentStatusId: string, uid: string, captureMethod: Stripe.PaymentIntentCreateParams.CaptureMethod,
+    transferGroup: string, paymentStatusId: string, callerUid: string,
+    calledUid: string,
+    captureMethod: Stripe.PaymentIntentCreateParams.CaptureMethod,
   }):
   Promise<[paymentIntentId: string, clientSecret: string]> {
   let errorMessage = `PaymentIntent create fail for customerId: ${customerId} \n`;
@@ -82,7 +85,8 @@ async function paymentIntentCreateHelper({ customerId, customerEmail,
       capture_method: captureMethod,
       metadata: {
         "payment_status_id": paymentStatusId,
-        "uid": uid,
+        "caller_uid": callerUid,
+        "called_uid": calledUid,
       },
     },
       {
