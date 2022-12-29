@@ -80,7 +80,7 @@ class ClientInCallAppbar extends StatelessWidget with PreferredSizeWidget {
   }
 
   String prepaidStartCall(ServerFeeBreakdowns fees) {
-    return 'Already paid: ${formattedRate(fees.earnedCentsStartCall)}';
+    return 'Fee to start call: ${formattedRate(fees.earnedCentsStartCall)}';
   }
 
   String timeCharges(ServerFeeBreakdowns fees, int callLengthSec) {
