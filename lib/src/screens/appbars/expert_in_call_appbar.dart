@@ -88,9 +88,7 @@ class ExpertInCallAppbar extends StatelessWidget with PreferredSizeWidget {
   }
 
   int totalCents(ServerFeeBreakdowns fees, int callLengthSec) {
-    return subtotalCents(fees, callLengthSec) -
-        paymentProcessorFeesCents(fees, callLengthSec) -
-        platformFeeCents(fees, callLengthSec);
+    return subtotalCents(fees, callLengthSec) - paymentProcessorFeesCents(fees, callLengthSec);
   }
 
   String callLength(int callLengthSec) {

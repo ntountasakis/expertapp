@@ -7,7 +7,7 @@ export function sendGrpcServerFeeBreakdowns(clientMessageSender: ClientMessageSe
     callTransaction: CallTransaction): void {
   const serverFeeBreakdown : ServerFeeBreakdowns = {
     "paymentProcessorPercentFee": StripeProvider.STRIPE_PERCENT_FEE,
-    "paymentProcessorCentsFlatFee": StripeProvider.STRIPE_FLAT_FEE_CENTS * 2,
+    "paymentProcessorCentsFlatFee": StripeProvider.STRIPE_FLAT_FEE_CENTS,
     "platformPercentFee": StripeProvider.PLATFORM_PERCENT_FEE,
     "earnedCentsStartCall": callTransaction.expertRateCentsCallStart,
     "earnedCentsPerMinute": callTransaction.expertRateCentsPerMinute,
