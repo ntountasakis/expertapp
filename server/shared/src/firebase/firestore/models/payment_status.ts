@@ -4,6 +4,7 @@ export interface PaymentStatus {
     status: PaymentStatusStates;
     uid: string;
     paymentIntentId: string;
+    chargeId: string;
     transferGroup: string;
     idempotencyKey: string;
     centsRequestedAuthorized: number;

@@ -30,8 +30,7 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
   sendGrpcCallJoinOrRequestSuccess(transactionId, clientMessageSender);
   sendGrpcServerAgoraCredentials(clientMessageSender, callTransaction.agoraChannelName, joinerId);
   sendGrpcServerFeeBreakdowns(clientMessageSender, callTransaction);
-  return true;
-}
+  return true;}
 
 function _createNewCallState({CallManager, transactionId, joinerId, clientMessageSender}:
   {CallManager: CallManager, transactionId: string, joinerId: string,

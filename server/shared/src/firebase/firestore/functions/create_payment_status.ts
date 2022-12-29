@@ -12,6 +12,7 @@ export function createPaymentStatus({ transaction, uid, paymentStatusId, transfe
     "paymentStatusCancellationReason": PaymentStatusCancellationReason.NOT_CANCELLED,
     "uid": uid,
     "paymentIntentId": "",
+    "chargeId": "",
     "status": PaymentStatusStates.CHARGE_REQUESTED,
     "transferGroup": transferGroup,
     "idempotencyKey": idempotencyKey,

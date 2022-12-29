@@ -27,7 +27,7 @@ export async function handlePaymentIntentSucceeded(payload: any): Promise<void> 
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
         centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: amountPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
-        paymentStatusId: paymentStatusId, status: PaymentStatusStates.PAID});
+        paymentStatusId: paymentStatusId, chargeId: paymentStatus.chargeId, status: PaymentStatusStates.PAID});
     });
   } catch (error) {
     console.error(`Error in HandlePaymentIntentSuceeded: ${error}`);

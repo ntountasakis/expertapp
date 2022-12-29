@@ -37,14 +37,14 @@ export const endCallTransactionCaller = async ({transactionId, callState} : {tra
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
         centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: paymentStatus.centsPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: costOfCallInCents,
-        paymentStatusId: callTransaction.callerPaymentStatusId, status: PaymentStatusStates.CAPTURABLE_CHANGE_REQUESTED});
+        paymentStatusId: callTransaction.callerPaymentStatusId, chargeId: paymentStatus.chargeId, status: PaymentStatusStates.CAPTURABLE_CHANGE_REQUESTED});
     } else {
       const cancelReason = callState.isConnected ? PaymentStatusCancellationReason.CALLED_NEVER_JOINED :
                                                    PaymentStatusCancellationReason.CALLER_ENDED_CALL_BEFORE_START;
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: cancelReason,
         centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: paymentStatus.centsPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
-        paymentStatusId: callTransaction.callerPaymentStatusId, status: PaymentStatusStates.CANCELLATION_REQUESTED});
+        paymentStatusId: callTransaction.callerPaymentStatusId, chargeId: paymentStatus.chargeId, status: PaymentStatusStates.CANCELLATION_REQUESTED});
     }
     if (!callTransaction.callHasEnded) {
       markCallEnd(callTransaction.callTransactionId, endTimeUtcMs, transaction);

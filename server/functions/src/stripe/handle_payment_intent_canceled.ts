@@ -23,7 +23,7 @@ export async function handlePaymentIntentCanceled(payload: any): Promise<void> {
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
         centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: paymentStatus.centsPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
-        paymentStatusId: paymentStatusId, status: PaymentStatusStates.CANCELLATION_CONFIRMED});
+        paymentStatusId: paymentStatusId, chargeId: paymentStatus.chargeId, status: PaymentStatusStates.CANCELLATION_CONFIRMED});
     });
   } catch (error) {
     console.error(`Error in HandlePaymentIntentSuceeded: ${error}`);
