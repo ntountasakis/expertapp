@@ -5,6 +5,7 @@ import {PaymentStatusStates} from "../../../shared/src/firebase/firestore/models
 
 export async function handleChargeSuceeded(payload: any): Promise<void> {
   //   const livemode: boolean = payload.livemode;
+  const chargeId: string = payload.id;
   const amountAuthorized: number = payload.amount;
   const amountCaptured: number = payload.amount_captured;
   const paymentStatusId: string = payload.metadata.payment_status_id;
@@ -25,7 +26,7 @@ export async function handleChargeSuceeded(payload: any): Promise<void> {
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
         centsAuthorized: amountAuthorized, centsCaptured: amountCaptured, centsPaid: paymentStatus.centsPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
-        paymentStatusId: paymentStatusId, status: PaymentStatusStates.CHARGE_CONFIRMED});
+        paymentStatusId: paymentStatusId, chargeId: chargeId, status: PaymentStatusStates.CHARGE_CONFIRMED});
     });
   } catch (error) {
     console.error(`Error in HandleChargeSuceeded: ${error}`);

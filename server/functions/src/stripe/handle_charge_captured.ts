@@ -26,7 +26,7 @@ export async function handleChargeCaptured(payload: any): Promise<void> {
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
         centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: amountCaptured, centsPaid: paymentStatus.centsPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
-        paymentStatusId: paymentStatusId, status: status});
+        paymentStatusId: paymentStatusId, chargeId: paymentStatus.chargeId, status: status});
     });
   } catch (error) {
     console.error(`Error in PaymentIntentAmountCapturableUpdated: ${error}`);
