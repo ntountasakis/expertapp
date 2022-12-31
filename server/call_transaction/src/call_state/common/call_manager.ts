@@ -31,6 +31,8 @@ export class CallManager {
     if (callState === undefined) {
       console.error(`Unable to clear CallState for UID: ${userId}. Does not exist`);
       return;
+    } else if (callState instanceof CalledCallState) {
+      (callState as CalledCallState).cancelMaxCallLengthTimer();
     }
     callState.onDisconnect();
     this.removeCallState({userId: userId});
