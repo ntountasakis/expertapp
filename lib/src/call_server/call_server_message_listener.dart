@@ -35,7 +35,7 @@ class CallServerMessageListener {
     } else if (aMessage.hasServerCounterpartyLeftCall()) {
       model.onServerCounterpartyLeftCall();
     } else if (aMessage.hasServerCounterpartyJoinedCall()) {
-      model.onServerCounterpartyJoinedCall();
+      model.onServerCounterpartyJoinedCall(aMessage.serverCounterpartyJoinedCall);
     } else {
       throw new Exception('''Unexpected ServerResponseContainer messageType 
       on call request ${aMessage.whichMessageWrapper()}''');

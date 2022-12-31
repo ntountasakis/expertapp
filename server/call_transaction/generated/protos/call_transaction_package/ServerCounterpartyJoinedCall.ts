@@ -2,7 +2,9 @@
 
 
 export interface ServerCounterpartyJoinedCall {
+  'secondsCallAuthorizedFor'?: (number);
 }
 
 export interface ServerCounterpartyJoinedCall__Output {
+  'secondsCallAuthorizedFor': (number);
 }
