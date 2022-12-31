@@ -1,3 +1,4 @@
+import * as grpc from "@grpc/grpc-js";
 import {CallManager} from "../call_state/common/call_manager";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {InvalidClientMessageHandlerInterface} from "../message_sender/invalid_client_message_handler_interface";
@@ -9,24 +10,25 @@ import {ClientCallInitiateRequest} from "../protos/call_transaction_package/Clie
 import {ClientCallJoinRequest} from "../protos/call_transaction_package/ClientCallJoinRequest";
 import {ClientCallTerminateRequest} from "../protos/call_transaction_package/ClientCallTerminateRequest";
 import {ClientMessageContainer} from "../protos/call_transaction_package/ClientMessageContainer";
+import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
 import {handleClientCallInitiateRequest} from "./handle_client_call_initiate_request";
 import {handleClientCallJoinRequest} from "./handle_client_call_join_request";
 import {handleClientCallTerminateRequest} from "./handle_client_call_terminate_request";
 
 export async function dispatchClientMessage(
-    {clientMessage, invalidMessageHandler, clientMessageSender, callManager}: {
+    {clientMessage, invalidMessageHandler, clientMessageSender, callManager, callStream}: {
     clientMessage: ClientMessageContainer,
     invalidMessageHandler: InvalidClientMessageHandlerInterface,
     clientMessageSender: ClientMessageSenderInterface,
-    callManager: CallManager}): Promise<boolean> {
+    callManager: CallManager, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>}): Promise<boolean> {
   if (!checkMessageContainerValid(clientMessage, invalidMessageHandler)) return false;
 
   if (clientMessage.callInitiateRequest) {
     return await dispatchCallInitiateRequest(clientMessage.callInitiateRequest, invalidMessageHandler,
-        clientMessageSender, callManager);
+        clientMessageSender, callManager, callStream);
   } else if (clientMessage.callJoinRequest) {
     return await dispatchCallJoinRequest(clientMessage.callJoinRequest, invalidMessageHandler,
-        clientMessageSender, callManager);
+        clientMessageSender, callManager, callStream);
   } else if (clientMessage.callTerminateRequest) {
     return await dispatchCallTerminateRequest(clientMessage.callTerminateRequest, invalidMessageHandler,
         clientMessageSender, callManager);
@@ -48,27 +50,28 @@ function checkMessageContainerValid(clientMessage: ClientMessageContainer,
 async function dispatchCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     invalidMessageHandler : InvalidClientMessageHandlerInterface,
     clientMessageSender: ClientMessageSenderInterface,
-    clientCallManager: CallManager): Promise<boolean> {
+    clientCallManager: CallManager,
+    callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>): Promise<boolean> {
   const [callInitiateRequestValid, callInitiateRequestInvalidErrorMessage] = isValidClientInitiateRequest(
       {callInitiateRequest: callInitiateRequest});
   if (!callInitiateRequestValid) {
     invalidMessageHandler(callInitiateRequestInvalidErrorMessage);
     return false;
   }
-  return await handleClientCallInitiateRequest(callInitiateRequest, clientMessageSender, clientCallManager);
+  return await handleClientCallInitiateRequest(callInitiateRequest, clientMessageSender, clientCallManager, callStream);
 }
 
 async function dispatchCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
     invalidMessageHandler : InvalidClientMessageHandlerInterface,
     clientMessageSender: ClientMessageSenderInterface,
-    CallManager: CallManager): Promise<boolean> {
+    callManager: CallManager, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>): Promise<boolean> {
   const [callJoinRequestValid, callJoinRequestInvalidErrorMessage] = isValidClientJoinRequest(
       {callJoinRequest: callJoinRequest});
   if (!callJoinRequestValid) {
     invalidMessageHandler(callJoinRequestInvalidErrorMessage);
     return false;
   }
-  return await handleClientCallJoinRequest(callJoinRequest, clientMessageSender, CallManager);
+  return await handleClientCallJoinRequest(callJoinRequest, clientMessageSender, callManager, callStream);
 }
 
 async function dispatchCallTerminateRequest(callTerminateRequest: ClientCallTerminateRequest,

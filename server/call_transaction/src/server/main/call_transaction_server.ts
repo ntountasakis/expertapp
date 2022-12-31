@@ -25,7 +25,7 @@ export class CallTransactionServer implements CallTransactionHandlers {
       const messageSender = new GrpcClientMessageSender(call);
       try {
         const isValid = await dispatchClientMessage({clientMessage: aClientMessage, invalidMessageHandler: invalidMessageCallback,
-          clientMessageSender: messageSender, callManager: callManager});
+          clientMessageSender: messageSender, callManager: callManager, callStream: call});
         if (!isValid) {
           call.end();
         }
@@ -40,7 +40,8 @@ export class CallTransactionServer implements CallTransactionHandlers {
     });
     call.on("end", () => {
       console.log("End Initiate Call Stream");
-      disconnectClient({userId: userId, call: call});
+      disconnectClient({userId: userId});
+      call.end();
     });
     call.on("cancelled", () => {
       console.log(`UserId: ${userId} cancelled call. IsCaller: ${isCaller}`);
@@ -49,9 +50,8 @@ export class CallTransactionServer implements CallTransactionHandlers {
   }
 }
 
-function disconnectClient({userId, call}: {userId: string, call: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>}) {
+function disconnectClient({userId}: {userId: string}) {
   console.log(`Disconnecting from ${userId}`);
-  call.end();
   callManager.onClientDisconnect({userId: userId});
 }
 

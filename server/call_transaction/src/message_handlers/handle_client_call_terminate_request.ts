@@ -13,7 +13,7 @@ export async function handleClientCallTerminateRequest(callTerminateRequest: Cli
     clientMessageSender: ClientMessageSenderInterface, callManager: CallManager): Promise<void> {
   // todo: use return values
   const uid = callTerminateRequest.uid as string;
-  console.log(`handline clientCallTerminateRequest for transactionID: ${callTerminateRequest.callTransactionId} 
+  console.log(`Handling clientCallTerminateRequest for transactionID: ${callTerminateRequest.callTransactionId} 
     uid: ${uid}`);
 
   const baseCallState = callManager.getCallState({userId: uid});

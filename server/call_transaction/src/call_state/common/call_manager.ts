@@ -1,4 +1,7 @@
+import * as grpc from "@grpc/grpc-js";
 import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
+import {ClientMessageContainer} from "../../protos/call_transaction_package/ClientMessageContainer";
+import {ServerMessageContainer} from "../../protos/call_transaction_package/ServerMessageContainer";
 import {CalledCallState} from "../called/called_call_state";
 import {CallerBeginCallContext} from "../caller/caller_begin_call_context";
 import {CallerCallState} from "../caller/caller_call_state";
@@ -34,24 +37,24 @@ export class CallManager {
   }
 
   createCallStateOnCallerBegin({userId, callerBeginCallContext, callerDisconnectFunction,
-    clientMessageSender}: {userId: string, callerBeginCallContext: CallerBeginCallContext,
+    clientMessageSender, callStream}: {userId: string, callerBeginCallContext: CallerBeginCallContext,
       callerDisconnectFunction: CallOnDisconnectInterface,
-    clientMessageSender: ClientMessageSenderInterface}): CallerCallState {
+    clientMessageSender: ClientMessageSenderInterface, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>}): CallerCallState {
     const callState = new CallerCallState(
         {callerBeginCallContext: callerBeginCallContext, onDisconnect: callerDisconnectFunction,
-          clientMessageSender: clientMessageSender});
+          clientMessageSender: clientMessageSender, userId: userId, callStream: callStream});
     this.creatCallState({userId: userId, state: callState});
     console.log(`Created CallerCallState for UID: ${userId}`);
     return callState;
   }
 
-  createCallStateOnCallJoin({userId, transactionId, callerDisconnectFunction, clientMessageSender}:
+  createCallStateOnCallJoin({userId, transactionId, callerDisconnectFunction, clientMessageSender, callStream}:
       {userId: string, transactionId: string,
       callerDisconnectFunction: CallOnDisconnectInterface,
-    clientMessageSender: ClientMessageSenderInterface}): CalledCallState {
+    clientMessageSender: ClientMessageSenderInterface, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>}): CalledCallState {
     const callState = new CalledCallState(
         {transactionId: transactionId, onDisconnect: callerDisconnectFunction,
-          clientMessageSender: clientMessageSender});
+          clientMessageSender: clientMessageSender, userId: userId, callStream: callStream});
     this.creatCallState({userId: userId, state: callState});
     console.log(`Created CalledCallState for UID: ${userId}`);
     return callState;

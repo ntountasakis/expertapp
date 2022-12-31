@@ -4,9 +4,9 @@ import { CallTransaction } from "../models/call_transaction";
 import { ExpertRate } from "../models/expert_rate";
 import { FcmToken } from "../models/fcm_token";
 
-export function createCallTransactionDocument({transaction, callerUid, calledUid, calledUserFcmToken, expertRate}:
+export function createCallTransactionDocument({transaction, callerUid, calledUid, calledUserFcmToken, expertRate, maxCallTimeSec}:
 { transaction: FirebaseFirestore.Transaction, callerUid: string, calledUid: string,
-calledUserFcmToken: FcmToken, expertRate: ExpertRate}): CallTransaction
+calledUserFcmToken: FcmToken, expertRate: ExpertRate, maxCallTimeSec: number}): CallTransaction
 {
     const newTransaction: CallTransaction = {
       "callTransactionId": uuidv4(),
@@ -23,6 +23,7 @@ calledUserFcmToken: FcmToken, expertRate: ExpertRate}): CallTransaction
       "calledJoinTimeUtcMs": 0,
       "callHasEnded": false,
       "callEndTimeUtsMs": 0,
+      "maxCallTimeSec": maxCallTimeSec,
     };
 
     transaction.create(getCallTransactionDocumentRef({transactionId: newTransaction.callTransactionId}), newTransaction);
