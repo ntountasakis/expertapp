@@ -135,7 +135,7 @@ class _CallClientMainState extends State<CallClientMain> {
             return Consumer<CallServerModel>(builder: (context, model, child) {
               return Scaffold(
                 appBar:
-                    ClientInCallAppbar(expertUserMetadata!, "In-Call", model),
+                    ClientInCallAppbar(expertUserMetadata!, "", model),
                 body: buildCallView(context, model),
               );
             });

@@ -84,7 +84,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
             return Consumer<CallServerModel>(builder: (context, model, child) {
               return Scaffold(
                 appBar:
-                    ExpertInCallAppbar(callerUserMetadata!, "In-Call", model),
+                    ExpertInCallAppbar(callerUserMetadata!, "", model),
                 body: buildVideoCallView(context, model),
               );
             });
