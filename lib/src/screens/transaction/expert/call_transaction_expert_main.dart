@@ -2,12 +2,12 @@ import 'dart:developer';
 
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
+import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/screens/appbars/expert_in_call_appbar.dart';
-import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -32,6 +32,7 @@ class CallTransactionExpertMain extends StatefulWidget {
 
 class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
   final CallServerManager callServerManager;
+  bool requestedExit = false;
 
   _CallTransactionExpertMainState(this.callServerManager);
 
@@ -45,19 +46,26 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
   }
 
   Widget buildVideoCallView(BuildContext context, CallServerModel model) {
-    if (model.agoraCredentials == null) {
+    if (model.agoraCredentials == null ||
+        model.callCounterpartyConnectionState ==
+            CallServerCounterpartyConnectionState.DISCONNECTED) {
       return CircularProgressIndicator();
+    } else if (model.callCounterpartyConnectionState ==
+        CallServerCounterpartyConnectionState.LEFT) {
+      onCounterpartyLeft(model);
+      return SizedBox();
+    } else {
+      final agoraChannelName = model.agoraCredentials!.channelName;
+      final agoraToken = model.agoraCredentials!.token;
+      final agoraUid = model.agoraCredentials!.uid;
+      return AgoraVideoCall(
+        agoraChannelName: agoraChannelName,
+        agoraToken: agoraToken,
+        agoraUid: agoraUid,
+        onChatButtonTap: onChatButtonTap,
+        onEndCallButtonTap: onEndCallTap,
+      );
     }
-    final agoraChannelName = model.agoraCredentials!.channelName;
-    final agoraToken = model.agoraCredentials!.token;
-    final agoraUid = model.agoraCredentials!.uid;
-    return AgoraVideoCall(
-      agoraChannelName: agoraChannelName,
-      agoraToken: agoraToken,
-      agoraUid: agoraUid,
-      onChatButtonTap: onChatButtonTap,
-      onEndCallButtonTap: onEndCallTap,
-    );
   }
 
   void onChatButtonTap() {
@@ -73,6 +81,21 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
     context.goNamed(Routes.HOME);
   }
 
+  void onCounterpartyLeft(CallServerModel model) {
+    if (!requestedExit) {
+      requestedExit = true;
+      SchedulerBinding.instance.addPostFrameCallback((_) async {
+        await disconnectFromServer(model);
+        context.goNamed(Routes.HOME);
+      });
+    }
+  }
+
+  Future<void> disconnectFromServer(CallServerModel model) async {
+    await callServerManager.disconnect();
+    model.reset();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentWrapper<UserMetadata>?>(
@@ -83,8 +106,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
             final callerUserMetadata = snapshot.data;
             return Consumer<CallServerModel>(builder: (context, model, child) {
               return Scaffold(
-                appBar:
-                    ExpertInCallAppbar(callerUserMetadata!, "", model),
+                appBar: ExpertInCallAppbar(callerUserMetadata!, "", model),
                 body: buildVideoCallView(context, model),
               );
             });
