@@ -17,3 +17,17 @@ export function calculateCostOfCallInCents({beginTimeUtcMs, endTimeUtcMs, centsP
   console.log(`Call length (s): ${roundedElapsedTimeSeconds}. Cost (cents): ${totalCost}`);
   return totalCost;
 }
+
+export function calculateMaxCallLengthSec({centsPerMinute, centsStartCall, amountAuthorizedCents}:
+  {centsPerMinute: number, centsStartCall: number, amountAuthorizedCents: number}): number {
+  const centsRemainingAfterStart = amountAuthorizedCents - centsStartCall;
+  if (centsRemainingAfterStart <= 0) {
+    throw new Error(`Amount auth cents: ${amountAuthorizedCents} less than cents to start call ${centsStartCall}`);
+  }
+  const centsPerSecond = centsPerMinute / 60;
+  const maxSeconds = Math.floor(centsRemainingAfterStart / centsPerSecond);
+  if (maxSeconds <= 0) {
+    throw new Error(`Amount auth cents ${amountAuthorizedCents} insufficent. Could only call for ${maxSeconds}`);
+  }
+  return maxSeconds;
+}

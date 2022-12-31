@@ -12,10 +12,12 @@ import createCustomerEphemeralKey from "../../../../../../../shared/src/stripe/c
 import callAllowedStripeConfigValid from "../../util/call_allowed_stripe_config_valid";
 import {UserOwedBalance} from "../../../../../../../shared/src/firebase/firestore/models/user_owed_balance";
 import {PaymentContext} from "../../../../../../../shared/src/firebase/firestore/models/payment_status";
+import {calculateMaxCallLengthSec} from "../../util/call_cost_calculator";
 
 export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: string, calledUid: string}):
   Promise<[boolean, string, string, string, CallTransaction?, ExpertRate?]> => {
-  const amountCentsPreAuth = 100 * 100;
+  // const amountCentsPreAuth = 100 * 100;
+  const amountCentsPreAuth = 330; // TODO
   const [canCreateCall, callTransaction, paymentStatus, userInfo, expertRate] = await admin.firestore().runTransaction(async (transaction) => {
     if (calledUid == null || calledUid == null) {
       const errorMessage = `Invalid Call Transaction Request, either ids are null.
@@ -40,8 +42,10 @@ export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: 
       }
     }
 
+    const maxCallLengthSec = calculateMaxCallLengthSec(
+        {centsPerMinute: expertRate.centsPerMinute, centsStartCall: expertRate.centsCallStart, amountAuthorizedCents: amountCentsPreAuth});
     const callTransaction: CallTransaction = createCallTransactionDocument({transaction: transaction, callerUid: callerUid,
-      calledUid: calledUid, calledUserFcmToken: calledUserFcmToken, expertRate: expertRate});
+      calledUid: calledUid, calledUserFcmToken: calledUserFcmToken, expertRate: expertRate, maxCallTimeSec: maxCallLengthSec});
     const paymentStatus = await createPaymentStatus({transaction: transaction, uid: callerUid,
       paymentStatusId: callTransaction.callerPaymentStatusId, transferGroup: callTransaction.callerTransferGroup, idempotencyKey: uuidv4(),
       centsRequestedAuthorized: amountCentsPreAuth, centsRequestedCapture: 0, paymentContext: PaymentContext.IN_CALL});

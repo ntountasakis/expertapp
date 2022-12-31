@@ -1,3 +1,4 @@
+import * as grpc from "@grpc/grpc-js";
 import {createCallTransaction} from "../firebase/firestore/functions/transaction/caller/create_call_transaction";
 import {ClientMessageSenderInterface} from "../message_sender/client_message_sender_interface";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
@@ -18,10 +19,13 @@ import {callerFinishCallTransaction} from "../call_events/caller/caller_finish_c
 import {CallerBeginCallContext} from "../call_state/caller/caller_begin_call_context";
 import {ExpertRate} from "../../../shared/src/firebase/firestore/models/expert_rate";
 import {sendGrpcServerFeeBreakdowns} from "../server/client_communication/grpc/send_grpc_server_fee_breakdowns";
+import {ClientMessageContainer} from "../protos/call_transaction_package/ClientMessageContainer";
+import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
 
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
-    clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallManager): Promise<boolean> {
+    clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallManager,
+    callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>): Promise<boolean> {
   console.log(`InitiateCall request begin. Caller Uid: ${callInitiateRequest.callerUid} 
       Called Uid: ${callInitiateRequest.calledUid}`);
 
@@ -37,7 +41,8 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   const expertRate = optExpertRate as ExpertRate;
 
   const newClientCallState: CallerCallState = _createNewCallState({callManager: clientCallManager, callTransaction: callTransaction,
-    calledUid: calledUid, callerUid: callerUid, expertRate: expertRate, clientMessageSender: clientMessageSender});
+    calledUid: calledUid, callerUid: callerUid, expertRate: expertRate, clientMessageSender: clientMessageSender,
+    callStream: callStream});
 
   _listenForPaymentSuccess({callState: newClientCallState, callTransaction: callTransaction});
   _listenForCallTransactionUpdates({callState: newClientCallState, callTransaction: callTransaction});
@@ -49,16 +54,17 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   return true;
 }
 
-function _createNewCallState({callTransaction, callerUid, calledUid, expertRate, clientMessageSender, callManager}:
+function _createNewCallState({callTransaction, callerUid, calledUid, expertRate, clientMessageSender, callManager, callStream}:
   {callManager: CallManager, callTransaction: CallTransaction, callerUid: string, calledUid: string,
-    expertRate: ExpertRate, clientMessageSender: ClientMessageSenderInterface}): CallerCallState {
+    expertRate: ExpertRate, clientMessageSender: ClientMessageSenderInterface,
+    callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>}): CallerCallState {
   const callBeginCallerContext = new CallerBeginCallContext({transactionId: callTransaction.callTransactionId,
     agoraChannelName: callTransaction.agoraChannelName, calledFcmToken: callTransaction.calledFcmToken,
     callerUid: callerUid, calledUid: calledUid, expertRate: expertRate});
   return callManager.createCallStateOnCallerBegin({
     userId: callTransaction.callerUid, callerBeginCallContext: callBeginCallerContext,
     callerDisconnectFunction: callerFinishCallTransaction,
-    clientMessageSender: clientMessageSender});
+    clientMessageSender: clientMessageSender, callStream: callStream});
 }
 
 function _listenForPaymentSuccess({callState, callTransaction}:
