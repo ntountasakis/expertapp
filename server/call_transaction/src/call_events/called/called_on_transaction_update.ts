@@ -14,7 +14,7 @@ export async function onCalledTransactionUpdate(clientMessageSender: ClientMessa
     return Promise.resolve(true);
   } else if (update.calledHasJoined) {
     console.log("Counterparty joined the call");
-    clientMessageSender.sendCounterpartyJoinedCall({});
+    clientMessageSender.sendCounterpartyJoinedCall({secondsCallAuthorizedFor: update.maxCallTimeSec});
   }
   return Promise.resolve(false);
 }

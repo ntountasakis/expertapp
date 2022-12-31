@@ -3,6 +3,7 @@ import 'package:expertapp/src/call_server/call_server_counterparty_connection_st
 import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:flutter/material.dart';
+
 class CallServerModel extends ChangeNotifier {
   String _errorMessage = "";
   String _callTransactionId = "";
@@ -30,6 +31,7 @@ class CallServerModel extends ChangeNotifier {
 
   int _msEpochOfCounterpartyConnected = 0;
   int _msEpochCounterpartyDisconnected = 0;
+  int secMaxCallLength = 0;
 
   int callLengthSeconds() {
     if (_msEpochOfCounterpartyConnected == 0) return 0;
@@ -102,9 +104,10 @@ class CallServerModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onServerCounterpartyJoinedCall() {
+  void onServerCounterpartyJoinedCall(ServerCounterpartyJoinedCall joinedCall) {
     _counterpartyConnectionState = CallServerCounterpartyConnectionState.JOINED;
     _msEpochOfCounterpartyConnected = DateTime.now().millisecondsSinceEpoch;
+    secMaxCallLength = joinedCall.secondsCallAuthorizedFor;
     notifyListeners();
   }
 

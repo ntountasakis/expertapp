@@ -51,6 +51,7 @@ message ServerCallBeginPaymentPreAuthResolved {
 }
 
 message ServerCounterpartyJoinedCall {
+    uint32 secondsCallAuthorizedFor = 1;
 }
 
 message ServerCounterpartyLeftCall {

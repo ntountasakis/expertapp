@@ -13,7 +13,7 @@ export async function onCallerTransactionUpdate(clientMessageSender: ClientMessa
     return true;
   } else if (update.calledHasJoined) {
     console.log("Caller detected called joined the call");
-    clientMessageSender.sendCounterpartyJoinedCall({});
+    clientMessageSender.sendCounterpartyJoinedCall({secondsCallAuthorizedFor: update.maxCallTimeSec});
   }
   return false;
 }
