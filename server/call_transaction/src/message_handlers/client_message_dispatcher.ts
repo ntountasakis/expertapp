@@ -4,16 +4,13 @@ import {ClientMessageSenderInterface} from "../message_sender/client_message_sen
 import {InvalidClientMessageHandlerInterface} from "../message_sender/invalid_client_message_handler_interface";
 import {isValidClientInitiateRequest} from "../message_validators/validate_client_call_initiate_request";
 import {isValidClientJoinRequest} from "../message_validators/validate_client_call_join_request";
-import {isValidClientTerminateRequest} from "../message_validators/validate_client_call_terminate_request";
 import {isValidClientMessageContainer} from "../message_validators/validate_client_message_container";
 import {ClientCallInitiateRequest} from "../protos/call_transaction_package/ClientCallInitiateRequest";
 import {ClientCallJoinRequest} from "../protos/call_transaction_package/ClientCallJoinRequest";
-import {ClientCallTerminateRequest} from "../protos/call_transaction_package/ClientCallTerminateRequest";
 import {ClientMessageContainer} from "../protos/call_transaction_package/ClientMessageContainer";
 import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
 import {handleClientCallInitiateRequest} from "./handle_client_call_initiate_request";
 import {handleClientCallJoinRequest} from "./handle_client_call_join_request";
-import {handleClientCallTerminateRequest} from "./handle_client_call_terminate_request";
 
 export async function dispatchClientMessage(
     {clientMessage, invalidMessageHandler, clientMessageSender, callManager, callStream}: {
@@ -29,9 +26,6 @@ export async function dispatchClientMessage(
   } else if (clientMessage.callJoinRequest) {
     return await dispatchCallJoinRequest(clientMessage.callJoinRequest, invalidMessageHandler,
         clientMessageSender, callManager, callStream);
-  } else if (clientMessage.callTerminateRequest) {
-    return await dispatchCallTerminateRequest(clientMessage.callTerminateRequest, invalidMessageHandler,
-        clientMessageSender, callManager);
   }
   invalidMessageHandler("Unknown client message type");
   return false;
@@ -72,18 +66,4 @@ async function dispatchCallJoinRequest(callJoinRequest: ClientCallJoinRequest,
     return false;
   }
   return await handleClientCallJoinRequest(callJoinRequest, clientMessageSender, callManager, callStream);
-}
-
-async function dispatchCallTerminateRequest(callTerminateRequest: ClientCallTerminateRequest,
-    invalidMessageHandler : InvalidClientMessageHandlerInterface,
-    clientMessageSender: ClientMessageSenderInterface,
-    clientCallManager: CallManager): Promise<boolean> {
-  const [callTerminateRequestValid, callTerminateRequestInvalidErrorMessage] = isValidClientTerminateRequest(
-      {callTerminateRequest: callTerminateRequest});
-  if (!callTerminateRequestValid) {
-    invalidMessageHandler(callTerminateRequestInvalidErrorMessage);
-    return false;
-  }
-  handleClientCallTerminateRequest(callTerminateRequest, clientMessageSender, clientCallManager);
-  return true;
 }
