@@ -1,6 +1,7 @@
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -9,9 +10,11 @@ import 'package:go_router/go_router.dart';
 class ExpertReviewSubmitPage extends StatefulWidget {
   final String currentUserId;
   final String expertUserId;
+  final AppLifecycle lifecycle;
 
   ExpertReviewSubmitPage(
-      {required this.currentUserId, required this.expertUserId});
+      {required this.currentUserId, required this.expertUserId,
+      required this.lifecycle});
 
   @override
   State<ExpertReviewSubmitPage> createState() => _ExpertReviewSubmitPageState();
@@ -66,7 +69,8 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
             ),
             children: [
               SimpleDialogOption(
-                  onPressed: () {
+                  onPressed: () async {
+                    await widget.lifecycle.refreshOwedBalance();
                     context.goNamed(Routes.HOME);
                   },
                   child: Center(

@@ -161,7 +161,8 @@ class AppRouter {
             final expertUid = state.params[Routes.EXPERT_ID_PARAM];
             return ExpertReviewSubmitPage(
                 currentUserId: lifecycle.userMetadata!.documentId,
-                expertUserId: expertUid!);
+                expertUserId: expertUid!,
+                lifecycle: lifecycle);
           }),
       GoRoute(
           name: Routes.CALL_JOIN_PROMPT_PAGE,

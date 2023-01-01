@@ -84,7 +84,6 @@ class _CallClientMainState extends State<CallClientMain> {
     }
     await callServerManager.disconnect();
     model.reset();
-    await widget.lifecycle.refreshOwedBalance();
   }
 
   Future<void> onEndCallTap() async {
@@ -100,6 +99,7 @@ class _CallClientMainState extends State<CallClientMain> {
       requestedExit = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
         await disconnectFromServer(model);
+        await widget.lifecycle.refreshOwedBalance();
         context.goNamed(Routes.HOME);
       });
     }
