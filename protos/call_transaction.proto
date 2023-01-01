@@ -16,16 +16,10 @@ message ClientCallJoinRequest {
     string joinerUid = 2;
 }
 
-message ClientCallTerminateRequest {
-    string callTransactionId = 1;
-    string uid = 2;
-}
-
 message ClientMessageContainer {
     oneof messageWrapper {
         ClientCallInitiateRequest callInitiateRequest = 1;
         ClientCallJoinRequest callJoinRequest = 2;
-        ClientCallTerminateRequest callTerminateRequest = 3;
     }
 }
 

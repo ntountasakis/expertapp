@@ -12,7 +12,6 @@ export interface ProtoGrpcType {
     CallTransaction: SubtypeConstructor<typeof grpc.Client, _call_transaction_package_CallTransactionClient> & { service: _call_transaction_package_CallTransactionDefinition }
     ClientCallInitiateRequest: MessageTypeDefinition
     ClientCallJoinRequest: MessageTypeDefinition
-    ClientCallTerminateRequest: MessageTypeDefinition
     ClientMessageContainer: MessageTypeDefinition
     ServerAgoraCredentials: MessageTypeDefinition
     ServerCallBeginPaymentPreAuth: MessageTypeDefinition

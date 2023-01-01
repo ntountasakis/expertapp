@@ -67,7 +67,6 @@ class _CallClientMainState extends State<CallClientMain> {
   }
 
   Future<void> disconnectFromServer(CallServerModel model) async {
-    callServerManager.sendTerminateCallRequest(model.callTransactionId);
     await callServerManager.disconnect();
     model.reset();
     await widget.lifecycle.refreshOwedBalance();
