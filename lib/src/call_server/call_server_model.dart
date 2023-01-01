@@ -30,17 +30,10 @@ class CallServerModel extends ChangeNotifier {
       _counterpartyConnectionState;
 
   int _msEpochOfCounterpartyConnected = 0;
-  int _msEpochCounterpartyDisconnected = 0;
   int secMaxCallLength = 0;
 
   int callLengthSeconds() {
     if (_msEpochOfCounterpartyConnected == 0) return 0;
-    if (_msEpochCounterpartyDisconnected != 0) {
-      return ((_msEpochCounterpartyDisconnected -
-                  _msEpochOfCounterpartyConnected) /
-              1000)
-          .round();
-    }
     return ((DateTime.now().millisecondsSinceEpoch -
                 _msEpochOfCounterpartyConnected) /
             1000)
@@ -56,7 +49,6 @@ class CallServerModel extends ChangeNotifier {
     _counterpartyConnectionState =
         CallServerCounterpartyConnectionState.DISCONNECTED;
     _msEpochOfCounterpartyConnected = 0;
-    _msEpochCounterpartyDisconnected = 0;
   }
 
   void onConnected() {
@@ -108,12 +100,6 @@ class CallServerModel extends ChangeNotifier {
     _counterpartyConnectionState = CallServerCounterpartyConnectionState.JOINED;
     _msEpochOfCounterpartyConnected = DateTime.now().millisecondsSinceEpoch;
     secMaxCallLength = joinedCall.secondsCallAuthorizedFor;
-    notifyListeners();
-  }
-
-  void onServerCounterpartyLeftCall() {
-    _counterpartyConnectionState = CallServerCounterpartyConnectionState.LEFT;
-    _msEpochCounterpartyDisconnected = DateTime.now().millisecondsSinceEpoch;
     notifyListeners();
   }
 }

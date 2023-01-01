@@ -49,14 +49,16 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
   }
 
   Widget buildCallView(BuildContext context, CallServerModel model) {
+    if (model.callConnectionState == CallServerConnectionState.DISCONNECTED &&
+        model.callCounterpartyConnectionState ==
+            CallServerCounterpartyConnectionState.JOINED) {
+      onServerDisconnect(model);
+      return SizedBox();
+    }
     if (model.agoraCredentials == null ||
         model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.DISCONNECTED) {
       return CircularProgressIndicator();
-    } else if (model.callCounterpartyConnectionState ==
-        CallServerCounterpartyConnectionState.LEFT) {
-      onCounterpartyLeft(model);
-      return SizedBox();
     } else if (videoCall == null) {
       final agoraChannelName = model.agoraCredentials!.channelName;
       final agoraToken = model.agoraCredentials!.token;
@@ -86,7 +88,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
     context.goNamed(Routes.HOME);
   }
 
-  void onCounterpartyLeft(CallServerModel model) {
+  void onServerDisconnect(CallServerModel model) {
     if (!requestedExit) {
       requestedExit = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {

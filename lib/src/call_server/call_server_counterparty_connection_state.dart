@@ -1,1 +1,1 @@
-enum CallServerCounterpartyConnectionState { DISCONNECTED, JOINED, LEFT }
+enum CallServerCounterpartyConnectionState { DISCONNECTED, JOINED}

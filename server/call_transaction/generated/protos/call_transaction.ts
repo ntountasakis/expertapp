@@ -18,7 +18,6 @@ export interface ProtoGrpcType {
     ServerCallBeginPaymentPreAuthResolved: MessageTypeDefinition
     ServerCallJoinOrRequestResponse: MessageTypeDefinition
     ServerCounterpartyJoinedCall: MessageTypeDefinition
-    ServerCounterpartyLeftCall: MessageTypeDefinition
     ServerFeeBreakdowns: MessageTypeDefinition
     ServerMessageContainer: MessageTypeDefinition
   }

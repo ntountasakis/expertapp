@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_video_call.dart';
+import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
@@ -53,10 +54,6 @@ class _CallClientMainState extends State<CallClientMain> {
         model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.DISCONNECTED) {
       return CircularProgressIndicator();
-    } else if (model.callCounterpartyConnectionState ==
-        CallServerCounterpartyConnectionState.LEFT) {
-      onCounterpartyLeft(model);
-      return SizedBox();
     } else if (videoCall == null) {
       final agoraChannelName = model.agoraCredentials!.channelName;
       final agoraToken = model.agoraCredentials!.token;
@@ -105,7 +102,7 @@ class _CallClientMainState extends State<CallClientMain> {
     }
   }
 
-  void onCounterpartyLeft(CallServerModel model) {
+  void onServerDisconnect(CallServerModel model) {
     if (!requestedExit) {
       requestedExit = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
@@ -126,16 +123,13 @@ class _CallClientMainState extends State<CallClientMain> {
         PaymentState.PAYMENT_COMPLETE) {
       return SizedBox();
     }
-    switch (model.callCounterpartyConnectionState) {
-      case CallServerCounterpartyConnectionState.DISCONNECTED:
-      case CallServerCounterpartyConnectionState.JOINED:
-        return buildVideoCallView(context, model);
-      case CallServerCounterpartyConnectionState.LEFT:
-        {
-          onCounterpartyLeft(model);
-          return SizedBox();
-        }
+    if (model.callConnectionState == CallServerConnectionState.DISCONNECTED &&
+        model.callCounterpartyConnectionState ==
+            CallServerCounterpartyConnectionState.JOINED) {
+      onServerDisconnect(model);
+      return SizedBox();
     }
+    return buildVideoCallView(context, model);
   }
 
   @override
