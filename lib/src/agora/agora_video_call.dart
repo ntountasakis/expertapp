@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
+import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_app_id.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -16,23 +17,28 @@ class AgoraVideoCall extends StatefulWidget {
   final int agoraUid;
   final VoidCallback onChatButtonTap;
   final VoidCallback onEndCallButtonTap;
+  final RtcEngineWrapper engineWrapper;
 
   AgoraVideoCall(
       {required this.agoraChannelName,
       required this.agoraToken,
       required this.agoraUid,
       required this.onChatButtonTap,
-      required this.onEndCallButtonTap});
+      required this.onEndCallButtonTap,
+      required this.engineWrapper});
 
   @override
-  _AgoraVideoCallState createState() => _AgoraVideoCallState();
+  _AgoraVideoCallState createState() =>
+      _AgoraVideoCallState(this.engineWrapper);
 }
 
 class _AgoraVideoCallState extends State<AgoraVideoCall> {
+  final RtcEngineWrapper _engineWrapper;
   int? _remoteUid;
   bool _localUserJoined = false;
-  late RtcEngine _engine;
   final buttonState = AgoraVideoCallButtonState();
+
+  _AgoraVideoCallState(this._engineWrapper);
 
   @override
   void initState() {
@@ -45,9 +51,9 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
     await [Permission.microphone, Permission.camera].request();
 
     //create the engine
-    _engine = await RtcEngine.create(AgoraAppId.ID);
-    await _engine.enableVideo();
-    _engine.setEventHandler(
+    _engineWrapper.setEngine(await RtcEngine.create(AgoraAppId.ID));
+    await _engineWrapper.engine.enableVideo();
+    _engineWrapper.engine.setEventHandler(
       RtcEngineEventHandler(
         joinChannelSuccess: (String channel, int uid, int elapsed) {
           log("local user $uid joined");
@@ -70,26 +76,26 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
       ),
     );
 
-    await _engine.joinChannel(
+    await _engineWrapper.engine.joinChannel(
         widget.agoraToken, widget.agoraChannelName, null, widget.agoraUid);
   }
 
   void onCameraMuteTap(bool cameraMuted) async {
-    await _engine.muteLocalVideoStream(cameraMuted);
+    await _engineWrapper.engine.muteLocalVideoStream(cameraMuted);
     setState(() {
       buttonState.videoMuted = cameraMuted;
     });
   }
 
   void onMicButtonMuteTap(bool audioMuted) async {
-    await _engine.muteLocalAudioStream(audioMuted);
+    await _engineWrapper.engine.muteLocalAudioStream(audioMuted);
     setState(() {
       buttonState.audioMuted = audioMuted;
     });
   }
 
   void onEndCallTap() async {
-    await _engine.destroy();
+    await _engineWrapper.teardown();
     widget.onEndCallButtonTap();
   }
 

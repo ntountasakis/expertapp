@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
@@ -33,6 +34,8 @@ class CallTransactionExpertMain extends StatefulWidget {
 class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
   final CallServerManager callServerManager;
   bool requestedExit = false;
+  final RtcEngineWrapper engineWrapper = RtcEngineWrapper();
+  AgoraVideoCall? videoCall;
 
   _CallTransactionExpertMainState(this.callServerManager);
 
@@ -45,7 +48,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
     });
   }
 
-  Widget buildVideoCallView(BuildContext context, CallServerModel model) {
+  Widget buildCallView(BuildContext context, CallServerModel model) {
     if (model.agoraCredentials == null ||
         model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.DISCONNECTED) {
@@ -54,18 +57,20 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
         CallServerCounterpartyConnectionState.LEFT) {
       onCounterpartyLeft(model);
       return SizedBox();
-    } else {
+    } else if (videoCall == null) {
       final agoraChannelName = model.agoraCredentials!.channelName;
       final agoraToken = model.agoraCredentials!.token;
       final agoraUid = model.agoraCredentials!.uid;
-      return AgoraVideoCall(
+      videoCall = AgoraVideoCall(
         agoraChannelName: agoraChannelName,
         agoraToken: agoraToken,
         agoraUid: agoraUid,
         onChatButtonTap: onChatButtonTap,
         onEndCallButtonTap: onEndCallTap,
+        engineWrapper: engineWrapper,
       );
     }
+    return videoCall!;
   }
 
   void onChatButtonTap() {
@@ -75,9 +80,9 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
     });
   }
 
-  void onEndCallTap() {
-    callServerManager.sendTerminateCallRequest(widget.callTransactionId);
-    Provider.of<CallServerModel>(context, listen: false).reset();
+  Future<void> onEndCallTap() async {
+    final model = Provider.of<CallServerModel>(context, listen: false);
+    await disconnectFromServer(model);
     context.goNamed(Routes.HOME);
   }
 
@@ -92,6 +97,9 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
   }
 
   Future<void> disconnectFromServer(CallServerModel model) async {
+    if (videoCall != null) {
+      await engineWrapper.teardown();
+    }
     await callServerManager.disconnect();
     model.reset();
   }
@@ -107,7 +115,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
             return Consumer<CallServerModel>(builder: (context, model, child) {
               return Scaffold(
                 appBar: ExpertInCallAppbar(callerUserMetadata!, "", model),
-                body: buildVideoCallView(context, model),
+                body: buildCallView(context, model),
               );
             });
           }

@@ -50,7 +50,7 @@ class CallServerModel extends ChangeNotifier {
   void reset() {
     _errorMessage = "";
     _callTransactionId = "";
-    _agoraCredentials;
+    _agoraCredentials = null;
     _callBeginPaymentPromptModel = new CallServerPaymentPromptModel();
     _connectionState = CallServerConnectionState.DISCONNECTED;
     _counterpartyConnectionState =
