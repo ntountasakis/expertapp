@@ -48,9 +48,6 @@ message ServerCounterpartyJoinedCall {
     uint32 secondsCallAuthorizedFor = 1;
 }
 
-message ServerCounterpartyLeftCall {
-}
-
 message ServerFeeBreakdowns {
     float paymentProcessorPercentFee = 1;
     uint32 paymentProcessorCentsFlatFee = 2;
@@ -66,7 +63,6 @@ message ServerMessageContainer {
         ServerAgoraCredentials serverAgoraCredentials = 2;
         ServerCallBeginPaymentPreAuth serverCallBeginPaymentPreAuth = 3;
         ServerCallBeginPaymentPreAuthResolved serverCallBeginPaymentPreAuthResolved = 4;
-        ServerCounterpartyLeftCall serverCounterpartyLeftCall = 5;
         ServerCounterpartyJoinedCall serverCounterpartyJoinedCall = 6;
         ServerFeeBreakdowns serverFeeBreakdowns = 7;
     }

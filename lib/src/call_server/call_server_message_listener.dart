@@ -29,13 +29,13 @@ class CallServerMessageListener {
     } else if (aMessage.hasServerFeeBreakdowns()) {
       model.onFeeBreakdowns(aMessage.serverFeeBreakdowns);
     } else if (aMessage.hasServerCallBeginPaymentPreAuth()) {
-      model.onServerCallBeginPaymentPreAuth(aMessage.serverCallBeginPaymentPreAuth);
+      model.onServerCallBeginPaymentPreAuth(
+          aMessage.serverCallBeginPaymentPreAuth);
     } else if (aMessage.hasServerCallBeginPaymentPreAuthResolved()) {
       model.onServerCallBeginPaymentPreAuthResolved();
-    } else if (aMessage.hasServerCounterpartyLeftCall()) {
-      model.onServerCounterpartyLeftCall();
     } else if (aMessage.hasServerCounterpartyJoinedCall()) {
-      model.onServerCounterpartyJoinedCall(aMessage.serverCounterpartyJoinedCall);
+      model.onServerCounterpartyJoinedCall(
+          aMessage.serverCounterpartyJoinedCall);
     } else {
       throw new Exception('''Unexpected ServerResponseContainer messageType 
       on call request ${aMessage.whichMessageWrapper()}''');

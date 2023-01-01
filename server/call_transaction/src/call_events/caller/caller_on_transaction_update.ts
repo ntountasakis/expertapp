@@ -7,9 +7,9 @@ export async function onCallerTransactionUpdate(clientMessageSender: ClientMessa
     callState: BaseCallState, update: CallTransaction): Promise<boolean> {
   if (update.callHasEnded) {
     console.log("Caller detected called ended the call");
-    clientMessageSender.sendCounterpartyLeftCall({});
     await callerFinishCallTransaction({transactionId: update.callTransactionId,
       clientMessageSender: clientMessageSender, callState: callState});
+    callState.callStream.end();
     return true;
   } else if (update.calledHasJoined) {
     console.log("Caller detected called joined the call");
