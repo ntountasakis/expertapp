@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
@@ -34,6 +35,8 @@ class CallClientMain extends StatefulWidget {
 class _CallClientMainState extends State<CallClientMain> {
   final CallServerManager callServerManager;
   bool requestedExit = false;
+  final RtcEngineWrapper engineWrapper = RtcEngineWrapper();
+  AgoraVideoCall? videoCall;
 
   _CallClientMainState(this.callServerManager);
 
@@ -46,19 +49,28 @@ class _CallClientMainState extends State<CallClientMain> {
   }
 
   Widget buildVideoCallView(BuildContext context, CallServerModel model) {
-    if (model.agoraCredentials == null) {
+    if (model.agoraCredentials == null ||
+        model.callCounterpartyConnectionState ==
+            CallServerCounterpartyConnectionState.DISCONNECTED) {
       return CircularProgressIndicator();
+    } else if (model.callCounterpartyConnectionState ==
+        CallServerCounterpartyConnectionState.LEFT) {
+      onCounterpartyLeft(model);
+      return SizedBox();
+    } else if (videoCall == null) {
+      final agoraChannelName = model.agoraCredentials!.channelName;
+      final agoraToken = model.agoraCredentials!.token;
+      final agoraUid = model.agoraCredentials!.uid;
+      videoCall = AgoraVideoCall(
+        agoraChannelName: agoraChannelName,
+        agoraToken: agoraToken,
+        agoraUid: agoraUid,
+        onChatButtonTap: onChatButtonTap,
+        onEndCallButtonTap: onEndCallTap,
+        engineWrapper: engineWrapper,
+      );
     }
-    final agoraChannelName = model.agoraCredentials!.channelName;
-    final agoraToken = model.agoraCredentials!.token;
-    final agoraUid = model.agoraCredentials!.uid;
-    return AgoraVideoCall(
-      agoraChannelName: agoraChannelName,
-      agoraToken: agoraToken,
-      agoraUid: agoraUid,
-      onChatButtonTap: onChatButtonTap,
-      onEndCallButtonTap: onEndCallTap,
-    );
+    return videoCall!;
   }
 
   void onChatButtonTap() {
@@ -67,6 +79,9 @@ class _CallClientMainState extends State<CallClientMain> {
   }
 
   Future<void> disconnectFromServer(CallServerModel model) async {
+    if (videoCall != null) {
+      await engineWrapper.teardown();
+    }
     await callServerManager.disconnect();
     model.reset();
     await widget.lifecycle.refreshOwedBalance();
@@ -133,8 +148,7 @@ class _CallClientMainState extends State<CallClientMain> {
             final expertUserMetadata = snapshot.data;
             return Consumer<CallServerModel>(builder: (context, model, child) {
               return Scaffold(
-                appBar:
-                    ClientInCallAppbar(expertUserMetadata!, "", model),
+                appBar: ClientInCallAppbar(expertUserMetadata!, "", model),
                 body: buildCallView(context, model),
               );
             });
