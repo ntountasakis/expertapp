@@ -1,4 +1,5 @@
 import {v4 as uuidv4} from "uuid";
+import { getUtcMsSinceEpoch } from "../../../general/utils";
 import { getCallTransactionDocumentRef } from "../document_fetchers/fetchers";
 import { CallTransaction } from "../models/call_transaction";
 import { ExpertRate } from "../models/expert_rate";
@@ -13,7 +14,7 @@ calledUserFcmToken: FcmToken, expertRate: ExpertRate, maxCallTimeSec: number}): 
       "callerUid": callerUid,
       "calledUid": calledUid,
       "calledFcmToken": calledUserFcmToken.token,
-      "callRequestTimeUtcMs": Date.now(),
+      "callRequestTimeUtcMs": getUtcMsSinceEpoch(),
       "expertRateCentsPerMinute": expertRate.centsPerMinute,
       "expertRateCentsCallStart": expertRate.centsCallStart,
       "agoraChannelName": uuidv4(),

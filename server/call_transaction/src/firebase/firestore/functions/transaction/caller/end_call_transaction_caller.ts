@@ -10,6 +10,7 @@ import cancelStripePaymentIntent from "../../../../../../../shared/src/stripe/ca
 import {UserOwedBalance} from "../../../../../../../shared/src/firebase/firestore/models/user_owed_balance";
 import {updatePaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status";
 import {CallerCallState} from "../../../../../call_state/caller/caller_call_state";
+import {getUtcMsSinceEpoch} from "../../../../../../../shared/src/general/utils";
 
 export const endCallTransactionCaller = async ({transactionId, callState} : {transactionId: string, callState: CallerCallState})
 : Promise<void> => {
@@ -23,7 +24,7 @@ export const endCallTransactionCaller = async ({transactionId, callState} : {tra
     const userOwed: UserOwedBalance = await getUserOwedBalanceDocumentTransaction({
       uid: callTransaction.callerUid, transaction: transaction});
 
-    const endTimeUtcMs = callTransaction.callHasEnded ? callTransaction.callEndTimeUtsMs : Date.now();
+    const endTimeUtcMs = callTransaction.callHasEnded ? callTransaction.callEndTimeUtsMs : getUtcMsSinceEpoch();
     let costOfCallInCents = 0;
     if (callTransaction.calledHasJoined) {
       costOfCallInCents = calculateCostOfCallInCents({
