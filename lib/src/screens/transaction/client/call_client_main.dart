@@ -107,13 +107,22 @@ class _CallClientMainState extends State<CallClientMain> {
       requestedExit = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
         await disconnectFromServer(model);
-        context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
-            params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
+        if (model.callCounterpartyConnectionState ==
+            CallServerCounterpartyConnectionState.JOINED) {
+          context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
+              params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
+        } else {
+          context.goNamed(Routes.HOME);
+        }
       });
     }
   }
 
   Widget buildCallView(BuildContext context, CallServerModel model) {
+    if (model.callConnectionState == CallServerConnectionState.DISCONNECTED) {
+      onServerDisconnect(model);
+      return SizedBox();
+    }
     if (model.callPaymentPromptModel.paymentState ==
         PaymentState.PAYMENT_CANCELLED) {
       onPaymentCancelled(context, model);
@@ -121,12 +130,6 @@ class _CallClientMainState extends State<CallClientMain> {
     }
     if (model.callPaymentPromptModel.paymentState !=
         PaymentState.PAYMENT_COMPLETE) {
-      return SizedBox();
-    }
-    if (model.callConnectionState == CallServerConnectionState.DISCONNECTED &&
-        model.callCounterpartyConnectionState ==
-            CallServerCounterpartyConnectionState.JOINED) {
-      onServerDisconnect(model);
       return SizedBox();
     }
     return buildVideoCallView(context, model);

@@ -22,7 +22,6 @@ import {sendGrpcServerFeeBreakdowns} from "../server/client_communication/grpc/s
 import {ClientMessageContainer} from "../protos/call_transaction_package/ClientMessageContainer";
 import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
 
-
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallManager,
     callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>): Promise<boolean> {
@@ -46,6 +45,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
 
   _listenForPaymentSuccess({callState: newClientCallState, callTransaction: callTransaction});
   _listenForCallTransactionUpdates({callState: newClientCallState, callTransaction: callTransaction});
+  _startCallJoinExpirationTimer({callerCallState: newClientCallState});
 
   sendGrpcCallJoinOrRequestSuccess(callTransaction.callTransactionId, clientMessageSender);
   sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret, ephemeralKey, stripeCustomerId);
@@ -81,4 +81,8 @@ function _listenForCallTransactionUpdates({callState, callTransaction}:
     updateCallback: onCallerTransactionUpdate,
     unsubscribeFn: listenForCallTransactionUpdates(
         callTransaction.callTransactionId, callState.eventListenerManager)});
+}
+
+function _startCallJoinExpirationTimer({callerCallState}: {callerCallState: CallerCallState}) {
+  callerCallState.setCallJoinExpirationTimer(30);
 }

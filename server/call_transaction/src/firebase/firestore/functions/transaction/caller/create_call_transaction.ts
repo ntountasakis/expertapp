@@ -16,8 +16,7 @@ import {calculateMaxCallLengthSec} from "../../util/call_cost_calculator";
 
 export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: string, calledUid: string}):
   Promise<[boolean, string, string, string, CallTransaction?, ExpertRate?]> => {
-  // const amountCentsPreAuth = 100 * 100;
-  const amountCentsPreAuth = 330; // TODO
+  const amountCentsPreAuth = 100 * 100;
   const [canCreateCall, callTransaction, paymentStatus, userInfo, expertRate] = await admin.firestore().runTransaction(async (transaction) => {
     if (calledUid == null || calledUid == null) {
       const errorMessage = `Invalid Call Transaction Request, either ids are null.

@@ -1,1 +1,1 @@
-enum CallServerConnectionState { ERRORED, DISCONNECTED, CONNECTED }
+enum CallServerConnectionState { UNCONNECTED, ERRORED, DISCONNECTED, CONNECTED }

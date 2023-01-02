@@ -13,7 +13,7 @@ class CallServerModel extends ChangeNotifier {
       new CallServerPaymentPromptModel();
 
   CallServerConnectionState _connectionState =
-      CallServerConnectionState.DISCONNECTED;
+      CallServerConnectionState.UNCONNECTED;
 
   CallServerCounterpartyConnectionState _counterpartyConnectionState =
       CallServerCounterpartyConnectionState.DISCONNECTED;
@@ -45,7 +45,7 @@ class CallServerModel extends ChangeNotifier {
     _callTransactionId = "";
     _agoraCredentials = null;
     _callBeginPaymentPromptModel = new CallServerPaymentPromptModel();
-    _connectionState = CallServerConnectionState.DISCONNECTED;
+    _connectionState = CallServerConnectionState.UNCONNECTED;
     _counterpartyConnectionState =
         CallServerCounterpartyConnectionState.DISCONNECTED;
     _msEpochOfCounterpartyConnected = 0;

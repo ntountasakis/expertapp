@@ -31,7 +31,7 @@ Promise<[boolean, CallTransaction]> => {
 
     callTransaction.calledHasJoined = true;
     callTransaction.calledJoinTimeUtcMs = Date.now();
-    getCallTransactionDocumentRef({transactionId: transactionId}).update({
+    transaction.update(getCallTransactionDocumentRef({transactionId: transactionId}), {
       "calledHasJoined": callTransaction.calledHasJoined,
       "calledJoinTimeUtcMs": callTransaction.calledJoinTimeUtcMs,
     });

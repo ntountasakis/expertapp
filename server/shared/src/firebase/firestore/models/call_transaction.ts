@@ -13,6 +13,7 @@ export interface CallTransaction
     calledHasJoined: boolean;
     calledJoinTimeUtcMs: number;
     callHasEnded: boolean;
+    callHasExpired: boolean;
     callEndTimeUtsMs: number;
     maxCallTimeSec: number;
 }
