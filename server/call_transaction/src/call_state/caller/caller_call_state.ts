@@ -11,6 +11,7 @@ export class CallerCallState extends BaseCallState {
   callerBeginCallContext: CallerBeginCallContext;
   hasInitiatedCallFinish: boolean;
   _callJoinExpirationTimer?: NodeJS.Timeout;
+  callJoinExpirationTimeUtcMs: number;
 
   constructor({callerBeginCallContext, clientMessageSender, onDisconnect, userId, callStream}:
     {callerBeginCallContext: CallerBeginCallContext, clientMessageSender: ClientMessageSenderInterface,
@@ -20,10 +21,13 @@ export class CallerCallState extends BaseCallState {
     this.callerBeginCallContext = callerBeginCallContext;
     this.hasInitiatedCallFinish = false;
     this._callJoinExpirationTimer = undefined;
+    this.callJoinExpirationTimeUtcMs = 0;
   }
 
   setCallJoinExpirationTimer(maxWaitTimeSec: number): void {
-    console.log(`Call join expiration timer started for ${maxWaitTimeSec * 1000} ms at ${Date.now()}`);
+    const currentMs = Date.now();
+    console.log(`Call join expiration timer started for ${maxWaitTimeSec} seconds at ${currentMs}`);
+    this.callJoinExpirationTimeUtcMs = currentMs + maxWaitTimeSec * 1000;
     this._callJoinExpirationTimer = setTimeout(this._callJoinExpirationTimerReached.bind(this), maxWaitTimeSec * 1000);
   }
 
