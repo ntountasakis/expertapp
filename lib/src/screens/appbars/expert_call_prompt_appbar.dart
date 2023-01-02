@@ -1,26 +1,39 @@
 import 'package:expertapp/src/screens/appbars/widgets/time_remaining.dart';
 import 'package:flutter/material.dart';
 
-int endTimeLocalMs(int callJoinExpirationTimeUtcMs) {
-  int msRemaining = callJoinExpirationTimeUtcMs -
-      DateTime.now().toUtc().millisecondsSinceEpoch;
-  return DateTime.now().millisecondsSinceEpoch + msRemaining;
+int msRemainingToJoin(int callJoinExpirationTimeUtcMs) {
+  int msSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch;
+  int msRemaining = callJoinExpirationTimeUtcMs - msSinceEpoch;
+  if (msRemaining < 0) {
+    msRemaining = 0;
+  }
+  return msRemaining;
 }
 
-class ExpertCallPromptAppbar extends StatelessWidget with PreferredSizeWidget {
-  final TimeRemaining joinTimeRemainingWidget;
+class ExpertCallPromptAppbar extends StatefulWidget with PreferredSizeWidget {
   final int callJoinExpirationTimeUtcMs;
   final String callerName;
   final VoidCallback onCallJoinTimerExpires;
 
   ExpertCallPromptAppbar(this.callJoinExpirationTimeUtcMs, this.callerName,
-      this.onCallJoinTimerExpires)
-      : joinTimeRemainingWidget = TimeRemaining(
-            endTimeLocalMs: endTimeLocalMs(callJoinExpirationTimeUtcMs),
-            onEnd: onCallJoinTimerExpires);
+      this.onCallJoinTimerExpires);
+
+  @override
+  State<ExpertCallPromptAppbar> createState() =>
+      _ExpertCallPromptAppbarState(TimeRemaining(
+          msRemaining: msRemainingToJoin(callJoinExpirationTimeUtcMs),
+          onEnd: onCallJoinTimerExpires));
+
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+}
+
+class _ExpertCallPromptAppbarState extends State<ExpertCallPromptAppbar> {
+  final TimeRemaining joinTimeRemainingWidget;
+
+  _ExpertCallPromptAppbarState(this.joinTimeRemainingWidget);
 
   String buildTitle() {
-    return "Call from $callerName. Time left to join: ";
+    return "Call from ${widget.callerName}. Time left to join: ";
   }
 
   @override
