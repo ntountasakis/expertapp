@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/index.dart';
 
 class TimeRemaining extends StatefulWidget {
-  final int endTimeLocalMs;
+  final int msRemaining;
   final VoidCallback onEnd;
 
-  const TimeRemaining({required this.endTimeLocalMs, required this.onEnd});
+  const TimeRemaining({required this.msRemaining, required this.onEnd});
 
   @override
   State<TimeRemaining> createState() => _TimeRemainingState();
@@ -19,7 +19,7 @@ class _TimeRemainingState extends State<TimeRemaining> {
   void initState() {
     super.initState();
     controller = CountdownTimerController(
-      endTime: widget.endTimeLocalMs,
+      endTime: widget.msRemaining + DateTime.now().millisecondsSinceEpoch,
       onEnd: widget.onEnd,
     );
   }
@@ -33,7 +33,7 @@ class _TimeRemainingState extends State<TimeRemaining> {
   Widget callJoinTimeRemaining() {
     return CountdownTimer(
       controller: controller,
-      endTime: widget.endTimeLocalMs,
+      endTime: widget.msRemaining,
       endWidget: SizedBox(),
       onEnd: widget.onEnd,
     );

@@ -1,7 +1,7 @@
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
+import 'package:expertapp/src/screens/appbars/widgets/time_remaining.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_countdown_timer/index.dart';
 import 'package:provider/provider.dart';
 
 class CallTimeRemaining extends StatefulWidget {
@@ -12,15 +12,6 @@ class CallTimeRemaining extends StatefulWidget {
 class _CallTimeRemainingState extends State<CallTimeRemaining> {
   Widget? countdownTimer;
 
-  Widget callTimeRemaining(int maxCallLengthSec) {
-    int endTime =
-        DateTime.now().millisecondsSinceEpoch + (1000 * maxCallLengthSec);
-    return CountdownTimer(
-      endTime: endTime,
-      endWidget: SizedBox(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<CallServerModel>(builder: (context, model, child) {
@@ -29,7 +20,9 @@ class _CallTimeRemainingState extends State<CallTimeRemaining> {
       }
       if (model.callCounterpartyConnectionState ==
           CallServerCounterpartyConnectionState.JOINED) {
-        countdownTimer = callTimeRemaining(model.secMaxCallLength);
+        int msRemaining = (1000 * model.secMaxCallLength);
+        countdownTimer =
+            TimeRemaining(msRemaining: msRemaining, onEnd: (() => {}));
         return countdownTimer!;
       }
       return SizedBox();
