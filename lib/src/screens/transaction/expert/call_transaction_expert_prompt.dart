@@ -53,13 +53,13 @@ class _CallTransactionExpertPromptState
     });
   }
 
-  void onCallDeclineTap() {
+  void navigateHome() {
     context.goNamed(Routes.HOME);
   }
 
   Widget buildCallButtons(BuildContext context) {
     return callButtonRow(context, [
-      endCallButton(onCallDeclineTap),
+      endCallButton(navigateHome),
       SizedBox(
         width: 50,
       ),
@@ -77,8 +77,10 @@ class _CallTransactionExpertPromptState
             final callerMetadata = snapshot.data;
             return Scaffold(
                 appBar: ExpertCallPromptAppbar(
-                    widget.callJoinExpirationTimeUtcMs,
-                    callerMetadata!.documentType.firstName),
+                  widget.callJoinExpirationTimeUtcMs,
+                  callerMetadata!.documentType.firstName,
+                  navigateHome,
+                ),
                 body: Container(
                   padding: EdgeInsets.all(8.0),
                   child: Column(children: [
