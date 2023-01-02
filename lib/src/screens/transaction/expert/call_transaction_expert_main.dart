@@ -49,9 +49,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
   }
 
   Widget buildCallView(BuildContext context, CallServerModel model) {
-    if (model.callConnectionState == CallServerConnectionState.DISCONNECTED &&
-        model.callCounterpartyConnectionState ==
-            CallServerCounterpartyConnectionState.JOINED) {
+    if (model.callConnectionState == CallServerConnectionState.DISCONNECTED) {
       onServerDisconnect(model);
       return SizedBox();
     }
