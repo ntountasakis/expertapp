@@ -6,6 +6,7 @@ import {ClientMessageSenderInterface} from "../../message_sender/client_message_
 import {ClientMessageContainer} from "../../protos/call_transaction_package/ClientMessageContainer";
 import {ServerMessageContainer} from "../../protos/call_transaction_package/ServerMessageContainer";
 import endCallTransactionJoinTimerExpired from "../../firebase/firestore/functions/transaction/caller/end_call_transaction_join_timer_expired";
+import {getUtcMsSinceEpoch} from "../../../../shared/src/general/utils";
 
 export class CallerCallState extends BaseCallState {
   callerBeginCallContext: CallerBeginCallContext;
@@ -25,9 +26,9 @@ export class CallerCallState extends BaseCallState {
   }
 
   setCallJoinExpirationTimer(maxWaitTimeSec: number): void {
-    const currentMs = Date.now();
-    console.log(`Call join expiration timer started for ${maxWaitTimeSec} seconds at ${currentMs}`);
+    const currentMs = getUtcMsSinceEpoch();
     this.callJoinExpirationTimeUtcMs = currentMs + maxWaitTimeSec * 1000;
+    console.log(`Call join expiration timer started for ${maxWaitTimeSec} seconds for expiration at ${this.callJoinExpirationTimeUtcMs}`);
     this._callJoinExpirationTimer = setTimeout(this._callJoinExpirationTimerReached.bind(this), maxWaitTimeSec * 1000);
   }
 

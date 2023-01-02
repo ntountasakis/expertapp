@@ -1,4 +1,5 @@
 import * as grpc from "@grpc/grpc-js";
+import {getUtcMsSinceEpoch} from "../../../../shared/src/general/utils";
 import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
 import {ClientMessageContainer} from "../../protos/call_transaction_package/ClientMessageContainer";
 import {ServerMessageContainer} from "../../protos/call_transaction_package/ServerMessageContainer";
@@ -21,7 +22,7 @@ export class CalledCallState extends BaseCallState {
 
   setMaxCallLengthTimer(maxCallTimeSec: number): void {
     this.maxCallLengthTimer = setTimeout(this._maxCallLengthReached.bind(this), maxCallTimeSec * 1000);
-    console.log(`Max call length started for ${maxCallTimeSec * 1000} ms at ${Date.now()}`);
+    console.log(`Max call length started for ${maxCallTimeSec * 1000} ms at ${getUtcMsSinceEpoch()}`);
   }
 
   cancelMaxCallLengthTimer(): void {

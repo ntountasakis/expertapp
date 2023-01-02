@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import {isStringDefined} from "../../../../../../../shared/src/general/utils";
+import {getUtcMsSinceEpoch, isStringDefined} from "../../../../../../../shared/src/general/utils";
 import {getCallTransactionDocument, getCallTransactionDocumentRef, getPrivateUserDocument} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
 import {PrivateUserInfo} from "../../../../../../../shared/src/firebase/firestore/models/private_user_info";
@@ -34,7 +34,7 @@ Promise<[boolean, CallTransaction]> => {
     }
 
     callTransaction.calledHasJoined = true;
-    callTransaction.calledJoinTimeUtcMs = Date.now();
+    callTransaction.calledJoinTimeUtcMs = getUtcMsSinceEpoch();
     transaction.update(getCallTransactionDocumentRef({transactionId: transactionId}), {
       "calledHasJoined": callTransaction.calledHasJoined,
       "calledJoinTimeUtcMs": callTransaction.calledJoinTimeUtcMs,
