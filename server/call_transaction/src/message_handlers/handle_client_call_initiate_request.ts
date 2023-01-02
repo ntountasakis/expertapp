@@ -83,6 +83,6 @@ function _listenForCallTransactionUpdates({callState, callTransaction}:
         callTransaction.callTransactionId, callState.eventListenerManager)});
 }
 
-function _startCallJoinExpirationTimer({callerCallState}: {callerCallState: CallerCallState}) {
+function _startCallJoinExpirationTimer({callerCallState}: {callerCallState: CallerCallState}): void {
   callerCallState.setCallJoinExpirationTimer(30);
 }

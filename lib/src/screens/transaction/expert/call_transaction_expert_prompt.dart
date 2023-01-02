@@ -2,7 +2,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/document_wrappe
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
-import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
+import 'package:expertapp/src/screens/appbars/expert_call_prompt_appbar.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:expertapp/src/util/call_buttons.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +13,14 @@ class CallTransactionExpertPrompt extends StatefulWidget {
   final String currentUserId;
   final String callerUserId;
   final ExpertRate expertRate;
+  final int callJoinExpirationTimeUtcMs;
 
   const CallTransactionExpertPrompt(
       {required this.transactionId,
       required this.currentUserId,
       required this.callerUserId,
-      required this.expertRate});
+      required this.expertRate,
+      required this.callJoinExpirationTimeUtcMs});
 
   @override
   State<CallTransactionExpertPrompt> createState() =>
@@ -74,8 +76,9 @@ class _CallTransactionExpertPromptState
           if (snapshot.hasData) {
             final callerMetadata = snapshot.data;
             return Scaffold(
-                appBar:
-                    UserPreviewAppbar(callerMetadata!, "Incoming call from"),
+                appBar: ExpertCallPromptAppbar(
+                    widget.callJoinExpirationTimeUtcMs,
+                    callerMetadata!.documentType.firstName),
                 body: Container(
                   padding: EdgeInsets.all(8.0),
                   child: Column(children: [

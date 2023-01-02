@@ -56,6 +56,7 @@ void initFirebaseMessagingForegroundHandler(
       Routes.CALL_TRANSACTION_ID_PARAM: callJoinRequest.callTransactionId,
       Routes.CALL_RATE_START_PARAM: callJoinRequest.callRateStartCents,
       Routes.CALL_RATE_PER_MINUTE_PARAM: callJoinRequest.callRatePerMinuteCents,
+      Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS: callJoinRequest.callJoinExpirationTimeUtcMs,
     });
   });
 }

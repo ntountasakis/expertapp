@@ -17,6 +17,7 @@ class Routes {
   static const EXPERT_ID_PARAM = 'id';
   static const CALL_RATE_START_PARAM = 'callRateStart';
   static const CALL_RATE_PER_MINUTE_PARAM = 'callRatePerMinute';
+  static const CALL_JOIN_EXPIRATION_TIME_UTC_MS = 'callJoinExpirationTimeUtcMs';
 
   static const EXPERT_LISTINGS_PAGE = '/expertlistings';
   static const EXPERT_PROFILE_PAGE = 'expertProfilePage';

@@ -19,6 +19,7 @@ class MyTestApp extends StatelessWidget {
           currentUserId: "mpKZBT949r8LM9wkzIvfl6GQQ2OQ",
           callerUserId: "US8xSI8IkEZH0TFrQPt7yA700lhR",
           expertRate: ExpertRate(centsCallStart: 80, centsPerMinute: 180),
+          callJoinExpirationTimeUtcMs: DateTime.now().toUtc().millisecondsSinceEpoch + 50000,
         ));
   }
 }

@@ -22,6 +22,7 @@ class MessageDecoder {
         calledUid: json['calledUid'],
         callTransactionId: json['callTransactionId'],
         callRateStartCents: json['callRateStartCents'],
-        callRatePerMinuteCents: json['callRatePerMinuteCents']);
+        callRatePerMinuteCents: json['callRatePerMinuteCents'],
+        callJoinExpirationTimeUtcMs: json['callJoinExpirationTimeUtcMs']);
   }
 }

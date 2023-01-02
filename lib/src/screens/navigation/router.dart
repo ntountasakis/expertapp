@@ -176,21 +176,27 @@ class AppRouter {
               '/:' +
               Routes.CALL_RATE_START_PARAM +
               '/:' +
-              Routes.CALL_RATE_PER_MINUTE_PARAM,
+              Routes.CALL_RATE_PER_MINUTE_PARAM +
+              '/:' +
+              Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS,
           builder: (BuildContext context, GoRouterState state) {
             final callerUid = state.params[Routes.CALLER_UID_PARAM];
             final transactionId =
                 state.params[Routes.CALL_TRANSACTION_ID_PARAM];
-            final rateStartCents = state.params[Routes.CALL_RATE_START_PARAM];
+            final rateStartCents =
+                int.parse(state.params[Routes.CALL_RATE_START_PARAM]!);
             final ratePerMinuteCents =
-                state.params[Routes.CALL_RATE_PER_MINUTE_PARAM];
+                int.parse(state.params[Routes.CALL_RATE_PER_MINUTE_PARAM]!);
+            final callJoinExpirationTimeUtcMs = int.parse(
+                state.params[Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS]!);
             return CallTransactionExpertPrompt(
               transactionId: transactionId!,
               currentUserId: lifecycle.userMetadata!.documentId,
               callerUserId: callerUid!,
               expertRate: ExpertRate(
-                  centsCallStart: int.parse(rateStartCents!),
-                  centsPerMinute: int.parse(ratePerMinuteCents!)),
+                  centsCallStart: rateStartCents,
+                  centsPerMinute: ratePerMinuteCents),
+              callJoinExpirationTimeUtcMs: callJoinExpirationTimeUtcMs,
             );
           }),
       GoRoute(
