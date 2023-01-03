@@ -20,8 +20,8 @@ Promise<[boolean, CallTransaction]> => {
       console.error(`Uid ${callTransaction.calledUid} has no connected stripe account. Cannot join call`);
       return [false, callTransaction];
     }
-    if (callTransaction.callHasExpired) {
-      console.error(`CallTransaction ${transactionId} has expired. Cannot join call`);
+    if (callTransaction.callHasEnded) {
+      console.error(`CallTransaction ${transactionId} has already ended. Cannot join call`);
       return [false, callTransaction];
     }
 
