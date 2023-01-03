@@ -5,8 +5,8 @@ import {BaseCallState} from "../common/base_call_state";
 import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
 import {ClientMessageContainer} from "../../protos/call_transaction_package/ClientMessageContainer";
 import {ServerMessageContainer} from "../../protos/call_transaction_package/ServerMessageContainer";
-import endCallTransactionJoinTimerExpired from "../../firebase/firestore/functions/transaction/caller/end_call_transaction_join_timer_expired";
 import {getUtcMsSinceEpoch} from "../../../../shared/src/general/utils";
+import {endCallTransactionCaller} from "../../firebase/firestore/functions/transaction/caller/end_call_transaction_caller";
 
 export class CallerCallState extends BaseCallState {
   callerBeginCallContext: CallerBeginCallContext;
@@ -41,7 +41,7 @@ export class CallerCallState extends BaseCallState {
 
   async _callJoinExpirationTimerReached(): Promise<void> {
     console.log("Call join expiration timer went off marking call expired and disconnecting");
-    await endCallTransactionJoinTimerExpired({transactionId: this.transactionId});
+    await endCallTransactionCaller({transactionId: this.transactionId, callState: this});
     this.callStream.end();
   }
 }

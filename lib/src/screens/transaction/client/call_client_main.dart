@@ -10,6 +10,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.d
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/appbars/client_in_call_appbar.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
+import 'package:expertapp/src/screens/transaction/client/widgets/call_waiting_join.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -117,7 +118,8 @@ class _CallClientMainState extends State<CallClientMain> {
     }
   }
 
-  Widget buildCallView(BuildContext context, CallServerModel model) {
+  Widget buildCallView(BuildContext context, CallServerModel model,
+      DocumentWrapper<UserMetadata> calledMetadata) {
     if (model.callConnectionState == CallServerConnectionState.DISCONNECTED) {
       onServerDisconnect(model);
       return SizedBox();
@@ -130,6 +132,12 @@ class _CallClientMainState extends State<CallClientMain> {
     if (model.callPaymentPromptModel.paymentState !=
         PaymentState.PAYMENT_COMPLETE) {
       return SizedBox();
+    }
+    if (model.agoraCredentials == null ||
+        model.callCounterpartyConnectionState ==
+            CallServerCounterpartyConnectionState.DISCONNECTED) {
+      return CallWaitingJoin(
+          onCancelCallTap: onEndCallTap, calledUserMetadata: calledMetadata);
     }
     return buildVideoCallView(context, model);
   }
@@ -145,7 +153,7 @@ class _CallClientMainState extends State<CallClientMain> {
             return Consumer<CallServerModel>(builder: (context, model, child) {
               return Scaffold(
                 appBar: ClientInCallAppbar(expertUserMetadata!),
-                body: buildCallView(context, model),
+                body: buildCallView(context, model, expertUserMetadata),
               );
             });
           } else {
