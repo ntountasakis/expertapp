@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
@@ -106,9 +104,10 @@ class _CallClientMainState extends State<CallClientMain> {
     if (!requestedExit) {
       requestedExit = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
+        final counterpartyJoined = model.callCounterpartyConnectionState ==
+            CallServerCounterpartyConnectionState.JOINED;
         await disconnectFromServer(model);
-        if (model.callCounterpartyConnectionState ==
-            CallServerCounterpartyConnectionState.JOINED) {
+        if (counterpartyJoined) {
           context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
               params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
         } else {
@@ -145,7 +144,7 @@ class _CallClientMainState extends State<CallClientMain> {
             final expertUserMetadata = snapshot.data;
             return Consumer<CallServerModel>(builder: (context, model, child) {
               return Scaffold(
-                appBar: ClientInCallAppbar(expertUserMetadata!, "", model),
+                appBar: ClientInCallAppbar(expertUserMetadata!),
                 body: buildCallView(context, model),
               );
             });

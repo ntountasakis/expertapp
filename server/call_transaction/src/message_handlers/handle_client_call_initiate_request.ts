@@ -45,7 +45,6 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
 
   _listenForPaymentSuccess({callState: newClientCallState, callTransaction: callTransaction});
   _listenForCallTransactionUpdates({callState: newClientCallState, callTransaction: callTransaction});
-  _startCallJoinExpirationTimer({callerCallState: newClientCallState});
 
   sendGrpcCallJoinOrRequestSuccess(callTransaction.callTransactionId, clientMessageSender);
   sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret, ephemeralKey, stripeCustomerId);
@@ -81,8 +80,4 @@ function _listenForCallTransactionUpdates({callState, callTransaction}:
     updateCallback: onCallerTransactionUpdate,
     unsubscribeFn: listenForCallTransactionUpdates(
         callTransaction.callTransactionId, callState.eventListenerManager)});
-}
-
-function _startCallJoinExpirationTimer({callerCallState}: {callerCallState: CallerCallState}): void {
-  callerCallState.setCallJoinExpirationTimer(30);
 }

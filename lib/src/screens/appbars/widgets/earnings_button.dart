@@ -90,7 +90,7 @@ String beforeFees(ServerFeeBreakdowns fees, int callLengthSec) {
 
 String paymentProcessorFees(ServerFeeBreakdowns fees, int callLengthSec) {
   String fmtAmt = formattedRate(paymentProcessorFeesCents(fees, callLengthSec));
-  return 'Payment Process Fees: ${fmtAmt}';
+  return 'Payment Processor Fees: ${fmtAmt}';
 }
 
 String platformFees(ServerFeeBreakdowns fees, int callLengthSec) {

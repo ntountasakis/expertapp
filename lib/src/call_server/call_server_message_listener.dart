@@ -32,7 +32,8 @@ class CallServerMessageListener {
       model.onServerCallBeginPaymentPreAuth(
           aMessage.serverCallBeginPaymentPreAuth);
     } else if (aMessage.hasServerCallBeginPaymentPreAuthResolved()) {
-      model.onServerCallBeginPaymentPreAuthResolved();
+      model.onServerCallBeginPaymentPreAuthResolved(
+          aMessage.serverCallBeginPaymentPreAuthResolved);
     } else if (aMessage.hasServerCounterpartyJoinedCall()) {
       model.onServerCounterpartyJoinedCall(
           aMessage.serverCounterpartyJoinedCall);
