@@ -42,6 +42,7 @@ message ServerCallBeginPaymentPreAuth {
 }
 
 message ServerCallBeginPaymentPreAuthResolved {
+    int64 joinCallTimeExpiryUtcMs = 1;
 }
 
 message ServerCounterpartyJoinedCall {

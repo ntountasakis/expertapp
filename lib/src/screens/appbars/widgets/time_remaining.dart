@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/index.dart';
 
+int msRemainingToJoin(int callJoinExpirationTimeUtcMs) {
+  int msSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch;
+  int msRemaining = callJoinExpirationTimeUtcMs - msSinceEpoch;
+  if (msRemaining < 0) {
+    msRemaining = 0;
+  }
+  return msRemaining;
+}
+
 class TimeRemaining extends StatefulWidget {
   final int msRemaining;
   final VoidCallback onEnd;
@@ -12,14 +21,22 @@ class TimeRemaining extends StatefulWidget {
 }
 
 class _TimeRemainingState extends State<TimeRemaining> {
-  Widget? countdownTimer;
   late CountdownTimerController controller;
+  late CountdownTimer countdownTimer;
+  int endTime = 0;
 
   @override
   void initState() {
     super.initState();
+    endTime = widget.msRemaining + DateTime.now().millisecondsSinceEpoch;
     controller = CountdownTimerController(
-      endTime: widget.msRemaining + DateTime.now().millisecondsSinceEpoch,
+      endTime: endTime,
+      onEnd: widget.onEnd,
+    );
+    countdownTimer = CountdownTimer(
+      controller: controller,
+      endTime: endTime,
+      endWidget: SizedBox(),
       onEnd: widget.onEnd,
     );
   }
@@ -30,17 +47,8 @@ class _TimeRemainingState extends State<TimeRemaining> {
     super.dispose();
   }
 
-  Widget callJoinTimeRemaining() {
-    return CountdownTimer(
-      controller: controller,
-      endTime: widget.msRemaining,
-      endWidget: SizedBox(),
-      onEnd: widget.onEnd,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return callJoinTimeRemaining();
+    return countdownTimer;
   }
 }

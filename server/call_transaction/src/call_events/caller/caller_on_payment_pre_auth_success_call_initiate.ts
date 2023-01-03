@@ -13,15 +13,19 @@ export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSen
     callState : BaseCallState,
     update: PaymentStatus): Promise<boolean> {
   if (update.status == PaymentStatusStates.CHARGE_CONFIRMED) {
-    const paymentPreAuthResolved: ServerCallBeginPaymentPreAuthResolved = {};
-    clientMessageSender.sendCallBeginPaymentPreAuthResolved(paymentPreAuthResolved);
-
     const callerCallState = callState as CallerCallState;
     const callTransaction = (await getCallTransactionDocumentRef({
       transactionId: callerCallState.callerBeginCallContext.transactionId}).get()).data() as CallTransaction;
 
     const startRateString = callTransaction.expertRateCentsCallStart.toString();
     const perMinuteRateString = callTransaction.expertRateCentsPerMinute.toString();
+
+    callerCallState.setCallJoinExpirationTimer(30);
+
+    const paymentPreAuthResolved: ServerCallBeginPaymentPreAuthResolved = {
+      "joinCallTimeExpiryUtcMs": callerCallState.callJoinExpirationTimeUtcMs,
+    };
+    clientMessageSender.sendCallBeginPaymentPreAuthResolved(paymentPreAuthResolved);
 
     sendFcmCallJoinRequest({fcmToken: callerCallState.callerBeginCallContext.calledFcmToken,
       callerUid: callerCallState.callerBeginCallContext.callerUid,

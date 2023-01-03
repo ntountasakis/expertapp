@@ -47,7 +47,7 @@ class DummyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ExpertInCallAppbar(buildUser(), "Call", buildModel()),
+      appBar: ExpertInCallAppbar(buildUser(), buildModel()),
       body: SizedBox(),
     );
   }

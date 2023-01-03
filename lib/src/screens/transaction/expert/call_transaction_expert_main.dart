@@ -114,7 +114,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
             final callerUserMetadata = snapshot.data;
             return Consumer<CallServerModel>(builder: (context, model, child) {
               return Scaffold(
-                appBar: ExpertInCallAppbar(callerUserMetadata!, "", model),
+                appBar: ExpertInCallAppbar(callerUserMetadata!, model),
                 body: buildCallView(context, model),
               );
             });

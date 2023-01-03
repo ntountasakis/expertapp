@@ -30,6 +30,7 @@ class CallServerModel extends ChangeNotifier {
       _counterpartyConnectionState;
 
   int _msEpochOfCounterpartyConnected = 0;
+  int callJoinTimeExpiryUtcMs = 0;
   int secMaxCallLength = 0;
 
   int callLengthSeconds() {
@@ -49,6 +50,7 @@ class CallServerModel extends ChangeNotifier {
     _counterpartyConnectionState =
         CallServerCounterpartyConnectionState.DISCONNECTED;
     _msEpochOfCounterpartyConnected = 0;
+    callJoinTimeExpiryUtcMs = 0;
   }
 
   void onConnected() {
@@ -70,6 +72,7 @@ class CallServerModel extends ChangeNotifier {
   void onServerCallJoinOrRequestResponse(
       ServerCallJoinOrRequestResponse response) {
     _callTransactionId = response.callTransactionId;
+    notifyListeners();
   }
 
   void onAgoraCredentials(ServerAgoraCredentials agoraCredentials) {
@@ -91,8 +94,10 @@ class CallServerModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void onServerCallBeginPaymentPreAuthResolved() {
+  void onServerCallBeginPaymentPreAuthResolved(
+      ServerCallBeginPaymentPreAuthResolved response) {
     _callBeginPaymentPromptModel.onPaymentComplete();
+    callJoinTimeExpiryUtcMs = response.joinCallTimeExpiryUtcMs.toInt();
     notifyListeners();
   }
 
