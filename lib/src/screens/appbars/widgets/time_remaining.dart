@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/index.dart';
 
 int msRemainingToJoin(int callJoinExpirationTimeUtcMs) {
-  int msSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch;
+  int msSinceEpoch = new DateTime.now().millisecondsSinceEpoch;
   int msRemaining = callJoinExpirationTimeUtcMs - msSinceEpoch;
   if (msRemaining < 0) {
     msRemaining = 0;
