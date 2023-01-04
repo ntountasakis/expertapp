@@ -31,6 +31,7 @@ dependencies:
   firebase_database: ^9.0.5
   firebase_messaging: ^13.0.0
   firebase_storage: ^10.1.0
+  firebase_core_platform_interface: 4.5.1
   flutter:
     sdk: flutter
   flutter_chat_bubble: ^2.0.0
