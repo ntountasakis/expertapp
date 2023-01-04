@@ -1,3 +1,4 @@
+import { CallJoinCancel } from "../messages/call_join_cancel";
 import { CallJoinRequest } from "../messages/call_join_request";
 import { sendFcmMessage } from "../sender/fcm_token_sender";
 
@@ -16,6 +17,18 @@ export const sendFcmCallJoinRequest = function ({ fcmToken, callerUid, calledUid
       callRateStartCents: callRateStartCents,
       callRatePerMinuteCents: callRatePerMinuteCents,
       callJoinExpirationTimeUtcMs: callJoinExpirationTimeUtcMs.toString(),
+    },
+    token: fcmToken,
+  };
+
+  // Send a message to the device corresponding to the provided registration token.
+  sendFcmMessage(payload);
+};
+
+export const sendFcmCallJoinCancel = function ({ fcmToken }: { fcmToken: string }): void {
+  const payload = {
+    data: {
+      messageType: CallJoinCancel.messageType(),
     },
     token: fcmToken,
   };
