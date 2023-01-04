@@ -33,30 +33,39 @@ void initFirebaseMessagingForegroundHandler(
       print('Message also contained a notification: ${message.notification}');
     }
 
-    final CallJoinRequestTokenPayload callJoinRequest =
-        MessageDecoder.callJoinRequestFromJson(message.data);
-    final DocumentWrapper<UserMetadata>? callerMetadata =
-        await UserMetadata.get(callJoinRequest.callerUid);
+    final messageType = message.data['messageType'];
 
-    if (callerMetadata == null) {
-      log("Cannot accept call join request from unknown user: ${callJoinRequest.callerUid}");
-      return;
+    if (messageType == "call_join_cancel") {
+      navigatorKey.currentContext!.goNamed(Routes.HOME);
+    } else if (messageType == "call_join_request") {
+      final CallJoinRequestTokenPayload callJoinRequest =
+          MessageDecoder.callJoinRequestFromJson(message.data);
+      final DocumentWrapper<UserMetadata>? callerMetadata =
+          await UserMetadata.get(callJoinRequest.callerUid);
+
+      if (callerMetadata == null) {
+        log("Cannot accept call join request from unknown user: ${callJoinRequest.callerUid}");
+        return;
+      }
+      if (lifecycle.userMetadata == null) {
+        log("Need to suppress call join, user isnt logged in");
+        return;
+      }
+      if (lifecycle.userMetadata!.documentId != callJoinRequest.calledUid) {
+        log("Received call join request for user that isnt me");
+        return;
+      }
+      navigatorKey.currentContext!
+          .goNamed(Routes.CALL_JOIN_PROMPT_PAGE, params: {
+        Routes.CALLED_UID_PARAM: callJoinRequest.calledUid,
+        Routes.CALLER_UID_PARAM: callJoinRequest.callerUid,
+        Routes.CALL_TRANSACTION_ID_PARAM: callJoinRequest.callTransactionId,
+        Routes.CALL_RATE_START_PARAM: callJoinRequest.callRateStartCents,
+        Routes.CALL_RATE_PER_MINUTE_PARAM:
+            callJoinRequest.callRatePerMinuteCents,
+        Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS:
+            callJoinRequest.callJoinExpirationTimeUtcMs,
+      });
     }
-    if (lifecycle.userMetadata == null) {
-      log("Need to suppress call join, user isnt logged in");
-      return;
-    }
-    if (lifecycle.userMetadata!.documentId != callJoinRequest.calledUid) {
-      log("Received call join request for user that isnt me");
-      return;
-    }
-    navigatorKey.currentContext!.goNamed(Routes.CALL_JOIN_PROMPT_PAGE, params: {
-      Routes.CALLED_UID_PARAM: callJoinRequest.calledUid,
-      Routes.CALLER_UID_PARAM: callJoinRequest.callerUid,
-      Routes.CALL_TRANSACTION_ID_PARAM: callJoinRequest.callTransactionId,
-      Routes.CALL_RATE_START_PARAM: callJoinRequest.callRateStartCents,
-      Routes.CALL_RATE_PER_MINUTE_PARAM: callJoinRequest.callRatePerMinuteCents,
-      Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS: callJoinRequest.callJoinExpirationTimeUtcMs,
-    });
   });
 }

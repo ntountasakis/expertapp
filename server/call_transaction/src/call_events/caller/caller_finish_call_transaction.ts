@@ -9,6 +9,7 @@ export async function callerFinishCallTransaction({transactionId, clientMessageS
   const callerCallState = callState as CallerCallState;
   if (!callerCallState.hasInitiatedCallFinish) {
     callerCallState.hasInitiatedCallFinish = true;
+    callerCallState.cancelCallJoinExpirationTimer();
     await endCallTransactionCaller({transactionId: transactionId, callState: callerCallState});
   }
 }

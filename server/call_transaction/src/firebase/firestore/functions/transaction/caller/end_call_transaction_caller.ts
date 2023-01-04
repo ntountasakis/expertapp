@@ -11,10 +11,11 @@ import {UserOwedBalance} from "../../../../../../../shared/src/firebase/firestor
 import {updatePaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status";
 import {CallerCallState} from "../../../../../call_state/caller/caller_call_state";
 import {getUtcMsSinceEpoch} from "../../../../../../../shared/src/general/utils";
+import {sendFcmCallJoinCancel} from "../../../../../../../shared/src/firebase/fcm/functions/send_fcm_call_join_request";
 
 export const endCallTransactionCaller = async ({transactionId, callState} : {transactionId: string, callState: CallerCallState})
 : Promise<void> => {
-  const [paymentIntentId, costOfCallInCents, calledJoined] = await admin.firestore().runTransaction(async (transaction) => {
+  const [paymentIntentId, costOfCallInCents, calledJoined, calledFcmToken] = await admin.firestore().runTransaction(async (transaction) => {
     const callTransaction: CallTransaction = await getCallTransactionDocument(
         {transaction: transaction, transactionId: transactionId});
 
@@ -50,11 +51,12 @@ export const endCallTransactionCaller = async ({transactionId, callState} : {tra
     if (!callTransaction.callHasEnded) {
       markCallEnd(callTransaction.callTransactionId, endTimeUtcMs, transaction);
     }
-    return [paymentStatus.paymentIntentId, costOfCallInCents, callTransaction.calledHasJoined];
+    return [paymentStatus.paymentIntentId, costOfCallInCents, callTransaction.calledHasJoined, callTransaction.calledFcmToken];
   });
   if (calledJoined) {
     await chargeStripePaymentIntent({amountToCaptureInCents: costOfCallInCents, paymentIntentId: paymentIntentId});
   } else {
+    sendFcmCallJoinCancel({fcmToken: calledFcmToken});
     await cancelStripePaymentIntent({paymentIntentId: paymentIntentId});
   }
 };
