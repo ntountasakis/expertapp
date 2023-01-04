@@ -23,7 +23,6 @@ calledUserFcmToken: FcmToken, expertRate: ExpertRate, maxCallTimeSec: number}): 
       "calledHasJoined": false,
       "calledJoinTimeUtcMs": 0,
       "callHasEnded": false,
-      "callHasExpired": false,
       "callEndTimeUtsMs": 0,
       "maxCallTimeSec": maxCallTimeSec,
     };
