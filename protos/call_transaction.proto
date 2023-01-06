@@ -57,6 +57,14 @@ message ServerFeeBreakdowns {
     uint32 earnedCentsPerMinute = 5;
 }
 
+message ServerCallSummary {
+    uint32 lengthOfCallSec = 1;
+    uint32 costOfCallCents = 2;
+    uint32 paymentProcessorFeeCents = 3;
+    uint32 platformFeeCents = 4;
+    uint32 earnedTotalCents = 5;
+}
+
 
 message ServerMessageContainer {
     oneof messageWrapper {
@@ -66,5 +74,6 @@ message ServerMessageContainer {
         ServerCallBeginPaymentPreAuthResolved serverCallBeginPaymentPreAuthResolved = 4;
         ServerCounterpartyJoinedCall serverCounterpartyJoinedCall = 6;
         ServerFeeBreakdowns serverFeeBreakdowns = 7;
+        ServerCallSummary serverCallSummary = 8;
     }
 }

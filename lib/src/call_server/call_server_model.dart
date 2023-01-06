@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
@@ -9,6 +11,7 @@ class CallServerModel extends ChangeNotifier {
   String _callTransactionId = "";
   ServerAgoraCredentials? _agoraCredentials;
   ServerFeeBreakdowns? _feeBreakdowns;
+  ServerCallSummary? _callSummary;
   CallServerPaymentPromptModel _callBeginPaymentPromptModel =
       new CallServerPaymentPromptModel();
 
@@ -23,6 +26,8 @@ class CallServerModel extends ChangeNotifier {
   String get callTransactionId => _callTransactionId;
   ServerAgoraCredentials? get agoraCredentials => _agoraCredentials;
   ServerFeeBreakdowns? get feeBreakdowns => _feeBreakdowns;
+  ServerCallSummary? get callSummary => _callSummary;
+
   CallServerPaymentPromptModel get callPaymentPromptModel =>
       _callBeginPaymentPromptModel;
 
@@ -45,6 +50,8 @@ class CallServerModel extends ChangeNotifier {
     _errorMessage = "";
     _callTransactionId = "";
     _agoraCredentials = null;
+    _feeBreakdowns = null;
+    _callSummary = null;
     _callBeginPaymentPromptModel = new CallServerPaymentPromptModel();
     _connectionState = CallServerConnectionState.UNCONNECTED;
     _counterpartyConnectionState =
@@ -105,6 +112,12 @@ class CallServerModel extends ChangeNotifier {
     _counterpartyConnectionState = CallServerCounterpartyConnectionState.JOINED;
     _msEpochOfCounterpartyConnected = DateTime.now().millisecondsSinceEpoch;
     secMaxCallLength = joinedCall.secondsCallAuthorizedFor;
+    notifyListeners();
+  }
+
+  void onServerCallSummary(ServerCallSummary callSummary) {
+    log("onServerCallSummary");
+    _callSummary = callSummary;
     notifyListeners();
   }
 }

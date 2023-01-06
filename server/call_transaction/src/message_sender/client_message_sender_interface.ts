@@ -1,4 +1,5 @@
 import {ServerAgoraCredentials} from "../protos/call_transaction_package/ServerAgoraCredentials";
+import {ServerCallSummary} from "../protos/call_transaction_package/ServerCallSummary";
 import {ServerCallJoinOrRequestResponse} from "../protos/call_transaction_package/ServerCallJoinOrRequestResponse";
 import {ServerCallBeginPaymentPreAuth} from "../protos/call_transaction_package/ServerCallBeginPaymentPreAuth";
 import {ServerCallBeginPaymentPreAuthResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentPreAuthResolved";
@@ -12,4 +13,5 @@ export abstract class ClientMessageSenderInterface {
     abstract sendCallBeginPaymentPreAuthResolved(callBeginPaymentPreAuthResolved: ServerCallBeginPaymentPreAuthResolved): void;
     abstract sendServerFeeBreakdowns(feeBreakdowns: ServerFeeBreakdowns): void;
     abstract sendCounterpartyJoinedCall(counterpartyJoinedCall: ServerCounterpartyJoinedCall): void;
+    abstract sendCallSummary(callSummary: ServerCallSummary): void;
 }

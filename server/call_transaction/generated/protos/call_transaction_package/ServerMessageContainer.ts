@@ -6,6 +6,7 @@ import type { ServerCallBeginPaymentPreAuth as _call_transaction_package_ServerC
 import type { ServerCallBeginPaymentPreAuthResolved as _call_transaction_package_ServerCallBeginPaymentPreAuthResolved, ServerCallBeginPaymentPreAuthResolved__Output as _call_transaction_package_ServerCallBeginPaymentPreAuthResolved__Output } from '../call_transaction_package/ServerCallBeginPaymentPreAuthResolved';
 import type { ServerCounterpartyJoinedCall as _call_transaction_package_ServerCounterpartyJoinedCall, ServerCounterpartyJoinedCall__Output as _call_transaction_package_ServerCounterpartyJoinedCall__Output } from '../call_transaction_package/ServerCounterpartyJoinedCall';
 import type { ServerFeeBreakdowns as _call_transaction_package_ServerFeeBreakdowns, ServerFeeBreakdowns__Output as _call_transaction_package_ServerFeeBreakdowns__Output } from '../call_transaction_package/ServerFeeBreakdowns';
+import type { ServerCallSummary as _call_transaction_package_ServerCallSummary, ServerCallSummary__Output as _call_transaction_package_ServerCallSummary__Output } from '../call_transaction_package/ServerCallSummary';
 
 export interface ServerMessageContainer {
   'serverCallJoinOrRequestResponse'?: (_call_transaction_package_ServerCallJoinOrRequestResponse | null);
@@ -14,7 +15,8 @@ export interface ServerMessageContainer {
   'serverCallBeginPaymentPreAuthResolved'?: (_call_transaction_package_ServerCallBeginPaymentPreAuthResolved | null);
   'serverCounterpartyJoinedCall'?: (_call_transaction_package_ServerCounterpartyJoinedCall | null);
   'serverFeeBreakdowns'?: (_call_transaction_package_ServerFeeBreakdowns | null);
-  'messageWrapper'?: "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentPreAuth"|"serverCallBeginPaymentPreAuthResolved"|"serverCounterpartyJoinedCall"|"serverFeeBreakdowns";
+  'serverCallSummary'?: (_call_transaction_package_ServerCallSummary | null);
+  'messageWrapper'?: "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentPreAuth"|"serverCallBeginPaymentPreAuthResolved"|"serverCounterpartyJoinedCall"|"serverFeeBreakdowns"|"serverCallSummary";
 }
 
 export interface ServerMessageContainer__Output {
@@ -24,5 +26,6 @@ export interface ServerMessageContainer__Output {
   'serverCallBeginPaymentPreAuthResolved'?: (_call_transaction_package_ServerCallBeginPaymentPreAuthResolved__Output | null);
   'serverCounterpartyJoinedCall'?: (_call_transaction_package_ServerCounterpartyJoinedCall__Output | null);
   'serverFeeBreakdowns'?: (_call_transaction_package_ServerFeeBreakdowns__Output | null);
-  'messageWrapper': "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentPreAuth"|"serverCallBeginPaymentPreAuthResolved"|"serverCounterpartyJoinedCall"|"serverFeeBreakdowns";
+  'serverCallSummary'?: (_call_transaction_package_ServerCallSummary__Output | null);
+  'messageWrapper': "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentPreAuth"|"serverCallBeginPaymentPreAuthResolved"|"serverCounterpartyJoinedCall"|"serverFeeBreakdowns"|"serverCallSummary";
 }

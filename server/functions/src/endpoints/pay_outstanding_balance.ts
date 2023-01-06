@@ -62,7 +62,7 @@ export const payOutstandingBalance = functions.https.onCall(async (data, context
     customerId: userInfo.stripeCustomerId,
     customerEmail: userInfo.email, amountToRequestInCents: newPaymentStatus.centsRequestedCapture,
     idempotencyKey: newPaymentStatus.idempotencyKey, transferGroup: newPaymentStatus.transferGroup, paymentStatusId: newPaymentStatusId,
-    paymentDescription: "Pay Balance", callerUid: userUid, calledUid: "TODO"});
+    paymentDescription: "Pay Balance", callerUid: userUid, calledUid: "TODO", callTransactionId: "TODO"});
   await getPaymentStatusDocumentRef({paymentStatusId: newPaymentStatusId}).update("paymentIntentId", paymentIntentId);
 
   const ephemeralKey = await createCustomerEphemeralKey({customerId: userInfo.stripeCustomerId});

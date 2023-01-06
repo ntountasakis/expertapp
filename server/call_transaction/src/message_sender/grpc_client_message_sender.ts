@@ -4,6 +4,7 @@ import {ServerAgoraCredentials} from "../protos/call_transaction_package/ServerA
 import {ServerCallBeginPaymentPreAuth} from "../protos/call_transaction_package/ServerCallBeginPaymentPreAuth";
 import {ServerCallBeginPaymentPreAuthResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentPreAuthResolved";
 import {ServerCallJoinOrRequestResponse} from "../protos/call_transaction_package/ServerCallJoinOrRequestResponse";
+import {ServerCallSummary} from "../protos/call_transaction_package/ServerCallSummary";
 import {ServerCounterpartyJoinedCall} from "../protos/call_transaction_package/ServerCounterpartyJoinedCall";
 import {ServerFeeBreakdowns} from "../protos/call_transaction_package/ServerFeeBreakdowns";
 import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
@@ -58,6 +59,14 @@ export class GrpcClientMessageSender extends ClientMessageSenderInterface {
     const clientMessageContainer: ServerMessageContainer = {
       "serverFeeBreakdowns": feeBreakdowns,
       "messageWrapper": "serverFeeBreakdowns",
+    };
+    this.sendingStream.write(clientMessageContainer);
+  }
+
+  sendCallSummary(callSummary: ServerCallSummary): void {
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverCallSummary": callSummary,
+      "messageWrapper": "serverCallSummary",
     };
     this.sendingStream.write(clientMessageContainer);
   }
