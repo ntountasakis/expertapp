@@ -18,6 +18,27 @@ export function calculateCostOfCallInCents({beginTimeUtcMs, endTimeUtcMs, centsP
   return totalCost;
 }
 
+export function calculatePlatformFeeCents({costOfCallCents, platformFeePercent}:
+  {costOfCallCents: number, platformFeePercent: number}): number {
+  const platformFee = Math.round(costOfCallCents * (platformFeePercent / 100));
+  console.log(`Platform fee (cents): ${platformFee}`);
+  return platformFee;
+}
+
+export function calculatePaymentProcessorFeeCents({costOfCallCents, processorFeePercent, processorFlatFeeCents}:
+  {costOfCallCents: number, processorFeePercent: number, processorFlatFeeCents: number}): number {
+  const processorFee = Math.round((costOfCallCents * (processorFeePercent / 100)) + processorFlatFeeCents);
+  console.log(`Processor fee (cents): ${processorFee}`);
+  return processorFee;
+}
+
+export function calculateEarnedCents({costOfCallCents, platformFeeCents, processorFeeCents}:
+  {costOfCallCents: number, platformFeeCents: number, processorFeeCents: number}): number {
+  const earnedCents = costOfCallCents - platformFeeCents - processorFeeCents;
+  console.log(`Earned (cents): ${earnedCents}`);
+  return earnedCents;
+}
+
 export function calculateMaxCallLengthSec({centsPerMinute, centsStartCall, amountAuthorizedCents}:
   {centsPerMinute: number, centsStartCall: number, amountAuthorizedCents: number}): number {
   const centsRemainingAfterStart = amountAuthorizedCents - centsStartCall;

@@ -1,5 +1,4 @@
-export interface CallTransaction
-{
+export interface CallTransaction {
     callTransactionId: string;
     callerUid: string;
     calledUid: string;
@@ -15,4 +14,9 @@ export interface CallTransaction
     callHasEnded: boolean;
     callEndTimeUtsMs: number;
     maxCallTimeSec: number;
+    lengthOfCallSec: number;
+    costOfCallCents: number;
+    paymentProcessorFeeCents: number;
+    platformFeeCents: number;
+    earnedTotalCents: number;
 }

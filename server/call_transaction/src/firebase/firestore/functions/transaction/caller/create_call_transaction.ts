@@ -56,7 +56,8 @@ export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: 
       customerId: userInfo.stripeCustomerId,
       customerEmail: userInfo.email, amountToAuthInCents: amountCentsPreAuth,
       idempotencyKey: paymentStatus.idempotencyKey, transferGroup: paymentStatus.transferGroup, paymentStatusId: callTransaction.callerPaymentStatusId,
-      paymentDescription: "Expert Call", callerUid: callerUid, calledUid: callTransaction.calledUid});
+      paymentDescription: "Expert Call", callerUid: callerUid, calledUid: callTransaction.calledUid,
+      callTransactionId: callTransaction.callTransactionId});
     await getPaymentStatusDocumentRef({paymentStatusId: callTransaction.callerPaymentStatusId}).update("paymentIntentId", paymentIntentId);
 
     const ephemeralKey = await createCustomerEphemeralKey({customerId: userInfo.stripeCustomerId});
