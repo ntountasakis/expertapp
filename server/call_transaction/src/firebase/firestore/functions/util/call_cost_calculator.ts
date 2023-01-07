@@ -1,5 +1,7 @@
-export function calculateCostOfCallInCents({beginTimeUtcMs, endTimeUtcMs, centsPerMinute, centsStartCall}:
-    {beginTimeUtcMs: number, endTimeUtcMs: number, centsPerMinute: number, centsStartCall: number}): number {
+import {BaseCallState} from "../../../../call_state/common/base_call_state";
+
+export function calculateCostOfCallInCents({beginTimeUtcMs, endTimeUtcMs, centsPerMinute, centsStartCall, callState}:
+    {beginTimeUtcMs: number, endTimeUtcMs: number, centsPerMinute: number, centsStartCall: number, callState: BaseCallState}): number {
   if (beginTimeUtcMs == 0) {
     throw new Error("Cannot calculate cost of call. Begin time is 0");
   }
@@ -14,28 +16,28 @@ export function calculateCostOfCallInCents({beginTimeUtcMs, endTimeUtcMs, centsP
   const roundedTimeBasedCost = Math.floor(roundedElapsedTimeSeconds * centsPerSecond);
   const totalCost = roundedTimeBasedCost + centsStartCall;
 
-  console.log(`Call length (s): ${roundedElapsedTimeSeconds}. Cost (cents): ${totalCost}`);
+  callState.log(`Call length (s): ${roundedElapsedTimeSeconds}. Cost (cents): ${totalCost}`);
   return totalCost;
 }
 
-export function calculatePlatformFeeCents({costOfCallCents, platformFeePercent}:
-  {costOfCallCents: number, platformFeePercent: number}): number {
+export function calculatePlatformFeeCents({costOfCallCents, platformFeePercent, callState}:
+  {costOfCallCents: number, platformFeePercent: number, callState: BaseCallState}): number {
   const platformFee = Math.round(costOfCallCents * (platformFeePercent / 100));
-  console.log(`Platform fee (cents): ${platformFee}`);
+  callState.log(`Platform fee (cents): ${platformFee}`);
   return platformFee;
 }
 
-export function calculatePaymentProcessorFeeCents({costOfCallCents, processorFeePercent, processorFlatFeeCents}:
-  {costOfCallCents: number, processorFeePercent: number, processorFlatFeeCents: number}): number {
+export function calculatePaymentProcessorFeeCents({costOfCallCents, processorFeePercent, processorFlatFeeCents, callState}:
+  {costOfCallCents: number, processorFeePercent: number, processorFlatFeeCents: number, callState: BaseCallState}): number {
   const processorFee = Math.round((costOfCallCents * (processorFeePercent / 100)) + processorFlatFeeCents);
-  console.log(`Processor fee (cents): ${processorFee}`);
+  callState.log(`Processor fee (cents): ${processorFee}`);
   return processorFee;
 }
 
-export function calculateEarnedCents({costOfCallCents, platformFeeCents, processorFeeCents}:
-  {costOfCallCents: number, platformFeeCents: number, processorFeeCents: number}): number {
+export function calculateEarnedCents({costOfCallCents, platformFeeCents, processorFeeCents, callState}:
+  {costOfCallCents: number, platformFeeCents: number, processorFeeCents: number, callState: BaseCallState}): number {
   const earnedCents = costOfCallCents - platformFeeCents - processorFeeCents;
-  console.log(`Earned (cents): ${earnedCents}`);
+  callState.log(`Earned (cents): ${earnedCents}`);
   return earnedCents;
 }
 

@@ -35,7 +35,7 @@ export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSen
       callRatePerMinuteCents: perMinuteRateString,
       callJoinExpirationTimeUtcMs: callerCallState.callJoinExpirationTimeUtcMs});
     sendGrpcServerAgoraCredentials(clientMessageSender, callerCallState.callerBeginCallContext.agoraChannelName,
-        callerCallState.callerBeginCallContext.callerUid);
+        callerCallState.callerBeginCallContext.callerUid, callerCallState);
     return Promise.resolve(true);
   }
   return Promise.resolve(false);

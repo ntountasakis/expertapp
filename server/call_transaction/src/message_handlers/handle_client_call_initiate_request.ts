@@ -25,9 +25,6 @@ import {ServerMessageContainer} from "../protos/call_transaction_package/ServerM
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallManager,
     callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>): Promise<boolean> {
-  console.log(`InitiateCall request begin. Caller Uid: ${callInitiateRequest.callerUid} 
-      Called Uid: ${callInitiateRequest.calledUid}`);
-
   const calledUid = callInitiateRequest.calledUid as string;
   const callerUid = callInitiateRequest.callerUid as string;
 
@@ -43,11 +40,13 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
     calledUid: calledUid, callerUid: callerUid, expertRate: expertRate, clientMessageSender: clientMessageSender,
     callStream: callStream});
 
+  newClientCallState.log(`Created caller call state. They called CalledUid: ${callInitiateRequest.calledUid}`);
+
   _listenForPaymentSuccess({callState: newClientCallState, callTransaction: callTransaction});
   _listenForCallTransactionUpdates({callState: newClientCallState, callTransaction: callTransaction});
 
   sendGrpcCallJoinOrRequestSuccess(callTransaction.callTransactionId, clientMessageSender);
-  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret, ephemeralKey, stripeCustomerId);
+  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret, ephemeralKey, stripeCustomerId, newClientCallState);
   sendGrpcServerFeeBreakdowns(clientMessageSender, callTransaction);
 
   return true;
@@ -70,14 +69,12 @@ function _listenForPaymentSuccess({callState, callTransaction}:
   {callState: CallerCallState, callTransaction: CallTransaction}) {
   callState.eventListenerManager.listenForEventUpdates({key: callTransaction.callerPaymentStatusId,
     updateCallback: onCallerPaymentPreAuthSuccessCallInitiate,
-    unsubscribeFn: listenForPaymentStatusUpdates(
-        callTransaction.callerPaymentStatusId, callState.eventListenerManager)});
+    unsubscribeFn: listenForPaymentStatusUpdates(callTransaction.callerPaymentStatusId, callState)});
 }
 
 function _listenForCallTransactionUpdates({callState, callTransaction}:
   {callState: CallerCallState, callTransaction: CallTransaction}) {
   callState.eventListenerManager.listenForEventUpdates({key: callTransaction.callTransactionId,
     updateCallback: onCallerTransactionUpdate,
-    unsubscribeFn: listenForCallTransactionUpdates(
-        callTransaction.callTransactionId, callState.eventListenerManager)});
+    unsubscribeFn: listenForCallTransactionUpdates(callState)});
 }

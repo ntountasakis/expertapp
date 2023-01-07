@@ -22,7 +22,7 @@ export class CalledCallState extends BaseCallState {
 
   setMaxCallLengthTimer(maxCallTimeSec: number): void {
     this.maxCallLengthTimer = setTimeout(this._maxCallLengthReached.bind(this), maxCallTimeSec * 1000);
-    console.log(`Max call length started for ${maxCallTimeSec * 1000} ms at ${getUtcMsSinceEpoch()}`);
+    this.log(`Max call length started for ${maxCallTimeSec * 1000} ms at ${getUtcMsSinceEpoch()}`);
   }
 
   cancelMaxCallLengthTimer(): void {
@@ -32,7 +32,7 @@ export class CalledCallState extends BaseCallState {
   }
 
   _maxCallLengthReached(): void {
-    console.log("Max call length timer went off. Disconnecting");
+    this.log("Max call length timer went off. Disconnecting");
     this.callStream.end();
   }
 }
