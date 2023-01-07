@@ -26,7 +26,7 @@ export const endCallTransactionCaller = async ({transactionId, callState} : {tra
       uid: callTransaction.callerUid, transaction: transaction});
 
     const callSummary: ServerCallSummary = await markCallEndGenerateCallSummary(
-        {transaction: transaction, callTransaction: callTransaction, endCallTimeUtcMs: getUtcMsSinceEpoch()});
+        {transaction: transaction, callTransaction: callTransaction, endCallTimeUtcMs: getUtcMsSinceEpoch(), callState: callState});
     const costOfCallCents = callSummary.costOfCallCents!;
     if (callTransaction.calledHasJoined) {
       await increaseBalanceOwed({transaction: transaction, owedBalance: userOwed, uid: callTransaction.callerUid,

@@ -31,4 +31,8 @@ export class BaseCallState {
       clientMessageSender: this.eventListenerManager.clientMessageSender,
       callState: this.eventListenerManager.callState});
   }
+
+  log(message: string): void {
+    console.log(`Message: ${message} UserId: ${this.userId} TransactionId: ${this.transactionId} `);
+  }
 }

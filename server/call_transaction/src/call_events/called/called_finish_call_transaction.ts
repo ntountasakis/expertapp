@@ -10,9 +10,9 @@ export async function calledFinishCallTransaction({transactionId, clientMessageS
   const calledCallState = callState as CalledCallState;
   if (!calledCallState.hasInitiatedCallFinish) {
     calledCallState.hasInitiatedCallFinish = true;
-    const callSummary: ServerCallSummary = await endCallTransactionCalled({transactionId: transactionId});
+    const callSummary: ServerCallSummary = await endCallTransactionCalled({transactionId: transactionId, callState: callState});
     if (!callState.callStream.closed) {
-      console.log("Sending call summary to called");
+      callState.log("Sending call summary to called");
       clientMessageSender.sendCallSummary(callSummary);
     }
   }

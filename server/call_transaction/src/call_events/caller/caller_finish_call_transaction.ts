@@ -13,7 +13,7 @@ export async function callerFinishCallTransaction({transactionId, clientMessageS
     callerCallState.cancelCallJoinExpirationTimer();
     const callSummary: ServerCallSummary = await endCallTransactionCaller({transactionId: transactionId, callState: callerCallState});
     if (!callState.callStream.closed) {
-      console.log("Sending call summary to caller");
+      callState.log("Sending call summary to caller");
       clientMessageSender.sendCallSummary(callSummary);
     }
   }

@@ -1,17 +1,16 @@
 import {getCallTransactionDocumentRef} from "../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../shared/src/firebase/firestore/models/call_transaction";
-import {FirestoreListenerManager} from "../firestore_listener_manager";
+import {BaseCallState} from "../../../../call_state/common/base_call_state";
 import {FirestoreUnsubscribeInterface} from "../firestore_unsubscribe_interface";
 
-export function listenForCallTransactionUpdates(
-    transactionId: string, listenerManager: FirestoreListenerManager): FirestoreUnsubscribeInterface {
-  const doc = getCallTransactionDocumentRef({transactionId: transactionId});
+export function listenForCallTransactionUpdates(callState: BaseCallState): FirestoreUnsubscribeInterface {
+  const doc = getCallTransactionDocumentRef({transactionId: callState.transactionId});
   const unsubscribeFn = doc.onSnapshot((docSnapshot) => {
     const callTransaction = docSnapshot.data() as CallTransaction;
-    console.log(`CallTransaction: ${transactionId} updated`);
-    listenerManager.onEventUpdate({key: docSnapshot.id, type: "CallTransaction", update: callTransaction});
+    callState.log("CallTransaction: updated");
+    callState.eventListenerManager.onEventUpdate({key: docSnapshot.id, type: "CallTransaction", update: callTransaction});
   }, (err) => {
-    console.log(`Encountered error: ${err}`);
+    callState.log(`Encountered error: ${err}`);
   });
 
   return unsubscribeFn;

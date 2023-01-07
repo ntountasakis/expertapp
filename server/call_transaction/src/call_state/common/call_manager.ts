@@ -12,22 +12,12 @@ export class CallManager {
   _callStates = new Map<string, BaseCallState>();
 
   creatCallState({userId, state}: {userId: string, state: BaseCallState}) {
-    console.log(`Created call state for userId: ${userId}`);
+    state.log(`Created call state for userId: ${userId}`);
     this._callStates.set(userId, state);
   }
 
-  getCallState({userId}: {userId: string}): BaseCallState | undefined {
-    return this._callStates.get(userId);
-  }
-
-  removeCallState({userId}: {userId: string}) {
-    console.log(`Removed call state for userId: ${userId}`);
-    this._callStates.delete(userId);
-  }
-
   onClientDisconnect({userId}: {userId: string}): void {
-    console.log(`Removing call state. UserId: ${userId} disconnected`);
-    const callState = this.getCallState({userId: userId});
+    const callState = this._getCallState({userId: userId});
     if (callState === undefined) {
       console.error(`Unable to clear CallState for UID: ${userId}. Does not exist`);
       return;
@@ -35,7 +25,7 @@ export class CallManager {
       (callState as CalledCallState).cancelMaxCallLengthTimer();
     }
     callState.onDisconnect();
-    this.removeCallState({userId: userId});
+    this._removeCallState({userId: userId, callState: callState});
   }
 
   createCallStateOnCallerBegin({userId, callerBeginCallContext, callerDisconnectFunction,
@@ -46,7 +36,7 @@ export class CallManager {
         {callerBeginCallContext: callerBeginCallContext, onDisconnect: callerDisconnectFunction,
           clientMessageSender: clientMessageSender, userId: userId, callStream: callStream});
     this.creatCallState({userId: userId, state: callState});
-    console.log(`Created CallerCallState for UID: ${userId}`);
+    callState.log(`Created CallerCallState for UID: ${userId}`);
     return callState;
   }
 
@@ -58,7 +48,16 @@ export class CallManager {
         {transactionId: transactionId, onDisconnect: callerDisconnectFunction,
           clientMessageSender: clientMessageSender, userId: userId, callStream: callStream});
     this.creatCallState({userId: userId, state: callState});
-    console.log(`Created CalledCallState for UID: ${userId}`);
+    callState.log(`Created CalledCallState for UID: ${userId}`);
     return callState;
+  }
+
+  _getCallState({userId}: {userId: string}): BaseCallState | undefined {
+    return this._callStates.get(userId);
+  }
+
+  _removeCallState({userId, callState}: {userId: string, callState: BaseCallState}) {
+    callState.log(`Removed call state for userId: ${userId}`);
+    this._callStates.delete(userId);
   }
 }

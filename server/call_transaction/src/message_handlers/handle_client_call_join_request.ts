@@ -19,7 +19,6 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
     CallManager: CallManager, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>): Promise<boolean> {
   const transactionId = callJoinRequest.callTransactionId as string;
   const joinerId = callJoinRequest.joinerUid as string;
-  console.log(`Got call join request from joinerId: ${joinerId} with transaction id: ${transactionId}`);
 
   const [allowedToJoin, callTransaction] = await joinCallTransaction({request: callJoinRequest});
   if (!allowedToJoin) {
@@ -28,11 +27,13 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
   const newCalledState: CalledCallState = _createNewCallState(
       {callManager: CallManager, transactionId: transactionId,
         joinerId: joinerId, clientMessageSender: clientMessageSender, callStream: callStream});
+  newCalledState.log("Called joined.");
+
   _listenForCallTransactionUpdates({callState: newCalledState, callTransaction: callTransaction});
   _startMaxCallLengthTimer({callTransaction: callTransaction, calledCallState: newCalledState});
 
   sendGrpcCallJoinOrRequestSuccess(transactionId, clientMessageSender);
-  sendGrpcServerAgoraCredentials(clientMessageSender, callTransaction.agoraChannelName, joinerId);
+  sendGrpcServerAgoraCredentials(clientMessageSender, callTransaction.agoraChannelName, joinerId, newCalledState);
   sendGrpcServerFeeBreakdowns(clientMessageSender, callTransaction);
   return true;
 }
@@ -51,8 +52,7 @@ function _listenForCallTransactionUpdates({callState, callTransaction}:
   {callState: CalledCallState, callTransaction: CallTransaction}) {
   callState.eventListenerManager.listenForEventUpdates({key: callTransaction.callTransactionId,
     updateCallback: onCalledTransactionUpdate,
-    unsubscribeFn: listenForCallTransactionUpdates(
-        callState.transactionId, callState.eventListenerManager)});
+    unsubscribeFn: listenForCallTransactionUpdates(callState)});
 }
 
 function _startMaxCallLengthTimer({callTransaction, calledCallState}: {callTransaction: CallTransaction, calledCallState: CalledCallState}) {

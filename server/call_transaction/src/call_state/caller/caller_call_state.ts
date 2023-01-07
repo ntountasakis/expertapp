@@ -27,20 +27,20 @@ export class CallerCallState extends BaseCallState {
   setCallJoinExpirationTimer(maxWaitTimeSec: number): void {
     const currentMs = getUtcMsSinceEpoch();
     this.callJoinExpirationTimeUtcMs = currentMs + maxWaitTimeSec * 1000;
-    console.log(`Call join expiration timer started for ${maxWaitTimeSec} seconds for expiration at ${this.callJoinExpirationTimeUtcMs}`);
+    this.log(`Call join expiration timer started for ${maxWaitTimeSec} seconds for expiration at ${this.callJoinExpirationTimeUtcMs}`);
     this._callJoinExpirationTimer = setTimeout(this._callJoinExpirationTimerReached.bind(this), maxWaitTimeSec * 1000);
   }
 
   cancelCallJoinExpirationTimer(): void {
     if (this._callJoinExpirationTimer !== undefined) {
-      console.log("Call join expiration timer cancelled");
+      this.log("Call join expiration timer cancelled");
       clearTimeout(this._callJoinExpirationTimer);
       this._callJoinExpirationTimer = undefined;
     }
   }
 
   async _callJoinExpirationTimerReached(): Promise<void> {
-    console.log("Call join expiration timer went off marking call expired and disconnecting");
+    this.log("Call join expiration timer went off marking call expired and disconnecting");
     this.callStream.end();
   }
 }

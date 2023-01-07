@@ -39,10 +39,6 @@ Promise<[boolean, CallTransaction]> => {
       "calledHasJoined": callTransaction.calledHasJoined,
       "calledJoinTimeUtcMs": callTransaction.calledJoinTimeUtcMs,
     });
-
-    console.log(`CallTransaction joined. TransactionId: ${callTransaction.callTransactionId} 
-        JoinedId: ${callTransaction.calledUid} `);
-
     return [true, callTransaction];
   });
 };
