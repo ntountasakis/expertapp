@@ -1,3 +1,4 @@
+import { CallJoinCancel } from "../messages/call_join_cancel";
 import { CallJoinRequest } from "../messages/call_join_request";
 import { sendFcmMessage } from "../sender/fcm_token_sender";
 
@@ -27,7 +28,7 @@ export const sendFcmCallJoinRequest = function ({ fcmToken, callerUid, calledUid
 export const sendFcmCallJoinCancel = function ({ fcmToken }: { fcmToken: string }): void {
   const payload = {
     data: {
-      messageType: CallJoinRequest.messageType(),
+      messageType: CallJoinCancel.messageType(),
     },
     token: fcmToken,
   };

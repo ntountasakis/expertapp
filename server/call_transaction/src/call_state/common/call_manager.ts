@@ -22,7 +22,7 @@ export class CallManager {
       console.error(`Unable to clear CallState for UID: ${userId}. Does not exist`);
       return;
     }
-    callState.onDisconnect();
+    callState.onDisconnect(true);
     this._removeCallState({userId: userId, callState: callState});
   }
 

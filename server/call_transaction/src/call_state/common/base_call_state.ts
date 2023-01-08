@@ -25,17 +25,17 @@ export class BaseCallState {
   }
 
   async disconnect(): Promise<void> {
-    await this.onDisconnect();
+    await this.onDisconnect(false);
     this.callStream.end();
   }
 
-  async onDisconnect(): Promise<void> {
+  async onDisconnect(clientRequested: boolean): Promise<void> {
     this.cancelTimers();
     this.eventListenerManager.unsubscribeToEvents();
     if (this.onDisconnectFunction !== undefined) {
       await this.onDisconnectFunction({transactionId: this.transactionId,
         clientMessageSender: this.eventListenerManager.clientMessageSender,
-        callState: this.eventListenerManager.callState});
+        callState: this.eventListenerManager.callState, clientRequested: clientRequested});
       this.onDisconnectFunction = undefined;
     }
   }
