@@ -9,7 +9,6 @@ import {getUtcMsSinceEpoch} from "../../../../shared/src/general/utils";
 
 export class CallerCallState extends BaseCallState {
   callerBeginCallContext: CallerBeginCallContext;
-  hasInitiatedCallFinish: boolean;
   _callJoinExpirationTimer?: NodeJS.Timeout;
   callJoinExpirationTimeUtcMs: number;
 
@@ -19,7 +18,6 @@ export class CallerCallState extends BaseCallState {
     super({transactionId: callerBeginCallContext.transactionId, clientMessageSender: clientMessageSender,
       onDisconnect: onDisconnect, userId: userId, callStream: callStream});
     this.callerBeginCallContext = callerBeginCallContext;
-    this.hasInitiatedCallFinish = false;
     this._callJoinExpirationTimer = undefined;
     this.callJoinExpirationTimeUtcMs = 0;
   }
@@ -28,19 +26,6 @@ export class CallerCallState extends BaseCallState {
     const currentMs = getUtcMsSinceEpoch();
     this.callJoinExpirationTimeUtcMs = currentMs + maxWaitTimeSec * 1000;
     this.log(`Call join expiration timer started for ${maxWaitTimeSec} seconds for expiration at ${this.callJoinExpirationTimeUtcMs}`);
-    this._callJoinExpirationTimer = setTimeout(this._callJoinExpirationTimerReached.bind(this), maxWaitTimeSec * 1000);
-  }
-
-  cancelCallJoinExpirationTimer(): void {
-    if (this._callJoinExpirationTimer !== undefined) {
-      this.log("Call join expiration timer cancelled");
-      clearTimeout(this._callJoinExpirationTimer);
-      this._callJoinExpirationTimer = undefined;
-    }
-  }
-
-  async _callJoinExpirationTimerReached(): Promise<void> {
-    this.log("Call join expiration timer went off marking call expired and disconnecting");
-    this.callStream.end();
+    this.setTimer(maxWaitTimeSec);
   }
 }

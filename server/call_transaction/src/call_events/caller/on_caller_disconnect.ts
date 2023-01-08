@@ -4,17 +4,13 @@ import {endCallTransactionCaller} from "../../firebase/firestore/functions/trans
 import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
 import {ServerCallSummary} from "../../protos/call_transaction_package/ServerCallSummary";
 
-export async function callerFinishCallTransaction({transactionId, clientMessageSender, callState}:
+export async function onCallerDisconnect({transactionId, clientMessageSender, callState}:
     {transactionId: string, clientMessageSender: ClientMessageSenderInterface,
         callState: BaseCallState}): Promise<void> {
+  callState.log("Running onCallerDisconnect");
   const callerCallState = callState as CallerCallState;
-  if (!callerCallState.hasInitiatedCallFinish) {
-    callerCallState.hasInitiatedCallFinish = true;
-    callerCallState.cancelCallJoinExpirationTimer();
-    const callSummary: ServerCallSummary = await endCallTransactionCaller({transactionId: transactionId, callState: callerCallState});
-    if (!callState.callStream.closed) {
-      callState.log("Sending call summary to caller");
-      clientMessageSender.sendCallSummary(callSummary);
-    }
+  const callSummary: ServerCallSummary = await endCallTransactionCaller({transactionId: transactionId, callState: callerCallState});
+  if (callState.isConnected()) {
+    await clientMessageSender.sendCallSummary(callSummary);
   }
 }

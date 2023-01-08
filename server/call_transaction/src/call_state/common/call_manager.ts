@@ -21,8 +21,6 @@ export class CallManager {
     if (callState === undefined) {
       console.error(`Unable to clear CallState for UID: ${userId}. Does not exist`);
       return;
-    } else if (callState instanceof CalledCallState) {
-      (callState as CalledCallState).cancelMaxCallLengthTimer();
     }
     callState.onDisconnect();
     this._removeCallState({userId: userId, callState: callState});
@@ -40,15 +38,14 @@ export class CallManager {
     return callState;
   }
 
-  createCallStateOnCallJoin({userId, transactionId, callerDisconnectFunction, clientMessageSender, callStream}:
+  createCallStateOnCallJoin({userId, transactionId, disconnectionFunction: disconnectFunction, clientMessageSender, callStream}:
       {userId: string, transactionId: string,
-      callerDisconnectFunction: CallOnDisconnectInterface,
+      disconnectionFunction: CallOnDisconnectInterface,
     clientMessageSender: ClientMessageSenderInterface, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>}): CalledCallState {
     const callState = new CalledCallState(
-        {transactionId: transactionId, onDisconnect: callerDisconnectFunction,
+        {transactionId: transactionId, onDisconnect: disconnectFunction,
           clientMessageSender: clientMessageSender, userId: userId, callStream: callStream});
     this.creatCallState({userId: userId, state: callState});
-    callState.log(`Created CalledCallState for UID: ${userId}`);
     return callState;
   }
 

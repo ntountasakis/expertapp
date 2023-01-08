@@ -20,7 +20,7 @@ Promise<[boolean, CallTransaction]> => {
       console.error(`Uid ${callTransaction.calledUid} has no connected stripe account. Cannot join call`);
       return [false, callTransaction];
     }
-    if (callTransaction.callHasEnded) {
+    if (callTransaction.callerFinishedTransaction) {
       console.error(`CallTransaction ${transactionId} has already ended. Cannot join call`);
       return [false, callTransaction];
     }

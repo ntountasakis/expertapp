@@ -15,12 +15,12 @@ import {listenForPaymentStatusUpdates} from "../firebase/firestore/event_listene
 import {listenForCallTransactionUpdates} from "../firebase/firestore/event_listeners/model_listeners/listen_for_call_transaction_updates";
 import {CallTransaction} from "../../../shared/src/firebase/firestore/models/call_transaction";
 import {CallerCallState} from "../call_state/caller/caller_call_state";
-import {callerFinishCallTransaction} from "../call_events/caller/caller_finish_call_transaction";
 import {CallerBeginCallContext} from "../call_state/caller/caller_begin_call_context";
 import {ExpertRate} from "../../../shared/src/firebase/firestore/models/expert_rate";
 import {sendGrpcServerFeeBreakdowns} from "../server/client_communication/grpc/send_grpc_server_fee_breakdowns";
 import {ClientMessageContainer} from "../protos/call_transaction_package/ClientMessageContainer";
 import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
+import {onCallerDisconnect} from "../call_events/caller/on_caller_disconnect";
 
 export async function handleClientCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,
     clientMessageSender: ClientMessageSenderInterface, clientCallManager: CallManager,
@@ -61,7 +61,7 @@ function _createNewCallState({callTransaction, callerUid, calledUid, expertRate,
     callerUid: callerUid, calledUid: calledUid, expertRate: expertRate});
   return callManager.createCallStateOnCallerBegin({
     userId: callTransaction.callerUid, callerBeginCallContext: callBeginCallerContext,
-    callerDisconnectFunction: callerFinishCallTransaction,
+    callerDisconnectFunction: onCallerDisconnect,
     clientMessageSender: clientMessageSender, callStream: callStream});
 }
 
