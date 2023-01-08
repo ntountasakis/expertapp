@@ -14,12 +14,13 @@ export class FirestoreListenerManager {
 
   listeners = new Map<string, [FirestoreUpdateCallback, FirestoreUnsubscribeInterface]>();
 
-  onDisconnect(): void {
+  unsubscribeToEvents(): void {
     this.listeners.forEach((value: [FirestoreUpdateCallback, FirestoreUnsubscribeInterface], key: string) => {
       const unsubscribeFn = value[1];
       console.log(`Unsubscribing from Listener: ${key}`);
       unsubscribeFn();
     });
+    this.listeners.clear();
   }
 
   listenForEventUpdates({key, updateCallback, unsubscribeFn} :

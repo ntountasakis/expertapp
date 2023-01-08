@@ -8,10 +8,10 @@ import {CallOnDisconnectInterface} from "../functions/call_on_disconnect_interfa
 export class BaseCallState {
   userId: string;
   transactionId: string;
-  isConnected: boolean;
   eventListenerManager: FirestoreListenerManager;
-  onDisconnectFunction: CallOnDisconnectInterface;
+  onDisconnectFunction?: CallOnDisconnectInterface;
   callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>;
+  _timer?: NodeJS.Timeout;
 
   constructor({userId, transactionId, clientMessageSender, onDisconnect, callStream}:
     {onDisconnect: CallOnDisconnectInterface, clientMessageSender: ClientMessageSenderInterface,
@@ -19,20 +19,43 @@ export class BaseCallState {
     this.transactionId = transactionId;
     this.eventListenerManager = new FirestoreListenerManager(clientMessageSender, this);
     this.onDisconnectFunction = onDisconnect;
-    this.isConnected = true;
     this.userId = userId;
     this.callStream = callStream;
+    this._timer = undefined;
   }
 
-  onDisconnect(): void {
-    this.isConnected = false;
-    this.eventListenerManager.onDisconnect();
-    this.onDisconnectFunction({transactionId: this.transactionId,
-      clientMessageSender: this.eventListenerManager.clientMessageSender,
-      callState: this.eventListenerManager.callState});
+  async disconnect(): Promise<void> {
+    await this.onDisconnect();
+    this.callStream.end();
+  }
+
+  async onDisconnect(): Promise<void> {
+    this.cancelTimers();
+    this.eventListenerManager.unsubscribeToEvents();
+    if (this.onDisconnectFunction !== undefined) {
+      await this.onDisconnectFunction({transactionId: this.transactionId,
+        clientMessageSender: this.eventListenerManager.clientMessageSender,
+        callState: this.eventListenerManager.callState});
+      this.onDisconnectFunction = undefined;
+    }
+  }
+
+  setTimer(numSeconds: number): void {
+    this._timer = setTimeout(this.disconnect.bind(this), numSeconds * 1000);
+  }
+
+  cancelTimers(): void {
+    if (this._timer !== undefined) {
+      clearTimeout(this._timer);
+      this._timer = undefined;
+    }
   }
 
   log(message: string): void {
     console.log(`Message: ${message} UserId: ${this.userId} TransactionId: ${this.transactionId} `);
+  }
+
+  isConnected(): boolean {
+    return !this.callStream.closed;
   }
 }

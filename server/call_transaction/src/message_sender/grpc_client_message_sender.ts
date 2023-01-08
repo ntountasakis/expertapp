@@ -17,57 +17,73 @@ export class GrpcClientMessageSender extends ClientMessageSenderInterface {
     super();
     this.sendingStream = sendingStream;
   }
-  sendCallJoinOrRequestResponse(callRequestResponse: ServerCallJoinOrRequestResponse): void {
+  async sendCallJoinOrRequestResponse(callRequestResponse: ServerCallJoinOrRequestResponse): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverCallJoinOrRequestResponse": callRequestResponse,
       "messageWrapper": "serverCallJoinOrRequestResponse",
     };
-    this.sendingStream.write(clientMessageContainer);
+    await this.writeWrapper(clientMessageContainer);
   }
-  sendCallAgoraCredentials(callAgoraCredentials: ServerAgoraCredentials): void {
+  async sendCallAgoraCredentials(callAgoraCredentials: ServerAgoraCredentials): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverAgoraCredentials": callAgoraCredentials,
       "messageWrapper": "serverAgoraCredentials",
     };
-    this.sendingStream.write(clientMessageContainer);
+    await this.writeWrapper(clientMessageContainer);
   }
-  sendCallBeginPaymentPreAuth(callBeginPaymentPreAuth: ServerCallBeginPaymentPreAuth): void {
+  async sendCallBeginPaymentPreAuth(callBeginPaymentPreAuth: ServerCallBeginPaymentPreAuth): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverCallBeginPaymentPreAuth": callBeginPaymentPreAuth,
       "messageWrapper": "serverCallBeginPaymentPreAuth",
     };
-    this.sendingStream.write(clientMessageContainer);
+    await this.writeWrapper(clientMessageContainer);
   }
 
-  sendCallBeginPaymentPreAuthResolved(callBeginPaymentPreAuthResolved: ServerCallBeginPaymentPreAuthResolved): void {
+  async sendCallBeginPaymentPreAuthResolved(callBeginPaymentPreAuthResolved: ServerCallBeginPaymentPreAuthResolved): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverCallBeginPaymentPreAuthResolved": callBeginPaymentPreAuthResolved,
       "messageWrapper": "serverCallBeginPaymentPreAuthResolved",
     };
-    this.sendingStream.write(clientMessageContainer);
+    await this.writeWrapper(clientMessageContainer);
   }
 
-  sendCounterpartyJoinedCall(counterpartyJoinedCall: ServerCounterpartyJoinedCall): void {
+  async sendCounterpartyJoinedCall(counterpartyJoinedCall: ServerCounterpartyJoinedCall): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverCounterpartyJoinedCall": counterpartyJoinedCall,
       "messageWrapper": "serverCounterpartyJoinedCall",
     };
-    this.sendingStream.write(clientMessageContainer);
+    await this.writeWrapper(clientMessageContainer);
   }
 
-  sendServerFeeBreakdowns(feeBreakdowns: ServerFeeBreakdowns): void {
+  async sendServerFeeBreakdowns(feeBreakdowns: ServerFeeBreakdowns): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverFeeBreakdowns": feeBreakdowns,
       "messageWrapper": "serverFeeBreakdowns",
     };
-    this.sendingStream.write(clientMessageContainer);
+    await this.writeWrapper(clientMessageContainer);
   }
 
-  sendCallSummary(callSummary: ServerCallSummary): void {
+  async sendCallSummary(callSummary: ServerCallSummary): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverCallSummary": callSummary,
       "messageWrapper": "serverCallSummary",
     };
-    this.sendingStream.write(clientMessageContainer);
+    await this.writeWrapper(clientMessageContainer);
+  }
+
+  writeWrapper(messageContainer: ServerMessageContainer): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.write(messageContainer, (successResponse: any) => {
+        resolve(successResponse);
+      });
+    });
+  }
+
+  write(messageContainer: ServerMessageContainer, cb: any) {
+    if (!this.sendingStream.write(messageContainer)) {
+      this.sendingStream.once("drain", cb);
+    } else {
+      process.nextTick(cb);
+    }
   }
 }

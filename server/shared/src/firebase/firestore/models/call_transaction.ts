@@ -11,7 +11,8 @@ export interface CallTransaction {
     callerTransferGroup: string;
     calledHasJoined: boolean;
     calledJoinTimeUtcMs: number;
-    callHasEnded: boolean;
+    callerFinishedTransaction: boolean;
+    calledFinishedTransaction: boolean;
     callEndTimeUtsMs: number;
     maxCallTimeSec: number;
     lengthOfCallSec: number;
