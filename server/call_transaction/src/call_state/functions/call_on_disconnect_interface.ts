@@ -3,6 +3,7 @@ import {BaseCallState} from "../common/base_call_state";
 
 export interface CallOnDisconnectInterface {
     ({transactionId, clientMessageSender, callState}:
-        {transactionId: string, clientMessageSender: ClientMessageSenderInterface, callState: BaseCallState}):
+        {transactionId: string, clientMessageSender: ClientMessageSenderInterface, callState: BaseCallState,
+        clientRequested: boolean}):
         Promise<void>;
 }

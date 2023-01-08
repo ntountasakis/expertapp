@@ -13,7 +13,8 @@ import {sendFcmCallJoinCancel} from "../../../../../../../shared/src/firebase/fc
 import {ServerCallSummary} from "../../../../../protos/call_transaction_package/ServerCallSummary";
 import {markCallEndGenerateCallSummary} from "../common/mark_call_end_generate_call_summary";
 
-export const endCallTransactionCaller = async ({transactionId, callState} : {transactionId: string, callState: CallerCallState})
+export const endCallTransactionCaller = async ({transactionId, callState, clientRequested} :
+  {transactionId: string, callState: CallerCallState, clientRequested: boolean})
 : Promise<ServerCallSummary> => {
   const [paymentIntentId, calledJoined, calledFcmToken, callSummary] = await admin.firestore().runTransaction(async (transaction) => {
     const callTransaction: CallTransaction = await getCallTransactionDocument(
@@ -27,8 +28,8 @@ export const endCallTransactionCaller = async ({transactionId, callState} : {tra
 
     const callSummary: ServerCallSummary = await markCallEndGenerateCallSummary(
         {transaction: transaction, callTransaction: callTransaction, endCallTimeUtcMs: getUtcMsSinceEpoch(), callState: callState});
-    const costOfCallCents = callSummary.costOfCallCents!;
     if (callTransaction.calledHasJoined) {
+      const costOfCallCents = callSummary.costOfCallCents!;
       await increaseBalanceOwed({transaction: transaction, owedBalance: userOwed, uid: callTransaction.callerUid,
         centsCollect: costOfCallCents, paymentStatusId: callTransaction.callerPaymentStatusId, errorOnExistingBalance: true});
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
@@ -36,10 +37,8 @@ export const endCallTransactionCaller = async ({transactionId, callState} : {tra
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: costOfCallCents,
         paymentStatusId: callTransaction.callerPaymentStatusId, chargeId: paymentStatus.chargeId, status: PaymentStatusStates.CAPTURABLE_CHANGE_REQUESTED});
     } else {
-      // TODO, this is incorrect. called has joined will be false if the called never joined, or if the caller ended the call before the called joined.
-      // we need to know if the disconnect was solicited
-      const cancelReason = callTransaction.calledHasJoined ? PaymentStatusCancellationReason.CALLED_NEVER_JOINED :
-                                                   PaymentStatusCancellationReason.CALLER_ENDED_CALL_BEFORE_START;
+      const cancelReason = clientRequested ? PaymentStatusCancellationReason.CALLER_ENDED_CALL_BEFORE_START :
+                                             PaymentStatusCancellationReason.CALLED_NEVER_JOINED;
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: cancelReason,
         centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: paymentStatus.centsPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
