@@ -10,6 +10,7 @@ type SubtypeConstructor<Constructor extends new (...args: any) => any, Subtype> 
 export interface ProtoGrpcType {
   call_transaction_package: {
     CallTransaction: SubtypeConstructor<typeof grpc.Client, _call_transaction_package_CallTransactionClient> & { service: _call_transaction_package_CallTransactionDefinition }
+    ClientCallDisconnectRequest: MessageTypeDefinition
     ClientCallInitiateRequest: MessageTypeDefinition
     ClientCallJoinRequest: MessageTypeDefinition
     ClientMessageContainer: MessageTypeDefinition

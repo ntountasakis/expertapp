@@ -116,7 +116,7 @@ class CallServerModel extends ChangeNotifier {
   }
 
   void onServerCallSummary(ServerCallSummary callSummary) {
-    log("onServerCallSummary");
+    log("onServerCallSummary: " + callSummary.toString());
     _callSummary = callSummary;
     notifyListeners();
   }

@@ -17,7 +17,7 @@ export class CallManager {
   }
 
   onClientDisconnect({userId}: {userId: string}): void {
-    const callState = this._getCallState({userId: userId});
+    const callState = this.getCallState({userId: userId});
     if (callState === undefined) {
       console.error(`Unable to clear CallState for UID: ${userId}. Does not exist`);
       return;
@@ -49,7 +49,7 @@ export class CallManager {
     return callState;
   }
 
-  _getCallState({userId}: {userId: string}): BaseCallState | undefined {
+  getCallState({userId}: {userId: string}): BaseCallState | undefined {
     return this._callStates.get(userId);
   }
 

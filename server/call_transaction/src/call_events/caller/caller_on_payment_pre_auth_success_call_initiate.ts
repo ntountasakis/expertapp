@@ -1,3 +1,4 @@
+import * as admin from "firebase-admin";
 import {CallerCallState} from "../../call_state/caller/caller_call_state";
 import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
 
@@ -14,8 +15,15 @@ export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSen
     update: PaymentStatus): Promise<boolean> {
   if (update.status == PaymentStatusStates.CHARGE_CONFIRMED) {
     const callerCallState = callState as CallerCallState;
-    const callTransaction = (await getCallTransactionDocumentRef({
-      transactionId: callerCallState.callerBeginCallContext.transactionId}).get()).data() as CallTransaction;
+
+    const callTransaction = await admin.firestore().runTransaction(async (transaction) => {
+      const callTransactionRef = getCallTransactionDocumentRef({transactionId: callerCallState.callerBeginCallContext.transactionId});
+      const callTransaction: CallTransaction = (await transaction.get(callTransactionRef)).data() as CallTransaction;
+      transaction.update(callTransactionRef, {
+        "calledWasRung": true,
+      });
+      return callTransaction;
+    });
 
     const startRateString = callTransaction.expertRateCentsCallStart.toString();
     const perMinuteRateString = callTransaction.expertRateCentsPerMinute.toString();

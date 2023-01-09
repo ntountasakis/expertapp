@@ -6,6 +6,9 @@ import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+
+import '../../../call_server/call_server_model.dart';
 
 class ExpertReviewSubmitPage extends StatefulWidget {
   final String currentUserId;
@@ -13,7 +16,8 @@ class ExpertReviewSubmitPage extends StatefulWidget {
   final AppLifecycle lifecycle;
 
   ExpertReviewSubmitPage(
-      {required this.currentUserId, required this.expertUserId,
+      {required this.currentUserId,
+      required this.expertUserId,
       required this.lifecycle});
 
   @override
@@ -70,7 +74,8 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
             children: [
               SimpleDialogOption(
                   onPressed: () async {
-                    await widget.lifecycle.refreshOwedBalance();
+                    Provider.of<CallServerModel>(context, listen: false)
+                        .reset();
                     context.goNamed(Routes.HOME);
                   },
                   child: Center(

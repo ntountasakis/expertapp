@@ -21,6 +21,7 @@ export function createCallTransactionDocument({ transaction, callerUid, calledUi
     "agoraChannelName": uuidv4(),
     "callerPaymentStatusId": uuidv4(),
     "callerTransferGroup": uuidv4(),
+    "calledWasRung": false,
     "calledHasJoined": false,
     "calledJoinTimeUtcMs": 0,
     "callerFinishedTransaction": false,
