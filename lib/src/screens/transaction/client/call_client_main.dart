@@ -103,8 +103,8 @@ class _CallClientMainState extends State<CallClientMain> {
         final counterpartyJoined = model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.JOINED;
         if (counterpartyJoined) {
-          context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
-              params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
+          context.goNamed(Routes.CLIENT_CALL_SUMMARY_PAGE,
+              params: {Routes.CALLED_UID_PARAM: widget.otherUserId});
         } else {
           model.reset();
           context.goNamed(Routes.HOME);
