@@ -34,6 +34,7 @@ class Routes {
   static const CLIENT_CALL_HOME = '/clientCallHome';
   static const CLIENT_CALL_CHAT_PAGE = 'clientCallChatPage';
   static const CLIENT_CALL_VIDEO_PAGE = 'clientCallVideoPage';
+  static const CLIENT_CALL_SUMMARY_PAGE= '/callClientSummaryPage';
 
   static String chatroomId(String aRoute) {
     final split = aRoute.split('?');

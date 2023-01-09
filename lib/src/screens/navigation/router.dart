@@ -1,6 +1,7 @@
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/history/completed_calls_page.dart';
+import 'package:expertapp/src/screens/transaction/client/call_client_summary.dart';
 import 'package:expertapp/src/screens/transaction/common/chat_page.dart';
 import 'package:expertapp/src/screens/expert/expert_listings_page.dart';
 import 'package:expertapp/src/screens/expert/expert_profile_page.dart';
@@ -163,6 +164,14 @@ class AppRouter {
                 currentUserId: lifecycle.userMetadata!.documentId,
                 expertUserId: expertUid!,
                 lifecycle: lifecycle);
+          }),
+      GoRoute(
+          name: Routes.CLIENT_CALL_SUMMARY_PAGE,
+          path:
+              Routes.CLIENT_CALL_SUMMARY_PAGE + '/:' + Routes.CALLED_UID_PARAM,
+          builder: (BuildContext context, GoRouterState state) {
+            final calledUid = state.params[Routes.CALLED_UID_PARAM];
+            return CallClientSummary(otherUserId: calledUid!);
           }),
       GoRoute(
           name: Routes.CALL_JOIN_PROMPT_PAGE,
