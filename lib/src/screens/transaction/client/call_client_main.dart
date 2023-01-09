@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
@@ -35,6 +37,7 @@ class CallClientMain extends StatefulWidget {
 class _CallClientMainState extends State<CallClientMain> {
   final CallServerManager callServerManager;
   bool requestedExit = false;
+  bool exiting = false;
   final RtcEngineWrapper engineWrapper = RtcEngineWrapper();
   AgoraVideoCall? videoCall;
 
@@ -74,19 +77,9 @@ class _CallClientMainState extends State<CallClientMain> {
         params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
   }
 
-  Future<void> disconnectFromServer(CallServerModel model) async {
-    if (videoCall != null) {
-      await engineWrapper.teardown();
-    }
-    await callServerManager.disconnect();
-    model.reset();
-  }
-
   Future<void> onEndCallTap() async {
-    final model = Provider.of<CallServerModel>(context, listen: false);
-    await disconnectFromServer(model);
-    context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
-        params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
+    requestedExit = true;
+    await callServerManager.requestDisconnect();
   }
 
   Future<void> onPaymentCancelled(
@@ -94,24 +87,26 @@ class _CallClientMainState extends State<CallClientMain> {
     if (!requestedExit) {
       requestedExit = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
-        await disconnectFromServer(model);
-        await widget.lifecycle.refreshOwedBalance();
-        context.goNamed(Routes.HOME);
+        await callServerManager.requestDisconnect();
       });
     }
   }
 
   void onServerDisconnect(CallServerModel model) {
-    if (!requestedExit) {
-      requestedExit = true;
+    if (!exiting) {
+      exiting = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
+        if (videoCall != null) {
+          await engineWrapper.teardown();
+        }
+        await widget.lifecycle.refreshOwedBalance();
         final counterpartyJoined = model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.JOINED;
-        await disconnectFromServer(model);
         if (counterpartyJoined) {
           context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
               params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
         } else {
+          model.reset();
           context.goNamed(Routes.HOME);
         }
       });

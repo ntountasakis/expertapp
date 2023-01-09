@@ -16,7 +16,7 @@ import {markCallEndGenerateCallSummary} from "../common/mark_call_end_generate_c
 export const endCallTransactionCaller = async ({transactionId, callState, clientRequested} :
   {transactionId: string, callState: CallerCallState, clientRequested: boolean})
 : Promise<ServerCallSummary> => {
-  const [paymentIntentId, calledJoined, calledFcmToken, callSummary] = await admin.firestore().runTransaction(async (transaction) => {
+  const [paymentIntentId, calledJoined, calledWasRung, calledFcmToken, callSummary] = await admin.firestore().runTransaction(async (transaction) => {
     const callTransaction: CallTransaction = await getCallTransactionDocument(
         {transaction: transaction, transactionId: transactionId});
 
@@ -44,13 +44,17 @@ export const endCallTransactionCaller = async ({transactionId, callState, client
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
         paymentStatusId: callTransaction.callerPaymentStatusId, chargeId: paymentStatus.chargeId, status: PaymentStatusStates.CANCELLATION_REQUESTED});
     }
-    return [paymentStatus.paymentIntentId, callTransaction.calledHasJoined, callTransaction.calledFcmToken, callSummary];
+    return [paymentStatus.paymentIntentId, callTransaction.calledHasJoined, callTransaction.calledWasRung, callTransaction.calledFcmToken, callSummary];
   });
   if (calledJoined) {
     await chargeStripePaymentIntent({amountToCaptureInCents: callSummary.costOfCallCents!, paymentIntentId: paymentIntentId});
   } else {
-    sendFcmCallJoinCancel({fcmToken: calledFcmToken});
     await cancelStripePaymentIntent({paymentIntentId: paymentIntentId});
+    if (calledWasRung) {
+      sendFcmCallJoinCancel({fcmToken: calledFcmToken});
+    }
   }
+
+
   return callSummary;
 };

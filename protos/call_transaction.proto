@@ -16,10 +16,15 @@ message ClientCallJoinRequest {
     string joinerUid = 2;
 }
 
+message ClientCallDisconnectRequest {
+    string uid = 1;
+}
+
 message ClientMessageContainer {
     oneof messageWrapper {
         ClientCallInitiateRequest callInitiateRequest = 1;
         ClientCallJoinRequest callJoinRequest = 2;
+        ClientCallDisconnectRequest callDisconnectRequest = 3;
     }
 }
 

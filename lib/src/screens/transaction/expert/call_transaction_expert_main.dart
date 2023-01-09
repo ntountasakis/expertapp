@@ -81,27 +81,20 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
   }
 
   Future<void> onEndCallTap() async {
-    final model = Provider.of<CallServerModel>(context, listen: false);
-    await disconnectFromServer(model);
-    context.goNamed(Routes.HOME);
+    await callServerManager.requestDisconnect();
   }
 
   void onServerDisconnect(CallServerModel model) {
     if (!requestedExit) {
       requestedExit = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
-        await disconnectFromServer(model);
+        if (videoCall != null) {
+          await engineWrapper.teardown();
+        }
+        model.reset();
         context.goNamed(Routes.HOME);
       });
     }
-  }
-
-  Future<void> disconnectFromServer(CallServerModel model) async {
-    if (videoCall != null) {
-      await engineWrapper.teardown();
-    }
-    await callServerManager.disconnect();
-    model.reset();
   }
 
   @override

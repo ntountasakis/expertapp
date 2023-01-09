@@ -9,6 +9,7 @@ export interface CallTransaction {
     agoraChannelName: string;
     callerPaymentStatusId: string;
     callerTransferGroup: string;
+    calledWasRung: boolean;
     calledHasJoined: boolean;
     calledJoinTimeUtcMs: number;
     callerFinishedTransaction: boolean;
