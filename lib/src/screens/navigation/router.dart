@@ -5,6 +5,7 @@ import 'package:expertapp/src/screens/transaction/client/call_client_summary.dar
 import 'package:expertapp/src/screens/transaction/common/chat_page.dart';
 import 'package:expertapp/src/screens/expert/expert_listings_page.dart';
 import 'package:expertapp/src/screens/expert/expert_profile_page.dart';
+import 'package:expertapp/src/screens/transaction/expert/call_expert_summary.dart';
 import 'package:expertapp/src/screens/transaction/expert/expert_review_submit_page.dart';
 import 'package:expertapp/src/screens/home_page.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
@@ -166,9 +167,9 @@ class AppRouter {
                 lifecycle: lifecycle);
           }),
       GoRoute(
-          name: Routes.CLIENT_CALL_SUMMARY_PAGE,
+          name: Routes.EXPERT_CALL_SUMMARY_PAGE,
           path:
-              Routes.CLIENT_CALL_SUMMARY_PAGE + '/:' + Routes.CALLED_UID_PARAM,
+              Routes.EXPERT_CALL_SUMMARY_PAGE + '/:' + Routes.CALLED_UID_PARAM,
           builder: (BuildContext context, GoRouterState state) {
             final calledUid = state.params[Routes.CALLED_UID_PARAM];
             return CallClientSummary(otherUserId: calledUid!);
@@ -236,6 +237,12 @@ class AppRouter {
               },
             ),
           ]),
+      GoRoute(
+          name: Routes.CLIENT_SUMMARY_PAGE,
+          path: Routes.CLIENT_SUMMARY_PAGE,
+          builder: (BuildContext context, GoRouterState state) {
+            return CallExpertSummary();
+          }),
     ],
   );
 }
