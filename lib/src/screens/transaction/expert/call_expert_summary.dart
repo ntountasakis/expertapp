@@ -1,7 +1,9 @@
 import 'dart:developer';
 
+import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
+import 'package:expertapp/src/util/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -9,22 +11,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../../call_server/call_server_model.dart';
 
-class CallClientSummary extends StatefulWidget {
-  final String otherUserId;
-
-  const CallClientSummary({required this.otherUserId});
-
+class CallExpertSummary extends StatefulWidget {
   @override
-  State<CallClientSummary> createState() => _CallClientSummaryState();
+  State<CallExpertSummary> createState() => _CallExpertSummaryState();
 }
 
-class _CallClientSummaryState extends State<CallClientSummary> {
+class _CallExpertSummaryState extends State<CallExpertSummary> {
   bool exiting = false;
-
-  void goSubmitReview() {
-    context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
-        params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
-  }
 
   void goHome(CallServerModel model) {
     exiting = true;
@@ -49,16 +42,19 @@ class _CallClientSummaryState extends State<CallClientSummary> {
         child: Column(
       children: [
         SizedBox(height: 20),
-        CallSummaryUtil.buildCostOfCall(callSummary),
-        SizedBox(height: 20),
         CallSummaryUtil.buildCallLength(callSummary),
         SizedBox(height: 20),
-        CallSummaryUtil.buildClientCallSummaryBlurb(callSummary),
+        CallSummaryUtil.buildCallEarningsSubtotal(callSummary),
+        SizedBox(height: 20),
+        CallSummaryUtil.buildCallEarningsPaymentProcessorFee(callSummary),
+        SizedBox(height: 20),
+        CallSummaryUtil.buildCallEarningsPlatformFee(callSummary),
+        SizedBox(height: 20),
+        CallSummaryUtil.buildCallEarningsAmountEarned(callSummary),
         SizedBox(height: 50),
+        CallSummaryUtil.buildExpertCallSummaryBlurb(callSummary),
         Row(
           children: [
-            SizedBox(width: 10),
-            CallSummaryUtil.buildLeaveReviewButton(goSubmitReview),
             Expanded(child: Container()),
             CallSummaryUtil.buildHomeButton(model, goHome),
             SizedBox(width: 10),

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
@@ -91,8 +89,7 @@ class _CallTransactionExpertMainState extends State<CallTransactionExpertMain> {
         if (videoCall != null) {
           await engineWrapper.teardown();
         }
-        model.reset();
-        context.goNamed(Routes.HOME);
+        context.goNamed(Routes.CLIENT_SUMMARY_PAGE);
       });
     }
   }
