@@ -28,7 +28,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   const calledUid = callInitiateRequest.calledUid as string;
   const callerUid = callInitiateRequest.callerUid as string;
 
-  const [didCreateCall, stripeCustomerId, paymentIntentClientSecret, ephemeralKey, optCallTransaction, optExpertRate] =
+  const [didCreateCall, stripeCustomerId, paymentIntentClientSecret, ephemeralKey, centsRequestedAuth, optCallTransaction, optExpertRate] =
     await createCallTransaction({callerUid: callerUid, calledUid: calledUid});
   if (!didCreateCall) {
     return false;
@@ -45,8 +45,9 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   _listenForPaymentSuccess({callState: newClientCallState, callTransaction: callTransaction});
   _listenForCallTransactionUpdates({callState: newClientCallState, callTransaction: callTransaction});
 
-  sendGrpcCallJoinOrRequestSuccess(callTransaction.callTransactionId, clientMessageSender);
-  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret, ephemeralKey, stripeCustomerId, newClientCallState);
+  sendGrpcCallJoinOrRequestSuccess(callTransaction.callTransactionId, callTransaction.maxCallTimeSec, clientMessageSender);
+  sendGrpcServerCallBeginPaymentInitiate(clientMessageSender, paymentIntentClientSecret, ephemeralKey, stripeCustomerId,
+      centsRequestedAuth, newClientCallState);
   sendGrpcServerFeeBreakdowns(clientMessageSender, callTransaction);
 
   return true;

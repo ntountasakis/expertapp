@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
@@ -13,6 +11,8 @@ import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/appbars/client_in_call_appbar.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:expertapp/src/screens/transaction/client/widgets/call_waiting_join.dart';
+import 'package:expertapp/src/util/call_summary_util.dart';
+import 'package:expertapp/src/util/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -112,10 +112,39 @@ class _CallClientMainState extends State<CallClientMain> {
     }
   }
 
+  Widget buildAwaitingPaymentView(CallServerModel model) {
+    final paymentPrompt =
+        "We are requesting a hold on your card for the amount of ${formattedRate(model.callPaymentPromptModel.centsRequestedAuthorized)}. "
+        "At the end of the call, we will charge your card for the actual amount of time you were connected to the expert. "
+        "The call can last a maximum of ${CallSummaryUtil.callLengthFormat(Duration(seconds: model.secMaxCallLength))}. "
+        "Once that time has elapsed, the call will automatically end.";
+    return Center(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              paymentPrompt,
+              style: CallSummaryUtil.LIGHT_STYLE,
+            ),
+          ),
+          SizedBox(height: 20),
+          CallSummaryUtil.buildButton(model, "Authorize Payment Hold",
+              (_) async {
+            await model.callPaymentPromptModel.presentPaymentSheet();
+          }),
+        ],
+      ),
+    );
+  }
+
   Widget buildCallView(BuildContext context, CallServerModel model,
       DocumentWrapper<UserMetadata> calledMetadata) {
     if (model.callConnectionState == CallServerConnectionState.DISCONNECTED) {
       onServerDisconnect(model);
+      return SizedBox();
+    }
+    if (model.callPaymentPromptModel.paymentState == PaymentState.NA) {
       return SizedBox();
     }
     if (model.callPaymentPromptModel.paymentState ==
@@ -125,7 +154,7 @@ class _CallClientMainState extends State<CallClientMain> {
     }
     if (model.callPaymentPromptModel.paymentState !=
         PaymentState.PAYMENT_COMPLETE) {
-      return SizedBox();
+      return buildAwaitingPaymentView(model);
     }
     if (model.agoraCredentials == null ||
         model.callCounterpartyConnectionState ==
