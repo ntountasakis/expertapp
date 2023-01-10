@@ -21,7 +21,7 @@ class CallClientSummary extends StatefulWidget {
 class _CallClientSummaryState extends State<CallClientSummary> {
   bool exiting = false;
 
-  void goSubmitReview() {
+  void goSubmitReview(CallServerModel model) {
     context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
         params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
   }
@@ -58,9 +58,9 @@ class _CallClientSummaryState extends State<CallClientSummary> {
         Row(
           children: [
             SizedBox(width: 10),
-            CallSummaryUtil.buildLeaveReviewButton(goSubmitReview),
+            CallSummaryUtil.buildButton(model, "Leave Review", goSubmitReview),
             Expanded(child: Container()),
-            CallSummaryUtil.buildHomeButton(model, goHome),
+            CallSummaryUtil.buildButton(model, "Finish", goHome),
             SizedBox(width: 10),
           ],
         )

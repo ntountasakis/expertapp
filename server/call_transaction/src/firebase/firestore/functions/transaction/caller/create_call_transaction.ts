@@ -14,7 +14,7 @@ import {PaymentContext} from "../../../../../../../shared/src/firebase/firestore
 import {calculateMaxCallLengthSec} from "../../util/call_cost_calculator";
 
 export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: string, calledUid: string}):
-  Promise<[boolean, string, string, string, CallTransaction?, ExpertRate?]> => {
+  Promise<[boolean, string, string, string, number, CallTransaction?, ExpertRate?]> => {
   const amountCentsPreAuth = 300;
   const [canCreateCall, callTransaction, paymentStatus, userInfo, expertRate] = await admin.firestore().runTransaction(async (transaction) => {
     if (calledUid == null || calledUid == null) {
@@ -52,7 +52,7 @@ export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: 
     await getPaymentStatusDocumentRef({paymentStatusId: callTransaction.callerPaymentStatusId}).update("paymentIntentId", paymentIntentId);
 
     const ephemeralKey = await createCustomerEphemeralKey({customerId: userInfo.stripeCustomerId});
-    return [true, userInfo.stripeCustomerId, paymentIntentClientSecret, ephemeralKey, callTransaction, expertRate];
+    return [true, userInfo.stripeCustomerId, paymentIntentClientSecret, ephemeralKey, amountCentsPreAuth, callTransaction, expertRate];
   }
-  return [false, "", "", ""];
+  return [false, "", "", "", 0];
 };

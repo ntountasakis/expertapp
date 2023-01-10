@@ -79,6 +79,7 @@ class CallServerModel extends ChangeNotifier {
   void onServerCallJoinOrRequestResponse(
       ServerCallJoinOrRequestResponse response) {
     _callTransactionId = response.callTransactionId;
+    secMaxCallLength = response.secondsCallAuthorizedFor;
     notifyListeners();
   }
 
@@ -95,9 +96,12 @@ class CallServerModel extends ChangeNotifier {
   Future<void> onServerCallBeginPaymentPreAuth(
       ServerCallBeginPaymentPreAuth callBeginPaymentPreAuth) async {
     await _callBeginPaymentPromptModel.onPaymentDetails(
-        stripeCustomerId: callBeginPaymentPreAuth.customerId,
-        clientSecret: callBeginPaymentPreAuth.clientSecret,
-        ephemeralKey: callBeginPaymentPreAuth.ephemeralKey);
+      stripeCustomerId: callBeginPaymentPreAuth.customerId,
+      clientSecret: callBeginPaymentPreAuth.clientSecret,
+      ephemeralKey: callBeginPaymentPreAuth.ephemeralKey,
+      centsRequestedAuthorized:
+          callBeginPaymentPreAuth.centsRequestedAuthorized,
+    );
     notifyListeners();
   }
 
@@ -111,7 +115,6 @@ class CallServerModel extends ChangeNotifier {
   void onServerCounterpartyJoinedCall(ServerCounterpartyJoinedCall joinedCall) {
     _counterpartyConnectionState = CallServerCounterpartyConnectionState.JOINED;
     _msEpochOfCounterpartyConnected = DateTime.now().millisecondsSinceEpoch;
-    secMaxCallLength = joinedCall.secondsCallAuthorizedFor;
     notifyListeners();
   }
 

@@ -5,10 +5,12 @@ export interface ServerCallBeginPaymentPreAuth {
   'clientSecret'?: (string);
   'customerId'?: (string);
   'ephemeralKey'?: (string);
+  'centsRequestedAuthorized'?: (number);
 }
 
 export interface ServerCallBeginPaymentPreAuth__Output {
   'clientSecret': (string);
   'customerId': (string);
   'ephemeralKey': (string);
+  'centsRequestedAuthorized': (number);
 }

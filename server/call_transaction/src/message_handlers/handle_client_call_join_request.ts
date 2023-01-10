@@ -31,7 +31,7 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
   _listenForCallTransactionUpdates({callState: newCalledState, callTransaction: callTransaction});
   _startMaxCallLengthTimer({callTransaction: callTransaction, calledCallState: newCalledState});
 
-  sendGrpcCallJoinOrRequestSuccess(transactionId, clientMessageSender);
+  sendGrpcCallJoinOrRequestSuccess(transactionId, callTransaction.maxCallTimeSec, clientMessageSender);
   sendGrpcServerAgoraCredentials(clientMessageSender, callTransaction.agoraChannelName, joinerId, newCalledState);
   sendGrpcServerFeeBreakdowns(clientMessageSender, callTransaction);
   return true;

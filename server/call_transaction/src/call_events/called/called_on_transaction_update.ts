@@ -10,7 +10,7 @@ export async function onCalledTransactionUpdate(clientMessageSender: ClientMessa
     return true;
   } else if (update.calledHasJoined) {
     callState.log("Counterparty joined the call");
-    clientMessageSender.sendCounterpartyJoinedCall({secondsCallAuthorizedFor: update.maxCallTimeSec});
+    clientMessageSender.sendCounterpartyJoinedCall({});
   }
   return false;
 }

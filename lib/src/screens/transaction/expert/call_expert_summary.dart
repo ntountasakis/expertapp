@@ -1,9 +1,7 @@
 import 'dart:developer';
 
-import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
-import 'package:expertapp/src/util/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -56,7 +54,7 @@ class _CallExpertSummaryState extends State<CallExpertSummary> {
         Row(
           children: [
             Expanded(child: Container()),
-            CallSummaryUtil.buildHomeButton(model, goHome),
+            CallSummaryUtil.buildButton(model, "Finish", goHome),
             SizedBox(width: 10),
           ],
         )

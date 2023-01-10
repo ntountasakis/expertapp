@@ -80,24 +80,14 @@ class CallSummaryUtil {
     );
   }
 
-  static Widget buildHomeButton(
-      CallServerModel model, Function(CallServerModel) onButtonPressed) {
+  static Widget buildButton(CallServerModel model, String buttonText,
+      Function(CallServerModel) onButtonPressed) {
     return ElevatedButton(
       style: BUTTON_STYLE,
       onPressed: () async {
         onButtonPressed(model);
       },
-      child: Text("Finish"),
-    );
-  }
-
-  static Widget buildLeaveReviewButton(VoidCallback onButtonPressed) {
-    return ElevatedButton(
-      style: BUTTON_STYLE,
-      onPressed: () async {
-        onButtonPressed();
-      },
-      child: Text("Leave Review"),
+      child: Text(buttonText),
     );
   }
 
