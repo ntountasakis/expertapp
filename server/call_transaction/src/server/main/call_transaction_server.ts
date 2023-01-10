@@ -70,6 +70,5 @@ function isMetadataValid(metadata: { [key: string]: grpc.MetadataValue; }): bool
 }
 
 function invalidMessageCallback(errorMessage: string): void {
-  // todo: disonnect client
   console.error(errorMessage);
 }
