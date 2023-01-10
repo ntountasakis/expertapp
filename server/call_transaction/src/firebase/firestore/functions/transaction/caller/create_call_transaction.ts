@@ -3,14 +3,13 @@ import * as admin from "firebase-admin";
 import {ExpertRate} from "../../../../../../../shared/src/firebase/firestore/models/expert_rate";
 import {FcmToken} from "../../../../../../../shared/src/firebase/firestore/models/fcm_token";
 import {createCallTransactionDocument} from "../../../../../../../shared/src/firebase/firestore/functions/create_call_transaction_document";
-import {getExpertRateDocument, getFcmTokenDocument, getPaymentStatusDocumentRef, getPrivateUserDocument, getUserOwedBalanceDocumentRef} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {getExpertRateDocument, getFcmTokenDocument, getPaymentStatusDocumentRef, getPrivateUserDocument} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
 import {PrivateUserInfo} from "../../../../../../../shared/src/firebase/firestore/models/private_user_info";
 import {createStripePaymentIntentPreAuth} from "../../../../../../../shared/src/stripe/payment_intent_creator";
 import {createPaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/create_payment_status";
 import createCustomerEphemeralKey from "../../../../../../../shared/src/stripe/create_customer_ephemeral_key";
 import callAllowedStripeConfigValid from "../../util/call_allowed_stripe_config_valid";
-import {UserOwedBalance} from "../../../../../../../shared/src/firebase/firestore/models/user_owed_balance";
 import {PaymentContext} from "../../../../../../../shared/src/firebase/firestore/models/payment_status";
 import {calculateMaxCallLengthSec} from "../../util/call_cost_calculator";
 
@@ -31,14 +30,6 @@ export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: 
 
     if (!callAllowedStripeConfigValid({callerUserInfo: callerUserInfo, calledUserInfo: calledUserInfo})) {
       return [false, null, null, null, null, null];
-    }
-    const balanceDoc = await getUserOwedBalanceDocumentRef({uid: callerUid}).get();
-    if (balanceDoc.exists) {
-      const owedBalance = balanceDoc.data() as UserOwedBalance;
-      if (owedBalance.owedBalanceCents != 0) {
-        console.error(`Caller: ${callerUid} has a balance of ${owedBalance.owedBalanceCents} cents. Disconnecting from call server`);
-        return [false, null, null, null, null, null];
-      }
     }
 
     const maxCallLengthSec = calculateMaxCallLengthSec(

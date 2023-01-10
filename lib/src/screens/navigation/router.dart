@@ -13,7 +13,6 @@ import 'package:expertapp/src/screens/transaction/expert/call_transaction_expert
 import 'package:expertapp/src/screens/transaction/client/call_client_main.dart';
 import 'package:expertapp/src/screens/transaction/client/call_client_preview.dart';
 import 'package:expertapp/src/screens/transaction/expert/call_transaction_expert_main.dart';
-import 'package:expertapp/src/screens/user/user_pay_balance_page.dart';
 import 'package:expertapp/src/screens/user/user_profile_page.dart';
 import 'package:expertapp/src/screens/user/user_signup_page.dart';
 import 'package:flutter/material.dart';
@@ -45,10 +44,6 @@ class AppRouter {
         return state.location != Routes.USER_CREATE_PAGE
             ? Routes.USER_CREATE_PAGE
             : null;
-      }
-      if (state.location != Routes.USER_PAY_BALANCE &&
-          lifecycle.owedBalanceCents != 0) {
-        return Routes.USER_PAY_BALANCE;
       }
       if (state.location == Routes.SIGN_IN_PAGE ||
           state.location == Routes.USER_CREATE_PAGE) {
@@ -98,13 +93,6 @@ class AppRouter {
         path: Routes.USER_COMPLETED_CALLS,
         builder: (BuildContext context, GoRouterState state) {
           return CompletedCallsPage(lifecycle.userMetadata!);
-        },
-      ),
-      GoRoute(
-        name: Routes.USER_PAY_BALANCE,
-        path: Routes.USER_PAY_BALANCE,
-        builder: (BuildContext context, GoRouterState state) {
-          return UserPayBalancePage(lifecycle);
         },
       ),
       GoRoute(

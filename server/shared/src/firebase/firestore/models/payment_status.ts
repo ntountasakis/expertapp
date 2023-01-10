@@ -25,7 +25,6 @@ export enum PaymentStatusStates {
 }
 
 export enum PaymentContext {
-    PAY_OUTSTANDING_BALANCE = "pay_outstanding_balance",
     IN_CALL = "in_call",
 }
 

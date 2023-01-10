@@ -56,37 +56,3 @@ Future<String> lookupChatroomId(String otherUid) async {
   final chatroomId = result.data;
   return chatroomId;
 }
-
-Future<int> lookupBalancedOwedCents() async {
-  HttpsCallableResult result =
-      await getCallable(CallableFunctions.CHECK_OUTSTANDING_BALANCE).call();
-
-  return result.data['owedBalanceCents'];
-}
-
-class OutstandingBalanceDetails {
-  final int balanceOwedCents;
-  final String customerId;
-  final String clientSecret;
-  final String paymentStatusId;
-  final String ephemeralKey;
-
-  OutstandingBalanceDetails(this.balanceOwedCents, this.customerId,
-      this.clientSecret, this.paymentStatusId, this.ephemeralKey);
-
-  bool hasOutstandingBalance() {
-    return balanceOwedCents != 0;
-  }
-}
-
-Future<OutstandingBalanceDetails> getInfoToPayOutstandingBalance() async {
-  HttpsCallableResult result =
-      await getCallable(CallableFunctions.PAY_OUTSTANDING_BALANCE).call();
-
-  return OutstandingBalanceDetails(
-      result.data['owedBalanceCents'],
-      result.data['stripeCustomerId'],
-      result.data['clientSecret'],
-      result.data['paymentStatusId'],
-      result.data['ephemeralKey']);
-}
