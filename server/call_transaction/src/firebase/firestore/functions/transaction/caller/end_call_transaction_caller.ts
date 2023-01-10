@@ -1,11 +1,9 @@
 import * as admin from "firebase-admin";
-import {getCallTransactionDocument, getPaymentStatusDocumentTransaction, getUserOwedBalanceDocumentTransaction} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {getCallTransactionDocument, getPaymentStatusDocumentTransaction} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
 import {chargeStripePaymentIntent} from "../../../../../../../shared/src/stripe/payment_intent_creator";
-import {increaseBalanceOwed} from "../../../../../../../shared/src/firebase/firestore/functions/increase_balance_owed";
 import {PaymentStatus, PaymentStatusCancellationReason, PaymentStatusStates} from "../../../../../../../shared/src/firebase/firestore/models/payment_status";
 import cancelStripePaymentIntent from "../../../../../../../shared/src/stripe/cancel_payment_intent";
-import {UserOwedBalance} from "../../../../../../../shared/src/firebase/firestore/models/user_owed_balance";
 import {updatePaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status";
 import {CallerCallState} from "../../../../../call_state/caller/caller_call_state";
 import {getUtcMsSinceEpoch} from "../../../../../../../shared/src/general/utils";
@@ -23,15 +21,10 @@ export const endCallTransactionCaller = async ({transactionId, callState, client
     const paymentStatus: PaymentStatus = await getPaymentStatusDocumentTransaction({
       paymentStatusId: callTransaction.callerPaymentStatusId, transaction: transaction});
 
-    const userOwed: UserOwedBalance = await getUserOwedBalanceDocumentTransaction({
-      uid: callTransaction.callerUid, transaction: transaction});
-
     const callSummary: ServerCallSummary = await markCallEndGenerateCallSummary(
         {transaction: transaction, callTransaction: callTransaction, endCallTimeUtcMs: getUtcMsSinceEpoch(), callState: callState});
     if (callTransaction.calledHasJoined) {
       const costOfCallCents = callSummary.costOfCallCents!;
-      await increaseBalanceOwed({transaction: transaction, owedBalance: userOwed, uid: callTransaction.callerUid,
-        centsCollect: costOfCallCents, paymentStatusId: callTransaction.callerPaymentStatusId, errorOnExistingBalance: true});
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
         centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: paymentStatus.centsPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: costOfCallCents,
@@ -54,7 +47,6 @@ export const endCallTransactionCaller = async ({transactionId, callState, client
       sendFcmCallJoinCancel({fcmToken: calledFcmToken});
     }
   }
-
 
   return callSummary;
 };

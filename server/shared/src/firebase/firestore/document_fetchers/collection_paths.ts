@@ -7,5 +7,4 @@ export class CollectionPaths {
   static REVIEWS = "reviews";
   static USERS = "users";
   static USER_METADATA = "user_metadata";
-  static USER_OWED_BALANCES = "user_owed_balances";
 }

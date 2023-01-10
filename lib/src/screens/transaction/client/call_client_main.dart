@@ -99,7 +99,6 @@ class _CallClientMainState extends State<CallClientMain> {
         if (videoCall != null) {
           await engineWrapper.teardown();
         }
-        await widget.lifecycle.refreshOwedBalance();
         final counterpartyJoined = model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.JOINED;
         if (counterpartyJoined) {

@@ -13,11 +13,9 @@ class AppLifecycle extends ChangeNotifier {
   final _tokenUpdater = FcmTokenUpdater();
   FirebaseAuth.User? _theAuthenticatedUser = null;
   DocumentWrapper<UserMetadata>? _theUserMetadata = null;
-  int _owedBalanceCents = 0;
 
   FirebaseAuth.User? get authenticatedUser => _theAuthenticatedUser;
   DocumentWrapper<UserMetadata>? get userMetadata => _theUserMetadata;
-  int get owedBalanceCents => _owedBalanceCents;
 
   Future<void> onAuthStatusChange(FirebaseAuth.User? aAuthenticatedUser) async {
     _theAuthenticatedUser = aAuthenticatedUser;
@@ -38,14 +36,6 @@ class AppLifecycle extends ChangeNotifier {
 
   Future<void> _onUserConfirmation() async {
     await _updateFcmTokens();
-    await refreshOwedBalance();
-  }
-
-  Future<void> refreshOwedBalance() async {
-    _owedBalanceCents = await lookupBalancedOwedCents();
-    if (_owedBalanceCents != 0) {
-      log("User owes ${_owedBalanceCents} cents");
-    }
   }
 
   Future<void> _updateFcmTokens() async {
