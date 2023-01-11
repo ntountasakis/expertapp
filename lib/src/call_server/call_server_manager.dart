@@ -37,7 +37,6 @@ class CallServerManager {
         currentUserId,
         isCaller);
     _serverMessageListener.onConnect(context);
-
     _serverMessageStreamSubscription = _serverMessageStream.listen(
         _serverMessageListener.onMessage,
         onError: this._onError,
@@ -57,8 +56,8 @@ class CallServerManager {
 
   Future<void> _onDone() async {
     log('On done');
-    await _serverMessageProducer.shutdown();
-    _serverMessageStreamSubscription.cancel();
+    _serverMessageProducer.shutdown();
+    await _serverMessageStreamSubscription.cancel();
     _serverMessageListener.onDisconnect();
   }
 
