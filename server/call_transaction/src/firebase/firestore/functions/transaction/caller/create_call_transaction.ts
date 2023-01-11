@@ -11,12 +11,12 @@ import {createPaymentStatus} from "../../../../../../../shared/src/firebase/fire
 import createCustomerEphemeralKey from "../../../../../../../shared/src/stripe/create_customer_ephemeral_key";
 import callAllowedStripeConfigValid from "../../util/call_allowed_stripe_config_valid";
 import {PaymentContext} from "../../../../../../../shared/src/firebase/firestore/models/payment_status";
-import {calculateMaxCallLengthSec} from "../../util/call_cost_calculator";
+import {calculateMaxCallLengthSec, calculatePreAuthAmountForDesiredCallLength} from "../../util/call_cost_calculator";
 
 export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: string, calledUid: string}):
   Promise<[boolean, string, string, string, number, CallTransaction?, ExpertRate?]> => {
-  const amountCentsPreAuth = 300;
-  const [canCreateCall, callTransaction, paymentStatus, userInfo, expertRate] = await admin.firestore().runTransaction(async (transaction) => {
+  const [canCreateCall, callTransaction, paymentStatus, userInfo, expertRate, amountCentsPreAuth] =
+  await admin.firestore().runTransaction(async (transaction) => {
     if (calledUid == null || calledUid == null) {
       const errorMessage = `Invalid Call Transaction Request, either ids are null.
       CalledUid: ${calledUid} CallerUid: ${callerUid}`;
@@ -29,8 +29,10 @@ export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: 
     const calledUserInfo: PrivateUserInfo = await getPrivateUserDocument({transaction, uid: calledUid});
 
     if (!callAllowedStripeConfigValid({callerUserInfo: callerUserInfo, calledUserInfo: calledUserInfo})) {
-      return [false, null, null, null, null, null];
+      return [false, null, null, null, null, null, 0];
     }
+    const amountCentsPreAuth = calculatePreAuthAmountForDesiredCallLength({centsPerMinute: expertRate.centsPerMinute,
+      centsStartCall: expertRate.centsCallStart, desiredLengthSeconds: 30 * 60});
 
     const maxCallLengthSec = calculateMaxCallLengthSec(
         {centsPerMinute: expertRate.centsPerMinute, centsStartCall: expertRate.centsCallStart, amountAuthorizedCents: amountCentsPreAuth});
@@ -39,7 +41,7 @@ export const createCallTransaction = async ({callerUid, calledUid}: {callerUid: 
     const paymentStatus = await createPaymentStatus({transaction: transaction, uid: callerUid,
       paymentStatusId: callTransaction.callerPaymentStatusId, transferGroup: callTransaction.callerTransferGroup, idempotencyKey: uuidv4(),
       centsRequestedAuthorized: amountCentsPreAuth, centsRequestedCapture: 0, paymentContext: PaymentContext.IN_CALL});
-    return [true, callTransaction, paymentStatus, callerUserInfo, expertRate];
+    return [true, callTransaction, paymentStatus, callerUserInfo, expertRate, amountCentsPreAuth];
   });
 
   if (canCreateCall && userInfo != null && callTransaction != null && paymentStatus != null) {
