@@ -12,8 +12,7 @@ class CallServerModel extends ChangeNotifier {
   ServerAgoraCredentials? _agoraCredentials;
   ServerFeeBreakdowns? _feeBreakdowns;
   ServerCallSummary? _callSummary;
-  CallServerPaymentPromptModel _callBeginPaymentPromptModel =
-      new CallServerPaymentPromptModel();
+  late CallServerPaymentPromptModel _callBeginPaymentPromptModel;
 
   CallServerConnectionState _connectionState =
       CallServerConnectionState.UNCONNECTED;
@@ -38,6 +37,11 @@ class CallServerModel extends ChangeNotifier {
   int callJoinTimeExpiryUtcMs = 0;
   int secMaxCallLength = 0;
 
+  CallServerModel() {
+    _callBeginPaymentPromptModel =
+        new CallServerPaymentPromptModel(notifyListeners);
+  }
+
   int callLengthSeconds() {
     if (_msEpochOfCounterpartyConnected == 0) return 0;
     return ((DateTime.now().millisecondsSinceEpoch -
@@ -52,7 +56,8 @@ class CallServerModel extends ChangeNotifier {
     _agoraCredentials = null;
     _feeBreakdowns = null;
     _callSummary = null;
-    _callBeginPaymentPromptModel = new CallServerPaymentPromptModel();
+    _callBeginPaymentPromptModel =
+        new CallServerPaymentPromptModel(notifyListeners);
     _connectionState = CallServerConnectionState.UNCONNECTED;
     _counterpartyConnectionState =
         CallServerCounterpartyConnectionState.DISCONNECTED;

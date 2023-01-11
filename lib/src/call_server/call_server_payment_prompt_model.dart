@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 enum PaymentState {
@@ -9,11 +11,14 @@ enum PaymentState {
 }
 
 class CallServerPaymentPromptModel {
+  final VoidCallback onPaymentStateChanged;
   PaymentState _state = PaymentState.NA;
   late String _clientSecret;
   late String _stripeCustomerId;
   late String _ephemeralKey;
   late int _centsRequestedAuthorized;
+
+  CallServerPaymentPromptModel(this.onPaymentStateChanged);
 
   PaymentState get paymentState => _state;
   String get clientSecret => _clientSecret;
@@ -30,22 +35,23 @@ class CallServerPaymentPromptModel {
     _ephemeralKey = ephemeralKey;
     _centsRequestedAuthorized = centsRequestedAuthorized;
     _state = PaymentState.AWAITING_PAYMENT;
-    await Stripe.instance.initPaymentSheet(
-      paymentSheetParameters: SetupPaymentSheetParameters(
-        merchantDisplayName: 'Flutter Stripe Store Demo',
-        paymentIntentClientSecret: _clientSecret,
-        customerEphemeralKeySecret: _ephemeralKey,
-        customerId: stripeCustomerId,
-      ),
-    );
   }
 
   Future<void> presentPaymentSheet() async {
     try {
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          merchantDisplayName: 'Flutter Stripe Store Demo',
+          paymentIntentClientSecret: _clientSecret,
+          customerEphemeralKeySecret: _ephemeralKey,
+          customerId: stripeCustomerId,
+        ),
+      );
       await Stripe.instance.presentPaymentSheet();
     } on StripeException catch (exception) {
       if (exception.error.code == FailureCode.Canceled) {
         onPaymentCanceled();
+        onPaymentStateChanged();
       }
     }
   }

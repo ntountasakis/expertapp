@@ -1,7 +1,7 @@
 import {BaseCallState} from "../../../../call_state/common/base_call_state";
 
-export function calculateCostOfCallInCents({beginTimeUtcMs, endTimeUtcMs, centsPerMinute, centsStartCall, callState}:
-    {beginTimeUtcMs: number, endTimeUtcMs: number, centsPerMinute: number, centsStartCall: number, callState: BaseCallState}): number {
+export function calculateCostOfCallInCents({beginTimeUtcMs, endTimeUtcMs, centsPerMinute, centsStartCall}:
+    {beginTimeUtcMs: number, endTimeUtcMs: number, centsPerMinute: number, centsStartCall: number}): number {
   if (beginTimeUtcMs == 0) {
     throw new Error("Cannot calculate cost of call. Begin time is 0");
   }
@@ -15,9 +15,13 @@ export function calculateCostOfCallInCents({beginTimeUtcMs, endTimeUtcMs, centsP
   const centsPerSecond = centsPerMinute / 60;
   const roundedTimeBasedCost = Math.floor(roundedElapsedTimeSeconds * centsPerSecond);
   const totalCost = roundedTimeBasedCost + centsStartCall;
-
-  callState.log(`Call length (s): ${roundedElapsedTimeSeconds}. Cost (cents): ${totalCost}`);
   return totalCost;
+}
+
+export function calculatePreAuthAmountForDesiredCallLength({desiredLengthSeconds, centsStartCall, centsPerMinute}:
+  {desiredLengthSeconds: number, centsStartCall: number, centsPerMinute: number}): number {
+  return calculateCostOfCallInCents({beginTimeUtcMs: 1000, endTimeUtcMs: 1000 + (desiredLengthSeconds * 1000),
+    centsPerMinute: centsPerMinute, centsStartCall: centsStartCall});
 }
 
 export function calculatePlatformFeeCents({costOfCallCents, platformFeePercent, callState}:

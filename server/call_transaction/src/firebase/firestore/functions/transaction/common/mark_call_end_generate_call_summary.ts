@@ -13,7 +13,7 @@ export const markCallEndGenerateCallSummary = async ({transaction, callTransacti
   if (callTransaction.calledHasJoined) {
     const lengthOfCallSec: number = (endCallTimeUtcMs - callTransaction.calledJoinTimeUtcMs) / 1000;
     const costOfCall: number = calculateCostOfCallInCents({beginTimeUtcMs: callTransaction.calledJoinTimeUtcMs, endTimeUtcMs: endCallTimeUtcMs,
-      centsPerMinute: callTransaction.expertRateCentsPerMinute, centsStartCall: callTransaction.expertRateCentsCallStart, callState: callState});
+      centsPerMinute: callTransaction.expertRateCentsPerMinute, centsStartCall: callTransaction.expertRateCentsCallStart});
     const platformFees: number = calculatePlatformFeeCents({costOfCallCents: costOfCall, platformFeePercent: StripeProvider.PLATFORM_PERCENT_FEE,
       callState: callState});
     const paymentProcessorFees: number = calculatePaymentProcessorFeeCents({costOfCallCents: costOfCall,
