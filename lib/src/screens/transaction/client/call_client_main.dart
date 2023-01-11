@@ -133,6 +133,10 @@ class _CallClientMainState extends State<CallClientMain> {
               (_) async {
             await model.callPaymentPromptModel.presentPaymentSheet();
           }),
+          SizedBox(height: 20),
+          CallSummaryUtil.buildButton(model, "Cancel Call", (_) async {
+            await callServerManager.requestDisconnect();
+          }),
         ],
       ),
     );
