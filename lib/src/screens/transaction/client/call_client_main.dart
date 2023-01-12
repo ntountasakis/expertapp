@@ -142,11 +142,35 @@ class _CallClientMainState extends State<CallClientMain> {
     );
   }
 
+  Widget buildErrorView(BuildContext context, CallServerModel model) {
+    // not going to work, needs to be called only once from the event
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Error"),
+            content: Text("There was an error connecting to the server."),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  onServerDisconnect(model);
+                },
+              )
+            ],
+          );
+        });
+    return SizedBox();
+  }
+
   Widget buildCallView(BuildContext context, CallServerModel model,
       DocumentWrapper<UserMetadata> calledMetadata) {
     if (model.callConnectionState == CallServerConnectionState.DISCONNECTED) {
       onServerDisconnect(model);
       return SizedBox();
+    }
+    if (model.callConnectionState == CallServerConnectionState.ERRORED) {
+      return buildErrorView(context, model);
     }
     if (model.callPaymentPromptModel.paymentState == PaymentState.NA) {
       return SizedBox();
