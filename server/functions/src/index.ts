@@ -10,6 +10,9 @@ export {submitReview};
 import {userSignup} from "./endpoints/user_signup";
 export {userSignup};
 
+import {updateExpertRate} from "./endpoints/update_expert_rate";
+export {updateExpertRate};
+
 import {chatroomLookup} from "./endpoints/chatroom_lookup";
 export {chatroomLookup};
 

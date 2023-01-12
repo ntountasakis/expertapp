@@ -6,6 +6,7 @@ import 'package:expertapp/src/call_server/call_server_message_listener.dart';
 import 'package:expertapp/src/call_server/call_server_message_producer.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:flutter/material.dart';
+import 'package:grpc/grpc_or_grpcweb.dart';
 
 class CallServerManager {
   final String currentUserId;
@@ -52,6 +53,14 @@ class CallServerManager {
 
   void _onError(Object error) {
     log('On Error ${error}');
+
+    if (error is GrpcError && error.code == StatusCode.unavailable) {
+      _serverMessageListener.onError(
+          "Unavailable to begin call. Server is down for maintenance.");
+    } else {
+      _serverMessageListener.onError(
+          "Internal system error. Please contact us if issue persists.");
+    }
   }
 
   Future<void> _onDone() async {

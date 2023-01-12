@@ -56,3 +56,15 @@ Future<String> lookupChatroomId(String otherUid) async {
   final chatroomId = result.data;
   return chatroomId;
 }
+
+Future<bool> updateExpertRate(
+    {required int centsPerMinute, required int centsStartCall}) async {
+  Map<String, dynamic> updateQuery = {
+    'centsStartCall': centsStartCall,
+    'centsPerMinute': centsPerMinute,
+  };
+  HttpsCallableResult result =
+      await getCallable(CallableFunctions.UPDATE_EXPERT_RATE).call(updateQuery);
+
+  return true;
+}

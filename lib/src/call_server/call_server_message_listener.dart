@@ -45,6 +45,11 @@ class CallServerMessageListener {
     }
   }
 
+  void onError(String errorMessage) {
+    Provider.of<CallServerModel>(connectedContext, listen: false)
+        .onErrored(errorMessage);
+  }
+
   void onDisconnect() {
     Provider.of<CallServerModel>(connectedContext, listen: false)
         .onDisconnected();

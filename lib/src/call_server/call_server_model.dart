@@ -71,8 +71,10 @@ class CallServerModel extends ChangeNotifier {
   }
 
   void onDisconnected() {
-    _connectionState = CallServerConnectionState.DISCONNECTED;
-    notifyListeners();
+    if (_connectionState != CallServerConnectionState.ERRORED) {
+      _connectionState = CallServerConnectionState.DISCONNECTED;
+      notifyListeners();
+    }
   }
 
   void onErrored(String aErrorMessage) {
