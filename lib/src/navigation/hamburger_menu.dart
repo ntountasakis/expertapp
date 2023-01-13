@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:flutter/material.dart';
@@ -27,6 +24,11 @@ class HamburgerMenu extends StatelessWidget {
               title: Text("Past Calls"),
               onTap: () {
                 context.pushNamed(Routes.USER_COMPLETED_CALLS);
+              }),
+          ListTile(
+              title: Text("Update Call Prices"),
+              onTap: () {
+                context.pushNamed(Routes.EXPERT_UPDATE_RATE_PAGE);
               }),
           ListTile(
               title: Text("Sign Out"),

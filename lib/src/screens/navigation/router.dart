@@ -1,5 +1,6 @@
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
+import 'package:expertapp/src/screens/expert/expert_rate_page.dart';
 import 'package:expertapp/src/screens/history/completed_calls_page.dart';
 import 'package:expertapp/src/screens/transaction/client/call_client_summary.dart';
 import 'package:expertapp/src/screens/transaction/common/chat_page.dart';
@@ -230,6 +231,12 @@ class AppRouter {
           path: Routes.CLIENT_SUMMARY_PAGE,
           builder: (BuildContext context, GoRouterState state) {
             return CallExpertSummary();
+          }),
+      GoRoute(
+          name: Routes.EXPERT_UPDATE_RATE_PAGE,
+          path: Routes.EXPERT_UPDATE_RATE_PAGE,
+          builder: (BuildContext context, GoRouterState state) {
+            return ExpertRatePage(uid: lifecycle.userMetadata!.documentId);
           }),
     ],
   );
