@@ -39,6 +39,16 @@ class ExpertRate {
     return null;
   }
 
+  static Stream<DocumentWrapper<ExpertRate>?> getStream(
+      String uid) {
+    return _expertRateRef()
+        .doc(uid)
+        .snapshots()
+        .map((DocumentSnapshot<ExpertRate> documentSnapshot) {
+      return DocumentWrapper(documentSnapshot.id, documentSnapshot.data()!);
+    });
+  }
+
   static CollectionReference<ExpertRate> _expertRateRef() {
     return FirebaseFirestore.instance
         .collection(CollectionPaths.EXPERT_RATES)

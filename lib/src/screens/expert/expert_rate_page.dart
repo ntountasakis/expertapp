@@ -51,19 +51,18 @@ class ExpertRatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final body = FutureBuilder<DocumentWrapper<ExpertRate>?>(
-        future: ExpertRate.get(uid),
+    final body = StreamBuilder<DocumentWrapper<ExpertRate>?>(
+        stream: ExpertRate.getStream(uid),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentWrapper<ExpertRate>?> snapshot) {
-          if (snapshot.hasData) {
-            final rate = snapshot.data;
+          if (snapshot.hasData && snapshot.data != null) {
             return Column(
               children: [
-                buildExistingRateView(rate),
+                buildExistingRateView(snapshot.data),
                 SizedBox(
                   height: 40,
                 ),
-                buildExpertRateSelector(context, rate),
+                buildExpertRateSelector(context, snapshot.data),
               ],
             );
           }
@@ -97,8 +96,8 @@ class _MyRatePickerState extends State<RatePickers> {
   final _formKey = GlobalKey<FormState>();
   final _formatter = CurrencyTextInputFormatter();
 
-  late int _rateStartCall = 0;
-  late int _ratePerMinute = 0;
+  late int _rateStartCall = -1;
+  late int _ratePerMinute = -1;
 
   void updateRatePerMinute(int value) {
     setState(() {
@@ -153,11 +152,26 @@ class _MyRatePickerState extends State<RatePickers> {
         ElevatedButton(
           onPressed: () async {
             _formKey.currentState!.save();
-            if (_ratePerMinute == 0 || _rateStartCall == 0) {
+            if (_ratePerMinute == -1 || _rateStartCall == -1) {
               return;
             }
-            await updateExpertRate(
+            final UpdateExpertRateResult result = await updateExpertRate(
                 centsPerMinute: _ratePerMinute, centsStartCall: _rateStartCall);
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return SimpleDialog(
+                    title: Text(result.success ? "Success" : "Error"),
+                    children: [
+                      Center(
+                        child: Text(
+                          result.message,
+                          style: CallSummaryUtil.LIGHT_STYLE,
+                        ),
+                      ),
+                    ],
+                  );
+                });
           },
           child: Text("Submit"),
         ),

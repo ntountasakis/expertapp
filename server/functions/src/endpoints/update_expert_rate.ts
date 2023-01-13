@@ -18,8 +18,18 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
       throw new Error("Cannot update expert rate, some attributes null");
     }
 
-    if (newCentsPerMinute <= 0 || newCentsStartCall <= 0) {
-      throw new Error("Cannot update expert rate, some attributes <= 0");
+    if (newCentsPerMinute <= 0) {
+      return {
+        success: false,
+        message: "Rate per minute must be greater than 0",
+      };
+    }
+
+    if (newCentsStartCall <= 0) {
+      return {
+        success: false,
+        message: "Rate earned to accept a call must be greater than 0",
+      };
     }
 
     await admin.firestore().runTransaction(async (transaction) => {
@@ -42,6 +52,6 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
   }
   return {
     success: true,
-    message: "Rate updated",
+    message: "Your rates have been updated successfully",
   };
 });
