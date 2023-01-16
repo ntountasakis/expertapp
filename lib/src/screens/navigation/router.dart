@@ -1,5 +1,6 @@
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
+import 'package:expertapp/src/screens/expert/expert_connected_account_signup.dart';
 import 'package:expertapp/src/screens/expert/expert_rate_page.dart';
 import 'package:expertapp/src/screens/history/completed_calls_page.dart';
 import 'package:expertapp/src/screens/transaction/client/call_client_summary.dart';
@@ -237,6 +238,13 @@ class AppRouter {
           path: Routes.EXPERT_UPDATE_RATE_PAGE,
           builder: (BuildContext context, GoRouterState state) {
             return ExpertRatePage(uid: lifecycle.userMetadata!.documentId);
+          }),
+      GoRoute(
+          name: Routes.EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE,
+          path: Routes.EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE,
+          builder: (BuildContext context, GoRouterState state) {
+            return ExpertConnectedAccountSignup(
+                uid: lifecycle.userMetadata!.documentId);
           }),
     ],
   );

@@ -23,4 +23,4 @@ import {stripeAccountLinkRefresh} from "./endpoints/stripe_account_link_refresh"
 export {stripeAccountLinkRefresh as stripeAccountLinkRefresh};
 
 import {stripeAccountLinkReturn} from "./endpoints/stripe_account_link_return";
-export {stripeAccountLinkReturn as stripeAccountLinkReturn};
+export {stripeAccountLinkReturn};
