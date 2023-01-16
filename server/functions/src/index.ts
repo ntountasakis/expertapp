@@ -24,3 +24,6 @@ export {stripeAccountLinkRefresh as stripeAccountLinkRefresh};
 
 import {stripeAccountLinkReturn} from "./endpoints/stripe_account_link_return";
 export {stripeAccountLinkReturn};
+
+import {stripeAccountTokenSubmit} from "./endpoints/stripe_account_token_submit";
+export {stripeAccountTokenSubmit};
