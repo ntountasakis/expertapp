@@ -31,6 +31,11 @@ class HamburgerMenu extends StatelessWidget {
                 context.pushNamed(Routes.EXPERT_UPDATE_RATE_PAGE);
               }),
           ListTile(
+              title: Text("Become an Expert!"),
+              onTap: () {
+                context.pushNamed(Routes.EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE);
+              }),
+          ListTile(
               title: Text("Sign Out"),
               onTap: () async {
                 await FirebaseAuth.FirebaseAuth.instance.signOut();

@@ -29,6 +29,8 @@ class Routes {
   static const EXPERT_CALL_SUMMARY_PAGE = '/expertClientSummaryPage';
 
   static const EXPERT_UPDATE_RATE_PAGE = '/expertUpdateRatePage';
+  static const EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE =
+      '/expertConnectedAccountSignupPage';
 
   static const CALL_JOIN_PROMPT_PAGE = '/calljoinprompt';
 

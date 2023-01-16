@@ -32,7 +32,41 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
     response.set("Content-Type", "text/html");
 
     // eslint-disable-next-line max-len
-    response.send(Buffer.from("<p style=\x22text-align: center;\x22><strong>Sign up complete. You may close this window.</strong></p>"));
+    response.send(Buffer.from(accountCreateSuccessHtml()));
     response.status(200).end();
   }
 });
+
+
+function accountCreateSuccessHtml(): string {
+  const html = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Sign Up Success</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 100px;
+        font-size: 32px;
+      }
+
+      h1 {
+        color: green;
+      }
+
+      img {
+        width: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>You have successfully signed up!</h1>
+    <img src="https://storage.googleapis.com/expert-app-backend.appspot.com/appImages/confetti.jpg" alt="Confetti">
+    <p>You may now return to the main menu.</p>
+  </body>
+  </html>
+`;
+  return html;
+}

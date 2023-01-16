@@ -16,11 +16,23 @@ class WebViewExampleState extends State<WebViewExample> {
     if (Platform.isAndroid) WebView.platform = AndroidWebView();
   }
 
+  Widget _buildWebView() {
+    return WebView(
+      initialUrl:
+          'https://us-central1-expert-app-backend.cloudfunctions.net/stripeAccountLinkRefresh?uid=mpKZBT949r8LM9wkzIvfl6GQQ2OQ',
+      javascriptMode: JavascriptMode.unrestricted,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return WebView(
-      initialUrl: 'https://us-central1-expert-app-backend.cloudfunctions.net/stripeAccountLinkRefresh?account=acct_1LmpLYPKLydnyIBv',
-      javascriptMode: JavascriptMode.unrestricted,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('WebView example'),
+      ),
+      body: Center(
+        child: _buildWebView(),
+      ),
     );
   }
 }

@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import handleStripeError from "./stripe_error_handler";
 
-async function createStripeCustomer({stripe}: {stripe: Stripe}) : Promise<string> {
+async function createStripeCustomer({ stripe }: { stripe: Stripe }): Promise<string> {
   let stripeCustomerId = "";
   let errorMessage = "Cannot create Stripe customer. "
   try {
@@ -14,14 +14,14 @@ async function createStripeCustomer({stripe}: {stripe: Stripe}) : Promise<string
   return stripeCustomerId;
 }
 
-async function createStripeConnectAccount({stripe, firstName, lastName, email}:
-    {stripe: Stripe, firstName: string, lastName: string, email: string}): Promise<string> {
+async function createStripeConnectAccount({ stripe, firstName, lastName, email }:
+  { stripe: Stripe, firstName: string, lastName: string, email: string }): Promise<string> {
   const account: Stripe.Response<Stripe.Account> = await stripe.accounts.create({
     type: "express",
     business_type: "individual",
     capabilities: {
-      card_payments: {requested: true},
-      transfers: {requested: true},
+      card_payments: { requested: true },
+      transfers: { requested: true },
     },
     individual: {
       email: email,
@@ -32,23 +32,24 @@ async function createStripeConnectAccount({stripe, firstName, lastName, email}:
   return account.id;
 }
 
-export async function createAccountLinkOnboarding({stripe, account, refreshUrl, returnUrl}:
-    {stripe: Stripe, account: string, refreshUrl: string, returnUrl: string}): Promise<string> {
+export async function createAccountLinkOnboarding({ stripe, account, refreshUrl, returnUrl }:
+  { stripe: Stripe, account: string, refreshUrl: string, returnUrl: string }): Promise<string> {
   const accountLink = await stripe.accountLinks.create(
-      {
-        account: account,
-        refresh_url: refreshUrl,
-        return_url: returnUrl,
-        type: "account_onboarding",
-      },
+    {
+      account: account,
+      refresh_url: refreshUrl,
+      return_url: returnUrl,
+      type: "account_onboarding",
+    },
   );
+  console.log(`Created account link for account ${account}: refresh_url: ${refreshUrl}, return_url: ${returnUrl}`);
 
   return accountLink.url;
 }
 
-async function retrieveAccount({stripe, account}: {stripe: Stripe, account: string}):
-Promise<Stripe.Response<Stripe.Account>> {
+async function retrieveAccount({ stripe, account }: { stripe: Stripe, account: string }):
+  Promise<Stripe.Response<Stripe.Account>> {
   return await stripe.accounts.retrieve(account);
 }
 
-export {createStripeConnectAccount, createStripeCustomer, retrieveAccount};
+export { createStripeConnectAccount, createStripeCustomer, retrieveAccount };
