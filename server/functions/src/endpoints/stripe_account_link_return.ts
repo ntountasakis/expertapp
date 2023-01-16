@@ -1,20 +1,22 @@
 import * as functions from "firebase-functions";
 import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
 import {createAccountLinkOnboarding, retrieveAccount} from "../../../shared/src/stripe/util";
+import {createOrFetchStripeConnectedAccountId} from "../stripe/create_stripe_connected_account";
 
 export const stripeAccountLinkReturn = functions.https.onRequest(async (request, response) => {
-  const accountId = request.query.account;
-  if (typeof accountId !== "string") {
-    console.log("Cannot parse account, not instance of string");
+  const uid = request.query.uid;
+  if (typeof uid !== "string") {
+    console.log("Cannot parse uid, not instance of string");
     response.status(400).end();
     return;
   }
 
-  console.log(`Handling account link return for account ${accountId}`);
+  console.log(`Handling account link return for account ${uid}`);
+  const accountId: string = await createOrFetchStripeConnectedAccountId({uid: uid});
   const account = await retrieveAccount({stripe: StripeProvider.STRIPE, account: accountId});
 
   if (!account.payouts_enabled || !account.details_submitted) {
-    let messagePrefix = `Connected account: ${accountId} still needs `;
+    let messagePrefix = `Connected account: ${uid} still needs `;
     if (account.payouts_enabled) {
       messagePrefix += " to enable payouts ";
     }
@@ -22,12 +24,12 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
       messagePrefix += " to finish submitting details ";
     }
     console.warn(messagePrefix);
-    const accountLink = await createAccountLinkOnboarding({stripe: StripeProvider.STRIPE, account: accountId,
-      refreshUrl: StripeProvider.getAccountLinkRefreshUrl({hostname: request.hostname, account: accountId}),
-      returnUrl: StripeProvider.getAccountLinkReturnUrl({hostname: request.hostname, account: accountId})});
+    const accountLink = await createAccountLinkOnboarding({stripe: StripeProvider.STRIPE, account: uid,
+      refreshUrl: StripeProvider.getAccountLinkRefreshUrl({hostname: request.hostname, uid: uid}),
+      returnUrl: StripeProvider.getAccountLinkReturnUrl({hostname: request.hostname, uid: uid})});
     response.redirect(accountLink);
   } else {
-    console.log(`Connected account: ${accountId} sign up process complete`);
+    console.log(`Connected account: ${uid} sign up process complete`);
 
     response.set("Content-Type", "text/html");
 

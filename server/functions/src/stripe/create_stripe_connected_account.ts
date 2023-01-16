@@ -4,7 +4,7 @@ import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/pri
 import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
 import {createStripeConnectAccount} from "../../../shared/src/stripe/util";
 
-export async function createStripeConnectedAccount({uid} : {uid: string}): Promise<string> {
+export async function createOrFetchStripeConnectedAccountId({uid} : {uid: string}): Promise<string> {
   const privateUserInfo: PrivateUserInfo = await admin.firestore().runTransaction(async (transaction) => {
     return await getPrivateUserDocument({transaction: transaction, uid: uid});
   });

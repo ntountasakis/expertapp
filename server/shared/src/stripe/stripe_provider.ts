@@ -18,16 +18,20 @@ export class StripeProvider {
     return isRunningInEmulator() ? "http://10.0.2.2:9001" : "https://" + hostname + '/';
   }
 
-  static getHttpSuffix({ endpoint, account }: { endpoint: string, account: string }) {
-    return endpoint + "?account=" + account;
+  static getHttpSuffix({ endpoint, uid}: { endpoint: string, uid: string}) {
+    return endpoint + "?uid=" + uid;
   }
 
-  static getAccountLinkRefreshUrl({ hostname, account }: { hostname: string, account: string }): string {
-    return this.getHttpPrefix({ hostname: hostname }) + this.getHttpSuffix({ endpoint: "stripeAccountLinkRefresh", account: account });
+  static getAccountLinkRefreshUrl({ hostname, uid}: { hostname: string, uid: string }): string {
+    return this.getHttpPrefix({ hostname: hostname }) + this.getHttpSuffix({ endpoint: "stripeAccountLinkRefresh", uid: uid });
   }
 
-  static getAccountLinkReturnUrl({ hostname, account }: { hostname: string, account: string }): string {
-    return this.getHttpPrefix({ hostname: hostname }) + this.getHttpSuffix({ endpoint: "stripeAccountLinkReturn", account: account });
+  static getAccountLinkReturnUrl({ hostname, uid}: { hostname: string, uid: string }): string {
+    return this.getHttpPrefix({ hostname: hostname }) + this.getHttpSuffix({ endpoint: "stripeAccountLinkReturn", uid: uid });
+  }
+
+  static getAccountTokenSubmitUrl({ hostname, uid}: { hostname: string, uid: string}): string {
+    return this.getHttpPrefix({ hostname: hostname }) + this.getHttpSuffix({ endpoint: "stripeAccountTokenSubmit", uid: uid });
   }
 }
 function isRunningInEmulator() {
