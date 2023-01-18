@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions";
 import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
 import {createAccountLinkOnboarding, retrieveAccount} from "../../../shared/src/stripe/util";
-import {createOrFetchStripeConnectedAccountId} from "../stripe/create_stripe_connected_account";
+import {getPrivateUserDocumentNoTransact} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
 
 export const stripeAccountLinkReturn = functions.https.onRequest(async (request, response) => {
   const uid = request.query.uid;
@@ -12,8 +13,8 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
   }
 
   console.log(`Handling account link return for account ${uid}`);
-  const accountId: string = await createOrFetchStripeConnectedAccountId({uid: uid});
-  const account = await retrieveAccount({stripe: StripeProvider.STRIPE, account: accountId});
+  const privateUserInfo: PrivateUserInfo = await getPrivateUserDocumentNoTransact({uid: uid});
+  const account = await retrieveAccount({stripe: StripeProvider.STRIPE, account: privateUserInfo.stripeConnectedId});
 
   if (!account.payouts_enabled || !account.details_submitted) {
     let messagePrefix = `Connected account: ${uid} still needs `;

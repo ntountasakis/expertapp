@@ -7,4 +7,5 @@ export class CollectionPaths {
   static REVIEWS = "reviews";
   static USERS = "users";
   static USER_METADATA = "user_metadata";
+  static SIGN_UP_TOKENS = "sign_up_tokens";
 }
