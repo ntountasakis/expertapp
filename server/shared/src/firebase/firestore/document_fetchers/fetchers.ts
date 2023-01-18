@@ -117,6 +117,11 @@ function getFcmTokenDocumentRef({ uid }: { uid: string }):
   return admin.firestore().collection(CollectionPaths.FCM_TOKENS).doc(uid);
 }
 
+function getSignUpTokenDocumentRef({ token }: { token: string }):
+  FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection(CollectionPaths.SIGN_UP_TOKENS).doc(token);
+}
+
 async function getFcmTokenDocument({ transaction, uid }: { transaction: FirebaseFirestore.Transaction, uid: string }): Promise<FcmToken> {
   const doc = await transaction.get(getFcmTokenDocumentRef({ uid: uid }));
   if (!doc.exists) {
@@ -130,5 +135,5 @@ export {
   getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
   getCallTransactionDocumentRef, getCallTransactionCollectionRef, getFcmTokenDocumentRef, getCallTransactionDocument,
   getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getUserMetadataDocument, getFcmTokenDocument,
-  getPrivateUserDocument, getPrivateUserDocumentNoTransact, getExpertRateDocumentNoTransact,
+  getPrivateUserDocument, getPrivateUserDocumentNoTransact, getExpertRateDocumentNoTransact, getSignUpTokenDocumentRef
 };

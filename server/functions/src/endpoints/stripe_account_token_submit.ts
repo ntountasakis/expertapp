@@ -9,19 +9,18 @@ export const stripeAccountTokenSubmit = functions.https.onRequest(async (request
     response.status(400).end();
     return;
   }
-
+  const tokenInvalid = typeof request.query.tokenInvalid === "string";
   const redirectUrl = StripeProvider.getAccountLinkRefreshUrl({hostname: request.hostname, uid: uid});
-  console.log(`On token submit button will make a request to ${redirectUrl}`);
 
   response.set("Content-Type", "text/html");
   // eslint-disable-next-line max-len
-  response.send(Buffer.from(accountTokenSubmitHtml(redirectUrl)));
+  response.send(Buffer.from(accountTokenSubmitHtml(redirectUrl, tokenInvalid)));
   response.status(200).end();
 });
 
 
-function accountTokenSubmitHtml(requestUrl: string): string {
-  const html = `
+function accountTokenSubmitHtml(requestUrl: string, wasTokenInvalid: boolean): string {
+  let html = `
     <!DOCTYPE html>
     <html>
         <head>
@@ -39,6 +38,7 @@ function accountTokenSubmitHtml(requestUrl: string): string {
                 }
 
                 h2 {text-align: center;}
+                h3 {text-align: center; color: red}
 
                 input[type="text"] {
                 width: 100%;
@@ -64,14 +64,21 @@ function accountTokenSubmitHtml(requestUrl: string): string {
             </style>
         </head>
         <body>
-            <h2>Please provide the token you were given:</h2>
+            <h2>Please provide the token you were given:</h2>`;
+  if (wasTokenInvalid) {
+    html += `
+            <h3>Token invalid, try again.</h3>
+    `;
+  }
+  html += `
             <div>
                 <label for="token">Enter Token:</label>
                 <input type="text" id="token" name="token">
                 <input type="submit" value="Submit" onclick="submitToken()">
                 <script>
                     function submitToken() {
-                    var url = "${requestUrl}&token=" + token;
+                    var tokenValue = document.getElementById('token').value;
+                    var url = "${requestUrl}&token=" + tokenValue;
                     window.location.replace(url);
                     }
                 </script>
