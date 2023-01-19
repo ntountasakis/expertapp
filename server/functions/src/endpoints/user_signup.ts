@@ -1,10 +1,10 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {createUser} from "../../../shared/src/firebase/firestore/functions/create_user";
 import {createUserMetadata} from "../../../shared/src/firebase/firestore/functions/create_user_metadata";
 import {getDefaultProfilePicUrl} from "../../../shared/src/firebase/storage/functions/get_default_profile_pic_url";
 import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
 import {createStripeCustomer} from "../../../shared/src/stripe/util";
+import {createExpertUser} from "../../../shared/src/firebase/firestore/functions/create_expert_user";
 
 export const userSignup = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -20,7 +20,7 @@ export const userSignup = functions.https.onCall(async (data, context) => {
   const profilePicUrl = "profilePicUrl" in data ? data.profilePicUrl : getDefaultProfilePicUrl();
 
   const batch = admin.firestore().batch();
-  createUser({batch: batch, uid: uid, firstName: firstName, lastName: lastName, email: email,
+  createExpertUser({batch: batch, uid: uid, firstName: firstName, lastName: lastName, email: email,
     stripeCustomerId: stripeCustomerId});
   createUserMetadata({batch: batch, uid: uid, firstName: firstName, lastName: lastName, profilePicUrl: profilePicUrl});
   await batch.commit();

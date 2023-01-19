@@ -41,6 +41,14 @@ async function getPublicExpertInfo({ transaction, uid }: { transaction: Firebase
   return doc.data() as PublicExpertInfo;
 }
 
+async function getPublicExpertInfoNoTransact({ uid }: { uid: string }): Promise<PublicExpertInfo> {
+  const doc = await getPublicExpertInfoDocumentRef({ uid: uid }).get();
+  if (!doc.exists) {
+    throw new Error(`No public expert info with uid: ${uid}`);
+  }
+  return doc.data() as PublicExpertInfo;
+}
+
 function getReviewsCollectionRef():
   FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.REVIEWS);
@@ -131,9 +139,9 @@ async function getFcmTokenDocument({ transaction, uid }: { transaction: Firebase
 }
 
 export {
-  getPrivateUserDocumentRef as getUserDocumentRef, getPublicExpertInfoDocumentRef, getReviewsCollectionRef,
+  getPrivateUserDocumentRef, getPublicExpertInfoDocumentRef, getReviewsCollectionRef,
   getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
   getCallTransactionDocumentRef, getCallTransactionCollectionRef, getFcmTokenDocumentRef, getCallTransactionDocument,
-  getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getPublicExpertInfo, getFcmTokenDocument,
-  getPrivateUserDocument, getPrivateUserDocumentNoTransact, getExpertRateDocumentNoTransact, getSignUpTokenDocumentRef
+  getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getPublicExpertInfo, getPublicExpertInfoNoTransact,
+  getFcmTokenDocument, getPrivateUserDocument, getPrivateUserDocumentNoTransact, getExpertRateDocumentNoTransact, getSignUpTokenDocumentRef
 };
