@@ -6,6 +6,5 @@ class CollectionPaths {
   static final String FCM_TOKENS = 'fcm_tokens';
   static final String PAYMENT_STATUSES = 'payment_statuses';
   static final String REVIEWS = 'reviews';
-  static final String USERS = 'users';
   static final String PUBLIC_EXPERT_INFO = 'public_expert_info';
 }

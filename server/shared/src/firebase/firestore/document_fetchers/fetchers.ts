@@ -9,13 +9,13 @@ import { CollectionPaths } from "./collection_paths";
 
 function getPrivateUserDocumentRef({ uid }: { uid: string }):
   FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
-  return admin.firestore().collection(CollectionPaths.USERS).doc(uid);
+  return admin.firestore().collection(CollectionPaths.PRIVATE_USER_INFO).doc(uid);
 }
 
 async function getPrivateUserDocument({ transaction, uid }: { transaction: FirebaseFirestore.Transaction, uid: string }): Promise<PrivateUserInfo> {
   const doc = await transaction.get(getPrivateUserDocumentRef({ uid: uid }));
   if (!doc.exists) {
-    throw new Error(`No user with uid: ${uid}`);
+    throw new Error(`No private user info with uid: ${uid}`);
   }
   return doc.data() as PrivateUserInfo;
 }
@@ -23,7 +23,7 @@ async function getPrivateUserDocument({ transaction, uid }: { transaction: Fireb
 async function getPrivateUserDocumentNoTransact({ uid }: { uid: string }): Promise<PrivateUserInfo> {
   const doc = await getPrivateUserDocumentRef({ uid: uid }).get();
   if (!doc.exists) {
-    throw new Error(`No user with uid: ${uid}`);
+    throw new Error(`No private user info with uid: ${uid}`);
   }
   return doc.data() as PrivateUserInfo;
 }
@@ -36,7 +36,7 @@ function getPublicExpertInfoDocumentRef({ uid }: { uid: string }):
 async function getPublicExpertInfo({ transaction, uid }: { transaction: FirebaseFirestore.Transaction, uid: string }): Promise<PublicExpertInfo> {
   const doc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid }));
   if (!doc.exists) {
-    throw new Error(`No user metadata with uid: ${uid}`);
+    throw new Error(`No public expert info with uid: ${uid}`);
   }
   return doc.data() as PublicExpertInfo;
 }
