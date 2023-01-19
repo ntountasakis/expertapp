@@ -33,7 +33,7 @@ class UserMetadata {
   }
 
   String fullName() {
-    return firstName + lastName;
+    return firstName + ' ' + lastName;
   }
 
   double getAverageReviewRating() {
