@@ -1,5 +1,5 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
@@ -20,8 +20,8 @@ class ExpertProfilePage extends StatefulWidget {
 class _ExpertProfilePageState extends State<ExpertProfilePage> {
   final _descriptionScrollController = ScrollController();
 
-  Widget buildCallPreviewButton(
-      BuildContext context, DocumentWrapper<UserMetadata> expertUserMetadata) {
+  Widget buildCallPreviewButton(BuildContext context,
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     final ButtonStyle style = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20),
       backgroundColor: Colors.green[500],
@@ -36,34 +36,33 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               style: style,
               onPressed: () async {
                 context.pushNamed(Routes.EXPERT_CALL_PREVIEW_PAGE, params: {
-                  Routes.EXPERT_ID_PARAM: expertUserMetadata.documentId
+                  Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId
                 });
               },
-              child: Text('Call ${expertUserMetadata.documentType.firstName}')),
+              child: Text('Call ${publicExpertInfo.documentType.firstName}')),
         ),
         SizedBox(width: 10),
       ],
     );
   }
 
-  Widget buildRating(DocumentWrapper<UserMetadata> expertUserMetadata) {
+  Widget buildRating(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     return Row(
       children: [
         Flexible(
             flex: 20,
             child: StarRating(
-                expertUserMetadata.documentType.getAverageReviewRating(),
-                25.0)),
+                publicExpertInfo.documentType.getAverageReviewRating(), 25.0)),
         Spacer(flex: 1),
         Flexible(
             flex: 20,
             child: TextRating(
-                expertUserMetadata.documentType.getAverageReviewRating(), 18.0))
+                publicExpertInfo.documentType.getAverageReviewRating(), 18.0))
       ],
     );
   }
 
-  Widget buildDescription(DocumentWrapper<UserMetadata> expertUserMetadata) {
+  Widget buildDescription(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     return SizedBox(
       height: 100,
       child: Scrollbar(
@@ -73,21 +72,21 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
         child: SingleChildScrollView(
             controller: _descriptionScrollController,
             child: Text(
-              expertUserMetadata.documentType.description,
+              publicExpertInfo.documentType.description,
               style: TextStyle(fontSize: 12),
             )),
       ),
     );
   }
 
-  Widget buildAboutMeName(DocumentWrapper<UserMetadata> expertUserMetadata) {
+  Widget buildAboutMeName(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     return Text(
-      expertUserMetadata.documentType.fullName(),
+      publicExpertInfo.documentType.fullName(),
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
     );
   }
 
-  Widget buildAboutMe(DocumentWrapper<UserMetadata> expertUserMetadata) {
+  Widget buildAboutMe(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     return Container(
       margin: const EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -100,10 +99,10 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildAboutMeName(expertUserMetadata),
-              buildRating(expertUserMetadata),
+              buildAboutMeName(publicExpertInfo),
+              buildRating(publicExpertInfo),
               SizedBox(height: 10),
-              buildDescription(expertUserMetadata),
+              buildDescription(publicExpertInfo),
             ],
           ),
         ),
@@ -129,17 +128,18 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
     );
   }
 
-  Widget buildReviewList(DocumentWrapper<UserMetadata> expertUserMetadata) {
+  Widget buildReviewList(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     return Expanded(
-      child: ExpertReviews(expertUserMetadata),
+      child: ExpertReviews(publicExpertInfo),
     );
   }
 
-  Widget buildProfilePicture(DocumentWrapper<UserMetadata> expertUserMetadata) {
+  Widget buildProfilePicture(
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     return SizedBox(
       width: 200,
       height: 200,
-      child: ProfilePicture(expertUserMetadata.documentType.profilePicUrl),
+      child: ProfilePicture(publicExpertInfo.documentType.profilePicUrl),
     );
   }
 
@@ -149,21 +149,21 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
       appBar: AppBar(
         title: const Text("Expert Profile"),
       ),
-      body: FutureBuilder<DocumentWrapper<UserMetadata>?>(
-          future: UserMetadata.get(widget._expertUid),
+      body: FutureBuilder<DocumentWrapper<PublicExpertInfo>?>(
+          future: PublicExpertInfo.get(widget._expertUid),
           builder: (BuildContext context,
-              AsyncSnapshot<DocumentWrapper<UserMetadata>?> snapshot) {
+              AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
             if (snapshot.hasData) {
-              final expertUserMetadata = snapshot.data;
+              final publicExpertInfo = snapshot.data;
               return Column(
                 children: [
                   SizedBox(height: 10),
-                  buildProfilePicture(expertUserMetadata!),
+                  buildProfilePicture(publicExpertInfo!),
                   SizedBox(height: 10),
-                  buildCallPreviewButton(context, expertUserMetadata),
-                  buildAboutMe(expertUserMetadata),
+                  buildCallPreviewButton(context, publicExpertInfo),
+                  buildAboutMe(publicExpertInfo),
                   buildReviewHeading(),
-                  buildReviewList(expertUserMetadata),
+                  buildReviewList(publicExpertInfo),
                 ],
               );
             } else {

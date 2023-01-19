@@ -2,7 +2,7 @@ import 'package:expertapp/firebase_options.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:expertapp/src/screens/appbars/expert_in_call_appbar.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -32,13 +32,8 @@ CallServerModel buildModel() {
   return model;
 }
 
-DocumentWrapper<UserMetadata> buildUser() {
-  final user = UserMetadata(
-      "Billy",
-      "Bob",
-      "",
-      4500,
-      10);
+DocumentWrapper<PublicExpertInfo> buildUser() {
+  final user = PublicExpertInfo("Billy", "Bob", "", "", 4500, 10);
 
   return DocumentWrapper("abc", user);
 }

@@ -1,6 +1,6 @@
 import 'package:expertapp/src/profile/expert/expert_listing_preview.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/hamburger_menu.dart';
 import 'package:flutter/material.dart';
 
@@ -18,9 +18,9 @@ class ExpertListingsPage extends StatelessWidget {
         ),
         drawer: HamburgerMenu(),
         body: StreamBuilder(
-            stream: UserMetadata.getStream(),
+            stream: PublicExpertInfo.getStream(),
             builder: (BuildContext context,
-                AsyncSnapshot<Iterable<DocumentWrapper<UserMetadata>>>
+                AsyncSnapshot<Iterable<DocumentWrapper<PublicExpertInfo>>>
                     snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(

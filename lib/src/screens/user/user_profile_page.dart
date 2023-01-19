@@ -3,17 +3,18 @@ import 'dart:developer';
 
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 
 class UserProfilePage extends StatefulWidget {
-  final DocumentWrapper<UserMetadata> userMetadata;
+  final DocumentWrapper<PublicExpertInfo> userMetadata;
 
   const UserProfilePage(this.userMetadata);
 
   @override
-  State<UserProfilePage> createState() => _UserProfilePageState(userMetadata.documentType.profilePicUrl);
+  State<UserProfilePage> createState() =>
+      _UserProfilePageState(userMetadata.documentType.profilePicUrl);
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {

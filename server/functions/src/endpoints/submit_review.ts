@@ -1,10 +1,10 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {getUserMetadataDocument} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {getPublicExpertInfo} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {createReview} from "../../../shared/src/firebase/firestore/functions/create_review";
 import {getReviewsFromAuthorForReviewed} from "../../../shared/src/firebase/firestore/functions/get_reviews_from_author_for_reviewed";
 import {updateReview} from "../../../shared/src/firebase/firestore/functions/update_review";
-import {UserMetadata} from "../../../shared/src/firebase/firestore/models/user_metadata";
+import {PublicExpertInfo} from "../../../shared/src/firebase/firestore/models/public_expert_info";
 
 export const submitReview = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -25,9 +25,9 @@ export const submitReview = functions.https.onCall(async (data, context) => {
   }
 
   return await admin.firestore().runTransaction(async (transaction) => {
-    const authorUserMetadata: UserMetadata = await getUserMetadataDocument(
+    const authorUserMetadata: PublicExpertInfo = await getPublicExpertInfo(
         {transaction: transaction, uid: authorUid});
-    const reviewedUserMetadata: UserMetadata = await getUserMetadataDocument(
+    const reviewedUserMetadata: PublicExpertInfo = await getPublicExpertInfo(
         {transaction: transaction, uid: reviewedUid});
 
     const matchingReviews = await transaction.get(

@@ -35,7 +35,7 @@ class AppRouter {
     debugLogDiagnostics: true,
     redirect: (context, state) {
       final signedIn = lifecycle.authenticatedUser != null;
-      final userExists = lifecycle.userMetadata != null;
+      final userExists = lifecycle.publicExpertInfo != null;
 
       if (!signedIn) {
         return state.location != Routes.SIGN_IN_PAGE
@@ -87,14 +87,14 @@ class AppRouter {
         name: Routes.USER_PROFILE_PAGE,
         path: Routes.USER_PROFILE_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return UserProfilePage(lifecycle.userMetadata!);
+          return UserProfilePage(lifecycle.publicExpertInfo!);
         },
       ),
       GoRoute(
         name: Routes.USER_COMPLETED_CALLS,
         path: Routes.USER_COMPLETED_CALLS,
         builder: (BuildContext context, GoRouterState state) {
-          return CompletedCallsPage(lifecycle.userMetadata!);
+          return CompletedCallsPage(lifecycle.publicExpertInfo!);
         },
       ),
       GoRoute(
@@ -129,7 +129,7 @@ class AppRouter {
           builder: (BuildContext context, GoRouterState state) {
             final expertId = state.params[Routes.EXPERT_ID_PARAM];
             return CallClientMain(
-                currentUserId: lifecycle.userMetadata!.documentId,
+                currentUserId: lifecycle.publicExpertInfo!.documentId,
                 otherUserId: expertId!,
                 lifecycle: lifecycle);
           },
@@ -140,7 +140,7 @@ class AppRouter {
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.params[Routes.EXPERT_ID_PARAM];
                 return ChatPage(
-                    currentUserUid: lifecycle.userMetadata!.documentId,
+                    currentUserUid: lifecycle.publicExpertInfo!.documentId,
                     otherUserUid: expertId!);
               },
             ),
@@ -152,7 +152,7 @@ class AppRouter {
           builder: (BuildContext context, GoRouterState state) {
             final expertUid = state.params[Routes.EXPERT_ID_PARAM];
             return ExpertReviewSubmitPage(
-                currentUserId: lifecycle.userMetadata!.documentId,
+                currentUserId: lifecycle.publicExpertInfo!.documentId,
                 expertUserId: expertUid!,
                 lifecycle: lifecycle);
           }),
@@ -191,7 +191,7 @@ class AppRouter {
                 state.params[Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS]!);
             return CallTransactionExpertPrompt(
               transactionId: transactionId!,
-              currentUserId: lifecycle.userMetadata!.documentId,
+              currentUserId: lifecycle.publicExpertInfo!.documentId,
               callerUserId: callerUid!,
               expertRate: ExpertRate(
                   centsCallStart: rateStartCents,
@@ -212,7 +212,7 @@ class AppRouter {
                 state.params[Routes.CALL_TRANSACTION_ID_PARAM];
             return CallTransactionExpertMain(
                 callTransactionId: transactionId!,
-                currentUserId: lifecycle.userMetadata!.documentId,
+                currentUserId: lifecycle.publicExpertInfo!.documentId,
                 callerUserId: callerUid!);
           },
           routes: <GoRoute>[
@@ -222,7 +222,7 @@ class AppRouter {
               builder: (BuildContext context, GoRouterState state) {
                 final callerUid = state.params[Routes.CALLER_UID_PARAM];
                 return ChatPage(
-                    currentUserUid: lifecycle.userMetadata!.documentId,
+                    currentUserUid: lifecycle.publicExpertInfo!.documentId,
                     otherUserUid: callerUid!);
               },
             ),
@@ -237,14 +237,14 @@ class AppRouter {
           name: Routes.EXPERT_UPDATE_RATE_PAGE,
           path: Routes.EXPERT_UPDATE_RATE_PAGE,
           builder: (BuildContext context, GoRouterState state) {
-            return ExpertRatePage(uid: lifecycle.userMetadata!.documentId);
+            return ExpertRatePage(uid: lifecycle.publicExpertInfo!.documentId);
           }),
       GoRoute(
           name: Routes.EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE,
           path: Routes.EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE,
           builder: (BuildContext context, GoRouterState state) {
             return ExpertConnectedAccountSignup(
-                uid: lifecycle.userMetadata!.documentId);
+                uid: lifecycle.publicExpertInfo!.documentId);
           }),
     ],
   );

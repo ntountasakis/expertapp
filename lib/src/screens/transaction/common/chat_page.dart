@@ -1,7 +1,7 @@
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/chat_message.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
@@ -123,13 +123,13 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
         future: Future.wait([
-          UserMetadata.get(widget.otherUserUid),
+          PublicExpertInfo.get(widget.otherUserUid),
           lookupChatroomId(widget.otherUserUid)
         ]),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
             final otherUserMetadata =
-                snapshot.data![0] as DocumentWrapper<UserMetadata>;
+                snapshot.data![0] as DocumentWrapper<PublicExpertInfo>;
             final chatroomId = snapshot.data![1] as String;
             return Scaffold(
               appBar: UserPreviewAppbar(otherUserMetadata, ""),
