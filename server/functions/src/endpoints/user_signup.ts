@@ -1,6 +1,5 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {createUserMetadata} from "../../../shared/src/firebase/firestore/functions/create_user_metadata";
 import {getDefaultProfilePicUrl} from "../../../shared/src/firebase/storage/functions/get_default_profile_pic_url";
 import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
 import {createStripeCustomer} from "../../../shared/src/stripe/util";
@@ -21,8 +20,7 @@ export const userSignup = functions.https.onCall(async (data, context) => {
 
   const batch = admin.firestore().batch();
   createExpertUser({batch: batch, uid: uid, firstName: firstName, lastName: lastName, email: email,
-    stripeCustomerId: stripeCustomerId});
-  createUserMetadata({batch: batch, uid: uid, firstName: firstName, lastName: lastName, profilePicUrl: profilePicUrl});
+    stripeCustomerId: stripeCustomerId, profilePicUrl: profilePicUrl});
   await batch.commit();
 
   console.log(`User ${uid} signed up!`);
