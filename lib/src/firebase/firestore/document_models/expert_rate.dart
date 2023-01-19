@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
 import 'package:expertapp/src/util/currency_util.dart';
-import 'package:intl/intl.dart';
 
 class ExpertRate {
   final num centsPerMinute;

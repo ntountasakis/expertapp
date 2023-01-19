@@ -5,17 +5,19 @@ import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
 class UserMetadata {
   final String firstName;
   final String lastName;
+  final String description;
   String profilePicUrl;
   final double runningSumReviewRatings;
   final int numReviews;
 
-  UserMetadata(this.firstName, this.lastName, this.profilePicUrl,
-      this.runningSumReviewRatings, this.numReviews);
+  UserMetadata(this.firstName, this.lastName, this.description,
+      this.profilePicUrl, this.runningSumReviewRatings, this.numReviews);
 
   UserMetadata.fromJson(Map<String, dynamic> json)
       : this(
           json['firstName'] as String,
           json['lastName'] as String,
+          json['description'] as String,
           json['profilePicUrl'] as String,
           json['runningSumReviewRatings'] + 0.0,
           json['numReviews'] as int,
@@ -25,6 +27,7 @@ class UserMetadata {
     var fieldsMap = {
       'firstName': firstName,
       'lastName': lastName,
+      'description': description,
       'profilePicUrl': profilePicUrl,
       'runningSumReviewRatings': runningSumReviewRatings,
       'numReviews': numReviews,

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:expertapp/src/environment/environment_config.dart';
-import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 
 class DebugEnvironmentConfig implements EnvironmentConfig {
   @override

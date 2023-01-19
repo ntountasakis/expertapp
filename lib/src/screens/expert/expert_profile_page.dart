@@ -4,14 +4,21 @@ import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
+import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../navigation/routes.dart';
 
-class ExpertProfilePage extends StatelessWidget {
+class ExpertProfilePage extends StatefulWidget {
   final String _expertUid;
 
   ExpertProfilePage(this._expertUid);
+
+  @override
+  State<ExpertProfilePage> createState() => _ExpertProfilePageState();
+}
+
+class _ExpertProfilePageState extends State<ExpertProfilePage> {
+  final _descriptionScrollController = ScrollController();
 
   Widget buildCallPreviewButton(
       BuildContext context, DocumentWrapper<UserMetadata> expertUserMetadata) {
@@ -45,25 +52,31 @@ class ExpertProfilePage extends StatelessWidget {
         Flexible(
             flex: 20,
             child: StarRating(
-                expertUserMetadata!.documentType.getAverageReviewRating(),
+                expertUserMetadata.documentType.getAverageReviewRating(),
                 25.0)),
         Spacer(flex: 1),
         Flexible(
             flex: 20,
             child: TextRating(
-                expertUserMetadata!.documentType.getAverageReviewRating(),
-                18.0))
+                expertUserMetadata.documentType.getAverageReviewRating(), 18.0))
       ],
     );
   }
 
-  Widget buildDescription() {
-    return Text(
-      """Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
-    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut 
-    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum""",
-      style: TextStyle(fontSize: 14),
+  Widget buildDescription(DocumentWrapper<UserMetadata> expertUserMetadata) {
+    return SizedBox(
+      height: 100,
+      child: Scrollbar(
+        thumbVisibility: true,
+        thickness: 2.0,
+        controller: _descriptionScrollController,
+        child: SingleChildScrollView(
+            controller: _descriptionScrollController,
+            child: Text(
+              expertUserMetadata.documentType.description,
+              style: TextStyle(fontSize: 12),
+            )),
+      ),
     );
   }
 
@@ -90,7 +103,7 @@ class ExpertProfilePage extends StatelessWidget {
               buildAboutMeName(expertUserMetadata),
               buildRating(expertUserMetadata),
               SizedBox(height: 10),
-              buildDescription(),
+              buildDescription(expertUserMetadata),
             ],
           ),
         ),
@@ -137,7 +150,7 @@ class ExpertProfilePage extends StatelessWidget {
         title: const Text("Expert Profile"),
       ),
       body: FutureBuilder<DocumentWrapper<UserMetadata>?>(
-          future: UserMetadata.get(_expertUid),
+          future: UserMetadata.get(widget._expertUid),
           builder: (BuildContext context,
               AsyncSnapshot<DocumentWrapper<UserMetadata>?> snapshot) {
             if (snapshot.hasData) {
