@@ -2,10 +2,10 @@ import { getPrivateUserDocumentRef, getPublicExpertInfoDocumentRef } from "../do
 import { PrivateUserInfo } from "../models/private_user_info";
 import { PublicExpertInfo } from "../models/public_expert_info";
 
-export function createExpertUser({ batch, uid, firstName, lastName, email, stripeCustomerId }:
+export function createExpertUser({ batch, uid, firstName, lastName, email, profilePicUrl, stripeCustomerId }:
   {
     batch: FirebaseFirestore.WriteBatch, uid: string, firstName: string, lastName: string, email: string,
-    stripeCustomerId: string
+    profilePicUrl: string, stripeCustomerId: string
   }): void {
   const privateUserInfo: PrivateUserInfo = {
     "email": email,
@@ -16,7 +16,7 @@ export function createExpertUser({ batch, uid, firstName, lastName, email, strip
     "firstName": firstName,
     "lastName": lastName,
     "description": "",
-    "profilePicUrl": "",
+    "profilePicUrl": profilePicUrl,
     "runningSumReviewRatings": 0,
     "numReviews": 0,
   };
