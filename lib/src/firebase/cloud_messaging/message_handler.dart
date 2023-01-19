@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:expertapp/src/firebase/cloud_messaging/message_decoder.dart';
 import 'package:expertapp/src/firebase/cloud_messaging/messages/call_join_request.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -40,18 +40,18 @@ void initFirebaseMessagingForegroundHandler(
     } else if (messageType == "call_join_request") {
       final CallJoinRequestTokenPayload callJoinRequest =
           MessageDecoder.callJoinRequestFromJson(message.data);
-      final DocumentWrapper<UserMetadata>? callerMetadata =
-          await UserMetadata.get(callJoinRequest.callerUid);
+      final DocumentWrapper<PublicExpertInfo>? expertInfo =
+          await PublicExpertInfo.get(callJoinRequest.callerUid);
 
-      if (callerMetadata == null) {
+      if (expertInfo == null) {
         log("Cannot accept call join request from unknown user: ${callJoinRequest.callerUid}");
         return;
       }
-      if (lifecycle.userMetadata == null) {
+      if (lifecycle.publicExpertInfo == null) {
         log("Need to suppress call join, user isnt logged in");
         return;
       }
-      if (lifecycle.userMetadata!.documentId != callJoinRequest.calledUid) {
+      if (lifecycle.publicExpertInfo!.documentId != callJoinRequest.calledUid) {
         log("Received call join request for user that isnt me");
         return;
       }

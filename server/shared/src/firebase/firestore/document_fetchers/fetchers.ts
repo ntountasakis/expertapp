@@ -1,5 +1,5 @@
 import * as admin from "firebase-admin";
-import { UserMetadata } from "../models/user_metadata";
+import { PublicExpertInfo } from "../models/public_expert_info";
 import { CallTransaction } from "../models/call_transaction";
 import { ExpertRate } from "../models/expert_rate";
 import { FcmToken } from "../models/fcm_token";
@@ -28,17 +28,17 @@ async function getPrivateUserDocumentNoTransact({ uid }: { uid: string }): Promi
   return doc.data() as PrivateUserInfo;
 }
 
-function getUserMetadataDocumentRef({ uid }: { uid: string }):
+function getPublicExpertInfoDocumentRef({ uid }: { uid: string }):
   FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
-  return admin.firestore().collection(CollectionPaths.USER_METADATA).doc(uid);
+  return admin.firestore().collection(CollectionPaths.PUBLIC_EXPERT_INFO).doc(uid);
 }
 
-async function getUserMetadataDocument({ transaction, uid }: { transaction: FirebaseFirestore.Transaction, uid: string }): Promise<UserMetadata> {
-  const doc = await transaction.get(getUserMetadataDocumentRef({ uid: uid }));
+async function getPublicExpertInfo({ transaction, uid }: { transaction: FirebaseFirestore.Transaction, uid: string }): Promise<PublicExpertInfo> {
+  const doc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid }));
   if (!doc.exists) {
     throw new Error(`No user metadata with uid: ${uid}`);
   }
-  return doc.data() as UserMetadata;
+  return doc.data() as PublicExpertInfo;
 }
 
 function getReviewsCollectionRef():
@@ -131,9 +131,9 @@ async function getFcmTokenDocument({ transaction, uid }: { transaction: Firebase
 }
 
 export {
-  getPrivateUserDocumentRef as getUserDocumentRef, getUserMetadataDocumentRef, getReviewsCollectionRef,
+  getPrivateUserDocumentRef as getUserDocumentRef, getPublicExpertInfoDocumentRef, getReviewsCollectionRef,
   getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
   getCallTransactionDocumentRef, getCallTransactionCollectionRef, getFcmTokenDocumentRef, getCallTransactionDocument,
-  getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getUserMetadataDocument, getFcmTokenDocument,
+  getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getPublicExpertInfo, getFcmTokenDocument,
   getPrivateUserDocument, getPrivateUserDocumentNoTransact, getExpertRateDocumentNoTransact, getSignUpTokenDocumentRef
 };

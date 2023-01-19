@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
@@ -79,8 +79,8 @@ class _UserSignupPageState extends State<UserSignupPage> {
 
           log('New User Signup');
 
-          DocumentWrapper<UserMetadata>? userMetadataWrapper =
-              await UserMetadata.get(lifecycle.authenticatedUser!.uid);
+          DocumentWrapper<PublicExpertInfo>? userMetadataWrapper =
+              await PublicExpertInfo.get(lifecycle.authenticatedUser!.uid);
 
           if (userMetadataWrapper == null) {
             throw Exception(
@@ -93,7 +93,7 @@ class _UserSignupPageState extends State<UserSignupPage> {
   }
 
   void onUserCreated(AppLifecycle lifecycle,
-      DocumentWrapper<UserMetadata> userMetadataWrapper) {
+      DocumentWrapper<PublicExpertInfo> userMetadataWrapper) {
     lifecycle.onUserLogin(userMetadataWrapper);
   }
 

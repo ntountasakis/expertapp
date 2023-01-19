@@ -6,7 +6,7 @@ import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/appbars/client_in_call_appbar.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
@@ -164,7 +164,7 @@ class _CallClientMainState extends State<CallClientMain> {
   }
 
   Widget buildCallView(BuildContext context, CallServerModel model,
-      DocumentWrapper<UserMetadata> calledMetadata) {
+      DocumentWrapper<PublicExpertInfo> calledMetadata) {
     if (model.callConnectionState == CallServerConnectionState.DISCONNECTED) {
       onServerDisconnect(model);
       return SizedBox();
@@ -195,16 +195,16 @@ class _CallClientMainState extends State<CallClientMain> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<DocumentWrapper<UserMetadata>?>(
-        future: UserMetadata.get(widget.otherUserId),
+    return FutureBuilder<DocumentWrapper<PublicExpertInfo>?>(
+        future: PublicExpertInfo.get(widget.otherUserId),
         builder: (BuildContext context,
-            AsyncSnapshot<DocumentWrapper<UserMetadata>?> snapshot) {
+            AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
           if (snapshot.hasData) {
-            final expertUserMetadata = snapshot.data;
+            final publicExpertInfo = snapshot.data;
             return Consumer<CallServerModel>(builder: (context, model, child) {
               return Scaffold(
-                appBar: ClientInCallAppbar(expertUserMetadata!),
-                body: buildCallView(context, model, expertUserMetadata),
+                appBar: ClientInCallAppbar(publicExpertInfo!),
+                body: buildCallView(context, model, publicExpertInfo),
               );
             });
           } else {

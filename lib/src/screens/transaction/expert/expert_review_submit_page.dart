@@ -1,6 +1,6 @@
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
@@ -89,13 +89,13 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
         });
   }
 
-  Widget buildSubmit(
-      BuildContext context, DocumentWrapper<UserMetadata> expertUserMetadata) {
+  Widget buildSubmit(BuildContext context,
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     return ElevatedButton(
         style: style,
         onPressed: () async {
           String dialogText = await onSubmitReview(
-              reviewedUid: expertUserMetadata.documentId,
+              reviewedUid: publicExpertInfo.documentId,
               reviewText: _review,
               reviewRating: _rating);
           _reviewSubmitAcknowledgmentDialog(context, dialogText);
@@ -109,12 +109,12 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
       appBar: AppBar(
         title: const Text("Submit a Review"),
       ),
-      body: FutureBuilder<DocumentWrapper<UserMetadata>?>(
-          future: UserMetadata.get(widget.expertUserId),
+      body: FutureBuilder<DocumentWrapper<PublicExpertInfo>?>(
+          future: PublicExpertInfo.get(widget.expertUserId),
           builder: (BuildContext context,
-              AsyncSnapshot<DocumentWrapper<UserMetadata>?> snapshot) {
+              AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
             if (snapshot.hasData) {
-              final expertUserMetadata = snapshot.data;
+              final publicExpertInfo = snapshot.data;
               return Form(
                 key: formKey,
                 child: ListView(
@@ -124,7 +124,7 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
                     const SizedBox(height: 16),
                     buildNumericalRating(),
                     const SizedBox(height: 16),
-                    buildSubmit(context, expertUserMetadata!),
+                    buildSubmit(context, publicExpertInfo!),
                   ],
                 ),
               );

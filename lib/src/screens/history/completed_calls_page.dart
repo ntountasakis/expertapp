@@ -1,13 +1,13 @@
 import 'package:expertapp/src/firebase/firestore/document_models/call_transaction.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/payment_status.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CompletedCallsPage extends StatelessWidget {
-  final DocumentWrapper<UserMetadata> userMetadata;
+  final DocumentWrapper<PublicExpertInfo> userMetadata;
 
   CompletedCallsPage(this.userMetadata);
 
@@ -27,14 +27,14 @@ class CompletedCallsPage extends StatelessWidget {
     return FutureBuilder(
         future: Future.wait([
           PaymentStatus.get(call.callerPaymentStatusId),
-          UserMetadata.get(call.calledUid)
+          PublicExpertInfo.get(call.calledUid)
         ]),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
             final payment =
                 snapshot.data![0] as DocumentWrapper<PaymentStatus>?;
             final expertMetadata =
-                snapshot.data![1] as DocumentWrapper<UserMetadata>?;
+                snapshot.data![1] as DocumentWrapper<PublicExpertInfo>?;
 
             if (payment == null) {
               return SizedBox();

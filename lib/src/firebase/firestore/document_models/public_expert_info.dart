@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
 
-class UserMetadata {
+class PublicExpertInfo {
   final String firstName;
   final String lastName;
   final String description;
@@ -10,10 +10,10 @@ class UserMetadata {
   final double runningSumReviewRatings;
   final int numReviews;
 
-  UserMetadata(this.firstName, this.lastName, this.description,
+  PublicExpertInfo(this.firstName, this.lastName, this.description,
       this.profilePicUrl, this.runningSumReviewRatings, this.numReviews);
 
-  UserMetadata.fromJson(Map<String, dynamic> json)
+  PublicExpertInfo.fromJson(Map<String, dynamic> json)
       : this(
           json['firstName'] as String,
           json['lastName'] as String,
@@ -49,10 +49,11 @@ class UserMetadata {
     await update(aDocumentId);
   }
 
-  static Future<DocumentWrapper<UserMetadata>?> get(String documentId) async {
+  static Future<DocumentWrapper<PublicExpertInfo>?> get(
+      String documentId) async {
     DocumentSnapshot snapshot = await _userMetadataRef().doc(documentId).get();
     if (snapshot.exists) {
-      return DocumentWrapper(documentId, snapshot.data() as UserMetadata);
+      return DocumentWrapper(documentId, snapshot.data() as PublicExpertInfo);
     }
     return null;
   }
@@ -61,24 +62,25 @@ class UserMetadata {
     await _userMetadataRef().doc(documentId).set(this);
   }
 
-  static Stream<Iterable<DocumentWrapper<UserMetadata>>> getStream() {
+  static Stream<Iterable<DocumentWrapper<PublicExpertInfo>>> getStream() {
     return _userMetadataRef()
         .snapshots()
-        .map((QuerySnapshot<UserMetadata> collectionSnapshot) {
+        .map((QuerySnapshot<PublicExpertInfo> collectionSnapshot) {
       return collectionSnapshot.docs
-          .map((QueryDocumentSnapshot<UserMetadata> documentSnapshot) {
+          .map((QueryDocumentSnapshot<PublicExpertInfo> documentSnapshot) {
         return DocumentWrapper(documentSnapshot.id, documentSnapshot.data());
       });
     });
   }
 
-  static CollectionReference<UserMetadata> _userMetadataRef() {
+  static CollectionReference<PublicExpertInfo> _userMetadataRef() {
     return FirebaseFirestore.instance
         .collection(CollectionPaths.USER_METADATA)
-        .withConverter<UserMetadata>(
+        .withConverter<PublicExpertInfo>(
           fromFirestore: (DocumentSnapshot<Map<String, dynamic>> snapshot, _) =>
-              UserMetadata.fromJson(snapshot.data()!),
-          toFirestore: (UserMetadata userMetadata, _) => userMetadata._toJson(),
+              PublicExpertInfo.fromJson(snapshot.data()!),
+          toFirestore: (PublicExpertInfo userMetadata, _) =>
+              userMetadata._toJson(),
         );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/screens/appbars/expert_call_prompt_appbar.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
@@ -29,7 +29,7 @@ class CallTransactionExpertPrompt extends StatefulWidget {
 
 class _CallTransactionExpertPromptState
     extends State<CallTransactionExpertPrompt> {
-  Widget buildCallPrompt(DocumentWrapper<UserMetadata> caller) {
+  Widget buildCallPrompt(DocumentWrapper<PublicExpertInfo> caller) {
     String promptText =
         '${caller.documentType.firstName} will pay you ${widget.expertRate.formattedStartCallFee()} to start the call'
         ' and ${widget.expertRate.formattedPerMinuteFee()} for each minute thereafter.  The billed time will stop if'
@@ -69,10 +69,10 @@ class _CallTransactionExpertPromptState
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<DocumentWrapper<UserMetadata>?>(
-        future: UserMetadata.get(widget.callerUserId),
+    return FutureBuilder<DocumentWrapper<PublicExpertInfo>?>(
+        future: PublicExpertInfo.get(widget.callerUserId),
         builder: (BuildContext context,
-            AsyncSnapshot<DocumentWrapper<UserMetadata>?> snapshot) {
+            AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
           if (snapshot.hasData) {
             final callerMetadata = snapshot.data;
             return Scaffold(

@@ -2,7 +2,7 @@ import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/user_metadata.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/screens/appbars/widgets/cost_button.dart';
 import 'package:expertapp/src/screens/appbars/widgets/time_remaining.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class ClientInCallAppbar extends StatefulWidget with PreferredSizeWidget {
-  final DocumentWrapper<UserMetadata> userMetadata;
+  final DocumentWrapper<PublicExpertInfo> userMetadata;
 
   ClientInCallAppbar(this.userMetadata);
 
