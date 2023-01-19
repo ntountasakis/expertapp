@@ -75,7 +75,7 @@ class PublicExpertInfo {
 
   static CollectionReference<PublicExpertInfo> _userMetadataRef() {
     return FirebaseFirestore.instance
-        .collection(CollectionPaths.USER_METADATA)
+        .collection(CollectionPaths.PUBLIC_EXPERT_INFO)
         .withConverter<PublicExpertInfo>(
           fromFirestore: (DocumentSnapshot<Map<String, dynamic>> snapshot, _) =>
               PublicExpertInfo.fromJson(snapshot.data()!),
