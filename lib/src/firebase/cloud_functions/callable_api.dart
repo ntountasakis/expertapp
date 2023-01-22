@@ -35,15 +35,11 @@ Future<String> onSubmitReview(
   return result.data["message"];
 }
 
-Future<String> onProfilePicUpload({required Uint8List pictureBytes}) async {
+Future<void> onProfilePicUpload({required Uint8List pictureBytes}) async {
   Map<String, Uint8List> picture = {
     'pictureBytes': pictureBytes,
   };
-  HttpsCallableResult result =
-      await getCallable(CallableFunctions.UPDATE_PROFILE_PIC).call(picture);
-
-  final newProfilePicUrl = result.data['url'];
-  return newProfilePicUrl;
+  await getCallable(CallableFunctions.UPDATE_PROFILE_PIC).call(picture);
 }
 
 Future<String> lookupChatroomId(String otherUid) async {

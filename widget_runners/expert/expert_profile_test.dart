@@ -13,7 +13,7 @@ class MyTestApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new ExpertProfilePage("mpKZBT949r8LM9wkzIvfl6GQQ2OQ"),
+      home: new ExpertProfilePage("mpKZBT949r8LM9wkzIvfl6GQQ2OQ", true),
     );
   }
 }

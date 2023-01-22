@@ -62,6 +62,16 @@ class PublicExpertInfo {
     await _userMetadataRef().doc(documentId).set(this);
   }
 
+  static Stream<DocumentWrapper<PublicExpertInfo>> getStreamForUser(
+      String uid) {
+    return _userMetadataRef()
+        .doc(uid)
+        .snapshots()
+        .map((DocumentSnapshot<PublicExpertInfo> documentSnapshot) {
+      return DocumentWrapper(documentSnapshot.id, documentSnapshot.data()!);
+    });
+  }
+
   static Stream<Iterable<DocumentWrapper<PublicExpertInfo>>> getStream() {
     return _userMetadataRef()
         .snapshots()
