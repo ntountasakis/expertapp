@@ -1,3 +1,7 @@
+import 'dart:developer';
+import 'dart:typed_data';
+
+import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
@@ -10,8 +14,9 @@ import 'package:go_router/go_router.dart';
 
 class ExpertProfilePage extends StatefulWidget {
   final String _expertUid;
+  final bool _isEditable;
 
-  ExpertProfilePage(this._expertUid);
+  ExpertProfilePage(this._expertUid, this._isEditable);
 
   @override
   State<ExpertProfilePage> createState() => _ExpertProfilePageState();
@@ -136,11 +141,25 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
 
   Widget buildProfilePicture(
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
-    return SizedBox(
-      width: 200,
-      height: 200,
-      child: ProfilePicture(publicExpertInfo.documentType.profilePicUrl),
-    );
+    if (widget._isEditable) {
+      return SizedBox(
+        width: 200,
+        height: 200,
+        child: ProfilePicture(
+            publicExpertInfo.documentType.profilePicUrl, onProfilePicSelection),
+      );
+    } else {
+      return SizedBox(
+        width: 200,
+        height: 200,
+        child: ProfilePicture(publicExpertInfo.documentType.profilePicUrl),
+      );
+    }
+  }
+
+  void onProfilePicSelection(Uint8List profilePicBytes) async {
+    // TODO, this crashes iOS 13 simulator via Rosetta.
+    await onProfilePicUpload(pictureBytes: profilePicBytes);
   }
 
   @override
@@ -149,8 +168,8 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
       appBar: AppBar(
         title: const Text("Expert Profile"),
       ),
-      body: FutureBuilder<DocumentWrapper<PublicExpertInfo>?>(
-          future: PublicExpertInfo.get(widget._expertUid),
+      body: StreamBuilder<DocumentWrapper<PublicExpertInfo>?>(
+          stream: PublicExpertInfo.getStreamForUser(widget._expertUid),
           builder: (BuildContext context,
               AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
             if (snapshot.hasData) {

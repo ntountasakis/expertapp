@@ -15,7 +15,6 @@ import 'package:expertapp/src/screens/transaction/expert/call_transaction_expert
 import 'package:expertapp/src/screens/transaction/client/call_client_main.dart';
 import 'package:expertapp/src/screens/transaction/client/call_client_preview.dart';
 import 'package:expertapp/src/screens/transaction/expert/call_transaction_expert_main.dart';
-import 'package:expertapp/src/screens/user/user_profile_page.dart';
 import 'package:expertapp/src/screens/user/user_signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
@@ -87,7 +86,8 @@ class AppRouter {
         name: Routes.USER_PROFILE_PAGE,
         path: Routes.USER_PROFILE_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return UserProfilePage(lifecycle.publicExpertInfo!);
+          return ExpertProfilePage(
+              lifecycle.publicExpertInfo!.documentId, true);
         },
       ),
       GoRoute(
@@ -109,7 +109,7 @@ class AppRouter {
               path: Routes.EXPERT_PROFILE_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.params[Routes.EXPERT_ID_PARAM];
-                return ExpertProfilePage(expertId!);
+                return ExpertProfilePage(expertId!, false);
               },
               routes: <GoRoute>[
                 GoRoute(

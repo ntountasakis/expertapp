@@ -1,10 +1,13 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/firebase/storage/storage_paths.dart';
 import 'package:expertapp/src/firebase/storage/storage_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image/image.dart' as img;
 
 class ProfilePicture extends StatelessWidget {
   final String? profilePicUrl;
@@ -13,7 +16,11 @@ class ProfilePicture extends StatelessWidget {
   ProfilePicture(this.profilePicUrl, [this.onProfilePicSelection]);
 
   Widget _imageWidget(String url) {
-    return ClipOval(child: Image.network(url));
+    if (!EnvironmentConfig.getConfig().isProd()) {
+      url = StorageUtil.getLocalhostUrlForStorageUrl(url);
+    }
+    return CircleAvatar(
+        backgroundColor: Colors.white, backgroundImage: NetworkImage(url));
   }
 
   Widget _asyncPicLoader() {
@@ -47,7 +54,13 @@ class ProfilePicture extends StatelessWidget {
                 await picker.pickImage(source: ImageSource.gallery);
             if (image != null) {
               Uint8List imageBytes = await image.readAsBytes();
-              onProfilePicSelection!(imageBytes);
+              final imageHandle = img.decodeImage(imageBytes);
+              if (imageHandle == null) {
+                log('Failed to decode image');
+              } else {
+                Uint8List jpegBytes = img.encodeJpg(imageHandle, quality: 50);
+                onProfilePicSelection!(jpegBytes);
+              }
             } else {
               log('User cancelled profile pic image upload');
             }
