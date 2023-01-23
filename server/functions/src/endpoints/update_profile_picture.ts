@@ -4,6 +4,7 @@ import {v4 as uuidv4} from "uuid";
 import {Bucket} from "@google-cloud/storage";
 import {getProfilePicBucket} from "../../../shared/src/firebase/storage/functions/get_profile_pic_bucket_ref";
 import {updateProfilePicUrl} from "../../../shared/src/firebase/firestore/functions/update_profile_pic_url";
+import {StoragePaths} from "../../../shared/src/firebase/storage/storage_paths";
 
 export const updateProfilePicture = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -20,7 +21,7 @@ export const updateProfilePicture = functions.https.onCall(async (data, context)
 
 async function uploadFromMemory(buffer: Buffer): Promise<string> {
   const pictureBucket: Bucket = await getProfilePicBucket();
-  const filename = uuidv4() +".jpeg";
+  const filename = StoragePaths.PROFILE_PIC_FOLDER + uuidv4() +".jpeg";
   const pictureFile = pictureBucket.file(filename);
   await pictureFile.save(buffer, {
     contentType: "image/jpeg",
