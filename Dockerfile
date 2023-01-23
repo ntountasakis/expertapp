@@ -6,7 +6,7 @@ RUN apt-get update && \
   protobuf-compiler \
   vim-tiny \
   curl
-RUN npm install -g n && n 16
+RUN npm install -g n && n 18
 COPY ./server/call_transaction/package.json ./call_transaction/
 COPY ./server/call_transaction/tsconfig.json ./call_transaction/
 COPY ./server/shared/package.json ./shared/
