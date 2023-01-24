@@ -53,6 +53,14 @@ Future<String> lookupChatroomId(String otherUid) async {
   return chatroomId;
 }
 
+Future<void> updateProfileDescription(String newDescription) async {
+  Map<String, dynamic> chatroomQuery = {
+    'description': newDescription,
+  };
+  await getCallable(CallableFunctions.UPDATE_PROFILE_DESCRIPTION)
+      .call(chatroomQuery);
+}
+
 class UpdateExpertRateResult {
   final bool success;
   final String message;

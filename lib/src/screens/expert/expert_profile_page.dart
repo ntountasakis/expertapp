@@ -10,6 +10,7 @@ import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 
 class ExpertProfilePage extends StatefulWidget {
@@ -24,6 +25,21 @@ class ExpertProfilePage extends StatefulWidget {
 
 class _ExpertProfilePageState extends State<ExpertProfilePage> {
   final _descriptionScrollController = ScrollController();
+  late TextEditingController _textController;
+  String _textControllerText = "Loading...";
+
+  @override
+  void initState() {
+    super.initState();
+    _textController = TextEditingController();
+    _textController.text = _textControllerText;
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
 
   Widget buildCallPreviewButton(BuildContext context,
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
@@ -91,6 +107,54 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
     );
   }
 
+  Widget buildEditButton(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+    return IconButton(
+      icon: const Icon(
+        Icons.edit,
+        size: 30,
+        color: Colors.grey,
+      ),
+      onPressed: () {
+        openEditDescriptionDialog(publicExpertInfo);
+      },
+    );
+  }
+
+  Future openEditDescriptionDialog(
+          DocumentWrapper<PublicExpertInfo> publicExpertInfo) =>
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                actionsAlignment: MainAxisAlignment.spaceBetween,
+                title: Text("Edit Description"),
+                content: TextFormField(
+                  autofocus: true,
+                  maxLines: null,
+                  controller: _textController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Enter a description",
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      final newDescription =
+                          _textController.text.trim().replaceAll("\n", " ");
+                      await updateProfileDescription(newDescription);
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Save"),
+                  ),
+                ],
+              ));
+
   Widget buildAboutMe(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     return Container(
       margin: const EdgeInsets.all(4),
@@ -104,7 +168,15 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildAboutMeName(publicExpertInfo),
+              Row(
+                children: [
+                  buildAboutMeName(publicExpertInfo),
+                  Spacer(),
+                  widget._isEditable
+                      ? buildEditButton(publicExpertInfo)
+                      : SizedBox(),
+                ],
+              ),
               buildRating(publicExpertInfo),
               SizedBox(height: 10),
               buildDescription(publicExpertInfo),
@@ -162,6 +234,16 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
     await onProfilePicUpload(pictureBytes: profilePicBytes);
   }
 
+  void updateProfileDescriptionIfChanged(
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) async {
+    if (publicExpertInfo.documentType.description != _textControllerText) {
+      _textControllerText = publicExpertInfo.documentType.description;
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        _textController.text = _textControllerText;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,6 +256,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
               AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
             if (snapshot.hasData) {
               final publicExpertInfo = snapshot.data;
+              updateProfileDescriptionIfChanged(publicExpertInfo!);
               return Column(
                 children: [
                   SizedBox(height: 10),
