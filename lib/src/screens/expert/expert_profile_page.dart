@@ -244,34 +244,50 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
     }
   }
 
+  Widget buildBody(BuildContext context,
+      AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
+    if (snapshot.hasData) {
+      final publicExpertInfo = snapshot.data;
+      updateProfileDescriptionIfChanged(publicExpertInfo!);
+      return Column(
+        children: [
+          SizedBox(height: 10),
+          buildProfilePicture(publicExpertInfo),
+          SizedBox(height: 10),
+          buildCallPreviewButton(context, publicExpertInfo),
+          buildAboutMe(publicExpertInfo),
+          buildReviewHeading(),
+          buildReviewList(publicExpertInfo),
+        ],
+      );
+    } else {
+      return CircularProgressIndicator();
+    }
+  }
+
+  AppBar buildAppbar(
+      AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
+    if (snapshot.hasData) {
+      return AppBar(
+        title: Text(snapshot.data!.documentType.fullName()),
+      );
+    } else {
+      return AppBar(
+        title: Text("Loading..."),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Expert Profile"),
-      ),
-      body: StreamBuilder<DocumentWrapper<PublicExpertInfo>?>(
-          stream: PublicExpertInfo.getStreamForUser(widget._expertUid),
-          builder: (BuildContext context,
-              AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
-            if (snapshot.hasData) {
-              final publicExpertInfo = snapshot.data;
-              updateProfileDescriptionIfChanged(publicExpertInfo!);
-              return Column(
-                children: [
-                  SizedBox(height: 10),
-                  buildProfilePicture(publicExpertInfo!),
-                  SizedBox(height: 10),
-                  buildCallPreviewButton(context, publicExpertInfo),
-                  buildAboutMe(publicExpertInfo),
-                  buildReviewHeading(),
-                  buildReviewList(publicExpertInfo),
-                ],
-              );
-            } else {
-              return CircularProgressIndicator();
-            }
-          }),
-    );
+    return StreamBuilder<DocumentWrapper<PublicExpertInfo>?>(
+        stream: PublicExpertInfo.getStreamForUser(widget._expertUid),
+        builder: (BuildContext context,
+            AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
+          return Scaffold(
+            appBar: buildAppbar(snapshot),
+            body: buildBody(context, snapshot),
+          );
+        });
   }
 }
