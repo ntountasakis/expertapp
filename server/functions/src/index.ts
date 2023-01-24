@@ -4,6 +4,9 @@ admin.initializeApp();
 import {updateProfilePicture} from "./endpoints/update_profile_picture";
 export {updateProfilePicture};
 
+import {updateProfileDescription} from "./endpoints/update_profile_description";
+export {updateProfileDescription};
+
 import {submitReview} from "./endpoints/submit_review";
 export {submitReview};
 
