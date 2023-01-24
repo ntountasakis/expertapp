@@ -11,6 +11,8 @@ class CallTransaction {
   final int callRequestTimeUtcMs;
   final int calledJoinTimeUtcMs;
   final int callEndTimeUtsMs;
+  final int costOfCallCents;
+  final int earnedTotalCents;
 
   CallTransaction(
       this.callerUid,
@@ -20,18 +22,23 @@ class CallTransaction {
       this.callerPaymentStatusId,
       this.callRequestTimeUtcMs,
       this.calledJoinTimeUtcMs,
-      this.callEndTimeUtsMs);
+      this.callEndTimeUtsMs,
+      this.costOfCallCents,
+      this.earnedTotalCents);
 
   CallTransaction.fromJson(Map<String, dynamic> json)
       : this(
-            json["callerUid"] as String,
-            json["calledUid"] as String,
-            json["expertRateCentsPerMinute"] as int,
-            json["expertRateCentsCallStart"] as int,
-            json["callerPaymentStatusId"] as String,
-            json["callRequestTimeUtcMs"] as int,
-            json["calledJoinTimeUtcMs"] as int,
-            json["callEndTimeUtsMs"] as int);
+          json["callerUid"] as String,
+          json["calledUid"] as String,
+          json["expertRateCentsPerMinute"] as int,
+          json["expertRateCentsCallStart"] as int,
+          json["callerPaymentStatusId"] as String,
+          json["callRequestTimeUtcMs"] as int,
+          json["calledJoinTimeUtcMs"] as int,
+          json["callEndTimeUtsMs"] as int,
+          json["costOfCallCents"] as int,
+          json["earnedTotalCents"] as int,
+        );
 
   Map<String, dynamic> _toJson() {
     var fieldsMap = {
@@ -43,13 +50,30 @@ class CallTransaction {
       'callRequestTimeUtcMs': callRequestTimeUtcMs,
       'calledJoinTimeUtcMs': calledJoinTimeUtcMs,
       'callEndTimeUtsMs': calledJoinTimeUtcMs,
+      'costOfCallCents': costOfCallCents,
+      'earnedTotalCents': earnedTotalCents,
     };
     return fieldsMap;
   }
 
-  static Stream<Iterable<DocumentWrapper<CallTransaction>>> getStream(String currentUserId) {
+  static Stream<Iterable<DocumentWrapper<CallTransaction>>> getStreamForCaller(
+      {required String callerUid}) {
     return _callTransactionRef()
-        .where("callerUid", isEqualTo: currentUserId)
+        .where("callerUid", isEqualTo: callerUid)
+        .orderBy("callEndTimeUtsMs", descending: true)
+        .snapshots()
+        .map((QuerySnapshot<CallTransaction> collectionSnapshot) {
+      return collectionSnapshot.docs
+          .map((QueryDocumentSnapshot<CallTransaction> documentSnapshot) {
+        return DocumentWrapper(documentSnapshot.id, documentSnapshot.data());
+      });
+    });
+  }
+
+  static Stream<Iterable<DocumentWrapper<CallTransaction>>> getStreamForCalled(
+      {required String calledUid}) {
+    return _callTransactionRef()
+        .where("calledUid", isEqualTo: calledUid)
         .orderBy("callEndTimeUtsMs", descending: true)
         .snapshots()
         .map((QuerySnapshot<CallTransaction> collectionSnapshot) {
