@@ -21,9 +21,14 @@ class HamburgerMenu extends StatelessWidget {
                 context.pushNamed(Routes.USER_PROFILE_PAGE);
               }),
           ListTile(
-              title: Text("Past Calls"),
+              title: Text("Past Calls with Experts"),
               onTap: () {
                 context.pushNamed(Routes.USER_COMPLETED_CALLS);
+              }),
+          ListTile(
+              title: Text("Past Calls with Clients"),
+              onTap: () {
+                context.pushNamed(Routes.CLIENT_COMPLETED_CALLS);
               }),
           ListTile(
               title: Text("Update Call Prices"),

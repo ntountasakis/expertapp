@@ -2,7 +2,8 @@ import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dar
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/expert/expert_connected_account_signup.dart';
 import 'package:expertapp/src/screens/expert/expert_rate_page.dart';
-import 'package:expertapp/src/screens/history/completed_calls_page.dart';
+import 'package:expertapp/src/screens/history/completed_incoming_calls_page.dart';
+import 'package:expertapp/src/screens/history/completed_outgoing_calls_page.dart';
 import 'package:expertapp/src/screens/transaction/client/call_client_summary.dart';
 import 'package:expertapp/src/screens/transaction/common/chat_page.dart';
 import 'package:expertapp/src/screens/expert/expert_listings_page.dart';
@@ -94,7 +95,14 @@ class AppRouter {
         name: Routes.USER_COMPLETED_CALLS,
         path: Routes.USER_COMPLETED_CALLS,
         builder: (BuildContext context, GoRouterState state) {
-          return CompletedCallsPage(lifecycle.publicExpertInfo!);
+          return CompletedOutgoingCallsPage(lifecycle.authenticatedUser!.uid);
+        },
+      ),
+      GoRoute(
+        name: Routes.CLIENT_COMPLETED_CALLS,
+        path: Routes.CLIENT_COMPLETED_CALLS,
+        builder: (BuildContext context, GoRouterState state) {
+          return CompletedIncomingCallsPage(lifecycle.authenticatedUser!.uid);
         },
       ),
       GoRoute(

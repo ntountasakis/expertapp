@@ -6,6 +6,7 @@ class Routes {
 
   static const USER_PROFILE_PAGE = '/userprofilepage';
   static const USER_COMPLETED_CALLS = '/usercompletedcalls';
+  static const CLIENT_COMPLETED_CALLS = '/clientcompletedcalls';
 
   static const AGORA_CHANNEL_NAME_PARAM = 'channelName';
   static const AGORA_TOKEN_PARAM = 'token';

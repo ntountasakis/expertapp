@@ -1,58 +1,32 @@
 import 'package:expertapp/src/firebase/firestore/document_models/call_transaction.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/payment_status.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
+import 'package:expertapp/src/util/completed_calls_util.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-class CompletedCallsPage extends StatelessWidget {
-  final DocumentWrapper<PublicExpertInfo> userMetadata;
+class CompletedOutgoingCallsPage extends StatelessWidget {
+  final String uid;
 
-  CompletedCallsPage(this.userMetadata);
-
-  Widget buildCallPopup(CallTransaction call, String transactionId) {
-    String helpText = '''If you need assistance with this call,
-    please refer to  this call using this ID:
-    ${transactionId}
-    when contacting customer service.''';
-
-    return AlertDialog(
-      title: const Text("Call Details"),
-      content: Text(helpText),
-    );
-  }
+  CompletedOutgoingCallsPage(this.uid);
 
   Widget buildCallCard(CallTransaction call, String transactionId) {
     return FutureBuilder(
-        future: Future.wait([
-          PaymentStatus.get(call.callerPaymentStatusId),
-          PublicExpertInfo.get(call.calledUid)
-        ]),
+        future: Future.wait([PublicExpertInfo.get(call.calledUid)]),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
-            final payment =
-                snapshot.data![0] as DocumentWrapper<PaymentStatus>?;
             final expertMetadata =
-                snapshot.data![1] as DocumentWrapper<PublicExpertInfo>?;
-
-            if (payment == null) {
-              return SizedBox();
-            }
+                snapshot.data![0] as DocumentWrapper<PublicExpertInfo>?;
 
             String title = 'Completed Call';
             if (expertMetadata != null) {
               title += ' with ' + expertMetadata.documentType.fullName();
             }
 
-            final endTime =
-                DateTime.fromMillisecondsSinceEpoch(call.callEndTimeUtsMs);
-            int amountSpentCents = payment.documentType.centsPaid;
-
-            String dateFormat = DateFormat.yMd().add_jm().format(endTime);
-            final dollarFormat = new NumberFormat('#,##0.00', "en_US");
             String subtitle =
-                'Ended on ${dateFormat}. Paid \$${dollarFormat.format(amountSpentCents / 100)}';
+                'Ended on ${CompletedCallsUtil.formatEndDate(call)}. '
+                'Paid ${CompletedCallsUtil.formatCents(call.costOfCallCents)} '
+                'Length ${CompletedCallsUtil.formatCallLength(call)}';
 
             return Card(
                 key: Key(transactionId),
@@ -68,7 +42,8 @@ class CompletedCallsPage extends StatelessWidget {
                       showDialog<void>(
                           context: context,
                           builder: (BuildContext context) {
-                            return buildCallPopup(call, transactionId);
+                            return CompletedCallsUtil.buildCallPopup(
+                                call, transactionId);
                           });
                     },
                     child: Icon(Icons.more_vert),
@@ -82,9 +57,9 @@ class CompletedCallsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Completed Calls")),
+      appBar: AppBar(title: Text("Completed Calls with Experts")),
       body: StreamBuilder(
-        stream: CallTransaction.getStream(userMetadata.documentId),
+        stream: CallTransaction.getStreamForCaller(callerUid: uid),
         builder: (BuildContext context,
             AsyncSnapshot<Iterable<DocumentWrapper<CallTransaction>>>
                 snapshot) {
