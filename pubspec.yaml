@@ -27,6 +27,7 @@ dependencies:
   cloud_functions: ^3.2.7
   cupertino_icons: ^1.0.2
   currency_text_input_formatter: ^2.1.8
+  day_picker: ^2.1.1
   firebase_auth: ^3.3.3
   firebase_core: ^1.8.0
   firebase_core_platform_interface: 4.5.1
@@ -51,6 +52,7 @@ dependencies:
   mocktail: ^0.3.0
   protobuf: ^2.0.1
   provider: ^6.0.3
+  time_range: ^1.1.0
   uuid: ^3.0.5
   webview_flutter: ^3.0.4
 
