@@ -1,3 +1,5 @@
+import { WeekAvailability } from "./expert_availability";
+
 export interface PublicExpertInfo {
   firstName: string;
   lastName: string;
@@ -5,4 +7,5 @@ export interface PublicExpertInfo {
   profilePicUrl: string;
   runningSumReviewRatings: number;
   numReviews: number;
+  availability: WeekAvailability;
 }

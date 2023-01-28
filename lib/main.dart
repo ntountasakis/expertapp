@@ -34,7 +34,6 @@ void main() async {
   Stripe.publishableKey =
       "pk_test_51LLQIdAoQ8pfRhfFNyVrKysmtjgsXqW2zjx6IxcVpKjvq8iMqTTGRl8BCUnTYiIzq5HUkbnZ9dXtiibhdum3Ozfv00lOhg3RyX";
 
-
   runApp(
     MultiProvider(
       providers: [
@@ -46,7 +45,6 @@ void main() async {
     ),
   );
 }
-
 
 class MyApp extends StatefulWidget {
   final AppLifecycle lifecycle;

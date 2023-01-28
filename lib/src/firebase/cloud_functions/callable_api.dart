@@ -61,14 +61,14 @@ Future<void> updateProfileDescription(String newDescription) async {
       .call(chatroomQuery);
 }
 
-class UpdateExpertRateResult {
+class UpdateResult {
   final bool success;
   final String message;
 
-  UpdateExpertRateResult({required this.success, required this.message});
+  UpdateResult({required this.success, required this.message});
 }
 
-Future<UpdateExpertRateResult> updateExpertRate(
+Future<UpdateResult> updateExpertRate(
     {required int centsPerMinute, required int centsStartCall}) async {
   Map<String, dynamic> updateQuery = {
     'centsStartCall': centsStartCall,
@@ -80,5 +80,59 @@ Future<UpdateExpertRateResult> updateExpertRate(
   bool success = result.data['success'];
   String message = result.data['message'];
 
-  return UpdateExpertRateResult(success: success, message: message);
+  return UpdateResult(success: success, message: message);
+}
+
+class DayAvailability {
+  final bool isAvailable;
+  final int startHourUtc;
+  final int startMinuteUtc;
+  final int endHourUtc;
+  final int endMinuteUtc;
+
+  DayAvailability({
+    required this.isAvailable,
+    required this.startHourUtc,
+    required this.startMinuteUtc,
+    required this.endHourUtc,
+    required this.endMinuteUtc,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'isAvailable': isAvailable,
+      'startHourUtc': startHourUtc,
+      'startMinuteUtc': startMinuteUtc,
+      'endHourUtc': endHourUtc,
+      'endMinuteUtc': endMinuteUtc,
+    };
+  }
+}
+
+Future<UpdateResult> updateExpertAvailability({
+  required DayAvailability mondayAvailability,
+  required DayAvailability tuesdayAvailability,
+  required DayAvailability wednesdayAvailability,
+  required DayAvailability thursdayAvailability,
+  required DayAvailability fridayAvailability,
+  required DayAvailability saturdayAvailability,
+  required DayAvailability sundayAvailability,
+}) async {
+  Map<String, dynamic> updateQuery = {
+    "mondayAvailability": mondayAvailability.toMap(),
+    "tuesdayAvailability": tuesdayAvailability.toMap(),
+    "wednesdayAvailability": wednesdayAvailability.toMap(),
+    "thursdayAvailability": thursdayAvailability.toMap(),
+    "fridayAvailability": fridayAvailability.toMap(),
+    "saturdayAvailability": saturdayAvailability.toMap(),
+    "sundayAvailability": sundayAvailability.toMap(),
+  };
+  HttpsCallableResult result =
+      await getCallable(CallableFunctions.UPDATE_EXPERT_AVAILABILITY)
+          .call(updateQuery);
+
+  bool success = result.data['success'];
+  String message = result.data['message'];
+
+  return UpdateResult(success: success, message: message);
 }

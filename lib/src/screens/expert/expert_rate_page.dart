@@ -153,7 +153,7 @@ class _MyRatePickerState extends State<RatePickers> {
             if (_ratePerMinute == -1 || _rateStartCall == -1) {
               return;
             }
-            final UpdateExpertRateResult result = await updateExpertRate(
+            final UpdateResult result = await updateExpertRate(
                 centsPerMinute: _ratePerMinute, centsStartCall: _rateStartCall);
             showDialog(
                 context: context,

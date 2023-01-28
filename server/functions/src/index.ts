@@ -16,6 +16,9 @@ export {userSignup};
 import {updateExpertRate} from "./endpoints/update_expert_rate";
 export {updateExpertRate};
 
+import {updateExpertAvailability} from "./endpoints/update_expert_availability";
+export {updateExpertAvailability};
+
 import {chatroomLookup} from "./endpoints/chatroom_lookup";
 export {chatroomLookup};
 
