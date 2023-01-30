@@ -29,6 +29,7 @@ class Routes {
   static const EXPERT_REVIEW_SUBMIT_PAGE = '/expertReviewSubmitPage';
   static const EXPERT_CALL_SUMMARY_PAGE = '/expertClientSummaryPage';
 
+  static const EXPERT_UPDATE_AVAILABILITY_PAGE = '/expertUpdateAvailabilityPage';
   static const EXPERT_UPDATE_RATE_PAGE = '/expertUpdateRatePage';
   static const EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE =
       '/expertConnectedAccountSignupPage';

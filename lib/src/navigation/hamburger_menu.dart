@@ -36,6 +36,11 @@ class HamburgerMenu extends StatelessWidget {
                 context.pushNamed(Routes.EXPERT_UPDATE_RATE_PAGE);
               }),
           ListTile(
+              title: Text("Update Call Availability Times"),
+              onTap: () {
+                context.pushNamed(Routes.EXPERT_UPDATE_AVAILABILITY_PAGE);
+              }),
+          ListTile(
               title: Text("Become an Expert!"),
               onTap: () {
                 context.pushNamed(Routes.EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE);
