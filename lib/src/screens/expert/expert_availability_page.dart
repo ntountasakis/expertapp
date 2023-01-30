@@ -55,17 +55,6 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
   }
 
   void onDaysSelected(List<String> newDaysSelected) {
-    int changedCount = 0;
-    String changedDay = '';
-    bool isSelected = false;
-    for (String day in _selectedDays.keys) {
-      bool wasSelected = _selectedDays[day] != null;
-      isSelected = newDaysSelected.contains(day);
-      if (isSelected != wasSelected) {
-        changedCount++;
-        changedDay = day;
-      }
-    }
     String? newDayAdded = getNewDayAdded(newDaysSelected);
     String? newDayRemoved = getNewDayRemoved(newDaysSelected);
     if (newDayAdded == null && newDayRemoved == null) {
@@ -246,6 +235,29 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
         fridayAvailability: buildAvailabilityForDay(_daysOfWeek[4]),
         saturdayAvailability: buildAvailabilityForDay(_daysOfWeek[5]),
         sundayAvailability: buildAvailabilityForDay(_daysOfWeek[6]));
+
+    if (result.success) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Success"),
+              content: Text("Your availability has been updated"),
+            );
+          });
+    } else {
+      if (!result.success) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Error"),
+                content: Text("We are experiencing technical difficulties. "
+                    "Please contact customer service to update your availability."),
+              );
+            });
+      }
+    }
   }
 
   @override
