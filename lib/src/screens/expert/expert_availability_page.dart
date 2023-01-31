@@ -108,10 +108,10 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
     if (dayAvailability.isAvailable) {
       return TimeRangeResult(
         TimeOfDay(
-            hour: TimezoneUtil.localHour(hours: dayAvailability.startHourUtc),
+            hour: TimezoneUtil.localHour(utcHour: dayAvailability.startHourUtc),
             minute: dayAvailability.startMinuteUtc),
         TimeOfDay(
-            hour: TimezoneUtil.localHour(hours: dayAvailability.endHourUtc),
+            hour: TimezoneUtil.localHour(utcHour: dayAvailability.endHourUtc),
             minute: dayAvailability.endMinuteUtc),
       );
     }
@@ -168,11 +168,19 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
   }
 
   Widget buildDayPicker() {
-    return Row(
+    return Column(
       children: [
-        SizedBox(width: 10),
-        Expanded(child: _selectWeekdaysWidget),
-        SizedBox(width: 10),
+        SizedBox(height: 5),
+        Text("Tap a day to change availability",
+            style: CallSummaryUtil.BOLD_STYLE),
+        SizedBox(height: 5),
+        Row(
+          children: [
+            SizedBox(width: 10),
+            Expanded(child: _selectWeekdaysWidget),
+            SizedBox(width: 10),
+          ],
+        ),
       ],
     );
   }
@@ -184,18 +192,14 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
     }
     return Column(
       children: [
-        Text(
-          "Select your availability for $_mostRecentlySelectedDay",
-          style: CallSummaryUtil.BOLD_STYLE,
-        ),
         SizedBox(height: 20),
         TimeRange(
           fromTitle: Text(
-            'Allow calls starting at',
+            'Allow calls starting at for $_mostRecentlySelectedDay',
             style: TextStyle(fontSize: 18, color: Colors.grey),
           ),
           toTitle: Text(
-            'Do not allow calls starting at',
+            'Do not allow calls starting at for $_mostRecentlySelectedDay',
             style: TextStyle(fontSize: 18, color: Colors.grey),
           ),
           titlePadding: 20,
@@ -252,8 +256,10 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
   Widget buildSubmitAvailabilityButton() {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.green[400],
+        backgroundColor: Colors.blue,
         textStyle: const TextStyle(fontSize: 20),
+        shadowColor: Colors.black,
+        elevation: 10,
       ),
       child: Text("Save updated availability"),
       onPressed: sendAvailability,
@@ -273,9 +279,10 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
     }
     return DayAvailability(
         isAvailable: true,
-        startHourUtc: TimezoneUtil.utcHour(hours: dayAvailability.start.hour),
+        startHourUtc:
+            TimezoneUtil.utcHour(localHour: dayAvailability.start.hour),
         startMinuteUtc: dayAvailability.start.minute,
-        endHourUtc: TimezoneUtil.utcHour(hours: dayAvailability.end.hour),
+        endHourUtc: TimezoneUtil.utcHour(localHour: dayAvailability.end.hour),
         endMinuteUtc: dayAvailability.end.minute);
   }
 
@@ -319,7 +326,7 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Availability"),
+        title: Text("Availability for accepting calls"),
       ),
       body: Column(
         children: [
