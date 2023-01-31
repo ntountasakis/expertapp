@@ -18,6 +18,7 @@ class ExpertAvailabilityPage extends StatefulWidget {
 }
 
 class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
+  bool _hasChanges = false;
   final _selectedDays = new Map<String, TimeRangeResult?>();
   final _defaultInitialRange = TimeRangeResult(
     TimeOfDay(hour: 8, minute: 00),
@@ -47,6 +48,7 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
 
   void refreshAvailability() {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _hasChanges = false;
       final expertInfo = await PublicExpertInfo.get(widget.uid);
       if (expertInfo == null) {
         throw Exception('No expert info for user ${widget.uid}');
@@ -145,6 +147,7 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
     if (newDayAdded != null && newDayRemoved != null) {
       throw Exception('Only one day can be either added or removed');
     }
+    _hasChanges = true;
     if (newDayAdded != null) {
       setState(() {
         _mostRecentlySelectedDay = newDayAdded;
@@ -322,23 +325,63 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
     refreshAvailability();
   }
 
+  Future<bool?> buildUnsavedChangesDialog() {
+    return showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Discard changes?"),
+            content: Text(
+                "You have unsaved changes. Are you sure you want to discard them?"),
+            actions: [
+              TextButton(
+                child: Text("No"),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: Text("Yes"),
+                onPressed: () {
+                  refreshAvailability();
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Availability for accepting calls"),
-      ),
-      body: Column(
-        children: [
-          SizedBox(height: 20),
-          buildTimeSummary(),
-          SizedBox(height: 20),
-          buildSubmitAvailabilityButton(),
-          SizedBox(height: 20),
-          buildDayPicker(),
-          SizedBox(height: 20),
-          buildTimePicker(),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (_hasChanges) {
+          final shouldPop = await buildUnsavedChangesDialog();
+          if (shouldPop == null) {
+            return Future.value(false);
+          }
+          return Future.value(shouldPop);
+        } else {
+          return Future.value(true);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Availability for accepting calls"),
+        ),
+        body: Column(
+          children: [
+            SizedBox(height: 20),
+            buildTimeSummary(),
+            SizedBox(height: 20),
+            buildSubmitAvailabilityButton(),
+            SizedBox(height: 20),
+            buildDayPicker(),
+            SizedBox(height: 20),
+            buildTimePicker(),
+          ],
+        ),
       ),
     );
   }
