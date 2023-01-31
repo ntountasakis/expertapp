@@ -252,7 +252,8 @@ class AppRouter {
           name: Routes.EXPERT_UPDATE_AVAILABILITY_PAGE,
           path: Routes.EXPERT_UPDATE_AVAILABILITY_PAGE,
           builder: (BuildContext context, GoRouterState state) {
-            return ExpertAvailabilityPage();
+            return ExpertAvailabilityPage(
+                uid: lifecycle.publicExpertInfo!.documentId);
           }),
       GoRoute(
           name: Routes.EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE,

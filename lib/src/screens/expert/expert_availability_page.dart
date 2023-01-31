@@ -1,11 +1,18 @@
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/expert_availability.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/timezone/timezone_util.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
 import 'package:flutter/material.dart';
 import 'package:day_picker/day_picker.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:time_range/time_range.dart';
+import 'package:uuid/uuid.dart';
 
 class ExpertAvailabilityPage extends StatefulWidget {
+  final String uid;
+
+  const ExpertAvailabilityPage({required this.uid});
   @override
   State<ExpertAvailabilityPage> createState() => _ExpertAvailabilityPageState();
 }
@@ -16,6 +23,7 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
     TimeOfDay(hour: 8, minute: 00),
     TimeOfDay(hour: 20, minute: 00),
   );
+  Widget _selectWeekdaysWidget = SizedBox();
 
   String _mostRecentlySelectedDay = "";
   static const _daysOfWeek = [
@@ -34,6 +42,80 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
     for (String day in _daysOfWeek) {
       _selectedDays[day] = null;
     }
+    refreshAvailability();
+  }
+
+  void refreshAvailability() {
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      final expertInfo = await PublicExpertInfo.get(widget.uid);
+      if (expertInfo == null) {
+        throw Exception('No expert info for user ${widget.uid}');
+      }
+      final availability = new Map<String, TimeRangeResult?>();
+      for (String day in _daysOfWeek) {
+        final utcDayAvailability =
+            expertInfo.documentType.availability.getDayAvailability(day);
+        availability[day] =
+            convertDayAvailabilityToTimeRangeResult(utcDayAvailability);
+      }
+      setState(() {
+        _selectedDays.addAll(availability);
+        _selectWeekdaysWidget = buildSelectWeekdays(availability);
+      });
+    });
+  }
+
+  Widget buildSelectWeekdays(Map<String, TimeRangeResult?> availability) {
+    List<DayInWeek> _days = [
+      DayInWeek(_daysOfWeek[0],
+          isSelected: availability[_daysOfWeek[0]] != null),
+      DayInWeek(_daysOfWeek[1],
+          isSelected: availability[_daysOfWeek[1]] != null),
+      DayInWeek(_daysOfWeek[2],
+          isSelected: availability[_daysOfWeek[2]] != null),
+      DayInWeek(_daysOfWeek[3],
+          isSelected: availability[_daysOfWeek[3]] != null),
+      DayInWeek(_daysOfWeek[4],
+          isSelected: availability[_daysOfWeek[4]] != null),
+      DayInWeek(_daysOfWeek[5],
+          isSelected: availability[_daysOfWeek[5]] != null),
+      DayInWeek(_daysOfWeek[6],
+          isSelected: availability[_daysOfWeek[6]] != null),
+    ];
+    return SelectWeekDays(
+      key: Key(Uuid().v4()),
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      days: _days,
+      border: false,
+      unSelectedDayTextColor: Colors.red[300],
+      selectedDayTextColor: Colors.white,
+      daysFillColor: Colors.green,
+      boxDecoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30.0),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          colors: [Colors.blue, Colors.blue],
+          tileMode: TileMode.repeated, // repeats the gradient over the canvas
+        ),
+      ),
+      onSelect: onDaysSelected,
+    );
+  }
+
+  TimeRangeResult? convertDayAvailabilityToTimeRangeResult(
+      DayAvailability dayAvailability) {
+    if (dayAvailability.isAvailable) {
+      return TimeRangeResult(
+        TimeOfDay(
+            hour: TimezoneUtil.localHour(hours: dayAvailability.startHourUtc),
+            minute: dayAvailability.startMinuteUtc),
+        TimeOfDay(
+            hour: TimezoneUtil.localHour(hours: dayAvailability.endHourUtc),
+            minute: dayAvailability.endMinuteUtc),
+      );
+    }
+    return null;
   }
 
   String? getNewDayAdded(List<String> newDaysSelected) {
@@ -86,39 +168,10 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
   }
 
   Widget buildDayPicker() {
-    List<DayInWeek> _days = [
-      DayInWeek(_daysOfWeek[0]),
-      DayInWeek(_daysOfWeek[1]),
-      DayInWeek(_daysOfWeek[2]),
-      DayInWeek(_daysOfWeek[3]),
-      DayInWeek(_daysOfWeek[4]),
-      DayInWeek(_daysOfWeek[5]),
-      DayInWeek(_daysOfWeek[6]),
-    ];
     return Row(
       children: [
         SizedBox(width: 10),
-        Expanded(
-          child: SelectWeekDays(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            days: _days,
-            border: false,
-            unSelectedDayTextColor: Colors.red[300],
-            selectedDayTextColor: Colors.white,
-            daysFillColor: Colors.green,
-            boxDecoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30.0),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                colors: [Colors.blue, Colors.blue],
-                tileMode:
-                    TileMode.repeated, // repeats the gradient over the canvas
-              ),
-            ),
-            onSelect: onDaysSelected,
-          ),
-        ),
+        Expanded(child: _selectWeekdaysWidget),
         SizedBox(width: 10),
       ],
     );
@@ -227,15 +280,16 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
   }
 
   Future<void> sendAvailability() async {
-    final result = await updateExpertAvailability(
-        mondayAvailability: buildAvailabilityForDay(_daysOfWeek[0]),
-        tuesdayAvailability: buildAvailabilityForDay(_daysOfWeek[1]),
-        wednesdayAvailability: buildAvailabilityForDay(_daysOfWeek[2]),
-        thursdayAvailability: buildAvailabilityForDay(_daysOfWeek[3]),
-        fridayAvailability: buildAvailabilityForDay(_daysOfWeek[4]),
-        saturdayAvailability: buildAvailabilityForDay(_daysOfWeek[5]),
-        sundayAvailability: buildAvailabilityForDay(_daysOfWeek[6]));
-
+    final availability = ExpertAvailability(
+      mondayAvailability: buildAvailabilityForDay(_daysOfWeek[0]),
+      tuesdayAvailability: buildAvailabilityForDay(_daysOfWeek[1]),
+      wednesdayAvailability: buildAvailabilityForDay(_daysOfWeek[2]),
+      thursdayAvailability: buildAvailabilityForDay(_daysOfWeek[3]),
+      fridayAvailability: buildAvailabilityForDay(_daysOfWeek[4]),
+      saturdayAvailability: buildAvailabilityForDay(_daysOfWeek[5]),
+      sundayAvailability: buildAvailabilityForDay(_daysOfWeek[6]),
+    );
+    final result = await updateExpertAvailability(availability);
     if (result.success) {
       showDialog(
           context: context,
@@ -258,6 +312,7 @@ class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
             });
       }
     }
+    refreshAvailability();
   }
 
   @override

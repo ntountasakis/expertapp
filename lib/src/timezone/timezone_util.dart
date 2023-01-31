@@ -13,4 +13,12 @@ class TimezoneUtil {
 
     return (hours - hoursOffsetFromUtc) % 24;
   }
+
+  static int localHour({required int hours}) {
+    final hoursOffsetFromUtc = DateTime.now().timeZoneOffset.inHours;
+    log("hoursOffsetFromUtc: $hoursOffsetFromUtc");
+    log("final time: ${hours - hoursOffsetFromUtc}");
+
+    return (hours + hoursOffsetFromUtc) % 24;
+  }
 }

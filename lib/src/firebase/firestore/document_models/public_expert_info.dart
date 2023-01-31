@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/expert_availability.dart';
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
 
 class PublicExpertInfo {
@@ -9,19 +10,26 @@ class PublicExpertInfo {
   String profilePicUrl;
   final double runningSumReviewRatings;
   final int numReviews;
+  ExpertAvailability availability;
 
-  PublicExpertInfo(this.firstName, this.lastName, this.description,
-      this.profilePicUrl, this.runningSumReviewRatings, this.numReviews);
+  PublicExpertInfo(
+      this.firstName,
+      this.lastName,
+      this.description,
+      this.profilePicUrl,
+      this.runningSumReviewRatings,
+      this.numReviews,
+      this.availability);
 
   PublicExpertInfo.fromJson(Map<String, dynamic> json)
       : this(
-          json['firstName'] as String,
-          json['lastName'] as String,
-          json['description'] as String,
-          json['profilePicUrl'] as String,
-          json['runningSumReviewRatings'] + 0.0,
-          json['numReviews'] as int,
-        );
+            json['firstName'] as String,
+            json['lastName'] as String,
+            json['description'] as String,
+            json['profilePicUrl'] as String,
+            json['runningSumReviewRatings'] + 0.0,
+            json['numReviews'] as int,
+            ExpertAvailability.fromJson(json['availability']));
 
   Map<String, dynamic> _toJson() {
     var fieldsMap = {
@@ -31,6 +39,7 @@ class PublicExpertInfo {
       'profilePicUrl': profilePicUrl,
       'runningSumReviewRatings': runningSumReviewRatings,
       'numReviews': numReviews,
+      'availability': availability.toJson(),
     };
     return fieldsMap;
   }

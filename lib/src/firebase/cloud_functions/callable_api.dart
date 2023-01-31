@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:expertapp/src/firebase/cloud_functions/callable_functions.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/expert_availability.dart';
 
 HttpsCallable getCallable(String functionName) {
   return FirebaseFunctions.instance.httpsCallable(functionName);
@@ -83,53 +84,10 @@ Future<UpdateResult> updateExpertRate(
   return UpdateResult(success: success, message: message);
 }
 
-class DayAvailability {
-  final bool isAvailable;
-  final int startHourUtc;
-  final int startMinuteUtc;
-  final int endHourUtc;
-  final int endMinuteUtc;
-
-  DayAvailability({
-    required this.isAvailable,
-    required this.startHourUtc,
-    required this.startMinuteUtc,
-    required this.endHourUtc,
-    required this.endMinuteUtc,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'isAvailable': isAvailable,
-      'startHourUtc': startHourUtc,
-      'startMinuteUtc': startMinuteUtc,
-      'endHourUtc': endHourUtc,
-      'endMinuteUtc': endMinuteUtc,
-    };
-  }
-}
-
-Future<UpdateResult> updateExpertAvailability({
-  required DayAvailability mondayAvailability,
-  required DayAvailability tuesdayAvailability,
-  required DayAvailability wednesdayAvailability,
-  required DayAvailability thursdayAvailability,
-  required DayAvailability fridayAvailability,
-  required DayAvailability saturdayAvailability,
-  required DayAvailability sundayAvailability,
-}) async {
-  Map<String, dynamic> updateQuery = {
-    "mondayAvailability": mondayAvailability.toMap(),
-    "tuesdayAvailability": tuesdayAvailability.toMap(),
-    "wednesdayAvailability": wednesdayAvailability.toMap(),
-    "thursdayAvailability": thursdayAvailability.toMap(),
-    "fridayAvailability": fridayAvailability.toMap(),
-    "saturdayAvailability": saturdayAvailability.toMap(),
-    "sundayAvailability": sundayAvailability.toMap(),
-  };
+Future<UpdateResult> updateExpertAvailability(ExpertAvailability availability) async {
   HttpsCallableResult result =
       await getCallable(CallableFunctions.UPDATE_EXPERT_AVAILABILITY)
-          .call(updateQuery);
+          .call(availability.toJson());
 
   bool success = result.data['success'];
   String message = result.data['message'];
