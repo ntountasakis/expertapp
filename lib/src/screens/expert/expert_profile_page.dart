@@ -8,6 +8,7 @@ import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
+import 'package:expertapp/src/timezone/timezone_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
@@ -64,6 +65,44 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
         SizedBox(width: 10),
       ],
     );
+  }
+
+  Widget buildCallUnableShowAvailabilityButton(BuildContext context,
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+    final ButtonStyle style = ElevatedButton.styleFrom(
+      textStyle: const TextStyle(fontSize: 20),
+      backgroundColor: Colors.purple[500],
+      elevation: 4.0,
+      shadowColor: Colors.purple[900],
+    );
+    return Row(
+      children: [
+        SizedBox(width: 10),
+        Expanded(
+          child: ElevatedButton(
+              style: style,
+              onPressed: () async {
+                context.pushNamed(Routes.EXPERT_VIEW_AVAILABILITY_PAGE,
+                    params: {
+                      Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId
+                    });
+              },
+              child: Text(
+                  'Click to view ${publicExpertInfo.documentType.firstName}\'s Availability')),
+        ),
+        SizedBox(width: 10),
+      ],
+    );
+  }
+
+  Widget buildCallActionButton(BuildContext context,
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+    if (TimezoneUtil.isWithinTimeRange(
+        publicExpertInfo.documentType.availability)) {
+      return buildCallPreviewButton(context, publicExpertInfo);
+    } else {
+      return buildCallUnableShowAvailabilityButton(context, publicExpertInfo);
+    }
   }
 
   Widget buildRating(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
@@ -253,7 +292,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
           SizedBox(height: 10),
           buildProfilePicture(publicExpertInfo),
           SizedBox(height: 10),
-          buildCallPreviewButton(context, publicExpertInfo),
+          buildCallActionButton(context, publicExpertInfo),
           buildAboutMe(publicExpertInfo),
           buildReviewHeading(),
           buildReviewList(publicExpertInfo),

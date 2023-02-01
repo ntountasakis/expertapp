@@ -1,6 +1,7 @@
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/screens/expert/expert_availability_update_page.dart';
+import 'package:expertapp/src/screens/expert/expert_availability_view_page.dart';
 import 'package:expertapp/src/screens/expert/expert_connected_account_signup.dart';
 import 'package:expertapp/src/screens/expert/expert_rate_page.dart';
 import 'package:expertapp/src/screens/history/completed_incoming_calls_page.dart';
@@ -254,6 +255,15 @@ class AppRouter {
           builder: (BuildContext context, GoRouterState state) {
             return ExpertAvailabilityUpdatePage(
                 uid: lifecycle.publicExpertInfo!.documentId);
+          }),
+      GoRoute(
+          name: Routes.EXPERT_VIEW_AVAILABILITY_PAGE,
+          path: Routes.EXPERT_VIEW_AVAILABILITY_PAGE +
+              '/:' +
+              Routes.EXPERT_ID_PARAM,
+          builder: (BuildContext context, GoRouterState state) {
+            final expertId = state.params[Routes.EXPERT_ID_PARAM];
+            return ExpertAvailabilityViewPage(uid: expertId!);
           }),
       GoRoute(
           name: Routes.EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE,

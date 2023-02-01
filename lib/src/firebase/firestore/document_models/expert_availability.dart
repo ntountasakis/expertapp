@@ -69,6 +69,26 @@ class ExpertAvailability {
       throw new Exception('Invalid day: $day');
   }
 
+  DayAvailability getCurrentDayAvailability() {
+    final day = DateTime.now().weekday;
+    if (day == DateTime.monday)
+      return mondayAvailability;
+    else if (day == DateTime.tuesday)
+      return tuesdayAvailability;
+    else if (day == DateTime.wednesday)
+      return wednesdayAvailability;
+    else if (day == DateTime.thursday)
+      return thursdayAvailability;
+    else if (day == DateTime.friday)
+      return fridayAvailability;
+    else if (day == DateTime.saturday)
+      return saturdayAvailability;
+    else if (day == DateTime.sunday)
+      return sundayAvailability;
+    else
+      throw new Exception('Invalid day: $day');
+  }
+
   Map<String, dynamic> toJson() {
     return {
       "mondayAvailability": mondayAvailability.toJson(),
