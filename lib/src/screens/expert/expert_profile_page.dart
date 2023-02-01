@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';

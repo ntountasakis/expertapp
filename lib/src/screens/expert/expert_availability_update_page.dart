@@ -9,15 +9,17 @@ import 'package:flutter/scheduler.dart';
 import 'package:time_range/time_range.dart';
 import 'package:uuid/uuid.dart';
 
-class ExpertAvailabilityPage extends StatefulWidget {
+class ExpertAvailabilityUpdatePage extends StatefulWidget {
   final String uid;
 
-  const ExpertAvailabilityPage({required this.uid});
+  const ExpertAvailabilityUpdatePage({required this.uid});
   @override
-  State<ExpertAvailabilityPage> createState() => _ExpertAvailabilityPageState();
+  State<ExpertAvailabilityUpdatePage> createState() =>
+      _ExpertAvailabilityUpdatePageState();
 }
 
-class _ExpertAvailabilityPageState extends State<ExpertAvailabilityPage> {
+class _ExpertAvailabilityUpdatePageState
+    extends State<ExpertAvailabilityUpdatePage> {
   bool _hasChanges = false;
   final _selectedDays = new Map<String, TimeRangeResult?>();
   final _defaultInitialRange = TimeRangeResult(

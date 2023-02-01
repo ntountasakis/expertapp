@@ -1,6 +1,6 @@
 import 'package:expertapp/firebase_options.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
-import 'package:expertapp/src/screens/expert/expert_availability_page.dart';
+import 'package:expertapp/src/screens/expert/expert_availability_update_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +13,8 @@ class MyTestApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new ExpertAvailabilityPage(uid: 'mpKZBT949r8LM9wkzIvfl6GQQ2OQ'),
+      home:
+          new ExpertAvailabilityUpdatePage(uid: 'mpKZBT949r8LM9wkzIvfl6GQQ2OQ'),
     );
   }
 }
