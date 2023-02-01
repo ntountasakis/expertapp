@@ -3,6 +3,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/expert_availabi
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/timezone/timezone_util.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
+import 'package:expertapp/src/util/expert_availability_util.dart';
 import 'package:flutter/material.dart';
 import 'package:day_picker/day_picker.dart';
 import 'package:flutter/scheduler.dart';
@@ -29,20 +30,10 @@ class _ExpertAvailabilityUpdatePageState
   Widget _selectWeekdaysWidget = SizedBox();
 
   String _mostRecentlySelectedDay = "";
-  static const _daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-  ];
-
   @override
   void initState() {
     super.initState();
-    for (String day in _daysOfWeek) {
+    for (String day in ExpertAvailabilityUtil.DAYS) {
       _selectedDays[day] = null;
     }
     refreshAvailability();
@@ -56,7 +47,7 @@ class _ExpertAvailabilityUpdatePageState
         throw Exception('No expert info for user ${widget.uid}');
       }
       final availability = new Map<String, TimeRangeResult?>();
-      for (String day in _daysOfWeek) {
+      for (String day in ExpertAvailabilityUtil.DAYS) {
         final utcDayAvailability =
             expertInfo.documentType.availability.getDayAvailability(day);
         availability[day] =
@@ -71,20 +62,20 @@ class _ExpertAvailabilityUpdatePageState
 
   Widget buildSelectWeekdays(Map<String, TimeRangeResult?> availability) {
     List<DayInWeek> _days = [
-      DayInWeek(_daysOfWeek[0],
-          isSelected: availability[_daysOfWeek[0]] != null),
-      DayInWeek(_daysOfWeek[1],
-          isSelected: availability[_daysOfWeek[1]] != null),
-      DayInWeek(_daysOfWeek[2],
-          isSelected: availability[_daysOfWeek[2]] != null),
-      DayInWeek(_daysOfWeek[3],
-          isSelected: availability[_daysOfWeek[3]] != null),
-      DayInWeek(_daysOfWeek[4],
-          isSelected: availability[_daysOfWeek[4]] != null),
-      DayInWeek(_daysOfWeek[5],
-          isSelected: availability[_daysOfWeek[5]] != null),
-      DayInWeek(_daysOfWeek[6],
-          isSelected: availability[_daysOfWeek[6]] != null),
+      DayInWeek(ExpertAvailabilityUtil.DAYS[0],
+          isSelected: availability[ExpertAvailabilityUtil.DAYS[0]] != null),
+      DayInWeek(ExpertAvailabilityUtil.DAYS[1],
+          isSelected: availability[ExpertAvailabilityUtil.DAYS[1]] != null),
+      DayInWeek(ExpertAvailabilityUtil.DAYS[2],
+          isSelected: availability[ExpertAvailabilityUtil.DAYS[2]] != null),
+      DayInWeek(ExpertAvailabilityUtil.DAYS[3],
+          isSelected: availability[ExpertAvailabilityUtil.DAYS[3]] != null),
+      DayInWeek(ExpertAvailabilityUtil.DAYS[4],
+          isSelected: availability[ExpertAvailabilityUtil.DAYS[4]] != null),
+      DayInWeek(ExpertAvailabilityUtil.DAYS[5],
+          isSelected: availability[ExpertAvailabilityUtil.DAYS[5]] != null),
+      DayInWeek(ExpertAvailabilityUtil.DAYS[6],
+          isSelected: availability[ExpertAvailabilityUtil.DAYS[6]] != null),
     ];
     return SelectWeekDays(
       key: Key(Uuid().v4()),
@@ -224,38 +215,13 @@ class _ExpertAvailabilityUpdatePageState
     );
   }
 
-  Widget buildSummaryForDay(String day) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(width: 20),
-        Text(
-          day,
-          style: CallSummaryUtil.BOLD_STYLE,
-        ),
-        Spacer(),
-        Text(
-          _selectedDays[day] == null
-              ? "Not available"
-              : "${_selectedDays[day]!.start.format(context)} - ${_selectedDays[day]!.end.format(context)}",
-          style: CallSummaryUtil.LIGHT_STYLE,
-        ),
-        SizedBox(width: 20),
-      ],
-    );
-  }
-
   Widget buildTimeSummary() {
-    return Column(
-      children: [
-        Text(
-          "Your availability",
-          style: CallSummaryUtil.BOLD_STYLE,
-        ),
-        SizedBox(height: 20),
-        for (String day in _selectedDays.keys) buildSummaryForDay(day),
-      ],
-    );
+    ExpertAvailability currentAvailability =
+        ExpertAvailabilityUtil.convertToExpertAvailability(_selectedDays);
+    return ExpertAvailabilityUtil.buildTimeSummary(
+        context: context,
+        availability: currentAvailability,
+        title: "Your availability");
   }
 
   Widget buildSubmitAvailabilityButton() {
@@ -293,13 +259,20 @@ class _ExpertAvailabilityUpdatePageState
 
   Future<void> sendAvailability() async {
     final availability = ExpertAvailability(
-      mondayAvailability: buildAvailabilityForDay(_daysOfWeek[0]),
-      tuesdayAvailability: buildAvailabilityForDay(_daysOfWeek[1]),
-      wednesdayAvailability: buildAvailabilityForDay(_daysOfWeek[2]),
-      thursdayAvailability: buildAvailabilityForDay(_daysOfWeek[3]),
-      fridayAvailability: buildAvailabilityForDay(_daysOfWeek[4]),
-      saturdayAvailability: buildAvailabilityForDay(_daysOfWeek[5]),
-      sundayAvailability: buildAvailabilityForDay(_daysOfWeek[6]),
+      mondayAvailability:
+          buildAvailabilityForDay(ExpertAvailabilityUtil.DAYS[0]),
+      tuesdayAvailability:
+          buildAvailabilityForDay(ExpertAvailabilityUtil.DAYS[1]),
+      wednesdayAvailability:
+          buildAvailabilityForDay(ExpertAvailabilityUtil.DAYS[2]),
+      thursdayAvailability:
+          buildAvailabilityForDay(ExpertAvailabilityUtil.DAYS[3]),
+      fridayAvailability:
+          buildAvailabilityForDay(ExpertAvailabilityUtil.DAYS[4]),
+      saturdayAvailability:
+          buildAvailabilityForDay(ExpertAvailabilityUtil.DAYS[5]),
+      sundayAvailability:
+          buildAvailabilityForDay(ExpertAvailabilityUtil.DAYS[6]),
     );
     final result = await updateExpertAvailability(availability);
     if (result.success) {
