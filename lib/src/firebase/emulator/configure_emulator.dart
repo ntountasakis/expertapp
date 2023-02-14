@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 String localhostString() {
-  return Platform.isAndroid ? '10.0.2.2' : 'localhost';
+  return Platform.isAndroid ? '10.0.2.2' : '127.0.0.1';
 }
 
 Future connectToFirebaseEmulator() async {
