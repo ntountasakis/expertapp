@@ -8,4 +8,5 @@ export interface PublicExpertInfo {
   runningSumReviewRatings: number;
   numReviews: number;
   availability: WeekAvailability;
+  inCall: boolean;
 }
