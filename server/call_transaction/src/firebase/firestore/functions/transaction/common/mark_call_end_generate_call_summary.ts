@@ -1,4 +1,4 @@
-import {getCallTransactionDocumentRef} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {getCallTransactionDocumentRef, getPublicExpertInfoDocumentRef} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
 import {StripeProvider} from "../../../../../../../shared/src/stripe/stripe_provider";
 import {CallerCallState} from "../../../../../call_state/caller/caller_call_state";
@@ -10,6 +10,7 @@ export const markCallEndGenerateCallSummary = async ({transaction, callTransacti
     {transaction: FirebaseFirestore.Transaction, callTransaction: CallTransaction, endCallTimeUtcMs: number,
       callState: BaseCallState}): Promise<ServerCallSummary> => {
   const transactionDocumentRef = getCallTransactionDocumentRef({transactionId: callTransaction.callTransactionId});
+  const publicExpertInfoDocumentRef = getPublicExpertInfoDocumentRef({uid: callTransaction.calledUid});
   if (callTransaction.calledHasJoined) {
     const lengthOfCallSec: number = (endCallTimeUtcMs - callTransaction.calledJoinTimeUtcMs) / 1000;
     const costOfCall: number = calculateCostOfCallInCents({beginTimeUtcMs: callTransaction.calledJoinTimeUtcMs, endTimeUtcMs: endCallTimeUtcMs,
@@ -44,6 +45,9 @@ export const markCallEndGenerateCallSummary = async ({transaction, callTransacti
       "calledFinishedTransaction": true,
     });
   }
+  transaction.update(publicExpertInfoDocumentRef, {
+    "inCall": false,
+  });
   return {
     "lengthOfCallSec": callTransaction.lengthOfCallSec,
     "costOfCallCents": callTransaction.costOfCallCents,

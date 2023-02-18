@@ -22,6 +22,7 @@ export async function createExpertUser({ uid, firstName, lastName, email, profil
     "runningSumReviewRatings": 0,
     "numReviews": 0,
     "availability": createDefaultAvailability(),
+    "inCall": false,
   };
   await admin.firestore().runTransaction(async (transaction) => {
     transaction.set(getPrivateUserDocumentRef({ uid: uid }), privateUserInfo);
