@@ -40,10 +40,10 @@
               "client_type": 3
             },
             {
-              "client_id": "111394228371-4slr6ceip09bqefipq2ikbvribtj93qj.apps.googleusercontent.com",
+              "client_id": "111394228371-0dcs9gu3ckvfjvqahinaitvi6gqp4vdi.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.frontend.expertapp"
+                "bundle_id": "com.backend.expertapp"
               }
             }
           ]
