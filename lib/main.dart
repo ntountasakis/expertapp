@@ -27,6 +27,21 @@ void main() async {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   AppRouter router = new AppRouter(lifecycle, navigatorKey);
 
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  await messaging.requestPermission(
+    alert: true,
+    announcement: true,
+    badge: true,
+    criticalAlert: true,
+    provisional: true,
+  );
+
+  await messaging.setForegroundNotificationPresentationOptions(
+  alert: true,
+  badge: true,
+  sound: true,
+);
+
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   initFirebaseMessagingForegroundHandler(navigatorKey, lifecycle);
   initFirebaseMessagingOpenedApp();
