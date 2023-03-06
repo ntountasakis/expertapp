@@ -9,6 +9,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../runner_util/widget_runner_util.dart';
+
 class MockCallServerModel extends Mock implements CallServerModel {}
 
 CallServerModel buildModel() {
@@ -33,7 +35,8 @@ CallServerModel buildModel() {
 }
 
 DocumentWrapper<PublicExpertInfo> buildUser() {
-  final user = PublicExpertInfo("Billy", "Bob", "", "", 4500, 10);
+  final user = PublicExpertInfo(
+      "Billy", "Bob", "", "", 4500, 10, makeDefaultAvailability());
 
   return DocumentWrapper("abc", user);
 }
