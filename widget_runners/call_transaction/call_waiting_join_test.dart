@@ -6,13 +6,17 @@ import 'package:expertapp/src/screens/transaction/client/widgets/call_waiting_jo
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import '../runner_util/widget_runner_util.dart';
+
 class CallWaitingWrapper extends StatelessWidget {
   late DocumentWrapper<PublicExpertInfo> userMetadata;
 
   CallWaitingWrapper() {
     const url =
         "http://10.0.2.2:9004/expert-app-backend.appspot.com/profilePics/Portrait_Placeholder.png";
-    final metadata = PublicExpertInfo("", "", "", url, 0, 0);
+
+    final metadata =
+        PublicExpertInfo("", "", "", url, 0, 0, makeDefaultAvailability());
     userMetadata = DocumentWrapper<PublicExpertInfo>("id", metadata);
   }
   @override

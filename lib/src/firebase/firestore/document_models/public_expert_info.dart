@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_availability.dart';
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
+import 'dart:developer';
 
 class PublicExpertInfo {
   final String firstName;
@@ -92,12 +93,21 @@ class PublicExpertInfo {
     });
   }
 
+  static PublicExpertInfo test(
+      DocumentSnapshot<Map<String, dynamic>> snapshot) {
+    if (snapshot.data() != null) {
+      log("PublicExpertInfo data: ${snapshot.data()}");
+      return new PublicExpertInfo.fromJson(snapshot.data()!);
+    }
+    throw Exception('DocumentSnapshot data is null');
+  }
+
   static CollectionReference<PublicExpertInfo> _userMetadataRef() {
     return FirebaseFirestore.instance
         .collection(CollectionPaths.PUBLIC_EXPERT_INFO)
         .withConverter<PublicExpertInfo>(
           fromFirestore: (DocumentSnapshot<Map<String, dynamic>> snapshot, _) =>
-              PublicExpertInfo.fromJson(snapshot.data()!),
+              test(snapshot),
           toFirestore: (PublicExpertInfo userMetadata, _) =>
               userMetadata._toJson(),
         );
