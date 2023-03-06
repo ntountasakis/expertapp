@@ -96,7 +96,6 @@ class PublicExpertInfo {
   static PublicExpertInfo test(
       DocumentSnapshot<Map<String, dynamic>> snapshot) {
     if (snapshot.data() != null) {
-      log("PublicExpertInfo data: ${snapshot.data()}");
       return new PublicExpertInfo.fromJson(snapshot.data()!);
     }
     throw Exception('DocumentSnapshot data is null');

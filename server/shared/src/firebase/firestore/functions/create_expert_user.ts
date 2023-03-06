@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin";
-import { getPrivateUserDocumentRef, getPublicExpertInfoDocumentRef } from "../document_fetchers/fetchers";
+import { getExpertRateDocumentRef, getPrivateUserDocumentRef, getPublicExpertInfoDocumentRef } from "../document_fetchers/fetchers";
 import { DayAvailability, WeekAvailability } from "../models/expert_availability";
+import { ExpertRate } from "../models/expert_rate";
 import { PrivateUserInfo } from "../models/private_user_info";
 import { PublicExpertInfo } from "../models/public_expert_info";
 
@@ -12,7 +13,7 @@ export async function createExpertUser({ uid, firstName, lastName, email, profil
   const privateUserInfo: PrivateUserInfo = {
     "email": email,
     "stripeCustomerId": stripeCustomerId,
-    "stripeConnectedId": ""
+    "stripeConnectedId": "acct_1LmpLYPKLydnyIBv" // TODO: Remove this hard-coded value
   };
   const publicExpertInfo: PublicExpertInfo = {
     "firstName": firstName,
@@ -27,6 +28,7 @@ export async function createExpertUser({ uid, firstName, lastName, email, profil
   await admin.firestore().runTransaction(async (transaction) => {
     transaction.set(getPrivateUserDocumentRef({ uid: uid }), privateUserInfo);
     transaction.set(getPublicExpertInfoDocumentRef({ uid: uid }), publicExpertInfo);
+    transaction.set(getExpertRateDocumentRef({ expertUid: uid }), createDefaultCallRate());
   });
 }
 
@@ -48,4 +50,12 @@ function createDefaultAvailability() {
     "sundayAvailability": defaultDayAvailability,
   }
   return defaultWeekAvailability;
+}
+
+function createDefaultCallRate() {
+  const defaultRate: ExpertRate = {
+    "centsCallStart": 100,
+    "centsPerMinute": 100,
+  };
+  return defaultRate;
 }
