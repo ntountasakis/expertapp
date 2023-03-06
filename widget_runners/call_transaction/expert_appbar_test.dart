@@ -36,7 +36,7 @@ CallServerModel buildModel() {
 
 DocumentWrapper<PublicExpertInfo> buildUser() {
   final user = PublicExpertInfo(
-      "Billy", "Bob", "", "", 4500, 10, makeDefaultAvailability());
+      "Billy", "Bob", "", "", 4500, 10, makeDefaultAvailability(), false);
 
   return DocumentWrapper("abc", user);
 }

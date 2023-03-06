@@ -67,6 +67,34 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
     );
   }
 
+  Widget buildCallUnableShowInCallStatus(BuildContext context,
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+    final ButtonStyle style = ElevatedButton.styleFrom(
+      textStyle: const TextStyle(fontSize: 20),
+      backgroundColor: Colors.red[500],
+      elevation: 4.0,
+      shadowColor: Colors.red[900],
+    );
+    return Row(
+      children: [
+        SizedBox(width: 10),
+        Expanded(
+          child: ElevatedButton(
+              style: style,
+              onPressed: () async {
+                context.pushNamed(Routes.EXPERT_VIEW_AVAILABILITY_PAGE,
+                    params: {
+                      Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId
+                    });
+              },
+              child: Text(
+                  'They are currently in another call. Please come back later.')),
+        ),
+        SizedBox(width: 10),
+      ],
+    );
+  }
+
   Widget buildCallUnableShowAvailabilityButton(BuildContext context,
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     final ButtonStyle style = ElevatedButton.styleFrom(
@@ -97,12 +125,14 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
 
   Widget buildCallActionButton(BuildContext context,
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
-    if (TimezoneUtil.isWithinTimeRange(
+    if (publicExpertInfo.documentType.inCall) {
+      return buildCallUnableShowInCallStatus(context, publicExpertInfo);
+    }
+    if (!TimezoneUtil.isWithinTimeRange(
         publicExpertInfo.documentType.availability)) {
-      return buildCallPreviewButton(context, publicExpertInfo);
-    } else {
       return buildCallUnableShowAvailabilityButton(context, publicExpertInfo);
     }
+    return buildCallPreviewButton(context, publicExpertInfo);
   }
 
   Widget buildRating(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {

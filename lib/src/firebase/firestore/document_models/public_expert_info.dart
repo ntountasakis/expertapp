@@ -12,6 +12,7 @@ class PublicExpertInfo {
   final double runningSumReviewRatings;
   final int numReviews;
   ExpertAvailability availability;
+  final bool inCall;
 
   PublicExpertInfo(
       this.firstName,
@@ -20,7 +21,8 @@ class PublicExpertInfo {
       this.profilePicUrl,
       this.runningSumReviewRatings,
       this.numReviews,
-      this.availability);
+      this.availability,
+      this.inCall);
 
   PublicExpertInfo.fromJson(Map<String, dynamic> json)
       : this(
@@ -30,7 +32,8 @@ class PublicExpertInfo {
             json['profilePicUrl'] as String,
             json['runningSumReviewRatings'] + 0.0,
             json['numReviews'] as int,
-            ExpertAvailability.fromJson(json['availability']));
+            ExpertAvailability.fromJson(json['availability']),
+            json['inCall'] as bool);
 
   Map<String, dynamic> _toJson() {
     var fieldsMap = {
@@ -41,6 +44,7 @@ class PublicExpertInfo {
       'runningSumReviewRatings': runningSumReviewRatings,
       'numReviews': numReviews,
       'availability': availability.toJson(),
+      'inCall': inCall,
     };
     return fieldsMap;
   }
