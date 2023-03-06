@@ -11,9 +11,6 @@ class TimezoneUtil {
        the offset is -6 hours. So 3pm chicago time is 9 pm utc time.
     */
     final hoursOffsetFromUtc = DateTime.now().timeZoneOffset.inHours;
-    log("hoursOffsetFromUtc: $hoursOffsetFromUtc");
-    log("final time: ${localHour - hoursOffsetFromUtc}");
-
     return (localHour - hoursOffsetFromUtc) % 24;
   }
 
