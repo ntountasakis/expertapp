@@ -12,7 +12,6 @@ import 'package:expertapp/src/screens/expert/expert_listings_page.dart';
 import 'package:expertapp/src/screens/expert/expert_profile_page.dart';
 import 'package:expertapp/src/screens/transaction/expert/call_expert_summary.dart';
 import 'package:expertapp/src/screens/transaction/expert/expert_review_submit_page.dart';
-import 'package:expertapp/src/screens/home_page.dart';
 import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:expertapp/src/screens/transaction/expert/call_transaction_expert_prompt.dart';
 import 'package:expertapp/src/screens/transaction/client/call_client_main.dart';
@@ -51,7 +50,7 @@ class AppRouter {
       }
       if (state.location == Routes.SIGN_IN_PAGE ||
           state.location == Routes.USER_CREATE_PAGE) {
-        return Routes.EXPERT_LISTINGS_PAGE;
+        return Routes.HOME;
       }
       return null;
     },
@@ -61,8 +60,27 @@ class AppRouter {
         name: Routes.HOME,
         path: Routes.HOME,
         builder: (BuildContext context, GoRouterState state) {
-          return HomePage();
+          return ExpertListingsPage();
         },
+        routes: <GoRoute>[
+          GoRoute(
+              name: Routes.EXPERT_PROFILE_PAGE,
+              path: Routes.EXPERT_PROFILE_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
+              builder: (BuildContext context, GoRouterState state) {
+                final expertId = state.params[Routes.EXPERT_ID_PARAM];
+                return ExpertProfilePage(expertId!, false);
+              },
+              routes: <GoRoute>[
+                GoRoute(
+                  name: Routes.EXPERT_CALL_PREVIEW_PAGE,
+                  path: Routes.EXPERT_CALL_PREVIEW_PAGE,
+                  builder: (BuildContext context, GoRouterState state) {
+                    final expertId = state.params[Routes.EXPERT_ID_PARAM];
+                    return CallClientPreview(expertId!);
+                  },
+                ),
+              ]),
+        ],
       ),
       GoRoute(
           path: Routes.SIGN_IN_PAGE,
@@ -106,32 +124,6 @@ class AppRouter {
         builder: (BuildContext context, GoRouterState state) {
           return CompletedIncomingCallsPage(lifecycle.authenticatedUser!.uid);
         },
-      ),
-      GoRoute(
-        name: Routes.EXPERT_LISTINGS_PAGE,
-        path: Routes.EXPERT_LISTINGS_PAGE,
-        builder: (BuildContext context, GoRouterState state) {
-          return ExpertListingsPage();
-        },
-        routes: <GoRoute>[
-          GoRoute(
-              name: Routes.EXPERT_PROFILE_PAGE,
-              path: Routes.EXPERT_PROFILE_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
-              builder: (BuildContext context, GoRouterState state) {
-                final expertId = state.params[Routes.EXPERT_ID_PARAM];
-                return ExpertProfilePage(expertId!, false);
-              },
-              routes: <GoRoute>[
-                GoRoute(
-                  name: Routes.EXPERT_CALL_PREVIEW_PAGE,
-                  path: Routes.EXPERT_CALL_PREVIEW_PAGE,
-                  builder: (BuildContext context, GoRouterState state) {
-                    final expertId = state.params[Routes.EXPERT_ID_PARAM];
-                    return CallClientPreview(expertId!);
-                  },
-                ),
-              ]),
-        ],
       ),
       GoRoute(
           name: Routes.EXPERT_CALL_HOME_PAGE,
