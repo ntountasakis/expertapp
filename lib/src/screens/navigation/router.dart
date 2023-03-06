@@ -60,7 +60,8 @@ class AppRouter {
         name: Routes.HOME,
         path: Routes.HOME,
         builder: (BuildContext context, GoRouterState state) {
-          return ExpertListingsPage();
+          return ExpertListingsPage(
+              currentUserId: lifecycle.authenticatedUser!.uid);
         },
         routes: <GoRoute>[
           GoRoute(
