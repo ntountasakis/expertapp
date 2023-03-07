@@ -1,6 +1,6 @@
 import 'package:expertapp/firebase_options.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
-import 'package:expertapp/src/screens/expert/expert_profile_page.dart';
+import 'package:expertapp/src/screens/common_view/common_view_expert_profile_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +13,8 @@ class MyTestApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new ExpertProfilePage("TOcIYhxdJdAkdOhkkPX0lpFS8PyX", false),
+      home: new CommonViewExpertProfilePage(
+          "TOcIYhxdJdAkdOhkkPX0lpFS8PyX", false),
     );
   }
 }

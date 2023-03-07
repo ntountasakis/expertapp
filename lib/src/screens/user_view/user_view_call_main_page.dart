@@ -8,40 +8,40 @@ import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart'
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
-import 'package:expertapp/src/screens/appbars/client_in_call_appbar.dart';
-import 'package:expertapp/src/screens/navigation/routes.dart';
-import 'package:expertapp/src/screens/transaction/client/widgets/call_waiting_join.dart';
+import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/appbars/user_view/client_in_call_appbar.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
+import 'package:expertapp/src/util/call_waiting_join.dart';
 import 'package:expertapp/src/util/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
-class CallClientMain extends StatefulWidget {
+class UserViewCallMainPage extends StatefulWidget {
   final String currentUserId;
   final String otherUserId;
   final AppLifecycle lifecycle;
 
-  const CallClientMain(
+  const UserViewCallMainPage(
       {required this.currentUserId,
       required this.otherUserId,
       required this.lifecycle});
 
   @override
-  State<CallClientMain> createState() =>
-      _CallClientMainState(new CallServerManager(
+  State<UserViewCallMainPage> createState() =>
+      _UserViewCallMainPageState(new CallServerManager(
           currentUserId: currentUserId, otherUserId: otherUserId));
 }
 
-class _CallClientMainState extends State<CallClientMain> {
+class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
   final CallServerManager callServerManager;
   bool requestedExit = false;
   bool exiting = false;
   final RtcEngineWrapper engineWrapper = RtcEngineWrapper();
   AgoraVideoCall? videoCall;
 
-  _CallClientMainState(this.callServerManager);
+  _UserViewCallMainPageState(this.callServerManager);
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class _CallClientMainState extends State<CallClientMain> {
   }
 
   void onChatButtonTap() {
-    context.pushNamed(Routes.EXPERT_CALL_CHAT_PAGE,
+    context.pushNamed(Routes.UV_CALL_CHAT_PAGE,
         params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
   }
 
@@ -102,11 +102,11 @@ class _CallClientMainState extends State<CallClientMain> {
         final counterpartyJoined = model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.JOINED;
         if (counterpartyJoined) {
-          context.goNamed(Routes.EXPERT_CALL_SUMMARY_PAGE,
+          context.goNamed(Routes.UV_CALL_SUMMARY_PAGE,
               params: {Routes.CALLED_UID_PARAM: widget.otherUserId});
         } else {
           model.reset();
-          context.goNamed(Routes.HOME);
+          context.goNamed(Routes.HOME_PAGE);
         }
       });
     }

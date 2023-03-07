@@ -1,16 +1,16 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
-import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
-import 'package:expertapp/src/screens/navigation/routes.dart';
+import 'package:expertapp/src/appbars/user_view/user_preview_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class CallClientPreview extends StatelessWidget {
+class UserViewCallPreviewPage extends StatelessWidget {
   final String _expertUid;
 
-  CallClientPreview(this._expertUid);
+  UserViewCallPreviewPage(this._expertUid);
 
   final explanationBlurbStyle = TextStyle(
     fontSize: 14,
@@ -47,7 +47,7 @@ class CallClientPreview extends StatelessWidget {
       child: ElevatedButton(
         style: callButtonStyle,
         onPressed: () {
-          context.goNamed(Routes.EXPERT_CALL_HOME_PAGE,
+          context.goNamed(Routes.UV_CALL_HOME_PAGE,
               params: {Routes.EXPERT_ID_PARAM: _expertUid});
         },
         child: const Text('Begin Call'),

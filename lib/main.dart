@@ -3,7 +3,7 @@ import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/firebase/cloud_messaging/message_handler.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
-import 'package:expertapp/src/screens/navigation/router.dart';
+import 'package:expertapp/src/navigation/router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +37,10 @@ void main() async {
   );
 
   await messaging.setForegroundNotificationPresentationOptions(
-  alert: true,
-  badge: true,
-  sound: true,
-);
+    alert: true,
+    badge: true,
+    sound: true,
+  );
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   initFirebaseMessagingForegroundHandler(navigatorKey, lifecycle);

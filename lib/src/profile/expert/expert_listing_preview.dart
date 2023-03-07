@@ -1,7 +1,7 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
-import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,7 +16,7 @@ class ExpertListingPreview extends StatelessWidget {
       child: ListTile(
         leading: GestureDetector(
           onTap: () {
-            context.pushNamed(Routes.EXPERT_PROFILE_PAGE,
+            context.pushNamed(Routes.UV_EXPERT_PROFILE_PAGE,
                 params: {Routes.EXPERT_ID_PARAM: _publicExpertInfo.documentId});
           },
           child: SizedBox(

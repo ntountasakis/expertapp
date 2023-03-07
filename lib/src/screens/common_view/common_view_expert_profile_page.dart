@@ -3,27 +3,29 @@ import 'dart:typed_data';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
-import 'package:expertapp/src/screens/navigation/routes.dart';
 import 'package:expertapp/src/timezone/timezone_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 
-class ExpertProfilePage extends StatefulWidget {
+class CommonViewExpertProfilePage extends StatefulWidget {
   final String _expertUid;
   final bool _isEditable;
 
-  ExpertProfilePage(this._expertUid, this._isEditable);
+  CommonViewExpertProfilePage(this._expertUid, this._isEditable);
 
   @override
-  State<ExpertProfilePage> createState() => _ExpertProfilePageState();
+  State<CommonViewExpertProfilePage> createState() =>
+      _CommonViewExpertProfilePageState();
 }
 
-class _ExpertProfilePageState extends State<ExpertProfilePage> {
+class _CommonViewExpertProfilePageState
+    extends State<CommonViewExpertProfilePage> {
   final _descriptionScrollController = ScrollController();
   late TextEditingController _textController;
   String _textControllerText = "Loading...";
@@ -56,7 +58,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
           child: ElevatedButton(
               style: style,
               onPressed: () async {
-                context.pushNamed(Routes.EXPERT_CALL_PREVIEW_PAGE, params: {
+                context.pushNamed(Routes.UV_EXPERT_CALL_PREVIEW_PAGE, params: {
                   Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId
                 });
               },
@@ -82,7 +84,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
           child: ElevatedButton(
               style: style,
               onPressed: () async {
-                context.pushNamed(Routes.EXPERT_VIEW_AVAILABILITY_PAGE,
+                context.pushNamed(Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
                     params: {
                       Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId
                     });
@@ -110,7 +112,7 @@ class _ExpertProfilePageState extends State<ExpertProfilePage> {
           child: ElevatedButton(
               style: style,
               onPressed: () async {
-                context.pushNamed(Routes.EXPERT_VIEW_AVAILABILITY_PAGE,
+                context.pushNamed(Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
                     params: {
                       Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId
                     });

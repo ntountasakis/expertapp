@@ -1,6 +1,6 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
-import 'package:expertapp/src/screens/navigation/routes.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +14,7 @@ class HamburgerMenu extends StatelessWidget {
     return ListTile(
         title: Text("My Profile"),
         onTap: () {
-          context.pushNamed(Routes.USER_PROFILE_PAGE);
+          context.pushNamed(Routes.EV_PROFILE_EDIT_PAGE);
         });
   }
 
@@ -22,7 +22,7 @@ class HamburgerMenu extends StatelessWidget {
     return ListTile(
         title: Text("Past Calls with Experts"),
         onTap: () {
-          context.pushNamed(Routes.USER_COMPLETED_CALLS);
+          context.pushNamed(Routes.UV_COMPLETED_CALLS_PAGE);
         });
   }
 
@@ -30,7 +30,7 @@ class HamburgerMenu extends StatelessWidget {
     return ListTile(
         title: Text("Past Calls with Clients"),
         onTap: () {
-          context.pushNamed(Routes.CLIENT_COMPLETED_CALLS);
+          context.pushNamed(Routes.EV_COMPLETED_CALLS_PAGE);
         });
   }
 
@@ -38,7 +38,7 @@ class HamburgerMenu extends StatelessWidget {
     return ListTile(
         title: Text("Update Call Prices"),
         onTap: () {
-          context.pushNamed(Routes.EXPERT_UPDATE_RATE_PAGE);
+          context.pushNamed(Routes.EV_UPDATE_RATE_PAGE);
         });
   }
 
@@ -46,7 +46,7 @@ class HamburgerMenu extends StatelessWidget {
     return ListTile(
         title: Text("Update Call Availability Times"),
         onTap: () {
-          context.pushNamed(Routes.EXPERT_UPDATE_AVAILABILITY_PAGE);
+          context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE);
         });
   }
 
@@ -54,7 +54,7 @@ class HamburgerMenu extends StatelessWidget {
     return ListTile(
         title: Text("Become an Expert!"),
         onTap: () {
-          context.pushNamed(Routes.EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE);
+          context.pushNamed(Routes.EV_CONNECTED_ACCOUNT_SIGNUP_PAGE);
         });
   }
 

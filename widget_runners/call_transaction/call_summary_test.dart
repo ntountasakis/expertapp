@@ -3,9 +3,9 @@ import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
-import 'package:expertapp/src/screens/navigation/routes.dart';
-import 'package:expertapp/src/screens/transaction/client/call_client_summary.dart';
-import 'package:expertapp/src/screens/transaction/expert/call_expert_summary.dart';
+import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/screens/user_view/user_view_call_summary_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_call_summary_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,19 +31,19 @@ class TestAppRouter {
     refreshListenable: lifecycle,
     routes: <GoRoute>[
       GoRoute(
-        name: Routes.EXPERT_CALL_SUMMARY_PAGE,
-        path: Routes.EXPERT_CALL_SUMMARY_PAGE,
+        name: Routes.UV_CALL_SUMMARY_PAGE,
+        path: Routes.UV_CALL_SUMMARY_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return CallClientSummary(
+          return UserViewCallSummaryPage(
             otherUserId: "mpKZBT949r8LM9wkzIvfl6GQQ2OQ",
           );
         },
       ),
       GoRoute(
-        name: Routes.CLIENT_SUMMARY_PAGE,
-        path: Routes.CLIENT_SUMMARY_PAGE,
+        name: Routes.EV_CALL_SUMMARY_PAGE,
+        path: Routes.EV_CALL_SUMMARY_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return CallExpertSummary();
+          return ExpertViewCallSummaryPage();
         },
       ),
     ],
@@ -85,7 +85,7 @@ Future<void> testHelper(String path) async {
 }
 
 void main() async {
-  final path = Routes.CLIENT_SUMMARY_PAGE;
+  final path = Routes.EV_CALL_SUMMARY_PAGE;
   // final path = Routes.CLIENT_CALL_SUMMARY_PAGE;
   await testHelper(path);
 }

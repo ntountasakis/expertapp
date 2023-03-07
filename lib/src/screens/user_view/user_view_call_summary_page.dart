@@ -1,35 +1,36 @@
 import 'dart:developer';
 
-import 'package:expertapp/src/screens/navigation/routes.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../call_server/call_server_model.dart';
+import '../../call_server/call_server_model.dart';
 
-class CallClientSummary extends StatefulWidget {
+class UserViewCallSummaryPage extends StatefulWidget {
   final String otherUserId;
 
-  const CallClientSummary({required this.otherUserId});
+  const UserViewCallSummaryPage({required this.otherUserId});
 
   @override
-  State<CallClientSummary> createState() => _CallClientSummaryState();
+  State<UserViewCallSummaryPage> createState() =>
+      _UserViewCallSummaryPageState();
 }
 
-class _CallClientSummaryState extends State<CallClientSummary> {
+class _UserViewCallSummaryPageState extends State<UserViewCallSummaryPage> {
   bool exiting = false;
 
   void goSubmitReview(CallServerModel model) {
-    context.goNamed(Routes.EXPERT_REVIEW_SUBMIT_PAGE,
+    context.goNamed(Routes.UV_REVIEW_SUBMIT_PAGE,
         params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
   }
 
   void goHome(CallServerModel model) {
     exiting = true;
     model.reset();
-    context.goNamed(Routes.HOME);
+    context.goNamed(Routes.HOME_PAGE);
   }
 
   Widget buildSummaryBody(BuildContext context) {

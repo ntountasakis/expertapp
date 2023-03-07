@@ -7,10 +7,10 @@ import 'package:expertapp/src/util/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ExpertRatePage extends StatelessWidget {
+class ExpertViewUpdateRatesPage extends StatelessWidget {
   final String uid;
 
-  const ExpertRatePage({required this.uid});
+  const ExpertViewUpdateRatesPage({required this.uid});
 
   Widget buildExistingRateView(DocumentWrapper<ExpertRate>? expertRate) {
     if (expertRate == null) {

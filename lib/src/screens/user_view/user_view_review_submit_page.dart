@@ -2,29 +2,30 @@ import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
-import 'package:expertapp/src/screens/navigation/routes.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../call_server/call_server_model.dart';
+import '../../call_server/call_server_model.dart';
 
-class ExpertReviewSubmitPage extends StatefulWidget {
+class UserViewReviewSubmitPage extends StatefulWidget {
   final String currentUserId;
   final String expertUserId;
   final AppLifecycle lifecycle;
 
-  ExpertReviewSubmitPage(
+  UserViewReviewSubmitPage(
       {required this.currentUserId,
       required this.expertUserId,
       required this.lifecycle});
 
   @override
-  State<ExpertReviewSubmitPage> createState() => _ExpertReviewSubmitPageState();
+  State<UserViewReviewSubmitPage> createState() =>
+      _UserViewReviewSubmitPageState();
 }
 
-class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
+class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
   final formKey = GlobalKey<FormState>();
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
@@ -76,7 +77,7 @@ class _ExpertReviewSubmitPageState extends State<ExpertReviewSubmitPage> {
                   onPressed: () async {
                     Provider.of<CallServerModel>(context, listen: false)
                         .reset();
-                    context.goNamed(Routes.HOME);
+                    context.goNamed(Routes.HOME_PAGE);
                   },
                   child: Center(
                     child: Text(

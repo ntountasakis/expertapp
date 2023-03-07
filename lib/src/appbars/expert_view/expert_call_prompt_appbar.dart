@@ -1,4 +1,4 @@
-import 'package:expertapp/src/screens/appbars/widgets/time_remaining.dart';
+import 'package:expertapp/src/appbars/widgets/time_remaining.dart';
 import 'package:flutter/material.dart';
 
 class ExpertCallPromptAppbar extends StatefulWidget with PreferredSizeWidget {
