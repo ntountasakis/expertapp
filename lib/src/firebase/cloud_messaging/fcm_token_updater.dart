@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/fcm_token.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/private_user_info.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FcmTokenUpdater {
@@ -10,19 +10,19 @@ class FcmTokenUpdater {
 
   FcmTokenUpdater() : _tokenStream = FirebaseMessaging.instance.onTokenRefresh;
 
-  void putCurrentToken(DocumentWrapper<PublicExpertInfo> expertInfo) async {
+  void putCurrentToken(DocumentWrapper<PrivateUserInfo> userInfo) async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     if (fcmToken == null) {
       throw Exception("Unexpected null fcm token");
     }
     log("Current FCM token ${fcmToken}");
-    await putToken(expertInfo.documentId, fcmToken);
+    await putToken(userInfo.documentId, fcmToken);
   }
 
-  void updateTokensOnRefresh(DocumentWrapper<PublicExpertInfo> expertInfo) {
+  void updateTokensOnRefresh(DocumentWrapper<PrivateUserInfo> userInfo) {
     _tokenStream.listen((fcmToken) async {
       log("FCM token refreshed: ${fcmToken}");
-      await putToken(expertInfo.documentId, fcmToken);
+      await putToken(userInfo.documentId, fcmToken);
     }).onError((err) {
       log("FCM token refresh error: ${err}");
     });

@@ -47,11 +47,11 @@ void initFirebaseMessagingForegroundHandler(
         log("Cannot accept call join request from unknown user: ${callJoinRequest.callerUid}");
         return;
       }
-      if (lifecycle.publicExpertInfo == null) {
+      if (lifecycle.currentUserId() == null) {
         log("Need to suppress call join, user isnt logged in");
         return;
       }
-      if (lifecycle.publicExpertInfo!.documentId != callJoinRequest.calledUid) {
+      if (lifecycle.currentUserId()! != callJoinRequest.calledUid) {
         log("Received call join request for user that isnt me");
         return;
       }
