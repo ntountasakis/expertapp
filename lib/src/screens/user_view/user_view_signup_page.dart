@@ -3,19 +3,18 @@ import 'dart:developer';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/private_user_info.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class UserSignupPage extends StatefulWidget {
+class UserViewSignupPage extends StatefulWidget {
   @override
-  State<UserSignupPage> createState() => _UserSignupPageState();
+  State<UserViewSignupPage> createState() => _UserViewSignupPageState();
 }
 
-class _UserSignupPageState extends State<UserSignupPage> {
+class _UserViewSignupPageState extends State<UserViewSignupPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ButtonStyle buttonStyle =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 12));

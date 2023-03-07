@@ -5,10 +5,10 @@ import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/util/completed_calls_util.dart';
 import 'package:flutter/material.dart';
 
-class CompletedOutgoingCallsPage extends StatelessWidget {
+class UserViewCompletedCallsPage extends StatelessWidget {
   final String uid;
 
-  CompletedOutgoingCallsPage(this.uid);
+  UserViewCompletedCallsPage(this.uid);
 
   Widget buildCallCard(CallTransaction call, String transactionId) {
     return FutureBuilder(

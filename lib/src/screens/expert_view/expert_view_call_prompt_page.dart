@@ -1,21 +1,21 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
-import 'package:expertapp/src/screens/appbars/expert_call_prompt_appbar.dart';
-import 'package:expertapp/src/screens/navigation/routes.dart';
+import 'package:expertapp/src/appbars/expert_view/expert_call_prompt_appbar.dart';
 import 'package:expertapp/src/util/call_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class CallTransactionExpertPrompt extends StatefulWidget {
+class ExpertViewCallPromptPage extends StatefulWidget {
   final String transactionId;
   final String currentUserId;
   final String callerUserId;
   final ExpertRate expertRate;
   final int callJoinExpirationTimeUtcMs;
 
-  const CallTransactionExpertPrompt(
+  const ExpertViewCallPromptPage(
       {required this.transactionId,
       required this.currentUserId,
       required this.callerUserId,
@@ -23,12 +23,11 @@ class CallTransactionExpertPrompt extends StatefulWidget {
       required this.callJoinExpirationTimeUtcMs});
 
   @override
-  State<CallTransactionExpertPrompt> createState() =>
-      _CallTransactionExpertPromptState();
+  State<ExpertViewCallPromptPage> createState() =>
+      _ExpertViewCallPromptPageState();
 }
 
-class _CallTransactionExpertPromptState
-    extends State<CallTransactionExpertPrompt> {
+class _ExpertViewCallPromptPageState extends State<ExpertViewCallPromptPage> {
   Widget buildCallPrompt(DocumentWrapper<PublicExpertInfo> caller) {
     String promptText =
         '${caller.documentType.firstName} will pay you ${widget.expertRate.formattedStartCallFee()} to start the call'
@@ -47,14 +46,14 @@ class _CallTransactionExpertPromptState
   }
 
   void onCallAcceptTap() {
-    context.goNamed(Routes.CLIENT_CALL_HOME, params: {
+    context.goNamed(Routes.EV_CALL_HOME_PAGE, params: {
       Routes.CALLER_UID_PARAM: widget.callerUserId,
       Routes.CALL_TRANSACTION_ID_PARAM: widget.transactionId
     });
   }
 
   void navigateHome() {
-    context.goNamed(Routes.HOME);
+    context.goNamed(Routes.HOME_PAGE);
   }
 
   Widget buildCallButtons(BuildContext context) {

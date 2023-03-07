@@ -5,7 +5,7 @@ import 'package:expertapp/src/firebase/cloud_messaging/messages/call_join_reques
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
-import 'package:expertapp/src/screens/navigation/routes.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -36,7 +36,7 @@ void initFirebaseMessagingForegroundHandler(
     final messageType = message.data['messageType'];
 
     if (messageType == "call_join_cancel") {
-      navigatorKey.currentContext!.goNamed(Routes.HOME);
+      navigatorKey.currentContext!.goNamed(Routes.HOME_PAGE);
     } else if (messageType == "call_join_request") {
       final CallJoinRequestTokenPayload callJoinRequest =
           MessageDecoder.callJoinRequestFromJson(message.data);
@@ -56,14 +56,14 @@ void initFirebaseMessagingForegroundHandler(
         return;
       }
       navigatorKey.currentContext!
-          .goNamed(Routes.CALL_JOIN_PROMPT_PAGE, params: {
+          .goNamed(Routes.EV_CALL_JOIN_PROMPT_PAGE, params: {
         Routes.CALLED_UID_PARAM: callJoinRequest.calledUid,
         Routes.CALLER_UID_PARAM: callJoinRequest.callerUid,
         Routes.CALL_TRANSACTION_ID_PARAM: callJoinRequest.callTransactionId,
         Routes.CALL_RATE_START_PARAM: callJoinRequest.callRateStartCents,
         Routes.CALL_RATE_PER_MINUTE_PARAM:
             callJoinRequest.callRatePerMinuteCents,
-        Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS:
+        Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS_PARAM:
             callJoinRequest.callJoinExpirationTimeUtcMs,
       });
     }

@@ -3,8 +3,8 @@ import 'package:expertapp/src/call_server/call_server_counterparty_connection_st
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
-import 'package:expertapp/src/screens/appbars/widgets/earnings_button.dart';
-import 'package:expertapp/src/screens/appbars/widgets/time_remaining.dart';
+import 'package:expertapp/src/appbars/widgets/earnings_button.dart';
+import 'package:expertapp/src/appbars/widgets/time_remaining.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -1,26 +1,27 @@
 import 'dart:developer';
 
-import 'package:expertapp/src/screens/navigation/routes.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../call_server/call_server_model.dart';
+import '../../call_server/call_server_model.dart';
 
-class CallExpertSummary extends StatefulWidget {
+class ExpertViewCallSummaryPage extends StatefulWidget {
   @override
-  State<CallExpertSummary> createState() => _CallExpertSummaryState();
+  State<ExpertViewCallSummaryPage> createState() =>
+      _ExpertViewCallSummaryPageState();
 }
 
-class _CallExpertSummaryState extends State<CallExpertSummary> {
+class _ExpertViewCallSummaryPageState extends State<ExpertViewCallSummaryPage> {
   bool exiting = false;
 
   void goHome(CallServerModel model) {
     exiting = true;
     model.reset();
-    context.goNamed(Routes.HOME);
+    context.goNamed(Routes.HOME_PAGE);
   }
 
   Widget buildSummaryBody(BuildContext context) {

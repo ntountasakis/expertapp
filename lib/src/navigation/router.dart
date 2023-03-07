@@ -1,23 +1,23 @@
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
-import 'package:expertapp/src/screens/expert/expert_availability_update_page.dart';
-import 'package:expertapp/src/screens/expert/expert_availability_view_page.dart';
-import 'package:expertapp/src/screens/expert/expert_connected_account_signup.dart';
-import 'package:expertapp/src/screens/expert/expert_rate_page.dart';
-import 'package:expertapp/src/screens/history/completed_incoming_calls_page.dart';
-import 'package:expertapp/src/screens/history/completed_outgoing_calls_page.dart';
-import 'package:expertapp/src/screens/transaction/client/call_client_summary.dart';
-import 'package:expertapp/src/screens/transaction/common/chat_page.dart';
-import 'package:expertapp/src/screens/expert/expert_listings_page.dart';
-import 'package:expertapp/src/screens/expert/expert_profile_page.dart';
-import 'package:expertapp/src/screens/transaction/expert/call_expert_summary.dart';
-import 'package:expertapp/src/screens/transaction/expert/expert_review_submit_page.dart';
-import 'package:expertapp/src/screens/navigation/routes.dart';
-import 'package:expertapp/src/screens/transaction/expert/call_transaction_expert_prompt.dart';
-import 'package:expertapp/src/screens/transaction/client/call_client_main.dart';
-import 'package:expertapp/src/screens/transaction/client/call_client_preview.dart';
-import 'package:expertapp/src/screens/transaction/expert/call_transaction_expert_main.dart';
-import 'package:expertapp/src/screens/user/user_signup_page.dart';
+import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
+import 'package:expertapp/src/screens/user_view/user_view_expert_availability_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_connected_account_signup_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_update_rates_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_completed_calls_page.dart';
+import 'package:expertapp/src/screens/user_view/user_view_completed_calls_page.dart';
+import 'package:expertapp/src/screens/user_view/user_view_call_summary_page.dart';
+import 'package:expertapp/src/screens/common_view/common_view_chat_page.dart';
+import 'package:expertapp/src/screens/user_view/user_view_expert_listings_page.dart';
+import 'package:expertapp/src/screens/common_view/common_view_expert_profile_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_call_summary_page.dart';
+import 'package:expertapp/src/screens/user_view/user_view_review_submit_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_call_prompt_page.dart';
+import 'package:expertapp/src/screens/user_view/user_view_call_main_page.dart';
+import 'package:expertapp/src/screens/user_view/user_view_call_preview_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_call_main_page.dart';
+import 'package:expertapp/src/screens/user_view/user_view_signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:go_router/go_router.dart';
@@ -32,7 +32,7 @@ class AppRouter {
 
   late final GoRouter _goRouter = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: Routes.HOME,
+    initialLocation: Routes.HOME_PAGE,
     debugLogDiagnostics: true,
     redirect: (context, state) {
       final signedIn = lifecycle.authenticatedUser != null;
@@ -44,40 +44,41 @@ class AppRouter {
             : null;
       }
       if (!userExists) {
-        return state.location != Routes.USER_CREATE_PAGE
-            ? Routes.USER_CREATE_PAGE
+        return state.location != Routes.UV_USER_SIGNUP_PAGE
+            ? Routes.UV_USER_SIGNUP_PAGE
             : null;
       }
       if (state.location == Routes.SIGN_IN_PAGE ||
-          state.location == Routes.USER_CREATE_PAGE) {
-        return Routes.HOME;
+          state.location == Routes.UV_USER_SIGNUP_PAGE) {
+        return Routes.HOME_PAGE;
       }
       return null;
     },
     refreshListenable: lifecycle,
     routes: <GoRoute>[
       GoRoute(
-        name: Routes.HOME,
-        path: Routes.HOME,
+        name: Routes.HOME_PAGE,
+        path: Routes.HOME_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return ExpertListingsPage(
+          return UserViewExpertListingsPage(
               currentUserId: lifecycle.authenticatedUser!.uid);
         },
         routes: <GoRoute>[
           GoRoute(
-              name: Routes.EXPERT_PROFILE_PAGE,
-              path: Routes.EXPERT_PROFILE_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
+              name: Routes.UV_EXPERT_PROFILE_PAGE,
+              path:
+                  Routes.UV_EXPERT_PROFILE_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.params[Routes.EXPERT_ID_PARAM];
-                return ExpertProfilePage(expertId!, false);
+                return CommonViewExpertProfilePage(expertId!, false);
               },
               routes: <GoRoute>[
                 GoRoute(
-                  name: Routes.EXPERT_CALL_PREVIEW_PAGE,
-                  path: Routes.EXPERT_CALL_PREVIEW_PAGE,
+                  name: Routes.UV_EXPERT_CALL_PREVIEW_PAGE,
+                  path: Routes.UV_EXPERT_CALL_PREVIEW_PAGE,
                   builder: (BuildContext context, GoRouterState state) {
                     final expertId = state.params[Routes.EXPERT_ID_PARAM];
-                    return CallClientPreview(expertId!);
+                    return UserViewCallPreviewPage(expertId!);
                   },
                 ),
               ]),
@@ -98,78 +99,75 @@ class AppRouter {
             ]);
           }),
       GoRoute(
-        name: Routes.USER_CREATE_PAGE,
-        path: Routes.USER_CREATE_PAGE,
+        name: Routes.UV_USER_SIGNUP_PAGE,
+        path: Routes.UV_USER_SIGNUP_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return UserSignupPage();
+          return UserViewSignupPage();
         },
       ),
       GoRoute(
-        name: Routes.USER_PROFILE_PAGE,
-        path: Routes.USER_PROFILE_PAGE,
+        name: Routes.EV_PROFILE_EDIT_PAGE,
+        path: Routes.EV_PROFILE_EDIT_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return ExpertProfilePage(
-              lifecycle.currentUserId()!, true);
+          return CommonViewExpertProfilePage(lifecycle.currentUserId()!, true);
         },
       ),
       GoRoute(
-        name: Routes.USER_COMPLETED_CALLS,
-        path: Routes.USER_COMPLETED_CALLS,
+        name: Routes.UV_COMPLETED_CALLS_PAGE,
+        path: Routes.UV_COMPLETED_CALLS_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return CompletedOutgoingCallsPage(lifecycle.authenticatedUser!.uid);
+          return UserViewCompletedCallsPage(lifecycle.authenticatedUser!.uid);
         },
       ),
       GoRoute(
-        name: Routes.CLIENT_COMPLETED_CALLS,
-        path: Routes.CLIENT_COMPLETED_CALLS,
+        name: Routes.EV_COMPLETED_CALLS_PAGE,
+        path: Routes.EV_COMPLETED_CALLS_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return CompletedIncomingCallsPage(lifecycle.authenticatedUser!.uid);
+          return ExpertViewCompletedCallsPage(lifecycle.authenticatedUser!.uid);
         },
       ),
       GoRoute(
-          name: Routes.EXPERT_CALL_HOME_PAGE,
-          path: Routes.EXPERT_CALL_HOME_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
+          name: Routes.UV_CALL_HOME_PAGE,
+          path: Routes.UV_CALL_HOME_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
           builder: (BuildContext context, GoRouterState state) {
             final expertId = state.params[Routes.EXPERT_ID_PARAM];
-            return CallClientMain(
+            return UserViewCallMainPage(
                 currentUserId: lifecycle.currentUserId()!,
                 otherUserId: expertId!,
                 lifecycle: lifecycle);
           },
           routes: <GoRoute>[
             GoRoute(
-              name: Routes.EXPERT_CALL_CHAT_PAGE,
-              path: Routes.EXPERT_CALL_CHAT_PAGE,
+              name: Routes.UV_CALL_CHAT_PAGE,
+              path: Routes.UV_CALL_CHAT_PAGE,
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.params[Routes.EXPERT_ID_PARAM];
-                return ChatPage(
+                return CommonViewChatPage(
                     currentUserUid: lifecycle.currentUserId()!,
                     otherUserUid: expertId!);
               },
             ),
           ]),
       GoRoute(
-          name: Routes.EXPERT_REVIEW_SUBMIT_PAGE,
-          path:
-              Routes.EXPERT_REVIEW_SUBMIT_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
+          name: Routes.UV_REVIEW_SUBMIT_PAGE,
+          path: Routes.UV_REVIEW_SUBMIT_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
           builder: (BuildContext context, GoRouterState state) {
             final expertUid = state.params[Routes.EXPERT_ID_PARAM];
-            return ExpertReviewSubmitPage(
+            return UserViewReviewSubmitPage(
                 currentUserId: lifecycle.currentUserId()!,
                 expertUserId: expertUid!,
                 lifecycle: lifecycle);
           }),
       GoRoute(
-          name: Routes.EXPERT_CALL_SUMMARY_PAGE,
-          path:
-              Routes.EXPERT_CALL_SUMMARY_PAGE + '/:' + Routes.CALLED_UID_PARAM,
+          name: Routes.UV_CALL_SUMMARY_PAGE,
+          path: Routes.UV_CALL_SUMMARY_PAGE + '/:' + Routes.CALLED_UID_PARAM,
           builder: (BuildContext context, GoRouterState state) {
             final calledUid = state.params[Routes.CALLED_UID_PARAM];
-            return CallClientSummary(otherUserId: calledUid!);
+            return UserViewCallSummaryPage(otherUserId: calledUid!);
           }),
       GoRoute(
-          name: Routes.CALL_JOIN_PROMPT_PAGE,
-          path: Routes.CALL_JOIN_PROMPT_PAGE +
+          name: Routes.EV_CALL_JOIN_PROMPT_PAGE,
+          path: Routes.EV_CALL_JOIN_PROMPT_PAGE +
               '/:' +
               Routes.CALLED_UID_PARAM +
               '/:' +
@@ -181,7 +179,7 @@ class AppRouter {
               '/:' +
               Routes.CALL_RATE_PER_MINUTE_PARAM +
               '/:' +
-              Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS,
+              Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS_PARAM,
           builder: (BuildContext context, GoRouterState state) {
             final callerUid = state.params[Routes.CALLER_UID_PARAM];
             final transactionId =
@@ -191,8 +189,8 @@ class AppRouter {
             final ratePerMinuteCents =
                 int.parse(state.params[Routes.CALL_RATE_PER_MINUTE_PARAM]!);
             final callJoinExpirationTimeUtcMs = int.parse(
-                state.params[Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS]!);
-            return CallTransactionExpertPrompt(
+                state.params[Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS_PARAM]!);
+            return ExpertViewCallPromptPage(
               transactionId: transactionId!,
               currentUserId: lifecycle.currentUserId()!,
               callerUserId: callerUid!,
@@ -203,8 +201,8 @@ class AppRouter {
             );
           }),
       GoRoute(
-          name: Routes.CLIENT_CALL_HOME,
-          path: Routes.CLIENT_CALL_HOME +
+          name: Routes.EV_CALL_HOME_PAGE,
+          path: Routes.EV_CALL_HOME_PAGE +
               '/:' +
               Routes.CALLER_UID_PARAM +
               '/:' +
@@ -213,56 +211,56 @@ class AppRouter {
             final callerUid = state.params[Routes.CALLER_UID_PARAM];
             final transactionId =
                 state.params[Routes.CALL_TRANSACTION_ID_PARAM];
-            return CallTransactionExpertMain(
+            return ExpertViewCallMainPage(
                 callTransactionId: transactionId!,
                 currentUserId: lifecycle.currentUserId()!,
                 callerUserId: callerUid!);
           },
           routes: <GoRoute>[
             GoRoute(
-              name: Routes.CLIENT_CALL_CHAT_PAGE,
-              path: Routes.CLIENT_CALL_CHAT_PAGE,
+              name: Routes.EV_CALL_CHAT_PAGE,
+              path: Routes.EV_CALL_CHAT_PAGE,
               builder: (BuildContext context, GoRouterState state) {
                 final callerUid = state.params[Routes.CALLER_UID_PARAM];
-                return ChatPage(
+                return CommonViewChatPage(
                     currentUserUid: lifecycle.currentUserId()!,
                     otherUserUid: callerUid!);
               },
             ),
           ]),
       GoRoute(
-          name: Routes.CLIENT_SUMMARY_PAGE,
-          path: Routes.CLIENT_SUMMARY_PAGE,
+          name: Routes.EV_CALL_SUMMARY_PAGE,
+          path: Routes.EV_CALL_SUMMARY_PAGE,
           builder: (BuildContext context, GoRouterState state) {
-            return CallExpertSummary();
+            return ExpertViewCallSummaryPage();
           }),
       GoRoute(
-          name: Routes.EXPERT_UPDATE_RATE_PAGE,
-          path: Routes.EXPERT_UPDATE_RATE_PAGE,
+          name: Routes.EV_UPDATE_RATE_PAGE,
+          path: Routes.EV_UPDATE_RATE_PAGE,
           builder: (BuildContext context, GoRouterState state) {
-            return ExpertRatePage(uid: lifecycle.currentUserId()!);
+            return ExpertViewUpdateRatesPage(uid: lifecycle.currentUserId()!);
           }),
       GoRoute(
-          name: Routes.EXPERT_UPDATE_AVAILABILITY_PAGE,
-          path: Routes.EXPERT_UPDATE_AVAILABILITY_PAGE,
+          name: Routes.EV_UPDATE_AVAILABILITY_PAGE,
+          path: Routes.EV_UPDATE_AVAILABILITY_PAGE,
           builder: (BuildContext context, GoRouterState state) {
-            return ExpertAvailabilityUpdatePage(
+            return ExpertViewUpdateAvailabilityPage(
                 uid: lifecycle.currentUserId()!);
           }),
       GoRoute(
-          name: Routes.EXPERT_VIEW_AVAILABILITY_PAGE,
-          path: Routes.EXPERT_VIEW_AVAILABILITY_PAGE +
+          name: Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
+          path: Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE +
               '/:' +
               Routes.EXPERT_ID_PARAM,
           builder: (BuildContext context, GoRouterState state) {
             final expertId = state.params[Routes.EXPERT_ID_PARAM];
-            return ExpertAvailabilityViewPage(uid: expertId!);
+            return UserViewExpertAvailabilityPage(uid: expertId!);
           }),
       GoRoute(
-          name: Routes.EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE,
-          path: Routes.EXPERT_CONNECTED_ACCOUNT_SIGNUP_PAGE,
+          name: Routes.EV_CONNECTED_ACCOUNT_SIGNUP_PAGE,
+          path: Routes.EV_CONNECTED_ACCOUNT_SIGNUP_PAGE,
           builder: (BuildContext context, GoRouterState state) {
-            return ExpertConnectedAccountSignup(
+            return ExpertViewConnectedAccountSignupPage(
                 uid: lifecycle.currentUserId()!);
           }),
     ],

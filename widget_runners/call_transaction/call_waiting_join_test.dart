@@ -2,7 +2,7 @@ import 'package:expertapp/firebase_options.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
-import 'package:expertapp/src/screens/transaction/client/widgets/call_waiting_join.dart';
+import 'package:expertapp/src/util/call_waiting_join.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -15,8 +15,8 @@ class CallWaitingWrapper extends StatelessWidget {
     const url =
         "http://10.0.2.2:9004/expert-app-backend.appspot.com/profilePics/Portrait_Placeholder.png";
 
-    final metadata =
-        PublicExpertInfo("", "", "", url, 0, 0, makeDefaultAvailability(), false);
+    final metadata = PublicExpertInfo(
+        "", "", "", url, 0, 0, makeDefaultAvailability(), false);
     userMetadata = DocumentWrapper<PublicExpertInfo>("id", metadata);
   }
   @override

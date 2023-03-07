@@ -2,24 +2,23 @@ import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/chat_message.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
-import 'package:expertapp/src/screens/appbars/user_preview_appbar.dart';
+import 'package:expertapp/src/appbars/user_view/user_preview_appbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
 import 'package:intl/intl.dart';
 
-class ChatPage extends StatefulWidget {
+class CommonViewChatPage extends StatefulWidget {
   final String currentUserUid;
   final String otherUserUid;
 
-  ChatPage({required this.currentUserUid, required this.otherUserUid});
+  CommonViewChatPage(
+      {required this.currentUserUid, required this.otherUserUid});
 
   @override
-  State<ChatPage> createState() => _ChatPageState();
+  State<CommonViewChatPage> createState() => _CommonViewChatPageState();
 }
 
-class _ChatPageState extends State<ChatPage> {
+class _CommonViewChatPageState extends State<CommonViewChatPage> {
   final chatTextController = TextEditingController();
   String _currentChatMessage = '';
 

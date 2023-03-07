@@ -4,16 +4,18 @@ import 'package:expertapp/src/firebase/cloud_functions/callable_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class ExpertConnectedAccountSignup extends StatefulWidget {
+class ExpertViewConnectedAccountSignupPage extends StatefulWidget {
   final String uid;
 
-  const ExpertConnectedAccountSignup({required this.uid});
+  const ExpertViewConnectedAccountSignupPage({required this.uid});
 
   @override
-  State<ExpertConnectedAccountSignup> createState() => _ExpertConnectedAccountSignupState();
+  State<ExpertViewConnectedAccountSignupPage> createState() =>
+      _ExpertViewConnectedAccountSignupPageState();
 }
 
-class _ExpertConnectedAccountSignupState extends State<ExpertConnectedAccountSignup> {
+class _ExpertViewConnectedAccountSignupPageState
+    extends State<ExpertViewConnectedAccountSignupPage> {
   @override
   void initState() {
     super.initState();

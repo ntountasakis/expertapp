@@ -3,10 +3,10 @@ import 'package:expertapp/src/firebase/firestore/document_models/document_wrappe
 import 'package:expertapp/src/util/completed_calls_util.dart';
 import 'package:flutter/material.dart';
 
-class CompletedIncomingCallsPage extends StatelessWidget {
+class ExpertViewCompletedCallsPage extends StatelessWidget {
   final String uid;
 
-  CompletedIncomingCallsPage(this.uid);
+  ExpertViewCompletedCallsPage(this.uid);
 
   Widget buildCallCard(
       BuildContext context, CallTransaction call, String transactionId) {

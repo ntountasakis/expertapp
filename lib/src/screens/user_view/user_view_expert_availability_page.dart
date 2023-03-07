@@ -3,10 +3,10 @@ import 'package:expertapp/src/firebase/firestore/document_models/public_expert_i
 import 'package:expertapp/src/util/expert_availability_util.dart';
 import 'package:flutter/material.dart';
 
-class ExpertAvailabilityViewPage extends StatelessWidget {
+class UserViewExpertAvailabilityPage extends StatelessWidget {
   final String uid;
 
-  const ExpertAvailabilityViewPage({required this.uid});
+  const UserViewExpertAvailabilityPage({required this.uid});
 
   Widget buildAvailabilityView() {
     return FutureBuilder(

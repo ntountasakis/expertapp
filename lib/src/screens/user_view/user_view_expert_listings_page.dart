@@ -4,13 +4,13 @@ import 'package:expertapp/src/firebase/firestore/document_models/public_expert_i
 import 'package:expertapp/src/navigation/hamburger_menu.dart';
 import 'package:flutter/material.dart';
 
-class ExpertListingsPage extends StatelessWidget {
+class UserViewExpertListingsPage extends StatelessWidget {
   final String currentUserId;
 
   static final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 8));
 
-  const ExpertListingsPage({required this.currentUserId});
+  const UserViewExpertListingsPage({required this.currentUserId});
 
   @override
   Widget build(BuildContext context) {
