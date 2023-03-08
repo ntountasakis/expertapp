@@ -19,7 +19,7 @@ Future<void> onUserSignup(String firstName, String lastName, String email,
   if (profilePicUrl != null) {
     userData['profilePicUrl'] = profilePicUrl;
   }
-  await getCallable(CallableFunctions.USER_SIGNUP).call(userData);
+  await getCallable(CallableFunctions.REGULAR_USER_SIGNUP).call(userData);
 }
 
 Future<String> onSubmitReview(
@@ -84,7 +84,8 @@ Future<UpdateResult> updateExpertRate(
   return UpdateResult(success: success, message: message);
 }
 
-Future<UpdateResult> updateExpertAvailability(ExpertAvailability availability) async {
+Future<UpdateResult> updateExpertAvailability(
+    ExpertAvailability availability) async {
   HttpsCallableResult result =
       await getCallable(CallableFunctions.UPDATE_EXPERT_AVAILABILITY)
           .call(availability.toJson());

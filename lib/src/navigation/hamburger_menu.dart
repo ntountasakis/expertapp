@@ -94,7 +94,6 @@ class HamburgerMenu extends StatelessWidget {
           ),
           child: Text("Main Menu"),
         ),
-        profileTile(context),
         pastCallsWithExpertsTile(context),
         becomeAnExpertTile(context),
         signOutTile(context),
@@ -108,13 +107,9 @@ class HamburgerMenu extends StatelessWidget {
       future: PublicExpertInfo.get(currentUserId),
       builder: (BuildContext context,
           AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
-        if (snapshot.hasData) {
-          DocumentWrapper<PublicExpertInfo>? info = snapshot.data;
-          return info == null
-              ? buildRegularUserMenu(context)
-              : buildExpertMenu(context);
-        }
-        return CircularProgressIndicator();
+        return snapshot.hasData
+            ? buildExpertMenu(context)
+            : buildRegularUserMenu(context);
       },
     );
   }
