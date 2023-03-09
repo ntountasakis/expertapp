@@ -6,6 +6,7 @@ import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
+import 'package:expertapp/src/firebase/firestore/public_user_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/appbars/expert_view/expert_in_call_appbar.dart';
 import 'package:flutter/material.dart';
@@ -96,10 +97,10 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<DocumentWrapper<PublicExpertInfo>?>(
-        future: PublicExpertInfo.get(widget.callerUserId),
+    return FutureBuilder<DocumentWrapper<PublicUserInfo>?>(
+        future: PublicUserInfo.get(widget.callerUserId),
         builder: (BuildContext context,
-            AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
+            AsyncSnapshot<DocumentWrapper<PublicUserInfo>?> snapshot) {
           if (snapshot.hasData) {
             final callerUserMetadata = snapshot.data;
             return Consumer<CallServerModel>(builder: (context, model, child) {

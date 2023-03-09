@@ -1,8 +1,7 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
+import 'package:expertapp/src/firebase/firestore/public_user_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
-import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/appbars/expert_view/expert_call_prompt_appbar.dart';
 import 'package:expertapp/src/util/call_buttons.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +27,7 @@ class ExpertViewCallPromptPage extends StatefulWidget {
 }
 
 class _ExpertViewCallPromptPageState extends State<ExpertViewCallPromptPage> {
-  Widget buildCallPrompt(DocumentWrapper<PublicExpertInfo> caller) {
+  Widget buildCallPrompt(DocumentWrapper<PublicUserInfo> caller) {
     String promptText =
         '${caller.documentType.firstName} will pay you ${widget.expertRate.formattedStartCallFee()} to start the call'
         ' and ${widget.expertRate.formattedPerMinuteFee()} for each minute thereafter.  The billed time will stop if'
@@ -68,10 +67,10 @@ class _ExpertViewCallPromptPageState extends State<ExpertViewCallPromptPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<DocumentWrapper<PublicExpertInfo>?>(
-        future: PublicExpertInfo.get(widget.callerUserId),
+    return FutureBuilder<DocumentWrapper<PublicUserInfo>?>(
+        future: PublicUserInfo.get(widget.callerUserId),
         builder: (BuildContext context,
-            AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
+            AsyncSnapshot<DocumentWrapper<PublicUserInfo>?> snapshot) {
           if (snapshot.hasData) {
             final callerMetadata = snapshot.data;
             return Scaffold(
@@ -84,16 +83,7 @@ class _ExpertViewCallPromptPageState extends State<ExpertViewCallPromptPage> {
                   padding: EdgeInsets.all(8.0),
                   child: Column(children: [
                     SizedBox(
-                      height: 25,
-                    ),
-                    SizedBox(
-                      width: 200,
-                      height: 200,
-                      child: ProfilePicture(
-                          callerMetadata.documentType.profilePicUrl),
-                    ),
-                    SizedBox(
-                      height: 10,
+                      height: 50,
                     ),
                     buildCallPrompt(callerMetadata),
                     SizedBox(

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:expertapp/src/firebase/cloud_messaging/message_decoder.dart';
 import 'package:expertapp/src/firebase/cloud_messaging/messages/call_join_request.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
+import 'package:expertapp/src/firebase/firestore/public_user_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -40,10 +40,10 @@ void initFirebaseMessagingForegroundHandler(
     } else if (messageType == "call_join_request") {
       final CallJoinRequestTokenPayload callJoinRequest =
           MessageDecoder.callJoinRequestFromJson(message.data);
-      final DocumentWrapper<PublicExpertInfo>? expertInfo =
-          await PublicExpertInfo.get(callJoinRequest.callerUid);
+      final DocumentWrapper<PublicUserInfo>? userInfo =
+          await PublicUserInfo.get(callJoinRequest.callerUid);
 
-      if (expertInfo == null) {
+      if (userInfo == null) {
         log("Cannot accept call join request from unknown user: ${callJoinRequest.callerUid}");
         return;
       }
