@@ -7,6 +7,14 @@ import { PaymentStatus } from "../models/payment_status";
 import { PrivateUserInfo } from "../models/private_user_info";
 import { CollectionPaths } from "./collection_paths";
 
+
+function getPublicUserDocumentRef({ uid }: { uid: string }):
+  FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection(CollectionPaths.PUBLIC_USER_INFO).doc(uid);
+}
+
+
+
 function getPrivateUserDocumentRef({ uid }: { uid: string }):
   FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.PRIVATE_USER_INFO).doc(uid);
@@ -143,5 +151,6 @@ export {
   getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
   getCallTransactionDocumentRef, getCallTransactionCollectionRef, getFcmTokenDocumentRef, getCallTransactionDocument,
   getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getPublicExpertInfo, getPublicExpertInfoNoTransact,
-  getFcmTokenDocument, getPrivateUserDocument, getPrivateUserDocumentNoTransact, getExpertRateDocumentNoTransact, getSignUpTokenDocumentRef
+  getFcmTokenDocument, getPrivateUserDocument, getPrivateUserDocumentNoTransact, getExpertRateDocumentNoTransact, getSignUpTokenDocumentRef,
+  getPublicUserDocumentRef
 };

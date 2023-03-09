@@ -10,9 +10,12 @@ export const regularUserSignup = functions.https.onCall(async (data, context) =>
 
   const uid = context.auth.uid;
   const email: string = data.email;
+  const firstName: string = data.firstName;
+  const lastName: string = data.lastName;
 
   const stripeCustomerId = await createStripeCustomer({ stripe: StripeProvider.STRIPE });
-  await createRegularUser({ uid: uid, email: email, stripeCustomerId: stripeCustomerId });
+  await createRegularUser({ uid: uid, email: email, stripeCustomerId: stripeCustomerId,
+  firstName: firstName, lastName: lastName });
 
   console.log(`User ${uid} signed up!`);
 });
