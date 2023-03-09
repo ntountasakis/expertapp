@@ -2,14 +2,14 @@ import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/appbars/widgets/earnings_button.dart';
 import 'package:expertapp/src/appbars/widgets/time_remaining.dart';
+import 'package:expertapp/src/firebase/firestore/public_user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ExpertInCallAppbar extends StatefulWidget with PreferredSizeWidget {
-  final DocumentWrapper<PublicExpertInfo> userMetadata;
+  final DocumentWrapper<PublicUserInfo> userMetadata;
   final CallServerModel model;
 
   ExpertInCallAppbar(this.userMetadata, this.model);

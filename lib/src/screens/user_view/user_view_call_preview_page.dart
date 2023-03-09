@@ -1,6 +1,7 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
+import 'package:expertapp/src/firebase/firestore/public_user_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/appbars/user_view/user_preview_appbar.dart';
@@ -62,16 +63,21 @@ class UserViewCallPreviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-        future: Future.wait(
-            [PublicExpertInfo.get(_expertUid), ExpertRate.get(_expertUid)]),
+        future: Future.wait([
+          PublicExpertInfo.get(_expertUid),
+          ExpertRate.get(_expertUid),
+          PublicUserInfo.get(_expertUid)
+        ]),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
             final publicExpertInfo =
                 snapshot.data![0] as DocumentWrapper<PublicExpertInfo>?;
             final expertRate =
                 snapshot.data![1] as DocumentWrapper<ExpertRate>?;
+            final publicUserInfo =
+                snapshot.data![2] as DocumentWrapper<PublicUserInfo>?;
             return Scaffold(
-                appBar: UserPreviewAppbar(publicExpertInfo!, "Call"),
+                appBar: UserPreviewAppbar(publicUserInfo!, "Call"),
                 body: Container(
                   padding: EdgeInsets.all(8.0),
                   child: Column(children: [
@@ -79,7 +85,7 @@ class UserViewCallPreviewPage extends StatelessWidget {
                     SizedBox(
                       height: 20,
                     ),
-                    buildExplanationBlurb(publicExpertInfo.documentType),
+                    buildExplanationBlurb(publicExpertInfo!.documentType),
                     SizedBox(
                       height: 20,
                     ),

@@ -1,10 +1,9 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
-import 'package:expertapp/src/profile/profile_picture.dart';
+import 'package:expertapp/src/firebase/firestore/public_user_info.dart';
 import 'package:flutter/material.dart';
 
 class UserPreviewAppbar extends StatelessWidget with PreferredSizeWidget {
-  final DocumentWrapper<PublicExpertInfo> userMetadata;
+  final DocumentWrapper<PublicUserInfo> userMetadata;
   final String namePrefix;
 
   UserPreviewAppbar(this.userMetadata, this.namePrefix);
@@ -24,14 +23,6 @@ class UserPreviewAppbar extends StatelessWidget with PreferredSizeWidget {
         children: [
           Expanded(
             child: Text(buildTitle()),
-          ),
-          SizedBox(
-            width: 15,
-          ),
-          SizedBox(
-            height: 45,
-            width: 45,
-            child: ProfilePicture(userMetadata.documentType.profilePicUrl),
           ),
         ],
       ),
