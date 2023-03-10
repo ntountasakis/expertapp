@@ -6,6 +6,7 @@ import { FcmToken } from "../models/fcm_token";
 import { PaymentStatus } from "../models/payment_status";
 import { PrivateUserInfo } from "../models/private_user_info";
 import { CollectionPaths } from "./collection_paths";
+import { PublicUserInfo } from "../models/public_user_info";
 
 
 function getPublicUserDocumentRef({ uid }: { uid: string }):
@@ -13,6 +14,21 @@ function getPublicUserDocumentRef({ uid }: { uid: string }):
   return admin.firestore().collection(CollectionPaths.PUBLIC_USER_INFO).doc(uid);
 }
 
+async function getPublicUserDocument({ transaction, uid }: { transaction: FirebaseFirestore.Transaction, uid: string }): Promise<PublicUserInfo> {
+  const doc = await transaction.get(getPublicUserDocumentRef({ uid: uid }));
+  if (!doc.exists) {
+    throw new Error(`No public user info with uid: ${uid}`);
+  }
+  return doc.data() as PublicUserInfo;
+}
+
+async function getPublicUserDocumentNoTransact({ uid }: { uid: string }): Promise<PublicUserInfo> {
+  const doc = await getPublicUserDocumentRef({ uid: uid }).get();
+  if (!doc.exists) {
+    throw new Error(`No public user info with uid: ${uid}`);
+  }
+  return doc.data() as PublicUserInfo;
+}
 
 
 function getPrivateUserDocumentRef({ uid }: { uid: string }):
@@ -152,5 +168,5 @@ export {
   getCallTransactionDocumentRef, getCallTransactionCollectionRef, getFcmTokenDocumentRef, getCallTransactionDocument,
   getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getPublicExpertInfo, getPublicExpertInfoNoTransact,
   getFcmTokenDocument, getPrivateUserDocument, getPrivateUserDocumentNoTransact, getExpertRateDocumentNoTransact, getSignUpTokenDocumentRef,
-  getPublicUserDocumentRef
+  getPublicUserDocumentRef, getPublicUserDocument, getPublicUserDocumentNoTransact,
 };

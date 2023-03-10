@@ -1,44 +1,48 @@
 import * as admin from "firebase-admin";
-import { getExpertRateDocumentRef, getPrivateUserDocumentRef, getPublicExpertInfoDocumentRef } from "../document_fetchers/fetchers";
+import { getExpertRateDocumentRef, getPublicExpertInfoDocumentRef, getPublicUserDocument } from "../document_fetchers/fetchers";
 import { DayAvailability, WeekAvailability } from "../models/expert_availability";
 import { ExpertRate } from "../models/expert_rate";
-import { PrivateUserInfo } from "../models/private_user_info";
 import { PublicExpertInfo } from "../models/public_expert_info";
+import { PublicUserInfo } from "../models/public_user_info";
 
-export async function createExpertUser({ uid, firstName, lastName, email, profilePicUrl, stripeCustomerId }:
+export async function createExpertUser({ uid, profileDescription, profilePicUrl }:
   {
-    uid: string, firstName: string, lastName: string, email: string,
-    profilePicUrl: string, stripeCustomerId: string
+    uid: string, profilePicUrl: string, profileDescription: string,
   }): Promise<void> {
-  const privateUserInfo: PrivateUserInfo = {
-    "email": email,
-    "stripeCustomerId": stripeCustomerId,
-    "stripeConnectedId": "acct_1LmpLYPKLydnyIBv" // TODO: Remove this hard-coded value
-  };
-  const publicExpertInfo: PublicExpertInfo = {
-    "firstName": firstName,
-    "lastName": lastName,
-    "description": "",
-    "profilePicUrl": profilePicUrl,
-    "runningSumReviewRatings": 0,
-    "numReviews": 0,
-    "availability": createDefaultAvailability(),
-    "inCall": false,
-  };
-  await admin.firestore().runTransaction(async (transaction) => {
-    transaction.set(getPrivateUserDocumentRef({ uid: uid }), privateUserInfo);
+  const didCreate: boolean = await admin.firestore().runTransaction(async (transaction) => {
+    const doc = await getPublicExpertInfoDocumentRef({ uid: uid }).get();
+    if (doc.exists) {
+      return false;
+    }
+    const publicUserInfo: PublicUserInfo = await getPublicUserDocument({ transaction: transaction, uid: uid });
+    const publicExpertInfo: PublicExpertInfo = {
+      "firstName": publicUserInfo.firstName,
+      "lastName": publicUserInfo.lastName,
+      "description": profileDescription,
+      "profilePicUrl": profilePicUrl,
+      "runningSumReviewRatings": 0,
+      "numReviews": 0,
+      "availability": createDefaultAvailability(),
+      "inCall": false,
+    };
     transaction.set(getPublicExpertInfoDocumentRef({ uid: uid }), publicExpertInfo);
     transaction.set(getExpertRateDocumentRef({ expertUid: uid }), createDefaultCallRate());
+    return true;
   });
+  if (didCreate) {
+    console.log(`Created expert user ${uid}.`)
+  } else {
+    console.log(`User ${uid} is already an expert. Not creating expert user.`)
+  }
 }
 
 function createDefaultAvailability() {
   const defaultDayAvailability: DayAvailability = {
-    "isAvailable": false,
+    "isAvailable": true,
     "startHourUtc": 0,
     "startMinuteUtc": 0,
-    "endHourUtc": 0,
-    "endMinuteUtc": 0,
+    "endHourUtc": 23,
+    "endMinuteUtc": 59,
   };
   const defaultWeekAvailability: WeekAvailability = {
     "mondayAvailability": defaultDayAvailability,

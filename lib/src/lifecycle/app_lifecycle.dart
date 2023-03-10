@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:expertapp/src/firebase/cloud_messaging/fcm_token_updater.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/private_user_info.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:google_api_availability/google_api_availability.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
@@ -11,22 +11,22 @@ import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 class AppLifecycle extends ChangeNotifier {
   final _tokenUpdater = FcmTokenUpdater();
   FirebaseAuth.User? _theAuthenticatedUser = null;
-  DocumentWrapper<PrivateUserInfo>? _thePrivateUserInfo = null;
+  DocumentWrapper<PublicUserInfo>? _thePublicUserInfo = null;
 
   FirebaseAuth.User? get authenticatedUser => _theAuthenticatedUser;
-  DocumentWrapper<PrivateUserInfo>? get privateUserInfo => _thePrivateUserInfo;
+  DocumentWrapper<PublicUserInfo>? get publicUserInfo => _thePublicUserInfo;
 
   Future<void> onAuthStatusChange(FirebaseAuth.User? aAuthenticatedUser) async {
     _theAuthenticatedUser = aAuthenticatedUser;
     if (_theAuthenticatedUser != null) {
-      onUserLogin(await PrivateUserInfo.get(_theAuthenticatedUser!.uid));
+      onUserLogin(await PublicUserInfo.get(_theAuthenticatedUser!.uid));
     } else {
       notifyListeners();
     }
   }
 
-  void onUserLogin(DocumentWrapper<PrivateUserInfo>? currentUser) async {
-    _thePrivateUserInfo = currentUser;
+  void onUserLogin(DocumentWrapper<PublicUserInfo>? currentUser) async {
+    _thePublicUserInfo = currentUser;
     if (currentUser != null) {
       await _onUserConfirmation();
     }
@@ -49,11 +49,11 @@ class AppLifecycle extends ChangeNotifier {
         throw Exception("Google Play services unavailable");
       }
     }
-    _tokenUpdater.putCurrentToken(_thePrivateUserInfo!);
-    _tokenUpdater.updateTokensOnRefresh(_thePrivateUserInfo!);
+    _tokenUpdater.putCurrentToken(_thePublicUserInfo!);
+    _tokenUpdater.updateTokensOnRefresh(_thePublicUserInfo!);
   }
 
   String? currentUserId() {
-    return _thePrivateUserInfo == null ? null : _thePrivateUserInfo!.documentId;
+    return _thePublicUserInfo == null ? null : _thePublicUserInfo!.documentId;
   }
 }
