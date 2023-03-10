@@ -10,6 +10,9 @@ class StorageUtil {
   }
 
   static String getLocalhostUrlForStorageUrl(String url) {
+    if (url.length > 5 && url.substring(0, 5) == 'https') {
+      return url;
+    }
     return 'http://' + localhostString() + ':' + url.split(':')[2];
   }
 }
