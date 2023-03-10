@@ -1,7 +1,7 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
-import 'package:expertapp/src/firebase/firestore/public_user_info.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/profile/expert/expert_pricing_card.dart';
 import 'package:expertapp/src/appbars/user_view/user_preview_appbar.dart';

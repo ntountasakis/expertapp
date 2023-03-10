@@ -6,7 +6,7 @@ import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
-import 'package:expertapp/src/firebase/firestore/public_user_info.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/appbars/expert_view/expert_in_call_appbar.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/public_user_info.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:flutter/material.dart';
 
 class UserPreviewAppbar extends StatelessWidget with PreferredSizeWidget {

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/private_user_info.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
@@ -79,8 +80,8 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
 
           log('New User Signup');
 
-          DocumentWrapper<PrivateUserInfo>? userMetadataWrapper =
-              await PrivateUserInfo.get(lifecycle.authenticatedUser!.uid);
+          DocumentWrapper<PublicUserInfo>? userMetadataWrapper =
+              await PublicUserInfo.get(lifecycle.authenticatedUser!.uid);
 
           if (userMetadataWrapper == null) {
             throw Exception(
@@ -93,7 +94,7 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
   }
 
   void onUserCreated(AppLifecycle lifecycle,
-      DocumentWrapper<PrivateUserInfo> userMetadataWrapper) {
+      DocumentWrapper<PublicUserInfo> userMetadataWrapper) {
     lifecycle.onUserLogin(userMetadataWrapper);
   }
 

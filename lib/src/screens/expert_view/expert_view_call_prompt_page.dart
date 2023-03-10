@@ -1,6 +1,6 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
-import 'package:expertapp/src/firebase/firestore/public_user_info.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/appbars/expert_view/expert_call_prompt_appbar.dart';
 import 'package:expertapp/src/util/call_buttons.dart';
