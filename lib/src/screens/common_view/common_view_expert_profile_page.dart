@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:expertapp/src/appbars/expert_view/expert_post_signup_appbar.dart';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
@@ -16,8 +17,10 @@ import 'package:go_router/go_router.dart';
 class CommonViewExpertProfilePage extends StatefulWidget {
   final String _expertUid;
   final bool _isEditable;
+  final bool _fromExpertSignupflow;
 
-  CommonViewExpertProfilePage(this._expertUid, this._isEditable);
+  CommonViewExpertProfilePage(
+      this._expertUid, this._isEditable, this._fromExpertSignupflow);
 
   @override
   State<CommonViewExpertProfilePage> createState() =>
@@ -335,12 +338,22 @@ class _CommonViewExpertProfilePageState
     }
   }
 
-  AppBar buildAppbar(
+  PreferredSizeWidget buildAppbar(
       AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
     if (snapshot.hasData) {
-      return AppBar(
-        title: Text(snapshot.data!.documentType.fullName()),
-      );
+      if (widget._fromExpertSignupflow) {
+        return ExpertPostSignupAppbar(
+          uid: widget._expertUid,
+          titleText: "Click arrow to finish",
+          nextRoute: Routes.HOME_PAGE,
+          addAdditionalParams: false,
+          allowBackButton: true,
+        );
+      } else {
+        return AppBar(
+          title: Text(snapshot.data!.documentType.fullName()),
+        );
+      }
     } else {
       return AppBar(
         title: Text("Loading..."),

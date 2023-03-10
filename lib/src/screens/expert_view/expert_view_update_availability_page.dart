@@ -1,6 +1,8 @@
+import 'package:expertapp/src/appbars/expert_view/expert_post_signup_appbar.dart';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_availability.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/timezone/timezone_util.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
 import 'package:expertapp/src/util/expert_availability_util.dart';
@@ -12,8 +14,10 @@ import 'package:uuid/uuid.dart';
 
 class ExpertViewUpdateAvailabilityPage extends StatefulWidget {
   final String uid;
+  final bool fromSignupFlow;
 
-  const ExpertViewUpdateAvailabilityPage({required this.uid});
+  const ExpertViewUpdateAvailabilityPage(
+      {required this.uid, required this.fromSignupFlow});
   @override
   State<ExpertViewUpdateAvailabilityPage> createState() =>
       _ExpertViewUpdateAvailabilityPageState();
@@ -21,6 +25,7 @@ class ExpertViewUpdateAvailabilityPage extends StatefulWidget {
 
 class _ExpertViewUpdateAvailabilityPageState
     extends State<ExpertViewUpdateAvailabilityPage> {
+  bool _updatedAtLeastOnce = false;
   bool _hasChanges = false;
   final _selectedDays = new Map<String, TimeRangeResult?>();
   final _defaultInitialRange = TimeRangeResult(
@@ -298,6 +303,11 @@ class _ExpertViewUpdateAvailabilityPageState
       }
     }
     refreshAvailability();
+    setState(() {
+      if (!_updatedAtLeastOnce) {
+        _updatedAtLeastOnce = result.success;
+      }
+    });
   }
 
   Future<bool?> buildUnsavedChangesDialog() {
@@ -327,6 +337,22 @@ class _ExpertViewUpdateAvailabilityPageState
         });
   }
 
+  PreferredSizeWidget buildAppbar() {
+    if (widget.fromSignupFlow && _updatedAtLeastOnce) {
+      return ExpertPostSignupAppbar(
+        uid: widget.uid,
+        titleText: "Continue to set your rates",
+        nextRoute: Routes.EV_UPDATE_RATE_PAGE,
+        addAdditionalParams: true,
+        allowBackButton: true,
+      );
+    } else {
+      return AppBar(
+        title: Text("Availability for accepting calls"),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -342,9 +368,7 @@ class _ExpertViewUpdateAvailabilityPageState
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("Availability for accepting calls"),
-        ),
+        appBar: buildAppbar(),
         body: Column(
           children: [
             SizedBox(height: 20),

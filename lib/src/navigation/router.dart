@@ -70,7 +70,7 @@ class AppRouter {
                   Routes.UV_EXPERT_PROFILE_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.params[Routes.EXPERT_ID_PARAM];
-                return CommonViewExpertProfilePage(expertId!, false);
+                return CommonViewExpertProfilePage(expertId!, false, false);
               },
               routes: <GoRoute>[
                 GoRoute(
@@ -107,9 +107,14 @@ class AppRouter {
       ),
       GoRoute(
         name: Routes.EV_PROFILE_EDIT_PAGE,
-        path: Routes.EV_PROFILE_EDIT_PAGE,
+        path: Routes.EV_PROFILE_EDIT_PAGE +
+            '/:' +
+            Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM,
         builder: (BuildContext context, GoRouterState state) {
-          return CommonViewExpertProfilePage(lifecycle.currentUserId()!, true);
+          final fromSignupFlow =
+              state.params[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
+          return CommonViewExpertProfilePage(
+              lifecycle.currentUserId()!, true, fromSignupFlow == 'true');
         },
       ),
       GoRoute(
@@ -236,16 +241,27 @@ class AppRouter {
           }),
       GoRoute(
           name: Routes.EV_UPDATE_RATE_PAGE,
-          path: Routes.EV_UPDATE_RATE_PAGE,
+          path: Routes.EV_UPDATE_RATE_PAGE +
+              '/:' +
+              Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM,
           builder: (BuildContext context, GoRouterState state) {
-            return ExpertViewUpdateRatesPage(uid: lifecycle.currentUserId()!);
+            final fromSignupFlow =
+                state.params[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
+            return ExpertViewUpdateRatesPage(
+                uid: lifecycle.currentUserId()!,
+                fromSignupFlow: fromSignupFlow == 'true');
           }),
       GoRoute(
           name: Routes.EV_UPDATE_AVAILABILITY_PAGE,
-          path: Routes.EV_UPDATE_AVAILABILITY_PAGE,
+          path: Routes.EV_UPDATE_AVAILABILITY_PAGE +
+              '/:' +
+              Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM,
           builder: (BuildContext context, GoRouterState state) {
+            final fromSignupFlow =
+                state.params[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
             return ExpertViewUpdateAvailabilityPage(
-                uid: lifecycle.currentUserId()!);
+                uid: lifecycle.currentUserId()!,
+                fromSignupFlow: fromSignupFlow == 'true');
           }),
       GoRoute(
           name: Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
