@@ -1,16 +1,34 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:expertapp/src/appbars/expert_view/expert_post_signup_appbar.dart';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
 import 'package:expertapp/src/util/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ExpertViewUpdateRatesPage extends StatelessWidget {
+class ExpertViewUpdateRatesPage extends StatefulWidget {
   final String uid;
+  final bool fromSignupFlow;
 
-  const ExpertViewUpdateRatesPage({required this.uid});
+  const ExpertViewUpdateRatesPage(
+      {required this.uid, required this.fromSignupFlow});
+
+  @override
+  State<ExpertViewUpdateRatesPage> createState() =>
+      _ExpertViewUpdateRatesPageState();
+}
+
+class _ExpertViewUpdateRatesPageState extends State<ExpertViewUpdateRatesPage> {
+  bool rateWasUpdated = false;
+
+  void onRateUpdate() {
+    setState(() {
+      rateWasUpdated = true;
+    });
+  }
 
   Widget buildExistingRateView(DocumentWrapper<ExpertRate>? expertRate) {
     if (expertRate == null) {
@@ -44,13 +62,29 @@ class ExpertViewUpdateRatesPage extends StatelessWidget {
     }
     return new RatePickers(
         initialValueRateStartCall: existingRateStartCall,
-        initialValueRatePerMinute: existingRatePerMinute);
+        initialValueRatePerMinute: existingRatePerMinute,
+        onRateUpdated: onRateUpdate);
+  }
+
+  PreferredSizeWidget buildAppBar(BuildContext context) {
+    if (widget.fromSignupFlow && rateWasUpdated) {
+      return ExpertPostSignupAppbar(
+        uid: widget.uid,
+        titleText: 'Continue to edit your profile',
+        nextRoute: Routes.EV_PROFILE_EDIT_PAGE,
+        addAdditionalParams: true,
+        allowBackButton: true,
+      );
+    }
+    return AppBar(
+      title: Text("Update Call Rate"),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final body = StreamBuilder<DocumentWrapper<ExpertRate>?>(
-        stream: ExpertRate.getStream(uid),
+        stream: ExpertRate.getStream(widget.uid),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentWrapper<ExpertRate>?> snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
@@ -68,9 +102,7 @@ class ExpertViewUpdateRatesPage extends StatelessWidget {
         });
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Call Rate"),
-      ),
+      appBar: buildAppBar(context),
       body: body,
     );
   }
@@ -79,11 +111,13 @@ class ExpertViewUpdateRatesPage extends StatelessWidget {
 class RatePickers extends StatefulWidget {
   final num initialValueRateStartCall;
   final num initialValueRatePerMinute;
+  final VoidCallback onRateUpdated;
 
   const RatePickers(
       {Key? key,
       required this.initialValueRateStartCall,
-      required this.initialValueRatePerMinute})
+      required this.initialValueRatePerMinute,
+      required this.onRateUpdated})
       : super(key: key);
 
   @override
@@ -170,6 +204,9 @@ class _MyRatePickerState extends State<RatePickers> {
                     ],
                   );
                 });
+            if (result.success) {
+              widget.onRateUpdated();
+            }
           },
           child: Text("Submit"),
         ),

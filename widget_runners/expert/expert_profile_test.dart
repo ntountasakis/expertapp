@@ -14,7 +14,7 @@ class MyTestApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: new CommonViewExpertProfilePage(
-          "TOcIYhxdJdAkdOhkkPX0lpFS8PyX", false),
+          "TOcIYhxdJdAkdOhkkPX0lpFS8PyX", false, false),
     );
   }
 }

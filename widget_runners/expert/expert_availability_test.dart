@@ -14,7 +14,9 @@ class MyTestApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: new ExpertViewUpdateAvailabilityPage(
-          uid: 'mpKZBT949r8LM9wkzIvfl6GQQ2OQ'),
+        uid: 'mpKZBT949r8LM9wkzIvfl6GQQ2OQ',
+        fromSignupFlow: false,
+      ),
     );
   }
 }

@@ -15,6 +15,7 @@ class MyTestApp extends StatelessWidget {
         ),
         home: new ExpertViewUpdateRatesPage(
           uid: "mpKZBT949r8LM9wkzIvfl6GQQ2OQ",
+          fromSignupFlow: false,
         ));
   }
 }

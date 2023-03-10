@@ -14,7 +14,8 @@ class HamburgerMenu extends StatelessWidget {
     return ListTile(
         title: Text("My Profile"),
         onTap: () {
-          context.pushNamed(Routes.EV_PROFILE_EDIT_PAGE);
+          context.pushNamed(Routes.EV_PROFILE_EDIT_PAGE,
+              params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "false"});
         });
   }
 
@@ -38,7 +39,8 @@ class HamburgerMenu extends StatelessWidget {
     return ListTile(
         title: Text("Update Call Prices"),
         onTap: () {
-          context.pushNamed(Routes.EV_UPDATE_RATE_PAGE);
+          context.pushNamed(Routes.EV_UPDATE_RATE_PAGE,
+              params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "false"});
         });
   }
 
@@ -46,7 +48,8 @@ class HamburgerMenu extends StatelessWidget {
     return ListTile(
         title: Text("Update Call Availability Times"),
         onTap: () {
-          context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE);
+          context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE,
+              params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "false"});
         });
   }
 
@@ -94,8 +97,8 @@ class HamburgerMenu extends StatelessWidget {
           ),
           child: Text("Main Menu"),
         ),
-        pastCallsWithExpertsTile(context),
         becomeAnExpertTile(context),
+        pastCallsWithExpertsTile(context),
         signOutTile(context),
       ]),
     );
