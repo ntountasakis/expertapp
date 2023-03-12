@@ -173,9 +173,16 @@ class _CommonViewExpertProfilePageState
     );
   }
 
-  Widget buildAboutMeName(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+  Widget buildAboutMeTitle(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     return Text(
-      publicExpertInfo.documentType.fullName(),
+      "About Me",
+      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+    );
+  }
+
+  Widget buildExpertType(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+    return Text(
+      publicExpertInfo.documentType.shortName(),
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
     );
   }
@@ -243,7 +250,7 @@ class _CommonViewExpertProfilePageState
             children: [
               Row(
                 children: [
-                  buildAboutMeName(publicExpertInfo),
+                  buildAboutMeTitle(publicExpertInfo),
                   Spacer(),
                   widget._isEditable
                       ? buildEditButton(publicExpertInfo)
@@ -288,18 +295,54 @@ class _CommonViewExpertProfilePageState
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     if (widget._isEditable) {
       return SizedBox(
-        width: 200,
-        height: 200,
+        width: 150,
+        height: 150,
         child: ProfilePicture(
             publicExpertInfo.documentType.profilePicUrl, onProfilePicSelection),
       );
     } else {
       return SizedBox(
-        width: 200,
-        height: 200,
+        width: 150,
+        height: 150,
         child: ProfilePicture(publicExpertInfo.documentType.profilePicUrl),
       );
     }
+  }
+
+  Widget buildProfileHeadingDescription(
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+    final name = Text(publicExpertInfo.documentType.shortName(),
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500));
+    final majorCategory = Text(
+        "${publicExpertInfo.documentType.majorExpertCategory}",
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500));
+    final minorCategory = Text(
+        "Specializes in ${publicExpertInfo.documentType.minorExpertCategory}",
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500));
+    return Column(
+      children: [
+        name,
+        SizedBox(height: 10),
+        majorCategory,
+        minorCategory,
+      ],
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+    );
+  }
+
+  Widget buildProfileHeader(
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+    return Row(
+      children: [
+        buildProfilePicture(publicExpertInfo),
+        SizedBox(
+          width: 10,
+        ),
+        buildProfileHeadingDescription(publicExpertInfo),
+      ],
+      crossAxisAlignment: CrossAxisAlignment.start,
+    );
   }
 
   void onProfilePicSelection(Uint8List profilePicBytes) async {
@@ -325,12 +368,13 @@ class _CommonViewExpertProfilePageState
       return Column(
         children: [
           SizedBox(height: 10),
-          buildProfilePicture(publicExpertInfo),
+          buildProfileHeader(publicExpertInfo),
           SizedBox(height: 10),
-          buildCallActionButton(context, publicExpertInfo),
           buildAboutMe(publicExpertInfo),
           buildReviewHeading(),
           buildReviewList(publicExpertInfo),
+          buildCallActionButton(context, publicExpertInfo),
+          SizedBox(height: 30),
         ],
       );
     } else {
@@ -351,7 +395,7 @@ class _CommonViewExpertProfilePageState
         );
       } else {
         return AppBar(
-          title: Text(snapshot.data!.documentType.fullName()),
+          title: Text("Expert Profile"),
         );
       }
     } else {

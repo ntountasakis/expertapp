@@ -16,7 +16,7 @@ class CallWaitingWrapper extends StatelessWidget {
         "http://10.0.2.2:9004/expert-app-backend.appspot.com/profilePics/Portrait_Placeholder.png";
 
     final metadata = PublicExpertInfo(
-        "", "", "", url, 0, 0, makeDefaultAvailability(), false);
+        "", "", "", "", "", url, 0, 0, makeDefaultAvailability(), false);
     userMetadata = DocumentWrapper<PublicExpertInfo>("id", metadata);
   }
   @override
