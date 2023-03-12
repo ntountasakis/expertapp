@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_availability.dart';
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
-import 'dart:developer';
 
 class PublicExpertInfo {
   final String firstName;
   final String lastName;
   final String description;
+  final String majorExpertCategory;
+  final String minorExpertCategory;
   String profilePicUrl;
   final double runningSumReviewRatings;
   final int numReviews;
@@ -18,6 +19,8 @@ class PublicExpertInfo {
       this.firstName,
       this.lastName,
       this.description,
+      this.majorExpertCategory,
+      this.minorExpertCategory,
       this.profilePicUrl,
       this.runningSumReviewRatings,
       this.numReviews,
@@ -29,6 +32,8 @@ class PublicExpertInfo {
             json['firstName'] as String,
             json['lastName'] as String,
             json['description'] as String,
+            json['majorExpertCategory'] as String,
+            json['minorExpertCategory'] as String,
             json['profilePicUrl'] as String,
             json['runningSumReviewRatings'] + 0.0,
             json['numReviews'] as int,
