@@ -5,9 +5,9 @@ import { ExpertRate } from "../models/expert_rate";
 import { PublicExpertInfo } from "../models/public_expert_info";
 import { PublicUserInfo } from "../models/public_user_info";
 
-export async function createExpertUser({ uid, profileDescription, profilePicUrl }:
+export async function createExpertUser({ uid, profileDescription, profilePicUrl, majorExpertCategory, minorExpertCategory }:
   {
-    uid: string, profilePicUrl: string, profileDescription: string,
+    uid: string, profilePicUrl: string, profileDescription: string, majorExpertCategory: string, minorExpertCategory: string
   }): Promise<void> {
   const didCreate: boolean = await admin.firestore().runTransaction(async (transaction) => {
     const doc = await getPublicExpertInfoDocumentRef({ uid: uid }).get();
@@ -19,6 +19,8 @@ export async function createExpertUser({ uid, profileDescription, profilePicUrl 
       "firstName": publicUserInfo.firstName,
       "lastName": publicUserInfo.lastName,
       "description": profileDescription,
+      "majorExpertCategory": majorExpertCategory,
+      "minorExpertCategory": minorExpertCategory,
       "profilePicUrl": profilePicUrl,
       "runningSumReviewRatings": 0,
       "numReviews": 0,

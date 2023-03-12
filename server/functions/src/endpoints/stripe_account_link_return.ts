@@ -4,6 +4,7 @@ import { createAccountLinkOnboarding, retrieveAccount } from "../../../shared/sr
 import { getPrivateUserDocumentNoTransact } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/private_user_info";
 import { createExpertUser } from "../../../shared/src/firebase/firestore/functions/create_expert_user";
+import { StoragePaths } from "../../../shared/src/firebase/storage/storage_paths";
 
 export const stripeAccountLinkReturn = functions.https.onRequest(async (request, response) => {
   const uid = request.query.uid;
@@ -34,7 +35,8 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
     response.redirect(accountLink);
   } else {
     await createExpertUser(({
-      uid: uid, profileDescription: "", profilePicUrl: "https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/Portrait_Placeholder.png",
+      uid: uid, profileDescription: "", profilePicUrl: StoragePaths.DEFAULT_PROFILE_PIC_URL,
+      majorExpertCategory: "Major", minorExpertCategory: "Minor"
     }));
     console.log(`Connected account: ${uid} sign up process complete`);
 
