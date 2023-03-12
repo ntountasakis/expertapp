@@ -20,7 +20,7 @@ class UserViewCompletedCallsPage extends StatelessWidget {
 
             String title = 'Completed Call';
             if (expertMetadata != null) {
-              title += ' with ' + expertMetadata.documentType.fullName();
+              title += ' with ' + expertMetadata.documentType.shortName();
             }
 
             String subtitle =

@@ -54,8 +54,8 @@ class PublicExpertInfo {
     return fieldsMap;
   }
 
-  String fullName() {
-    return firstName + ' ' + lastName;
+  String shortName() {
+    return firstName + ' ' + lastName[0] + '.';
   }
 
   double getAverageReviewRating() {
