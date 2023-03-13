@@ -9,4 +9,5 @@ export class CollectionPaths {
   static SIGN_UP_TOKENS = "sign_up_tokens";
   static PRIVATE_USER_INFO = "private_user_info";
   static PUBLIC_USER_INFO = "public_user_info";
+  static EXPERT_CATEGORIES = "expert_categories";
 }

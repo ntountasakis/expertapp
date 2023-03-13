@@ -36,7 +36,7 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
   } else {
     await createExpertUser(({
       uid: uid, profileDescription: "", profilePicUrl: StoragePaths.DEFAULT_PROFILE_PIC_URL,
-      majorExpertCategory: "Major", minorExpertCategory: "Minor"
+      majorExpertCategory: "major", minorExpertCategory: "minor"
     }));
     console.log(`Connected account: ${uid} sign up process complete`);
 

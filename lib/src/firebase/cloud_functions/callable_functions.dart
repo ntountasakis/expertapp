@@ -12,6 +12,7 @@ class CallableFunctions {
   static final String CHATROOM_LOOKUP = 'chatroomLookup';
   static final String UPDATE_EXPERT_RATE = 'updateExpertRate';
   static final String UPDATE_EXPERT_AVAILABILITY = 'updateExpertAvailability';
+  static final String UPDATE_EXPERT_CATEGORY = 'updateExpertCategory';
 }
 
 class HttpEndpoints {
