@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_availability.dart';
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
+import 'package:expertapp/src/util/string_casing_extension.dart';
 
 class PublicExpertInfo {
   final String firstName;
@@ -52,6 +53,14 @@ class PublicExpertInfo {
       'inCall': inCall,
     };
     return fieldsMap;
+  }
+
+  String majorCategory() {
+    return majorExpertCategory.capitalize();
+  }
+
+  String minorCategory() {
+    return minorExpertCategory;
   }
 
   String shortName() {

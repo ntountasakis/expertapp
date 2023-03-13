@@ -10,6 +10,7 @@ import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
 import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:expertapp/src/timezone/timezone_util.dart';
+import 'package:expertapp/src/util/expert_category_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
@@ -24,14 +25,17 @@ class CommonViewExpertProfilePage extends StatefulWidget {
 
   @override
   State<CommonViewExpertProfilePage> createState() =>
-      _CommonViewExpertProfilePageState();
+      _CommonViewExpertProfilePageState(new ExpertCategorySelector(_expertUid));
 }
 
 class _CommonViewExpertProfilePageState
     extends State<CommonViewExpertProfilePage> {
   final _descriptionScrollController = ScrollController();
+  final ExpertCategorySelector _categorySelector;
   late TextEditingController _textController;
   String _textControllerText = "Loading...";
+
+  _CommonViewExpertProfilePageState(this._categorySelector);
 
   @override
   void initState() {
@@ -180,14 +184,8 @@ class _CommonViewExpertProfilePageState
     );
   }
 
-  Widget buildExpertType(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
-    return Text(
-      publicExpertInfo.documentType.shortName(),
-      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-    );
-  }
-
-  Widget buildEditButton(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+  Widget buildEditButton(
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo, Function onEdit) {
     return IconButton(
       icon: const Icon(
         Icons.edit,
@@ -195,8 +193,20 @@ class _CommonViewExpertProfilePageState
         color: Colors.grey,
       ),
       onPressed: () {
-        openEditDescriptionDialog(publicExpertInfo);
+        onEdit(publicExpertInfo);
       },
+    );
+  }
+
+  Future openEditCategoryDialog(
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        actionsAlignment: MainAxisAlignment.spaceBetween,
+        title: Text("Edit your category of expertise"),
+        content: _categorySelector,
+      ),
     );
   }
 
@@ -253,7 +263,8 @@ class _CommonViewExpertProfilePageState
                   buildAboutMeTitle(publicExpertInfo),
                   Spacer(),
                   widget._isEditable
-                      ? buildEditButton(publicExpertInfo)
+                      ? buildEditButton(
+                          publicExpertInfo, openEditDescriptionDialog)
                       : SizedBox(),
                 ],
               ),
@@ -314,16 +325,22 @@ class _CommonViewExpertProfilePageState
     final name = Text(publicExpertInfo.documentType.shortName(),
         style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500));
     final majorCategory = Text(
-        "${publicExpertInfo.documentType.majorExpertCategory}",
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500));
+        "${publicExpertInfo.documentType.majorCategory()}",
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500));
     final minorCategory = Text(
-        "Specializes in ${publicExpertInfo.documentType.minorExpertCategory}",
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500));
+        "Specializes in ${publicExpertInfo.documentType.minorCategory()}",
+        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500));
+    final editCategoryButton = widget._isEditable
+        ? buildEditButton(publicExpertInfo, openEditCategoryDialog)
+        : SizedBox();
     return Column(
       children: [
         name,
         SizedBox(height: 10),
-        majorCategory,
+        Row(children: [
+          majorCategory,
+          editCategoryButton,
+        ]),
         minorCategory,
       ],
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -335,6 +352,9 @@ class _CommonViewExpertProfilePageState
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     return Row(
       children: [
+        SizedBox(
+          width: 5,
+        ),
         buildProfilePicture(publicExpertInfo),
         SizedBox(
           width: 10,

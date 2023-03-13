@@ -9,4 +9,5 @@ class CollectionPaths {
   static final String PUBLIC_EXPERT_INFO = 'public_expert_info';
   static final String PRIVATE_USER_INFO = 'private_user_info';
   static final String PUBLIC_USER_INFO = 'public_user_info';
+  static final String EXPERT_CATEGORIES = 'expert_categories';
 }

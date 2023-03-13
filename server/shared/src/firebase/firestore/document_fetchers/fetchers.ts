@@ -8,6 +8,10 @@ import { PrivateUserInfo } from "../models/private_user_info";
 import { CollectionPaths } from "./collection_paths";
 import { PublicUserInfo } from "../models/public_user_info";
 
+function getExpertCategoryRef({ majorCategory }: { majorCategory: string }):
+  FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection(CollectionPaths.EXPERT_CATEGORIES).doc(majorCategory);
+}
 
 function getPublicUserDocumentRef({ uid }: { uid: string }):
   FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
@@ -168,5 +172,5 @@ export {
   getCallTransactionDocumentRef, getCallTransactionCollectionRef, getFcmTokenDocumentRef, getCallTransactionDocument,
   getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getPublicExpertInfo, getPublicExpertInfoNoTransact,
   getFcmTokenDocument, getPrivateUserDocument, getPrivateUserDocumentNoTransact, getExpertRateDocumentNoTransact, getSignUpTokenDocumentRef,
-  getPublicUserDocumentRef, getPublicUserDocument, getPublicUserDocumentNoTransact,
+  getPublicUserDocumentRef, getPublicUserDocument, getPublicUserDocumentNoTransact, getExpertCategoryRef,
 };
