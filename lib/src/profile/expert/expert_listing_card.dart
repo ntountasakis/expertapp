@@ -13,24 +13,42 @@ class ExpertListingCard extends StatelessWidget {
   const ExpertListingCard(this._publicExpertInfo);
 
   Widget buildLeading(BuildContext context) {
+    final TextStyle nameStyle =
+        TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
     return GestureDetector(
       onTap: () {
         context.pushNamed(Routes.UV_EXPERT_PROFILE_PAGE,
             params: {Routes.EXPERT_ID_PARAM: _publicExpertInfo.documentId});
       },
-      child: SizedBox(
-        width: 50,
-        child: ProfilePicture(_publicExpertInfo.documentType.profilePicUrl),
+      child: Column(
+        children: [
+          Text(
+            _publicExpertInfo.documentType.shortName(),
+            style: nameStyle,
+          ),
+          SizedBox(
+            height: 40,
+            width: 40,
+            child: ProfilePicture(_publicExpertInfo.documentType.profilePicUrl),
+          ),
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       ),
     );
   }
 
   Widget buildTitle() {
+    final TextStyle categoryStyle =
+        TextStyle(fontSize: 16, fontWeight: FontWeight.w700);
     return Column(
       children: [
         Text(
-          _publicExpertInfo.documentType.shortName(),
+          _publicExpertInfo.documentType.majorCategory() +
+              " - " +
+              _publicExpertInfo.documentType.minorCategory(),
+          style: categoryStyle,
         ),
+        SizedBox(height: 5),
         Row(
           children: [
             buildStarRating(_publicExpertInfo, 16),
@@ -39,7 +57,7 @@ class ExpertListingCard extends StatelessWidget {
           ],
         ),
       ],
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
     );
   }
 
