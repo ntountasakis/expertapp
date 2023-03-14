@@ -53,6 +53,14 @@ class HamburgerMenu extends StatelessWidget {
         });
   }
 
+  ListTile viewStripeEarningsDashboard(BuildContext context) {
+    return ListTile(
+        title: Text("View Stripe Earnings Dashboard"),
+        onTap: () {
+          context.pushNamed(Routes.EV_STRIPE_EARNINGS_DASHBOARD);
+        });
+  }
+
   ListTile becomeAnExpertTile(BuildContext context) {
     return ListTile(
         title: Text("Become an Expert!"),
@@ -79,6 +87,7 @@ class HamburgerMenu extends StatelessWidget {
           child: Text("Main Menu"),
         ),
         profileTile(context),
+        viewStripeEarningsDashboard(context),
         pastCallsWithExpertsTile(context),
         pastCallsWithClientsTile(context),
         updateCallPricesTile(context),
