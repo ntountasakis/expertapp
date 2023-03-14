@@ -38,4 +38,11 @@ class HttpEndpoints {
     log("Navigating to : " + url);
     return url;
   }
+
+  static String getExpertStripeEarningsDashboard(String uid) {
+    final url = getCloudFunctionsBaseUrl() +
+        'stripeConnectedAccountDashboardLinkRequest?uid=$uid';
+    log("Navigating to : " + url);
+    return url;
+  }
 }

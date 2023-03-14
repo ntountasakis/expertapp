@@ -36,3 +36,6 @@ export { stripeAccountLinkReturn };
 
 import { stripeAccountTokenSubmit } from "./endpoints/stripe_account_token_submit";
 export { stripeAccountTokenSubmit };
+
+import { stripeConnectedAccountDashboardLinkRequest } from "./endpoints/stripe_connected_account_dashboard_link_request";
+export { stripeConnectedAccountDashboardLinkRequest }

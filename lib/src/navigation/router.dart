@@ -1,6 +1,7 @@
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_stripe_earnings_dashboard.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_expert_availability_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_connected_account_signup_page.dart';
@@ -278,6 +279,13 @@ class AppRouter {
           path: Routes.EV_CONNECTED_ACCOUNT_SIGNUP_PAGE,
           builder: (BuildContext context, GoRouterState state) {
             return ExpertViewConnectedAccountSignupPage(
+                uid: lifecycle.currentUserId()!);
+          }),
+      GoRoute(
+          name: Routes.EV_STRIPE_EARNINGS_DASHBOARD,
+          path: Routes.EV_STRIPE_EARNINGS_DASHBOARD,
+          builder: (BuildContext context, GoRouterState state) {
+            return ExpertViewStripeEarningsDashboard(
                 uid: lifecycle.currentUserId()!);
           }),
     ],

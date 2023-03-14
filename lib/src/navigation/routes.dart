@@ -28,6 +28,7 @@ class Routes {
   static const EV_CALL_CHAT_PAGE = 'ev_callchat';
   static const EV_CALL_VIDEO_PAGE = 'ev_callvideo';
   static const EV_CALL_SUMMARY_PAGE = '/ev_callsummary';
+  static const EV_STRIPE_EARNINGS_DASHBOARD = '/ev_stripeearningsdashboard';
 
   // PARAMETERS
   static const AGORA_CHANNEL_NAME_PARAM = 'channelname';
