@@ -70,7 +70,8 @@ class AppRouter {
                   Routes.UV_EXPERT_PROFILE_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.params[Routes.EXPERT_ID_PARAM];
-                return CommonViewExpertProfilePage(expertId!, false, false);
+                return CommonViewExpertProfilePage(
+                    lifecycle.currentUserId()!, expertId!, false, false);
               },
               routes: <GoRoute>[
                 GoRoute(
@@ -113,7 +114,7 @@ class AppRouter {
         builder: (BuildContext context, GoRouterState state) {
           final fromSignupFlow =
               state.params[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
-          return CommonViewExpertProfilePage(
+          return CommonViewExpertProfilePage(lifecycle.currentUserId()!,
               lifecycle.currentUserId()!, true, fromSignupFlow == 'true');
         },
       ),

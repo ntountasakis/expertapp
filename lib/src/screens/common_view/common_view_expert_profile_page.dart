@@ -7,9 +7,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/public_expert_i
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/profile/expert/expert_rating.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
-import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
-import 'package:expertapp/src/profile/text_rating.dart';
 import 'package:expertapp/src/timezone/timezone_util.dart';
 import 'package:expertapp/src/util/expert_category_util.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +15,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 
 class CommonViewExpertProfilePage extends StatefulWidget {
+  final String _currentUid;
   final String _expertUid;
   final bool _isEditable;
   final bool _fromExpertSignupflow;
 
-  CommonViewExpertProfilePage(
-      this._expertUid, this._isEditable, this._fromExpertSignupflow);
+  CommonViewExpertProfilePage(this._currentUid, this._expertUid,
+      this._isEditable, this._fromExpertSignupflow);
 
   @override
   State<CommonViewExpertProfilePage> createState() =>
@@ -135,12 +134,13 @@ class _CommonViewExpertProfilePageState
 
   Widget buildCallActionButton(BuildContext context,
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+    if ((widget._currentUid == widget._expertUid) ||
+        !TimezoneUtil.isWithinTimeRange(
+            publicExpertInfo.documentType.availability)) {
+      return buildCallUnableShowAvailabilityButton(context, publicExpertInfo);
+    }
     if (publicExpertInfo.documentType.inCall) {
       return buildCallUnableShowInCallStatus(context, publicExpertInfo);
-    }
-    if (!TimezoneUtil.isWithinTimeRange(
-        publicExpertInfo.documentType.availability)) {
-      return buildCallUnableShowAvailabilityButton(context, publicExpertInfo);
     }
     return buildCallPreviewButton(context, publicExpertInfo);
   }
