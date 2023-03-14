@@ -15,25 +15,19 @@ class ExpertListingCard extends StatelessWidget {
   Widget buildLeading(BuildContext context) {
     final TextStyle nameStyle =
         TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
-    return GestureDetector(
-      onTap: () {
-        context.pushNamed(Routes.UV_EXPERT_PROFILE_PAGE,
-            params: {Routes.EXPERT_ID_PARAM: _publicExpertInfo.documentId});
-      },
-      child: Column(
-        children: [
-          Text(
-            _publicExpertInfo.documentType.shortName(),
-            style: nameStyle,
-          ),
-          SizedBox(
-            height: 40,
-            width: 40,
-            child: ProfilePicture(_publicExpertInfo.documentType.profilePicUrl),
-          ),
-        ],
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      ),
+    return Column(
+      children: [
+        Text(
+          _publicExpertInfo.documentType.shortName(),
+          style: nameStyle,
+        ),
+        SizedBox(
+          height: 40,
+          width: 40,
+          child: ProfilePicture(_publicExpertInfo.documentType.profilePicUrl),
+        ),
+      ],
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     );
   }
 
@@ -91,11 +85,17 @@ class ExpertListingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        leading: buildLeading(context),
-        title: buildTitle(),
-        trailing: buildTrailing(),
+    return GestureDetector(
+      onTap: () {
+        context.pushNamed(Routes.UV_EXPERT_PROFILE_PAGE,
+            params: {Routes.EXPERT_ID_PARAM: _publicExpertInfo.documentId});
+      },
+      child: Card(
+        child: ListTile(
+          leading: buildLeading(context),
+          title: buildTitle(),
+          trailing: buildTrailing(),
+        ),
       ),
     );
   }
