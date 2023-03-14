@@ -5,6 +5,7 @@ import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/profile/expert/expert_rating.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:expertapp/src/profile/star_rating.dart';
 import 'package:expertapp/src/profile/expert/expert_reviews.dart';
@@ -144,22 +145,6 @@ class _CommonViewExpertProfilePageState
     return buildCallPreviewButton(context, publicExpertInfo);
   }
 
-  Widget buildRating(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
-    return Row(
-      children: [
-        Flexible(
-            flex: 20,
-            child: StarRating(
-                publicExpertInfo.documentType.getAverageReviewRating(), 25.0)),
-        Spacer(flex: 1),
-        Flexible(
-            flex: 20,
-            child: TextRating(
-                publicExpertInfo.documentType.getAverageReviewRating(), 18.0))
-      ],
-    );
-  }
-
   Widget buildDescription(DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
     return SizedBox(
       height: 100,
@@ -268,7 +253,7 @@ class _CommonViewExpertProfilePageState
                       : SizedBox(),
                 ],
               ),
-              buildRating(publicExpertInfo),
+              buildExpertProfileRating(publicExpertInfo),
               SizedBox(height: 10),
               buildDescription(publicExpertInfo),
             ],

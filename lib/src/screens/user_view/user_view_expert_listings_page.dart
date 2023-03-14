@@ -1,4 +1,4 @@
-import 'package:expertapp/src/profile/expert/expert_listing_preview.dart';
+import 'package:expertapp/src/profile/expert/expert_listing_card.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/hamburger_menu.dart';
@@ -30,7 +30,7 @@ class UserViewExpertListingsPage extends StatelessWidget {
                 return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
-                      return ExpertListingPreview(
+                      return ExpertListingCard(
                         snapshot.data!.elementAt(index),
                       );
                     });
