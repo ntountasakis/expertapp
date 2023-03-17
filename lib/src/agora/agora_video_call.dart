@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:agora_rtc_engine/rtc_engine.dart';
-import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
-import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_app_id.dart';
 import 'package:flutter/material.dart';
@@ -50,25 +48,28 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
     // retrieve permissions
     await [Permission.microphone, Permission.camera].request();
 
-    //create the engine
-    _engineWrapper.setEngine(await RtcEngine.create(AgoraAppId.ID));
+    _engineWrapper.setEngine(createAgoraRtcEngine());
+    await _engineWrapper.engine.initialize(const RtcEngineContext(
+      appId: AgoraAppId.ID,
+    ));
     await _engineWrapper.engine.enableVideo();
-    _engineWrapper.engine.setEventHandler(
+    _engineWrapper.engine.registerEventHandler(
       RtcEngineEventHandler(
-        joinChannelSuccess: (String channel, int uid, int elapsed) {
-          log("local user $uid joined");
+        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+          log("local user ${connection.localUid} joined");
           setState(() {
             _localUserJoined = true;
           });
         },
-        userJoined: (int uid, int elapsed) {
-          log("remote user $uid joined");
+        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
+          log("remote user $remoteUid joined");
           setState(() {
-            _remoteUid = uid;
+            _remoteUid = remoteUid;
           });
         },
-        userOffline: (int uid, UserOfflineReason reason) {
-          log("remote user $uid left channel");
+        onUserOffline: (RtcConnection connection, int remoteUid,
+            UserOfflineReasonType reason) {
+          log("remote user $remoteUid left channel");
           setState(() {
             _remoteUid = null;
           });
@@ -76,8 +77,17 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
       ),
     );
 
+    final options = ChannelMediaOptions(
+      clientRoleType: ClientRoleType.clientRoleBroadcaster,
+      channelProfile: ChannelProfileType.channelProfileCommunication,
+    );
+
+    await _engineWrapper.engine.startPreview();
     await _engineWrapper.engine.joinChannel(
-        widget.agoraToken, widget.agoraChannelName, null, widget.agoraUid);
+        token: widget.agoraToken,
+        channelId: widget.agoraChannelName,
+        uid: widget.agoraUid,
+        options: options);
   }
 
   void onCameraMuteTap(bool cameraMuted) async {
@@ -112,7 +122,12 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
       height: 150,
       child: Center(
         child: _localUserJoined
-            ? RtcLocalView.SurfaceView()
+            ? AgoraVideoView(
+                controller: VideoViewController(
+                  rtcEngine: _engineWrapper.engine,
+                  canvas: VideoCanvas(uid: 0),
+                ),
+              )
             : CircularProgressIndicator(),
       ),
     );
@@ -151,10 +166,12 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
   // Display remote user's video
   Widget _remoteVideo() {
     if (_remoteUid != null) {
-      return RtcRemoteView.SurfaceView(
-        uid: _remoteUid!,
-        channelId: widget.agoraChannelName,
-      );
+      return AgoraVideoView(
+          controller: VideoViewController.remote(
+        rtcEngine: _engineWrapper.engine,
+        canvas: VideoCanvas(uid: _remoteUid),
+        connection: RtcConnection(channelId: widget.agoraChannelName),
+      ));
     } else {
       return Text(
         'Please wait for remote user to join',
