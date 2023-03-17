@@ -1,33 +1,16 @@
 import 'dart:io';
 
 import 'package:expertapp/src/firebase/cloud_functions/callable_functions.dart';
+import 'package:expertapp/src/util/webview_wrapper.dart';
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
-class ExpertViewStripeEarningsDashboard extends StatefulWidget {
+class ExpertViewStripeEarningsDashboard extends StatelessWidget {
   final String uid;
+  late final WebviewWrapper webview;
 
-  const ExpertViewStripeEarningsDashboard({required this.uid});
-
-  @override
-  State<ExpertViewStripeEarningsDashboard> createState() =>
-      _ExpertViewStripeEarningsDashboardState();
-}
-
-class _ExpertViewStripeEarningsDashboardState
-    extends State<ExpertViewStripeEarningsDashboard> {
-  @override
-  void initState() {
-    super.initState();
-    // Enable virtual display.
-    if (Platform.isAndroid) WebView.platform = AndroidWebView();
-  }
-
-  Widget _buildWebView() {
-    return WebView(
-      initialUrl: HttpEndpoints.getExpertStripeEarningsDashboard(widget.uid),
-      javascriptMode: JavascriptMode.unrestricted,
-    );
+  ExpertViewStripeEarningsDashboard({required this.uid}) {
+    webview = WebviewWrapper(
+        initUrl: HttpEndpoints.getExpertStripeEarningsDashboard(this.uid));
   }
 
   PreferredSizeWidget _buildAppbar() {
@@ -38,10 +21,11 @@ class _ExpertViewStripeEarningsDashboardState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: _buildAppbar(),
-        body: Center(
-          child: _buildWebView(),
-        ));
+          return Scaffold(
+              appBar: _buildAppbar(),
+              body: Center(
+                child: webview,
+              ));
   }
 }
+
