@@ -21,29 +21,29 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
-  agora_rtc_engine: ^5.2.0
+  agora_rtc_engine: ^6.1.0
   agora_uikit: ^1.0.2
-  cloud_firestore: ^3.1.8
-  cloud_functions: ^3.2.7
+  cloud_firestore: ^4.4.4
+  cloud_functions: ^4.0.12
   cupertino_icons: ^1.0.2
   currency_text_input_formatter: ^2.1.8
   day_picker: ^2.1.1
-  firebase_auth: ^3.3.3
-  firebase_core: ^1.8.0
-  firebase_core_platform_interface: 4.5.1
-  firebase_database: ^9.0.5
-  firebase_messaging: ^13.0.0
-  firebase_storage: ^10.1.0
+  firebase_auth: ^4.2.10
+  firebase_core: ^2.7.1
+  firebase_core_platform_interface: ^4.5.3
+  firebase_database: ^10.0.15
+  firebase_messaging: ^14.2.6
+  firebase_storage: ^11.0.15
   flutter:
     sdk: flutter
   flutter_chat_bubble: ^2.0.0
   flutter_countdown_timer: ^4.1.0
   flutter_rating_bar: ^4.0.0
   flutter_signin_button: ^2.0.0
-  flutter_stripe: ^4.0.0
+  flutter_stripe: ^9.0.0+1
   flutterfire_ui: ^0.4.2+2
-  go_router: ^5.1.1
-  google_api_availability: ^3.0.1
+  go_router: ^6.2.0
+  google_api_availability: ^4.0.0
   google_sign_in: ^5.2.3
   grpc: ^3.0.2
   image: ^4.0.10
@@ -54,7 +54,7 @@ dependencies:
   provider: ^6.0.3
   time_range: ^1.1.0
   uuid: ^3.0.7
-  webview_flutter: ^3.0.4
+  webview_flutter: 3.0.4
 
 dev_dependencies:
   flutter_test:

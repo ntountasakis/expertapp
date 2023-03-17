@@ -1,4 +1,4 @@
-import 'package:agora_rtc_engine/rtc_engine.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 
 class RtcEngineWrapper {
   late RtcEngine engine;
@@ -11,7 +11,7 @@ class RtcEngineWrapper {
   Future<void> teardown() async {
     if (!isTorndown) {
       await engine.leaveChannel();
-      await engine.destroy();
+      await engine.release();
       isTorndown = true;
     }
   }
