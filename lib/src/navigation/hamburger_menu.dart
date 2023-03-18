@@ -77,6 +77,18 @@ class HamburgerMenu extends StatelessWidget {
         });
   }
 
+  ListTile deleteAccountTile(BuildContext context) {
+    const style = TextStyle(color: Colors.red);
+    return ListTile(
+        title: Text(
+          "Delete Account",
+          style: style,
+        ),
+        onTap: () async {
+          context.pushNamed(Routes.DELETE_ACCOUNT_PAGE);
+        });
+  }
+
   Widget buildExpertMenu(BuildContext context) {
     return Drawer(
       child: ListView(children: [
@@ -93,6 +105,7 @@ class HamburgerMenu extends StatelessWidget {
         updateCallPricesTile(context),
         updateCallAvailabilityTile(context),
         signOutTile(context),
+        deleteAccountTile(context),
       ]),
     );
   }
@@ -109,6 +122,7 @@ class HamburgerMenu extends StatelessWidget {
         becomeAnExpertTile(context),
         pastCallsWithExpertsTile(context),
         signOutTile(context),
+        deleteAccountTile(context),
       ]),
     );
   }

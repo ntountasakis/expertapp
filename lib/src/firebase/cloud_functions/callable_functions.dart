@@ -5,6 +5,7 @@ import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 
 class CallableFunctions {
+  static final String DELETE_USER = 'deleteUser';
   static final String REGULAR_USER_SIGNUP = 'regularUserSignup';
   static final String SUBMIT_REVIEW = 'submitReview';
   static final String UPDATE_PROFILE_PIC = 'updateProfilePicture';

@@ -13,6 +13,9 @@ export { submitReview };
 import { regularUserSignup } from "./endpoints/regular_user_signup";
 export { regularUserSignup };
 
+import { deleteUser } from "./endpoints/delete_user";
+export { deleteUser };
+
 import { updateExpertRate } from "./endpoints/update_expert_rate";
 export { updateExpertRate };
 

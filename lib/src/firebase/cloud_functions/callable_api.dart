@@ -8,6 +8,10 @@ HttpsCallable getCallable(String functionName) {
   return FirebaseFunctions.instance.httpsCallable(functionName);
 }
 
+Future<void> onAccountDelete() async {
+  await getCallable(CallableFunctions.DELETE_USER).call();
+}
+
 Future<void> onUserSignup(String firstName, String lastName, String email,
     String? profilePicUrl) async {
   Map<String, String> userData = {
