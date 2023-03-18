@@ -1,6 +1,7 @@
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/screens/common_view/delete_account_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_stripe_earnings_dashboard.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_expert_availability_page.dart';
@@ -99,6 +100,12 @@ class AppRouter {
                 clientId: '294313229392786',
               )
             ]);
+          }),
+      GoRoute(
+          name: Routes.DELETE_ACCOUNT_PAGE,
+          path: Routes.DELETE_ACCOUNT_PAGE,
+          builder: (BuildContext context, GoRouterState state) {
+            return DeleteAccountPage(uid: lifecycle.currentUserId()!);
           }),
       GoRoute(
         name: Routes.UV_USER_SIGNUP_PAGE,

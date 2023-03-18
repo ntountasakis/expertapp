@@ -14,6 +14,17 @@ async function createStripeCustomer({ stripe }: { stripe: Stripe }): Promise<str
   return stripeCustomerId;
 }
 
+async function deleteStripeCustomer({ stripe, customerId }:
+  { stripe: Stripe, customerId: string }): Promise<void> {
+  let errorMessage = "Cannot delete Stripe customer. " + customerId;
+  try {
+    await stripe.customers.del(customerId);
+  } catch (error) {
+    errorMessage += handleStripeError(error);
+    throw new Error(errorMessage);
+  }
+};
+
 async function createStripeConnectAccount({ stripe, firstName, lastName, email }:
   { stripe: Stripe, firstName: string, lastName: string, email: string }): Promise<string> {
   const account: Stripe.Response<Stripe.Account> = await stripe.accounts.create({
@@ -52,4 +63,4 @@ async function retrieveAccount({ stripe, account }: { stripe: Stripe, account: s
   return await stripe.accounts.retrieve(account);
 }
 
-export { createStripeConnectAccount, createStripeCustomer, retrieveAccount };
+export { createStripeConnectAccount, createStripeCustomer, retrieveAccount, deleteStripeCustomer };
