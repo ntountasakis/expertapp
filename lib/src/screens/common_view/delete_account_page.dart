@@ -35,12 +35,27 @@ If you're absolutely sure you want to proceed with the account deletion, please 
           child: ElevatedButton(
               style: style,
               onPressed: () async {
-                await onAccountDelete();
-                await FirebaseAuth.FirebaseAuth.instance.signOut();
+                final result = await onAccountDelete();
+                await showPostDeleteDialog(context, result);
+                if (result.success) {
+                  await FirebaseAuth.FirebaseAuth.instance.signOut();
+                }
               },
               child: Text("Delete Account"))),
       SizedBox(width: 20),
     ]);
+  }
+
+  Future<void> showPostDeleteDialog(BuildContext context, UpdateResult result) async {
+    final title = result.success ? "Success" : "Error";
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(result.message),
+          );
+        });
   }
 
   @override
