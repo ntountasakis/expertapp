@@ -20,10 +20,10 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
 
   if (!account.payouts_enabled || !account.details_submitted) {
     let messagePrefix = `Connected account: ${uid} still needs `;
-    if (account.payouts_enabled) {
+    if (!account.payouts_enabled) {
       messagePrefix += " to enable payouts ";
     }
-    if (account.details_submitted) {
+    if (!account.details_submitted) {
       messagePrefix += " to finish submitting details ";
     }
     console.warn(messagePrefix);
@@ -74,7 +74,7 @@ function accountCreateSuccessHtml(): string {
   <body>
     <h1>You have successfully signed up!</h1>
     <img src="https://storage.googleapis.com/expert-app-backend.appspot.com/appImages/confetti.jpg" alt="Confetti">
-    <p>You may now return to the main menu.</p>
+    <p>Click the arrow at the top to continue the signup process.</p>
   </body>
   </html>
 `;

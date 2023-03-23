@@ -14,11 +14,26 @@ async function createStripeCustomer({ stripe }: { stripe: Stripe }): Promise<str
   return stripeCustomerId;
 }
 
+
 async function deleteStripeCustomer({ stripe, customerId }:
   { stripe: Stripe, customerId: string }): Promise<void> {
   let errorMessage = "Cannot delete Stripe customer. " + customerId;
   try {
     await stripe.customers.del(customerId);
+  } catch (error) {
+    errorMessage += handleStripeError(error);
+    throw new Error(errorMessage);
+  }
+};
+
+async function deleteStripeConnectedAccount({ stripe, connectedAccountId }:
+  { stripe: Stripe, connectedAccountId: string }): Promise<void> {
+  let errorMessage = "Cannot delete Stripe connected account. " + connectedAccountId;
+  try {
+    const result = await stripe.accounts.del(connectedAccountId);
+    if (!result.deleted) {
+      throw new Error(errorMessage);
+    }
   } catch (error) {
     errorMessage += handleStripeError(error);
     throw new Error(errorMessage);
@@ -63,4 +78,4 @@ async function retrieveAccount({ stripe, account }: { stripe: Stripe, account: s
   return await stripe.accounts.retrieve(account);
 }
 
-export { createStripeConnectAccount, createStripeCustomer, retrieveAccount, deleteStripeCustomer };
+export { createStripeConnectAccount, createStripeCustomer, retrieveAccount, deleteStripeCustomer, deleteStripeConnectedAccount };
