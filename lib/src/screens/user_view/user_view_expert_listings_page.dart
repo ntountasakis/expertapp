@@ -5,7 +5,7 @@ import 'package:expertapp/src/navigation/hamburger_menu.dart';
 import 'package:flutter/material.dart';
 
 class UserViewExpertListingsPage extends StatelessWidget {
-  final String currentUserId;
+  final String? currentUserId;
 
   static final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 8));

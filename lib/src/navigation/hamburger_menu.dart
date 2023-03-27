@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class HamburgerMenu extends StatelessWidget {
-  final String currentUserId;
+  final String? currentUserId;
 
   const HamburgerMenu({required this.currentUserId});
 
@@ -77,6 +77,14 @@ class HamburgerMenu extends StatelessWidget {
         });
   }
 
+  ListTile createAccountSignInTile(BuildContext context) {
+    return ListTile(
+        title: Text("Create Account / Sign in"),
+        onTap: () async {
+          context.pushReplacementNamed(Routes.SIGN_IN_PAGE);
+        });
+  }
+
   ListTile deleteAccountTile(BuildContext context) {
     const style = TextStyle(color: Colors.red);
     return ListTile(
@@ -127,10 +135,25 @@ class HamburgerMenu extends StatelessWidget {
     );
   }
 
+  Widget buildNoAccountMenu(BuildContext context) {
+    return Drawer(
+      child: ListView(children: [
+        const DrawerHeader(
+          decoration: BoxDecoration(
+            color: Colors.blue,
+          ),
+          child: Text("Main Menu"),
+        ),
+        createAccountSignInTile(context),
+      ]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (currentUserId == null) return buildNoAccountMenu(context);
     return FutureBuilder(
-      future: PublicExpertInfo.get(currentUserId),
+      future: PublicExpertInfo.get(currentUserId!),
       builder: (BuildContext context,
           AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
         return snapshot.hasData

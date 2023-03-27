@@ -40,21 +40,22 @@ class AppRouter {
       final signedIn = lifecycle.authenticatedUser != null;
       final userExists = lifecycle.currentUserId() != null;
 
-      if (!signedIn) {
-        return state.location != Routes.SIGN_IN_PAGE
-            ? Routes.SIGN_IN_PAGE
-            : null;
-      }
-      if (!userExists) {
-        return state.location != Routes.UV_USER_SIGNUP_PAGE
-            ? Routes.UV_USER_SIGNUP_PAGE
-            : null;
-      }
-      if (state.location == Routes.SIGN_IN_PAGE ||
-          state.location == Routes.UV_USER_SIGNUP_PAGE) {
+      if (state.location == Routes.DELETE_ACCOUNT_PAGE && !signedIn) {
         return Routes.HOME_PAGE;
       }
-      return null;
+
+      if (state.location != Routes.UV_USER_SIGNUP_PAGE &&
+          state.location != Routes.SIGN_IN_PAGE) {
+        return null;
+      }
+
+      if (userExists) {
+        return Routes.HOME_PAGE;
+      }
+      if (signedIn) {
+        return Routes.UV_USER_SIGNUP_PAGE;
+      }
+      return Routes.SIGN_IN_PAGE;
     },
     refreshListenable: lifecycle,
     routes: <GoRoute>[
@@ -63,7 +64,7 @@ class AppRouter {
         path: Routes.HOME_PAGE,
         builder: (BuildContext context, GoRouterState state) {
           return UserViewExpertListingsPage(
-              currentUserId: lifecycle.authenticatedUser!.uid);
+              currentUserId: lifecycle.currentUserId());
         },
         routes: <GoRoute>[
           GoRoute(
@@ -73,7 +74,7 @@ class AppRouter {
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.params[Routes.EXPERT_ID_PARAM];
                 return CommonViewExpertProfilePage(
-                    lifecycle.currentUserId()!, expertId!, false, false);
+                    lifecycle.currentUserId(), expertId!, false, false);
               },
               routes: <GoRoute>[
                 GoRoute(
@@ -89,6 +90,7 @@ class AppRouter {
       ),
       GoRoute(
           path: Routes.SIGN_IN_PAGE,
+          name: Routes.SIGN_IN_PAGE,
           builder: (BuildContext context, GoRouterState state) {
             return SignInScreen(providerConfigs: [
               EmailProviderConfiguration(),
@@ -130,14 +132,14 @@ class AppRouter {
         name: Routes.UV_COMPLETED_CALLS_PAGE,
         path: Routes.UV_COMPLETED_CALLS_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return UserViewCompletedCallsPage(lifecycle.authenticatedUser!.uid);
+          return UserViewCompletedCallsPage(lifecycle.currentUserId()!);
         },
       ),
       GoRoute(
         name: Routes.EV_COMPLETED_CALLS_PAGE,
         path: Routes.EV_COMPLETED_CALLS_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return ExpertViewCompletedCallsPage(lifecycle.authenticatedUser!.uid);
+          return ExpertViewCompletedCallsPage(lifecycle.currentUserId()!);
         },
       ),
       GoRoute(

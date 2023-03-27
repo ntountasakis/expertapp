@@ -24,8 +24,8 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
                     message: "Cannot delete account yet, all balances in your Stripe dashboard must be zero. " + nonZeroMessage,
                 };
             }
+            await deleteStripeConnectedAccount({ stripe: StripeProvider.STRIPE, connectedAccountId: privateUserInfo.stripeConnectedId });
         }
-        await deleteStripeConnectedAccount({ stripe: StripeProvider.STRIPE, connectedAccountId: privateUserInfo.stripeConnectedId });
         await deleteStripeCustomer({ stripe: StripeProvider.STRIPE, customerId: privateUserInfo.stripeCustomerId });
         await admin.firestore().runTransaction(async (transaction) => {
             transaction.delete(getPublicUserDocumentRef({ uid: uid }));

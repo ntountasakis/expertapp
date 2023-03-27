@@ -21,6 +21,7 @@ class AppLifecycle extends ChangeNotifier {
     if (_theAuthenticatedUser != null) {
       onUserLogin(await PublicUserInfo.get(_theAuthenticatedUser!.uid));
     } else {
+      _thePublicUserInfo = null;
       notifyListeners();
     }
   }

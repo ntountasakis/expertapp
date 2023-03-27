@@ -15,7 +15,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 
 class CommonViewExpertProfilePage extends StatefulWidget {
-  final String _currentUid;
+  final String? _currentUid;
   final String _expertUid;
   final bool _isEditable;
   final bool _fromExpertSignupflow;
@@ -50,13 +50,18 @@ class _CommonViewExpertProfilePageState
     super.dispose();
   }
 
-  Widget buildCallPreviewButton(BuildContext context,
-      DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+  Widget buildCallButtonHelper(
+      Color backgroundColor,
+      Color shadowColor,
+      String buttonText,
+      String routeName,
+      Map<String, String> params,
+      bool shouldPush) {
     final ButtonStyle style = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20),
-      backgroundColor: Colors.green[500],
+      backgroundColor: backgroundColor,
       elevation: 4.0,
-      shadowColor: Colors.green[900],
+      shadowColor: shadowColor,
     );
     return Row(
       children: [
@@ -65,75 +70,67 @@ class _CommonViewExpertProfilePageState
           child: ElevatedButton(
               style: style,
               onPressed: () async {
-                context.pushNamed(Routes.UV_EXPERT_CALL_PREVIEW_PAGE, params: {
-                  Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId
-                });
+                if (shouldPush) {
+                  context.pushNamed(routeName, params: params);
+                } else {
+                  context.pushReplacementNamed(routeName, params: params);
+                }
               },
-              child: Text('Call ${publicExpertInfo.documentType.firstName}')),
+              child: Text(buttonText)),
         ),
         SizedBox(width: 10),
       ],
     );
+  }
+
+  Widget buildMakeAccountButton(BuildContext context) {
+    return buildCallButtonHelper(
+        Colors.blue[500]!,
+        Colors.blue[900]!,
+        'Click to make an account / sign in to call this expert',
+        Routes.SIGN_IN_PAGE,
+        {},
+        false);
+  }
+
+  Widget buildCallPreviewButton(BuildContext context,
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+    return buildCallButtonHelper(
+        Colors.green[500]!,
+        Colors.green[900]!,
+        'Call ${publicExpertInfo.documentType.firstName}',
+        Routes.UV_EXPERT_CALL_PREVIEW_PAGE,
+        {Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId},
+        true);
   }
 
   Widget buildCallUnableShowInCallStatus(BuildContext context,
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
-    final ButtonStyle style = ElevatedButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 20),
-      backgroundColor: Colors.red[500],
-      elevation: 4.0,
-      shadowColor: Colors.red[900],
-    );
-    return Row(
-      children: [
-        SizedBox(width: 10),
-        Expanded(
-          child: ElevatedButton(
-              style: style,
-              onPressed: () async {
-                context.pushNamed(Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
-                    params: {
-                      Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId
-                    });
-              },
-              child: Text(
-                  'They are currently in another call. Please come back later.')),
-        ),
-        SizedBox(width: 10),
-      ],
-    );
+    return buildCallButtonHelper(
+        Colors.red[500]!,
+        Colors.red[900]!,
+        'They are currently in another call. Please come back later.',
+        Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
+        {Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId},
+        true);
   }
 
   Widget buildCallUnableShowAvailabilityButton(BuildContext context,
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
-    final ButtonStyle style = ElevatedButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 20),
-      backgroundColor: Colors.purple[500],
-      elevation: 4.0,
-      shadowColor: Colors.purple[900],
-    );
-    return Row(
-      children: [
-        SizedBox(width: 10),
-        Expanded(
-          child: ElevatedButton(
-              style: style,
-              onPressed: () async {
-                context.pushNamed(Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
-                    params: {
-                      Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId
-                    });
-              },
-              child: Text(
-                  'Click to view ${publicExpertInfo.documentType.firstName}\'s Availability')),
-        ),
-        SizedBox(width: 10),
-      ],
-    );
+    return buildCallButtonHelper(
+        Colors.purple[500]!,
+        Colors.purple[900]!,
+        'Click to view ${publicExpertInfo.documentType.firstName}\'s Availability',
+        Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
+        {Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId},
+        true);
   }
 
   Widget buildCallActionButton(BuildContext context,
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+    if (widget._currentUid == null) {
+      return buildMakeAccountButton(context);
+    }
     if ((widget._currentUid == widget._expertUid) ||
         !TimezoneUtil.isWithinTimeRange(
             publicExpertInfo.documentType.availability)) {
