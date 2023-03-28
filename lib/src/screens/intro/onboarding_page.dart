@@ -1,4 +1,5 @@
 import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/preferences/preferences.dart';
 import 'package:expertapp/src/screens/user_view/onboarding_page_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
@@ -14,7 +15,8 @@ class OnBoardingPage extends StatefulWidget {
 class OnBoardingPageState extends State<OnBoardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
 
-  void _onIntroEnd(BuildContext context) {
+  Future<void> _onIntroEnd(BuildContext context) async {
+    await Preferences.setOnboardingShown();
     context.goNamed(Routes.HOME_PAGE);
   }
 

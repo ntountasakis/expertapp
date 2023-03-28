@@ -1,6 +1,7 @@
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/preferences/preferences.dart';
 import 'package:expertapp/src/screens/common_view/delete_account_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_stripe_earnings_dashboard.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
@@ -37,9 +38,16 @@ class AppRouter {
     navigatorKey: navigatorKey,
     initialLocation: Routes.ONBOARDING,
     debugLogDiagnostics: true,
-    redirect: (context, state) {
+    redirect: (context, state) async {
       final signedIn = lifecycle.authenticatedUser != null;
       final userExists = lifecycle.currentUserId() != null;
+
+      if (state.location == Routes.ONBOARDING) {
+        if (await Preferences.shouldShowOnboarding()) {
+          return null;
+        }
+        return Routes.HOME_PAGE;
+      }
 
       if (state.location == Routes.DELETE_ACCOUNT_PAGE && !signedIn) {
         return Routes.HOME_PAGE;
