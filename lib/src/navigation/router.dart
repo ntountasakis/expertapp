@@ -2,6 +2,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dar
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/preferences/preferences.dart';
+import 'package:expertapp/src/screens/auth/sign_in_page.dart';
 import 'package:expertapp/src/screens/common_view/delete_account_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_stripe_earnings_dashboard.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
@@ -108,16 +109,7 @@ class AppRouter {
           path: Routes.SIGN_IN_PAGE,
           name: Routes.SIGN_IN_PAGE,
           builder: (BuildContext context, GoRouterState state) {
-            return SignInScreen(providerConfigs: [
-              EmailProviderConfiguration(),
-              GoogleProviderConfiguration(
-                clientId:
-                    '111394228371-4slr6ceip09bqefipq2ikbvribtj93qj.apps.googleusercontent.com',
-              ),
-              FacebookProviderConfiguration(
-                clientId: '294313229392786',
-              )
-            ]);
+            return SignInPage();
           }),
       GoRoute(
           name: Routes.DELETE_ACCOUNT_PAGE,
