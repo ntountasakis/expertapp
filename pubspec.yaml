@@ -49,6 +49,7 @@ dependencies:
   image: ^4.0.10
   image_picker: ^0.8.4
   intl: ^0.17.0
+  introduction_screen: ^3.1.7
   mocktail: ^0.3.0
   protobuf: ^2.0.1
   provider: ^6.0.3
