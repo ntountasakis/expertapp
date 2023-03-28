@@ -15,10 +15,16 @@ class _ExpertReviewsState extends State<ExpertReviews> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: ExpertReview.getStream(widget._publicExpertInfo),
-        builder: (BuildContext context,
-            AsyncSnapshot<Iterable<ExpertReview>> snapshot) {
+        stream: ExpertReview.getStream(widget._publicExpertInfo.documentId),
+        builder:
+            (BuildContext context, AsyncSnapshot<Iterable<Widget>> snapshot) {
           if (snapshot.hasData) {
+            if (snapshot.data!.isEmpty) {
+              return ExpertReview.buildReviewCard(
+                  "",
+                  'Be the first to review ${widget._publicExpertInfo.documentType.firstName} by giving them a call!',
+                  0);
+            }
             return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
