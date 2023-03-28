@@ -4,6 +4,7 @@ import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/screens/common_view/delete_account_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_stripe_earnings_dashboard.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
+import 'package:expertapp/src/screens/intro/onboarding_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_expert_availability_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_connected_account_signup_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_rates_page.dart';
@@ -34,7 +35,7 @@ class AppRouter {
 
   late final GoRouter _goRouter = GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: Routes.HOME_PAGE,
+    initialLocation: Routes.ONBOARDING,
     debugLogDiagnostics: true,
     redirect: (context, state) {
       final signedIn = lifecycle.authenticatedUser != null;
@@ -59,6 +60,13 @@ class AppRouter {
     },
     refreshListenable: lifecycle,
     routes: <GoRoute>[
+      GoRoute(
+        name: Routes.ONBOARDING,
+        path: Routes.ONBOARDING,
+        builder: (BuildContext context, GoRouterState state) {
+          return OnBoardingPage();
+        },
+      ),
       GoRoute(
         name: Routes.HOME_PAGE,
         path: Routes.HOME_PAGE,

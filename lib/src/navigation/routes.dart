@@ -3,6 +3,7 @@ class Routes {
 
   // common pages
   static const HOME_PAGE = '/';
+  static const ONBOARDING = '/onboarding';
   static const SIGN_IN_PAGE = '/signin';
   static const DELETE_ACCOUNT_PAGE = '/deleteaccount';
 

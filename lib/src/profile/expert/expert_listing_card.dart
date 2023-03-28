@@ -46,8 +46,6 @@ class ExpertListingCard extends StatelessWidget {
         Row(
           children: [
             buildStarRating(_publicExpertInfo, 16),
-            SizedBox(width: 5),
-            buildTextRating(_publicExpertInfo, 16),
           ],
         ),
       ],
