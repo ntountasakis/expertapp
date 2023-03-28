@@ -8,7 +8,7 @@ class Routes {
   static const DELETE_ACCOUNT_PAGE = '/deleteaccount';
 
   // user view pages
-  static const UV_USER_SIGNUP_PAGE = '/uv_usersignup';
+  static const UV_USER_SIGNUP_PAGE = '/uv_userHOME_PAGEsignup';
   static const UV_COMPLETED_CALLS_PAGE = '/uv_completedcalls';
   static const UV_EXPERT_PROFILE_PAGE = 'uv_expertprofile';
   static const UV_EXPERT_CALL_PREVIEW_PAGE = 'uv_callpreview';

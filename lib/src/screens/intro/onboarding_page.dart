@@ -17,7 +17,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
 
   Future<void> _onIntroEnd(BuildContext context) async {
     await Preferences.setOnboardingShown();
-    context.goNamed(Routes.HOME_PAGE);
+    context.goNamed(Routes.SIGN_IN_PAGE);
   }
 
   @override

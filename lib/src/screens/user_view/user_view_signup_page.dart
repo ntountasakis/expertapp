@@ -2,13 +2,14 @@ import 'dart:developer';
 
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/private_user_info.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
+import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class UserViewSignupPage extends StatefulWidget {
   @override
@@ -103,12 +104,14 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text("Sign Up"),
-          leading: ElevatedButton(
-            onPressed: () async {
-              await FirebaseAuth.FirebaseAuth.instance.signOut();
-            },
-            child: const Text('Sign Out'),
-          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                context.goNamed(Routes.HOME_PAGE);
+              },
+              child: const Text('Skip'),
+            ),
+          ],
         ),
         body: Consumer<AppLifecycle>(builder: (context, lifecycle, child) {
           return Container(
