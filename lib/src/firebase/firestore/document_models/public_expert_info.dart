@@ -102,6 +102,9 @@ class PublicExpertInfo {
 
   static Stream<Iterable<DocumentWrapper<PublicExpertInfo>>> getStream() {
     return _userMetadataRef()
+        .orderBy('majorExpertCategory')
+        .orderBy('minorExpertCategory')
+        .orderBy('firstName')
         .snapshots()
         .map((QuerySnapshot<PublicExpertInfo> collectionSnapshot) {
       return collectionSnapshot.docs
