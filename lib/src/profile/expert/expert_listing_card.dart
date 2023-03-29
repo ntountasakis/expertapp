@@ -15,47 +15,59 @@ class ExpertListingCard extends StatelessWidget {
   Widget buildLeading(BuildContext context) {
     final TextStyle nameStyle =
         TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
-    return Column(
-      children: [
-        Text(
-          _publicExpertInfo.documentType.shortName(),
-          style: nameStyle,
-        ),
-        SizedBox(
-          height: 40,
-          width: 40,
-          child: ProfilePicture(_publicExpertInfo.documentType.profilePicUrl),
-        ),
-      ],
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return SizedBox(
+      width: 100,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          IntrinsicWidth(
+            child: Text(
+              _publicExpertInfo.documentType.shortName(),
+              style: nameStyle,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          SizedBox(height: 5),
+          Expanded(
+            child: ProfilePicture(_publicExpertInfo.documentType.profilePicUrl),
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildTitle() {
     final TextStyle categoryStyle =
-        TextStyle(fontSize: 16, fontWeight: FontWeight.w700);
+        TextStyle(fontSize: 14, fontWeight: FontWeight.w700);
+    return Text(
+      _publicExpertInfo.documentType.majorCategory(),
+      style: categoryStyle,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  Widget buildSubtitle() {
+    final TextStyle categoryStyle =
+        TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          _publicExpertInfo.documentType.majorCategory() +
-              " - " +
-              _publicExpertInfo.documentType.minorCategory(),
-          style: categoryStyle,
+        IntrinsicWidth(
+          child: Text(
+            _publicExpertInfo.documentType.minorCategory(),
+            style: categoryStyle,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
         SizedBox(height: 5),
-        Row(
-          children: [
-            buildStarRating(_publicExpertInfo, 16),
-          ],
-        ),
+        buildStarRating(_publicExpertInfo, 14),
       ],
-      crossAxisAlignment: CrossAxisAlignment.center,
     );
   }
 
   Widget buildTrailing() {
     final TextStyle rateStyle =
-        TextStyle(fontSize: 14, fontWeight: FontWeight.w500);
+        TextStyle(fontSize: 12, fontWeight: FontWeight.w500);
     return FutureBuilder(
         future: ExpertRate.get(_publicExpertInfo.documentId),
         builder: (BuildContext context,
@@ -63,6 +75,8 @@ class ExpertListingCard extends StatelessWidget {
           if (snapshot.hasData) {
             final rate = snapshot.data as DocumentWrapper<ExpertRate>;
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
                   "Start fee: " + rate.documentType.formattedStartCallFee(),
@@ -74,7 +88,6 @@ class ExpertListingCard extends StatelessWidget {
                   style: rateStyle,
                 ),
               ],
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             );
           }
           return SizedBox();
@@ -88,11 +101,19 @@ class ExpertListingCard extends StatelessWidget {
         context.pushNamed(Routes.UV_EXPERT_PROFILE_PAGE,
             params: {Routes.EXPERT_ID_PARAM: _publicExpertInfo.documentId});
       },
-      child: Card(
-        child: ListTile(
-          leading: buildLeading(context),
-          title: buildTitle(),
-          trailing: buildTrailing(),
+      child: Container(
+        height: 100,
+        child: Card(
+          child: ListTile(
+            dense: true,
+            visualDensity: VisualDensity(
+                horizontal: VisualDensity.maximumDensity,
+                vertical: VisualDensity.maximumDensity),
+            leading: buildLeading(context),
+            title: buildTitle(),
+            subtitle: buildSubtitle(),
+            trailing: buildTrailing(),
+          ),
         ),
       ),
     );

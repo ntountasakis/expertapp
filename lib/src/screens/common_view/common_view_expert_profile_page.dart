@@ -304,29 +304,43 @@ class _CommonViewExpertProfilePageState
 
   Widget buildProfileHeadingDescription(
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
-    final name = Text(publicExpertInfo.documentType.shortName(),
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500));
-    final majorCategory = Text(
+    final name = Text(
+      publicExpertInfo.documentType.shortName(),
+      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+    final majorCategory = Expanded(
+      child: Text(
         "${publicExpertInfo.documentType.majorCategory()}",
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500));
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
     final minorCategory = Text(
-        "Specializes in ${publicExpertInfo.documentType.minorCategory()}",
-        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500));
+      "Specializes in ${publicExpertInfo.documentType.minorCategory()}",
+      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
     final editCategoryButton = widget._isEditable
         ? buildEditButton(publicExpertInfo, openEditCategoryDialog)
         : SizedBox();
-    return Column(
-      children: [
-        name,
-        SizedBox(height: 10),
-        Row(children: [
-          majorCategory,
-          editCategoryButton,
-        ]),
-        minorCategory,
-      ],
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Expanded(
+      child: Column(
+        children: [
+          name,
+          SizedBox(height: 10),
+          Row(children: [
+            majorCategory,
+            editCategoryButton,
+          ]),
+          minorCategory,
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+      ),
     );
   }
 

@@ -20,7 +20,9 @@ class ProfilePicture extends StatelessWidget {
       url = StorageUtil.getLocalhostUrlForStorageUrl(url);
     }
     return CircleAvatar(
-        backgroundColor: Colors.white, backgroundImage: NetworkImage(url));
+      backgroundColor: Colors.white,
+      backgroundImage: NetworkImage(url),
+    );
   }
 
   Widget _asyncPicLoader() {
