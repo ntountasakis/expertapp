@@ -37,25 +37,23 @@ class ExpertListingCard extends StatelessWidget {
   }
 
   Widget buildTitle() {
-    final TextStyle categoryStyle =
+    final TextStyle majorStyle =
         TextStyle(fontSize: 14, fontWeight: FontWeight.w700);
-    return Text(
-      _publicExpertInfo.documentType.majorCategory(),
-      style: categoryStyle,
-      overflow: TextOverflow.ellipsis,
-    );
-  }
-
-  Widget buildSubtitle() {
-    final TextStyle categoryStyle =
-        TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
+    final TextStyle minorStyle = TextStyle(
+        fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey[600]);
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          _publicExpertInfo.documentType.majorCategory(),
+          style: majorStyle,
+          overflow: TextOverflow.ellipsis,
+        ),
         IntrinsicWidth(
           child: Text(
             _publicExpertInfo.documentType.minorCategory(),
-            style: categoryStyle,
+            style: minorStyle,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -111,7 +109,6 @@ class ExpertListingCard extends StatelessWidget {
                 vertical: VisualDensity.maximumDensity),
             leading: buildLeading(context),
             title: buildTitle(),
-            subtitle: buildSubtitle(),
             trailing: buildTrailing(),
           ),
         ),
