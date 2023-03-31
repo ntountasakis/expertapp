@@ -24,6 +24,7 @@ import 'package:expertapp/src/screens/user_view/user_view_call_main_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_call_preview_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_call_main_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_signup_page.dart';
+import 'package:expertapp/src/screens/user_view/user_view_stripe_payment_methods_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
 import 'package:go_router/go_router.dart';
@@ -315,6 +316,13 @@ class AppRouter {
           path: Routes.EV_STRIPE_EARNINGS_DASHBOARD,
           builder: (BuildContext context, GoRouterState state) {
             return ExpertViewStripeEarningsDashboard(
+                uid: lifecycle.currentUserId()!);
+          }),
+      GoRoute(
+          name: Routes.UV_STRIPE_PAYMENT_METHODS_DASHBOARD,
+          path: Routes.UV_STRIPE_PAYMENT_METHODS_DASHBOARD,
+          builder: (BuildContext context, GoRouterState state) {
+            return UserViewStripeBillingDashboard(
                 uid: lifecycle.currentUserId()!);
           }),
     ],

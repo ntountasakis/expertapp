@@ -48,3 +48,7 @@ export { stripeAccountTokenSubmit };
 
 import { stripeConnectedAccountDashboardLinkRequest } from "./endpoints/stripe_connected_account_dashboard_link_request";
 export { stripeConnectedAccountDashboardLinkRequest }
+
+import { stripeCustomerManagePaymentMethodsDashboardLinkRequest } from "./endpoints/stripe_customer_manage_payment_methods_dashboard_link_request";
+export { stripeCustomerManagePaymentMethodsDashboardLinkRequest}
+

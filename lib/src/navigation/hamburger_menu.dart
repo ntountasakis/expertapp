@@ -61,11 +61,19 @@ class HamburgerMenu extends StatelessWidget {
         });
   }
 
-  ListTile viewStripeEarningsDashboard(BuildContext context) {
+  ListTile stripeEarningsDashboard(BuildContext context) {
     return ListTile(
-        title: Text("View Stripe Earnings Dashboard"),
+        title: Text("Stripe Earnings Dashboard"),
         onTap: () {
           context.pushNamed(Routes.EV_STRIPE_EARNINGS_DASHBOARD);
+        });
+  }
+
+  ListTile stripePaymentMethodsDashboard(BuildContext context) {
+    return ListTile(
+        title: Text("Manage Your Payment Methods"),
+        onTap: () {
+          context.pushNamed(Routes.UV_STRIPE_PAYMENT_METHODS_DASHBOARD);
         });
   }
 
@@ -115,7 +123,8 @@ class HamburgerMenu extends StatelessWidget {
           child: Text("Main Menu"),
         ),
         profileTile(context),
-        viewStripeEarningsDashboard(context),
+        stripeEarningsDashboard(context),
+        stripePaymentMethodsDashboard(context),
         pastCallsWithExpertsTile(context),
         pastCallsWithClientsTile(context),
         pastChatsTile(context),
@@ -139,6 +148,7 @@ class HamburgerMenu extends StatelessWidget {
         becomeAnExpertTile(context),
         pastCallsWithExpertsTile(context),
         pastChatsTile(context),
+        stripePaymentMethodsDashboard(context),
         signOutTile(context),
         deleteAccountTile(context),
       ]),

@@ -19,6 +19,8 @@ class Routes {
   static const UV_VIEW_EXPERT_AVAILABILITY_PAGE = '/uv_viewexpertavailability';
   static const UV_CALL_SUMMARY_PAGE = '/uv_callsummary';
   static const UV_PAST_CHATS = '/uv_pastchats';
+  static const UV_STRIPE_PAYMENT_METHODS_DASHBOARD =
+      '/uv_stripebillingdashboard';
 
   // expert-only pages
   static const EV_PROFILE_EDIT_PAGE = '/ev_profileedit';
