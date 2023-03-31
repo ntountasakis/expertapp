@@ -28,6 +28,9 @@ export { updateExpertCategory };
 import { chatroomLookup } from "./endpoints/chatroom_lookup";
 export { chatroomLookup };
 
+import { getAllChatroomPreviewsForUser } from "./endpoints/get_all_chatroom_previews_for_user";
+export { getAllChatroomPreviewsForUser }
+
 import { stripeWebhookListener } from "./endpoints/stripe_webhook_listener";
 export { stripeWebhookListener };
 

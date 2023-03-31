@@ -71,39 +71,59 @@ def make_expert_rate(id, centsCallStart, centsPerMinute):
     })
 
 
-alex_id = make_public_user_info('Alexander', 'Hipp')
-make_public_expert_info(alex_id, 'Alexander', 'Hipp', "Tutor", "Math", 10, 47,
-                        'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/alexander-hipp-iEEBWgY_6lA-unsplash.jpg', '')
-make_expert_rate(alex_id, 100, 50)
-
-brian_id = make_public_user_info('Brian', 'Tromp')
-make_public_expert_info(brian_id, 'Brian', 'Tromp', "Tutor", "Science", 20, 40,
-                        'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/brian-tromp-oyoKfOhYtZI-unsplash.jpg', '')
-make_expert_rate(brian_id, 200, 60)
+def make_chatroom_metadata(currentUid, otherUid):
+    doc_ref = db.collection('chatroom_metadata')
+    update_time, add_ref = doc_ref.add({
+        'currentUid': currentUid,
+        'otherUid': otherUid,
+    })
+    return add_ref.id
 
 
-chris_id = make_public_user_info('Christina', 'Wocintech')
-make_public_expert_info(chris_id, 'Christina', 'Wocintech', "Personal Finance", "Taxes", 20, 40,
-                        'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/christina-wocintechchat-com-kXmKqYOGA4Y-unsplash.jpg', '')
-make_expert_rate(chris_id, 50, 100)
+def make_chat_message(chatroom_id, authorUid, recipientUid, messageText):
+    doc_ref = db.collection('chat_rooms').document(
+        chatroom_id).collection('chat_messages')
+    doc_ref.add({
+        'authorUid': authorUid,
+        'chatText': messageText,
+        'millisecondsSinceEpochUtc': 0,
+        'recipientUid': recipientUid
+    })
 
 
-dylan_id = make_public_user_info('Dylan', 'Ferreira')
-make_public_expert_info(dylan_id, 'Dylan', 'Ferreira', "Mechanic", "Motorcycle", 30, 55,
-                        'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/dylan-ferreira-jIM8kVsFKlM-unsplash.jpg', '')
-make_expert_rate(dylan_id, 100, 40)
+# alex_id = make_public_user_info('Alexander', 'Hipp')
+# make_public_expert_info(alex_id, 'Alexander', 'Hipp', "Tutor", "Math", 10, 47,
+#                         'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/alexander-hipp-iEEBWgY_6lA-unsplash.jpg', '')
+# make_expert_rate(alex_id, 100, 50)
+
+# brian_id = make_public_user_info('Brian', 'Tromp')
+# make_public_expert_info(brian_id, 'Brian', 'Tromp', "Tutor", "Science", 20, 40,
+#                         'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/brian-tromp-oyoKfOhYtZI-unsplash.jpg', '')
+# make_expert_rate(brian_id, 200, 60)
 
 
-elizeu_id = make_public_user_info('Elizeu', 'Dias')
-make_public_expert_info(elizeu_id, 'Elizeu', 'Dias', "Mechanic", "Cars", 5, 25,
-                        'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/elizeu-dias-2EGNqazbAMk-unsplash.jpg', '')
-make_expert_rate(elizeu_id, 300, 20)
+# chris_id = make_public_user_info('Christina', 'Wocintech')
+# make_public_expert_info(chris_id, 'Christina', 'Wocintech', "Personal Finance", "Taxes", 20, 40,
+#                         'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/christina-wocintechchat-com-kXmKqYOGA4Y-unsplash.jpg', '')
+# make_expert_rate(chris_id, 50, 100)
 
 
-zoran_id = make_public_user_info('Zoran', 'Borojevbich')
-make_public_expert_info(zoran_id, 'Zoran', 'Borojevbich', "Home Improvement", "Plumber", 6, 30,
-                        'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/zoran-borojevic-s55Di5cdiSM-unsplash.jpg', '')
-make_expert_rate(zoran_id, 150, 50)
+# dylan_id = make_public_user_info('Dylan', 'Ferreira')
+# make_public_expert_info(dylan_id, 'Dylan', 'Ferreira', "Mechanic", "Motorcycle", 30, 55,
+#                         'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/dylan-ferreira-jIM8kVsFKlM-unsplash.jpg', '')
+# make_expert_rate(dylan_id, 100, 40)
+
+
+# elizeu_id = make_public_user_info('Elizeu', 'Dias')
+# make_public_expert_info(elizeu_id, 'Elizeu', 'Dias', "Mechanic", "Cars", 5, 25,
+#                         'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/elizeu-dias-2EGNqazbAMk-unsplash.jpg', '')
+# make_expert_rate(elizeu_id, 300, 20)
+
+
+# zoran_id = make_public_user_info('Zoran', 'Borojevbich')
+# make_public_expert_info(zoran_id, 'Zoran', 'Borojevbich', "Home Improvement", "Plumber", 6, 30,
+#                         'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/zoran-borojevic-s55Di5cdiSM-unsplash.jpg', '')
+# make_expert_rate(zoran_id, 150, 50)
 
 
 # brian_id = 'nuXctk2lXRnNxW7BKoeL'
@@ -115,3 +135,20 @@ make_expert_rate(zoran_id, 150, 50)
 #             'zTT1c26MHDpEfWJ6EHlKhW5rj0YV', 'This is a review', 5)
 # make_review(brian_id, 'Hello', 'Goodbye',
 #             'zbs9NlQV8FC4K9vGXktMNTI09M8N', 'This is a review', 5)
+
+foo_id = 'TOcIYhxdJdAkdOhkkPX0lpFS8PyX'
+bar_id = 'zvQofM5ea4BX4jgRzm9omsFgnGoG'
+brian_id = 'Sga9d7YWHapr752RURnl'
+dylan_id = '1sA1bebYqLdKLe8jBawJ'
+
+# chatroom_id = make_chatroom_metadata(foo_id, brian_id)
+# make_chat_message(chatroom_id, foo_id, brian_id, 'Hello')
+# make_chat_message(chatroom_id, brian_id, foo_id, 'How are you')
+
+# chatroom_id = make_chatroom_metadata(dylan_id, foo_id)
+# make_chat_message(chatroom_id, dylan_id, foo_id, 'wazup')
+# make_chat_message(chatroom_id, foo_id, dylan_id, 'not much not much')
+
+chatroom_id = make_chatroom_metadata(dylan_id, bar_id)
+make_chat_message(chatroom_id, dylan_id, bar_id, 'dylan to bar')
+make_chat_message(chatroom_id, bar_id, dylan_id, 'bar to dylan')

@@ -73,8 +73,10 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
   }
 
   void onChatButtonTap() {
-    context.pushNamed(Routes.UV_CALL_CHAT_PAGE,
-        params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
+    context.pushNamed(Routes.UV_CALL_CHAT_PAGE, params: {
+      Routes.EXPERT_ID_PARAM: widget.otherUserId,
+      Routes.IS_EDITABLE_PARAM: "true",
+    });
   }
 
   Future<void> onEndCallTap() async {

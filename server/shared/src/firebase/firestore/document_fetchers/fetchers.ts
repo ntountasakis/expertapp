@@ -87,6 +87,11 @@ function getChatroomMetadataCollectionRef():
   return admin.firestore().collection(CollectionPaths.CHATROOM_METADATA);
 }
 
+function getChatroomCollectionRef():
+  FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection(CollectionPaths.CHATROOMS);
+}
+
 function getPaymentStatusDocumentRef({ paymentStatusId }: { paymentStatusId: string }):
   FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.PAYMENT_STATUSES).doc(paymentStatusId);
@@ -168,7 +173,7 @@ async function getFcmTokenDocument({ transaction, uid }: { transaction: Firebase
 
 export {
   getPrivateUserDocumentRef, getPublicExpertInfoDocumentRef, getReviewsCollectionRef,
-  getChatroomMetadataCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
+  getChatroomMetadataCollectionRef, getChatroomCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
   getCallTransactionDocumentRef, getCallTransactionCollectionRef, getFcmTokenDocumentRef, getCallTransactionDocument,
   getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getPublicExpertInfo, getPublicExpertInfoNoTransact,
   getFcmTokenDocument, getPrivateUserDocument, getPrivateUserDocumentNoTransact, getExpertRateDocumentNoTransact, getSignUpTokenDocumentRef,
