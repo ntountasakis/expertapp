@@ -1,5 +1,4 @@
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
-import 'package:expertapp/src/firebase/cloud_functions/callable_functions.dart';
 import 'package:expertapp/src/util/past_chat_card.dart';
 import 'package:flutter/material.dart';
 

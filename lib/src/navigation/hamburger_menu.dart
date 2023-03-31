@@ -118,6 +118,7 @@ class HamburgerMenu extends StatelessWidget {
         viewStripeEarningsDashboard(context),
         pastCallsWithExpertsTile(context),
         pastCallsWithClientsTile(context),
+        pastChatsTile(context),
         updateCallPricesTile(context),
         updateCallAvailabilityTile(context),
         signOutTile(context),

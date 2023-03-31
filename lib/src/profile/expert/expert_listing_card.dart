@@ -2,7 +2,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/document_wrappe
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
-import 'package:expertapp/src/profile/expert/expert_listing_leading_tile.dart';
+import 'package:expertapp/src/profile/profile_leading_tile.dart';
 import 'package:expertapp/src/profile/expert/expert_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -81,7 +81,7 @@ class ExpertListingCard extends StatelessWidget {
           visualDensity: VisualDensity(
               horizontal: VisualDensity.maximumDensity,
               vertical: VisualDensity.maximumDensity),
-          leading: buildLeadingExpertListingTile(
+          leading: buildLeadingProfileTile(
               context,
               _publicExpertInfo.documentType.shortName(),
               _publicExpertInfo.documentType.profilePicUrl),

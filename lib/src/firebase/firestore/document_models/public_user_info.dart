@@ -25,6 +25,10 @@ class PublicUserInfo {
     return fieldsMap;
   }
 
+  String shortName() {
+    return firstName + ' ' + lastName[0] + '.';
+  }
+
   static Future<DocumentWrapper<PublicUserInfo>?> get(String documentId) async {
     DocumentSnapshot snapshot =
         await _PublicUserInfoRef().doc(documentId).get();

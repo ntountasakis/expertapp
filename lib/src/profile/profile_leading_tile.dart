@@ -3,7 +3,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/public_expert_i
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 
-Widget buildLeadingExpertListingTile(
+Widget buildLeadingProfileTile(
     BuildContext context, String shortName, String profilePicUrl) {
   final TextStyle nameStyle =
       TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
