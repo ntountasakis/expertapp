@@ -46,6 +46,12 @@ Future<String> onSubmitReview(
   return result.data["message"];
 }
 
+Future<String> getDefaultProfilePicUrl() async {
+  final result =
+      await getCallable(CallableFunctions.GET_DEFAULT_PROFILE_PIC_URL).call();
+  return result.data;
+}
+
 Future<void> onProfilePicUpload({required Uint8List pictureBytes}) async {
   Map<String, Uint8List> picture = {
     'pictureBytes': pictureBytes,

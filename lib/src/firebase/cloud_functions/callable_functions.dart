@@ -16,6 +16,7 @@ class CallableFunctions {
   static final String UPDATE_EXPERT_CATEGORY = 'updateExpertCategory';
   static final String GET_ALL_CHATROOM_PREVIEWS_FOR_USER =
       'getAllChatroomPreviewsForUser';
+  static final String GET_DEFAULT_PROFILE_PIC_URL = 'getDefaultProfilePicUrl';
 }
 
 class HttpEndpoints {

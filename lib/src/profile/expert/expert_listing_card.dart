@@ -81,7 +81,10 @@ class ExpertListingCard extends StatelessWidget {
           visualDensity: VisualDensity(
               horizontal: VisualDensity.maximumDensity,
               vertical: VisualDensity.maximumDensity),
-          leading: buildLeadingExpertListingTile(context, _publicExpertInfo),
+          leading: buildLeadingExpertListingTile(
+              context,
+              _publicExpertInfo.documentType.shortName(),
+              _publicExpertInfo.documentType.profilePicUrl),
           title: buildTitle(),
           trailing: buildTrailing(),
         ),

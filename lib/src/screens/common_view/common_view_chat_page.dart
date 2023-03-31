@@ -126,11 +126,14 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
         ]),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
-            final otherUserMetadata =
-                snapshot.data![0] as DocumentWrapper<PublicUserInfo>;
+            final otherUserShortName = snapshot.data![0] != null
+                ? ((snapshot.data![0] as DocumentWrapper<PublicUserInfo>)
+                    .documentType
+                    .firstName)
+                : "Deleted User";
             final chatroomId = snapshot.data![1] as String;
             return Scaffold(
-              appBar: UserPreviewAppbar(otherUserMetadata, ""),
+              appBar: UserPreviewAppbar(otherUserShortName, ""),
               body: Column(
                 children: [
                   Expanded(
