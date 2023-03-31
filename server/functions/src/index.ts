@@ -31,6 +31,9 @@ export { chatroomLookup };
 import { getAllChatroomPreviewsForUser } from "./endpoints/get_all_chatroom_previews_for_user";
 export { getAllChatroomPreviewsForUser }
 
+import { getDefaultProfilePicUrl } from "./endpoints/get_default_profile_pic_url";
+export { getDefaultProfilePicUrl };
+
 import { stripeWebhookListener } from "./endpoints/stripe_webhook_listener";
 export { stripeWebhookListener };
 
