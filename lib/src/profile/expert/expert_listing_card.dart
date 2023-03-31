@@ -2,8 +2,8 @@ import 'package:expertapp/src/firebase/firestore/document_models/document_wrappe
 import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/profile/expert/expert_listing_leading_tile.dart';
 import 'package:expertapp/src/profile/expert/expert_rating.dart';
-import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,30 +11,6 @@ class ExpertListingCard extends StatelessWidget {
   final DocumentWrapper<PublicExpertInfo> _publicExpertInfo;
 
   const ExpertListingCard(this._publicExpertInfo);
-
-  Widget buildLeading(BuildContext context) {
-    final TextStyle nameStyle =
-        TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
-    return SizedBox(
-      width: 100,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          IntrinsicWidth(
-            child: Text(
-              _publicExpertInfo.documentType.shortName(),
-              style: nameStyle,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          SizedBox(height: 5),
-          Expanded(
-            child: ProfilePicture(_publicExpertInfo.documentType.profilePicUrl),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget buildTitle() {
     final TextStyle majorStyle =
@@ -99,18 +75,15 @@ class ExpertListingCard extends StatelessWidget {
         context.pushNamed(Routes.UV_EXPERT_PROFILE_PAGE,
             params: {Routes.EXPERT_ID_PARAM: _publicExpertInfo.documentId});
       },
-      child: Container(
-        height: 100,
-        child: Card(
-          child: ListTile(
-            dense: true,
-            visualDensity: VisualDensity(
-                horizontal: VisualDensity.maximumDensity,
-                vertical: VisualDensity.maximumDensity),
-            leading: buildLeading(context),
-            title: buildTitle(),
-            trailing: buildTrailing(),
-          ),
+      child: Card(
+        child: ListTile(
+          dense: true,
+          visualDensity: VisualDensity(
+              horizontal: VisualDensity.maximumDensity,
+              vertical: VisualDensity.maximumDensity),
+          leading: buildLeadingExpertListingTile(context, _publicExpertInfo),
+          title: buildTitle(),
+          trailing: buildTrailing(),
         ),
       ),
     );

@@ -10,6 +10,14 @@ class HamburgerMenu extends StatelessWidget {
 
   const HamburgerMenu({required this.currentUserId});
 
+  ListTile pastChatsTile(BuildContext context) {
+    return ListTile(
+        title: Text("Past Chats"),
+        onTap: () {
+          context.pushNamed(Routes.UV_PAST_CHATS);
+        });
+  }
+
   ListTile profileTile(BuildContext context) {
     return ListTile(
         title: Text("My Profile"),
@@ -129,6 +137,7 @@ class HamburgerMenu extends StatelessWidget {
         ),
         becomeAnExpertTile(context),
         pastCallsWithExpertsTile(context),
+        pastChatsTile(context),
         signOutTile(context),
         deleteAccountTile(context),
       ]),

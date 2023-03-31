@@ -18,6 +18,7 @@ class Routes {
   static const UV_REVIEW_SUBMIT_PAGE = '/uv_submitreview';
   static const UV_VIEW_EXPERT_AVAILABILITY_PAGE = '/uv_viewexpertavailability';
   static const UV_CALL_SUMMARY_PAGE = '/uv_callsummary';
+  static const UV_PAST_CHATS = '/uv_pastchats';
 
   // expert-only pages
   static const EV_PROFILE_EDIT_PAGE = '/ev_profileedit';
@@ -40,6 +41,7 @@ class Routes {
   static const CALLER_UID_PARAM = 'calleruid';
   static const CALL_TRANSACTION_ID_PARAM = 'calltransactionid';
   static const EXPERT_ID_PARAM = 'id';
+  static const IS_EDITABLE_PARAM = 'isEditable';
   static const CALL_RATE_START_PARAM = 'callratestart';
   static const CALL_RATE_PER_MINUTE_PARAM = 'callrateperminute';
   static const CALL_JOIN_EXPIRATION_TIME_UTC_MS_PARAM =

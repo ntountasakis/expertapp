@@ -4,6 +4,7 @@ import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/preferences/preferences.dart';
 import 'package:expertapp/src/screens/auth/sign_in_page.dart';
 import 'package:expertapp/src/screens/common_view/delete_account_page.dart';
+import 'package:expertapp/src/screens/user_view/past_chats_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_stripe_earnings_dashboard.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
 import 'package:expertapp/src/screens/intro/onboarding_page.dart';
@@ -163,12 +164,15 @@ class AppRouter {
           routes: <GoRoute>[
             GoRoute(
               name: Routes.UV_CALL_CHAT_PAGE,
-              path: Routes.UV_CALL_CHAT_PAGE,
+              path: Routes.UV_CALL_CHAT_PAGE + '/:' + Routes.IS_EDITABLE_PARAM,
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.params[Routes.EXPERT_ID_PARAM];
+                final isEditable = state.params[Routes.IS_EDITABLE_PARAM];
                 return CommonViewChatPage(
-                    currentUserUid: lifecycle.currentUserId()!,
-                    otherUserUid: expertId!);
+                  currentUserUid: lifecycle.currentUserId()!,
+                  otherUserUid: expertId!,
+                  isEditable: isEditable! == 'true',
+                );
               },
             ),
           ]),
@@ -247,8 +251,10 @@ class AppRouter {
               builder: (BuildContext context, GoRouterState state) {
                 final callerUid = state.params[Routes.CALLER_UID_PARAM];
                 return CommonViewChatPage(
-                    currentUserUid: lifecycle.currentUserId()!,
-                    otherUserUid: callerUid!);
+                  currentUserUid: lifecycle.currentUserId()!,
+                  otherUserUid: callerUid!,
+                  isEditable: true,
+                );
               },
             ),
           ]),
@@ -290,6 +296,12 @@ class AppRouter {
           builder: (BuildContext context, GoRouterState state) {
             final expertId = state.params[Routes.EXPERT_ID_PARAM];
             return UserViewExpertAvailabilityPage(uid: expertId!);
+          }),
+      GoRoute(
+          name: Routes.UV_PAST_CHATS,
+          path: Routes.UV_PAST_CHATS,
+          builder: (BuildContext context, GoRouterState state) {
+            return PastChatsPage(uid: lifecycle.currentUserId()!);
           }),
       GoRoute(
           name: Routes.EV_CONNECTED_ACCOUNT_SIGNUP_PAGE,

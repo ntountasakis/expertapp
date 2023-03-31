@@ -3,16 +3,19 @@ import 'package:expertapp/src/firebase/firestore/document_models/chat_message.da
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/appbars/user_view/user_preview_appbar.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
+import 'package:expertapp/src/util/time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:intl/intl.dart';
 
 class CommonViewChatPage extends StatefulWidget {
   final String currentUserUid;
   final String otherUserUid;
+  final bool isEditable;
 
   CommonViewChatPage(
-      {required this.currentUserUid, required this.otherUserUid});
+      {required this.currentUserUid,
+      required this.otherUserUid,
+      required this.isEditable});
 
   @override
   State<CommonViewChatPage> createState() => _CommonViewChatPageState();
@@ -53,7 +56,7 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
 
   Widget buildSendChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
     return ChatBubble(
-        clipper: ChatBubbleClipper1(type: BubbleType.sendBubble),
+        clipper: ChatBubbleClipper3(type: BubbleType.sendBubble),
         alignment: Alignment.topRight,
         margin: EdgeInsets.only(top: 20),
         backGroundColor: Colors.blue,
@@ -65,7 +68,7 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
 
   Widget buildReceiverChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
     return ChatBubble(
-      clipper: ChatBubbleClipper1(type: BubbleType.receiverBubble),
+      clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
       backGroundColor: Color(0xffE7E7ED),
       margin: EdgeInsets.only(top: 20),
       child: Text(
@@ -73,14 +76,6 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
         style: TextStyle(color: Colors.black),
       ),
     );
-  }
-
-  String messageTimeAnnotation(DocumentWrapper<ChatMessage> chatMessage) {
-    final messageTime = DateTime.fromMillisecondsSinceEpoch(
-            chatMessage.documentType.millisecondsSinceEpochUtc)
-        .toLocal();
-    final DateFormat formatter = DateFormat().add_yMd().add_jm();
-    return formatter.format(messageTime);
   }
 
   Widget buildChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
@@ -96,7 +91,9 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
         Container(
           margin: const EdgeInsets.only(right: 20),
           child: Text(
-            "Sent: " + messageTimeAnnotation(chatMessage),
+            "Sent: " +
+                messageTimeAnnotation(
+                    chatMessage.documentType.millisecondsSinceEpochUtc),
             style: messageTimeStyle,
           ),
         ),
@@ -110,7 +107,9 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
         Container(
           margin: const EdgeInsets.only(left: 20),
           child: Text(
-            "Received: " + messageTimeAnnotation(chatMessage),
+            "Received: " +
+                messageTimeAnnotation(
+                    chatMessage.documentType.millisecondsSinceEpochUtc),
             style: messageTimeStyle,
           ),
         ),
@@ -154,7 +153,7 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
                       },
                     ),
                   ),
-                  buildChatBar(chatroomId),
+                  widget.isEditable ? buildChatBar(chatroomId) : SizedBox(),
                   SizedBox(
                     height: 100,
                   )

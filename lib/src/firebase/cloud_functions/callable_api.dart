@@ -10,7 +10,7 @@ HttpsCallable getCallable(String functionName) {
 
 Future<UpdateResult> onAccountDelete() async {
   HttpsCallableResult result =
-  await getCallable(CallableFunctions.DELETE_USER).call();
+      await getCallable(CallableFunctions.DELETE_USER).call();
 
   bool success = result.data['success'];
   String message = result.data['message'];
@@ -104,4 +104,35 @@ Future<UpdateResult> updateExpertAvailability(
   String message = result.data['message'];
 
   return UpdateResult(success: success, message: message);
+}
+
+class ChatroomPreview {
+  final String otherUid;
+  final String lastMessage;
+  final String lastMessageSenderUid;
+  final int lastMessageMillisecondsSinceEpochUtc;
+
+  ChatroomPreview(
+      {required this.otherUid,
+      required this.lastMessage,
+      required this.lastMessageSenderUid,
+      required this.lastMessageMillisecondsSinceEpochUtc});
+}
+
+Future<List<ChatroomPreview>> getAllChatroomsForUser() async {
+  HttpsCallableResult result =
+      await getCallable(CallableFunctions.GET_ALL_CHATROOM_PREVIEWS_FOR_USER)
+          .call();
+  final rawPreviews = result.data as List<Object?>;
+  final chatroomPreviews = <ChatroomPreview>[];
+  rawPreviews.forEach((elem) {
+    final preview = elem as Map<Object?, Object?>;
+    chatroomPreviews.add(ChatroomPreview(
+        otherUid: preview['otherUid'] as String,
+        lastMessage: preview['lastMessage'] as String,
+        lastMessageSenderUid: preview['lastMessageSenderUid'] as String,
+        lastMessageMillisecondsSinceEpochUtc:
+            preview['lastMessageMillisecondsSinceEpochUtc'] as int));
+  });
+  return chatroomPreviews;
 }
