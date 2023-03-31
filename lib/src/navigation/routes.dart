@@ -8,7 +8,7 @@ class Routes {
   static const DELETE_ACCOUNT_PAGE = '/deleteaccount';
 
   // user view pages
-  static const UV_USER_SIGNUP_PAGE = '/uv_userHOME_PAGEsignup';
+  static const UV_USER_SIGNUP_PAGE = '/uv_user_signup';
   static const UV_COMPLETED_CALLS_PAGE = '/uv_completedcalls';
   static const UV_EXPERT_PROFILE_PAGE = 'uv_expertprofile';
   static const UV_EXPERT_CALL_PREVIEW_PAGE = 'uv_callpreview';
@@ -32,6 +32,7 @@ class Routes {
   static const EV_CALL_VIDEO_PAGE = 'ev_callvideo';
   static const EV_CALL_SUMMARY_PAGE = '/ev_callsummary';
   static const EV_STRIPE_EARNINGS_DASHBOARD = '/ev_stripeearningsdashboard';
+  static const EV_PAST_CHATS = '/ev_pastchats';
 
   // PARAMETERS
   static const AGORA_CHANNEL_NAME_PARAM = 'channelname';

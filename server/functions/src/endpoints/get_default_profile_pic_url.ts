@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions";
+import { StoragePaths } from "../../../shared/src/firebase/storage/storage_paths";
 
 export const getDefaultProfilePicUrl = functions.https.onCall(async (data, context) => {
-    return "https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/Portrait_Placeholder.png";
+    return StoragePaths.DEFAULT_PROFILE_PIC_URL;
 });

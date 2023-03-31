@@ -1,8 +1,9 @@
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
-import 'package:expertapp/src/profile/expert/expert_listing_leading_tile.dart';
+import 'package:expertapp/src/profile/profile_leading_tile.dart';
 import 'package:expertapp/src/util/time_util.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -23,33 +24,35 @@ class PastChatCard extends StatelessWidget {
     );
   }
 
-  Widget buildSubtitle(
-      AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
+  Widget buildSubtitle(DocumentWrapper<PublicUserInfo>? userInfo) {
     final senderName = preview.lastMessageSenderUid == currentUid
         ? "You"
-        : snapshot.hasData
-            ? snapshot.data!.documentType.shortName()
+        : userInfo != null
+            ? userInfo.documentType.firstName
             : "They";
     return Text(
         "$senderName sent on ${messageTimeAnnotation(preview.lastMessageMillisecondsSinceEpochUtc)}");
   }
 
-  Widget buildLeading(BuildContext context,
-      AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
-    if (snapshot.hasData) {
-      final publicExpertInfo = snapshot.data!;
-      return buildLeadingExpertListingTile(
+  Widget buildLeading(
+      BuildContext context,
+      DocumentWrapper<PublicExpertInfo>? expertInfo,
+      DocumentWrapper<PublicUserInfo>? userInfo) {
+    if (expertInfo != null) {
+      return buildLeadingProfileTile(
           context,
-          publicExpertInfo.documentType.shortName(),
-          publicExpertInfo.documentType.profilePicUrl);
+          expertInfo.documentType.shortName(),
+          expertInfo.documentType.profilePicUrl);
     } else {
       return FutureBuilder(
           future: getDefaultProfilePicUrl(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final defaultUrl = snapshot.data as String;
-              return buildLeadingExpertListingTile(
-                  context, "Deleted User", defaultUrl);
+              final shortName = userInfo != null
+                  ? userInfo.documentType.shortName()
+                  : "Deleted User";
+              return buildLeadingProfileTile(context, shortName, defaultUrl);
             } else {
               return CircularProgressIndicator();
             }
@@ -60,28 +63,39 @@ class PastChatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: PublicExpertInfo.get(preview.otherUid),
-        builder: (BuildContext context,
-            AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
-          return GestureDetector(
-            onTap: () {
-              context.pushNamed(Routes.UV_CALL_CHAT_PAGE, params: {
-                Routes.EXPERT_ID_PARAM: preview.otherUid,
-                Routes.IS_EDITABLE_PARAM: "false",
-              });
-            },
-            child: Card(
-              child: ListTile(
-                dense: true,
-                visualDensity: VisualDensity(
-                    horizontal: VisualDensity.maximumDensity,
-                    vertical: VisualDensity.maximumDensity),
-                leading: buildLeading(context, snapshot),
-                title: buildTitle(),
-                subtitle: buildSubtitle(snapshot),
+        future: Future.wait([
+          PublicExpertInfo.get(preview.otherUid),
+          PublicUserInfo.get(preview.otherUid)
+        ]),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if (snapshot.hasData) {
+            final expertInfo = snapshot.data![0] != null
+                ? snapshot.data![0] as DocumentWrapper<PublicExpertInfo>
+                : null;
+            final userInfo = snapshot.data![1] != null
+                ? snapshot.data![1] as DocumentWrapper<PublicUserInfo>
+                : null;
+            return GestureDetector(
+              onTap: () {
+                context.pushNamed(Routes.UV_CALL_CHAT_PAGE, params: {
+                  Routes.EXPERT_ID_PARAM: preview.otherUid,
+                  Routes.IS_EDITABLE_PARAM: "false",
+                });
+              },
+              child: Card(
+                child: ListTile(
+                  dense: true,
+                  visualDensity: VisualDensity(
+                      horizontal: VisualDensity.maximumDensity,
+                      vertical: VisualDensity.maximumDensity),
+                  leading: buildLeading(context, expertInfo, userInfo),
+                  title: buildTitle(),
+                  subtitle: buildSubtitle(userInfo),
+                ),
               ),
-            ),
-          );
+            );
+          }
+          return SizedBox();
         });
   }
 }
