@@ -50,5 +50,8 @@ import { stripeConnectedAccountDashboardLinkRequest } from "./endpoints/stripe_c
 export { stripeConnectedAccountDashboardLinkRequest }
 
 import { stripeCustomerManagePaymentMethodsDashboardLinkRequest } from "./endpoints/stripe_customer_manage_payment_methods_dashboard_link_request";
-export { stripeCustomerManagePaymentMethodsDashboardLinkRequest}
+export { stripeCustomerManagePaymentMethodsDashboardLinkRequest }
+
+import { generateExpertProfileDynamicLink } from "./endpoints/generate_expert_profile_dynamic_link";
+export { generateExpertProfileDynamicLink };
 

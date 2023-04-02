@@ -1,6 +1,7 @@
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/firebase/cloud_messaging/message_handler.dart';
+import 'package:expertapp/src/firebase/dynamic_links/link_handler.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/router.dart';
@@ -42,13 +43,6 @@ void main() async {
     sound: true,
   );
 
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  initFirebaseMessagingForegroundHandler(navigatorKey, lifecycle);
-  initFirebaseMessagingOpenedApp();
-
-  Stripe.publishableKey =
-      "pk_test_51LLQIdAoQ8pfRhfFNyVrKysmtjgsXqW2zjx6IxcVpKjvq8iMqTTGRl8BCUnTYiIzq5HUkbnZ9dXtiibhdum3Ozfv00lOhg3RyX";
-
   runApp(
     MultiProvider(
       providers: [
@@ -59,6 +53,13 @@ void main() async {
       child: MyApp(lifecycle: lifecycle, router: router),
     ),
   );
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  initFirebaseMessagingForegroundHandler(navigatorKey, lifecycle);
+  initFirebaseMessagingOpenedApp();
+
+  await handleFirebaseDynamicLinkInitialLink(navigatorKey);
+  listenForFirebaseDynamicLinks(navigatorKey);
 }
 
 class MyApp extends StatefulWidget {

@@ -32,6 +32,7 @@ dependencies:
   firebase_core: ^2.7.1
   firebase_core_platform_interface: ^4.5.3
   firebase_database: ^10.0.15
+  firebase_dynamic_links: ^5.1.0
   firebase_messaging: ^14.2.6
   firebase_storage: ^11.0.15
   flutter:
@@ -53,6 +54,7 @@ dependencies:
   mocktail: ^0.3.0
   protobuf: ^2.0.1
   provider: ^6.0.3
+  share_plus: ^6.3.1
   shared_preferences: ^2.0.20
   time_range: ^1.1.0
   uuid: ^3.0.7

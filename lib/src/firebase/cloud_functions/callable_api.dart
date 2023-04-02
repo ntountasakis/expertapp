@@ -142,3 +142,11 @@ Future<List<ChatroomPreview>> getAllChatroomsForUser() async {
   });
   return chatroomPreviews;
 }
+
+Future<String> getShareableExpertProfileDynamicLink() async {
+  HttpsCallableResult result =
+      await getCallable(CallableFunctions.GET_SHAREABLE_DYNAMIC_PROFILE_LINK)
+          .call();
+  final linkUrl = result.data;
+  return linkUrl;
+}
