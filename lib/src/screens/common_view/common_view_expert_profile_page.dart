@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:expertapp/src/appbars/expert_view/expert_post_signup_appbar.dart';
@@ -12,6 +13,7 @@ import 'package:expertapp/src/timezone/timezone_util.dart';
 import 'package:expertapp/src/util/expert_category_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:go_router/go_router.dart';
 
 class CommonViewExpertProfilePage extends StatefulWidget {
@@ -408,6 +410,25 @@ class _CommonViewExpertProfilePageState
           nextRoute: Routes.HOME_PAGE,
           addAdditionalParams: false,
           allowBackButton: true,
+        );
+      } else if (widget._isEditable) {
+        return AppBar(
+          title: Text("Expert Profile"),
+          actions: [
+            Row(
+              children: [
+                Text("Share"),
+                IconButton(
+                  icon: Icon(Icons.share),
+                  onPressed: () async {
+                    final url = await getShareableExpertProfileDynamicLink();
+                    Share.share(url);
+                    log('Shareable link: $url');
+                  },
+                ),
+              ],
+            ),
+          ],
         );
       } else {
         return AppBar(
