@@ -140,6 +140,11 @@ foo_id = 'TOcIYhxdJdAkdOhkkPX0lpFS8PyX'
 bar_id = 'zvQofM5ea4BX4jgRzm9omsFgnGoG'
 brian_id = 'Sga9d7YWHapr752RURnl'
 dylan_id = '1sA1bebYqLdKLe8jBawJ'
+jill_id = 'BjDHoxV8jgZKfi3OSDEjnOGwClcH'
+
+make_public_expert_info(jill_id, 'Jill', 'Longton', "Major", "minor", 6, 30,
+                        'https://storage.googleapis.com/expert-app-backend.appspot.com/profilePics/testing/zoran-borojevic-s55Di5cdiSM-unsplash.jpg', '')
+make_expert_rate(jill_id, 150, 50)
 
 # chatroom_id = make_chatroom_metadata(foo_id, brian_id)
 # make_chat_message(chatroom_id, foo_id, brian_id, 'Hello')
@@ -149,6 +154,6 @@ dylan_id = '1sA1bebYqLdKLe8jBawJ'
 # make_chat_message(chatroom_id, dylan_id, foo_id, 'wazup')
 # make_chat_message(chatroom_id, foo_id, dylan_id, 'not much not much')
 
-chatroom_id = make_chatroom_metadata(dylan_id, bar_id)
-make_chat_message(chatroom_id, dylan_id, bar_id, 'dylan to bar')
-make_chat_message(chatroom_id, bar_id, dylan_id, 'bar to dylan')
+# chatroom_id = make_chatroom_metadata(dylan_id, bar_id)
+# make_chat_message(chatroom_id, dylan_id, bar_id, 'dylan to bar')
+# make_chat_message(chatroom_id, bar_id, dylan_id, 'bar to dylan')

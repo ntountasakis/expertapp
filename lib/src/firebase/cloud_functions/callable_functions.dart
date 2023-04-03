@@ -53,7 +53,7 @@ class HttpEndpoints {
 
   static String getCustomerStripePaymentMethodsDashboard(String uid) {
     final url = getCloudFunctionsBaseUrl() +
-        'stripeCustomerManagePaymentMethodsDashboardLinkRequest?uid=$uid';
+        'stripeManagePaymentMethodsLinkRequest?uid=$uid';
     log("Navigating to : " + url);
     return url;
   }

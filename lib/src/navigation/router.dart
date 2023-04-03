@@ -26,7 +26,6 @@ import 'package:expertapp/src/screens/expert_view/expert_view_call_main_page.dar
 import 'package:expertapp/src/screens/user_view/user_view_signup_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_stripe_payment_methods_dashboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterfire_ui/auth.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
