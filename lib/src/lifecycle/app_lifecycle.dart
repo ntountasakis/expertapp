@@ -16,6 +16,35 @@ class AppLifecycle extends ChangeNotifier {
   FirebaseAuth.User? get authenticatedUser => _theAuthenticatedUser;
   DocumentWrapper<PublicUserInfo>? get publicUserInfo => _thePublicUserInfo;
 
+  String? getFirstName() {
+    if (publicUserInfo != null) {
+      return publicUserInfo!.documentType.firstName;
+    }
+    if (_theAuthenticatedUser != null &&
+        _theAuthenticatedUser!.displayName != null) {
+      return _theAuthenticatedUser!.displayName!.split(' ')[0];
+    }
+    return null;
+  }
+
+  String? getLastName() {
+    if (publicUserInfo != null) {
+      return publicUserInfo!.documentType.lastName;
+    }
+    if (_theAuthenticatedUser != null &&
+        _theAuthenticatedUser!.displayName != null) {
+      return _theAuthenticatedUser!.displayName!.split(' ')[1];
+    }
+    return null;
+  }
+
+  String? getEmail() {
+    if (_theAuthenticatedUser != null) {
+      return _theAuthenticatedUser!.email;
+    }
+    return null;
+  }
+
   Future<void> onAuthStatusChange(FirebaseAuth.User? aAuthenticatedUser) async {
     _theAuthenticatedUser = aAuthenticatedUser;
     if (_theAuthenticatedUser != null) {
