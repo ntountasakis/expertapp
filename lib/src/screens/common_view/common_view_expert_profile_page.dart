@@ -89,7 +89,7 @@ class _CommonViewExpertProfilePageState
     return buildCallButtonHelper(
         Colors.blue[500]!,
         Colors.blue[900]!,
-        'Click to make an account / sign in to call this expert',
+        'Make an account / sign in to call this expert',
         Routes.SIGN_IN_PAGE,
         {},
         false);
@@ -122,7 +122,7 @@ class _CommonViewExpertProfilePageState
     return buildCallButtonHelper(
         Colors.purple[500]!,
         Colors.purple[900]!,
-        'Click to view ${publicExpertInfo.documentType.firstName}\'s Availability',
+        'View ${publicExpertInfo.documentType.firstName}\'s Availability',
         Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
         {Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId},
         true);
