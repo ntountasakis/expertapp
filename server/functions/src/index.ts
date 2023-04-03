@@ -49,8 +49,8 @@ export { stripeAccountTokenSubmit };
 import { stripeConnectedAccountDashboardLinkRequest } from "./endpoints/stripe_connected_account_dashboard_link_request";
 export { stripeConnectedAccountDashboardLinkRequest }
 
-import { stripeCustomerManagePaymentMethodsDashboardLinkRequest } from "./endpoints/stripe_customer_manage_payment_methods_dashboard_link_request";
-export { stripeCustomerManagePaymentMethodsDashboardLinkRequest }
+import { stripeManagePaymentMethodsLinkRequest } from "./endpoints/stripe_customer_manage_payment_methods_dashboard_link_request";
+export { stripeManagePaymentMethodsLinkRequest };
 
 import { generateExpertProfileDynamicLink } from "./endpoints/generate_expert_profile_dynamic_link";
 export { generateExpertProfileDynamicLink };

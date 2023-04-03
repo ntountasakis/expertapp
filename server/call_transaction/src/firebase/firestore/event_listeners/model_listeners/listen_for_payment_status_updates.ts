@@ -8,8 +8,9 @@ export function listenForPaymentStatusUpdates(paymentStatusId: string, callState
   const unsubscribeFn = doc.onSnapshot((docSnapshot) => {
     const paymentStatus = docSnapshot.data() as PaymentStatus;
     callState.log(`On payment status update. PaymentStatusId: ${paymentStatusId} 
-      Uid: ${paymentStatus.uid} Status: ${paymentStatus.status} 
-      CentsRequestedCapture: ${paymentStatus.centsRequestedCapture} CentsPaid: ${paymentStatus.centsPaid}`);
+      Uid: ${paymentStatus.uid} Status: ${paymentStatus.status} CentsRequestedAuthorized: ${paymentStatus.centsRequestedAuthorized}
+      CentsAuthorized: ${paymentStatus.centsAuthorized} CentsRequestedCapture: ${paymentStatus.centsRequestedCapture} 
+      CentsCaptured: ${paymentStatus.centsCaptured} CentsPaid: ${paymentStatus.centsPaid}`);
     callState.eventListenerManager.onEventUpdate({key: docSnapshot.id, type: "PaymentStatus", update: paymentStatus});
   }, (err) => {
     callState.log(`Encountered error: ${err}`);

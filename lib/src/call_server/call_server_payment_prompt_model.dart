@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -39,12 +40,14 @@ class CallServerPaymentPromptModel {
 
   Future<void> presentPaymentSheet() async {
     try {
+      bool platformPaySupported = await Stripe.instance.isPlatformPaySupported();
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           merchantDisplayName: 'Flutter Stripe Store Demo',
           paymentIntentClientSecret: _clientSecret,
           customerEphemeralKeySecret: _ephemeralKey,
           customerId: stripeCustomerId,
+          applePay: getPaymentSheetApplePay(platformPaySupported),
         ),
       );
       await Stripe.instance.presentPaymentSheet();
@@ -54,6 +57,15 @@ class CallServerPaymentPromptModel {
         onPaymentStateChanged();
       }
     }
+  }
+
+  PaymentSheetApplePay? getPaymentSheetApplePay(bool platformPaySupported) {
+    if (Platform.isIOS && platformPaySupported) {
+      return PaymentSheetApplePay(
+        merchantCountryCode: "US",
+      );
+    }
+    return null;
   }
 
   void onPaymentComplete() {

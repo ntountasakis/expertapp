@@ -1,6 +1,6 @@
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterfire_ui/auth.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:go_router/go_router.dart';
 
 class SignInPage extends StatelessWidget {
@@ -18,16 +18,7 @@ class SignInPage extends StatelessWidget {
           ),
         ],
       ),
-      body: SignInScreen(providerConfigs: [
-        EmailProviderConfiguration(),
-        GoogleProviderConfiguration(
-          clientId:
-              '111394228371-4slr6ceip09bqefipq2ikbvribtj93qj.apps.googleusercontent.com',
-        ),
-        FacebookProviderConfiguration(
-          clientId: '294313229392786',
-        )
-      ]),
+      body: SignInScreen(),
     );
   }
 }
