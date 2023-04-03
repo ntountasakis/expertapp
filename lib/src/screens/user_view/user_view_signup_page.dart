@@ -6,12 +6,18 @@ import 'package:expertapp/src/firebase/firestore/document_models/public_user_inf
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
-import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 
 class UserViewSignupPage extends StatefulWidget {
+  String? firstName;
+  String? lastName;
+  String? email;
+
+  UserViewSignupPage(
+      {required this.firstName, required this.lastName, required this.email});
+
   @override
   State<UserViewSignupPage> createState() => _UserViewSignupPageState();
 }
@@ -21,12 +27,9 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
   final ButtonStyle buttonStyle =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 12));
 
-  late String _firstName;
-  late String _lastName;
-  late String _email;
-
   Widget _buildFirstName() {
     return TextFormField(
+        initialValue: widget.firstName,
         decoration: InputDecoration(labelText: 'First Name'),
         validator: (value) {
           if (!RegExprValidator.isValidName(value!)) {
@@ -35,12 +38,15 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
           return null;
         },
         onSaved: (value) {
-          _firstName = value!;
+          setState(() {
+            widget.firstName = value!;
+          });
         });
   }
 
   Widget _buildLastName() {
     return TextFormField(
+        initialValue: widget.lastName,
         decoration: InputDecoration(labelText: 'Last Name'),
         validator: (value) {
           if (value != null && !RegExprValidator.isValidName(value)) {
@@ -49,12 +55,15 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
           return null;
         },
         onSaved: (value) {
-          _lastName = value!;
+          setState(() {
+            widget.lastName = value!;
+          });
         });
   }
 
   Widget _buildEmail() {
     return TextFormField(
+        initialValue: widget.email,
         decoration: InputDecoration(labelText: 'Email'),
         validator: (value) {
           if (value != null && !RegExprValidator.isValidEmail(value)) {
@@ -63,7 +72,9 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
           return null;
         },
         onSaved: (value) {
-          _email = value!;
+          setState(() {
+            widget.email = value!;
+          });
         });
   }
 
@@ -76,7 +87,7 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
           }
           _formKey.currentState!.save();
 
-          await onUserSignup(_firstName, _lastName, _email,
+          await onUserSignup(widget.firstName!, widget.lastName!, widget.email!,
               lifecycle.authenticatedUser!.photoURL);
 
           log('New User Signup');

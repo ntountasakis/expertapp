@@ -122,7 +122,10 @@ class AppRouter {
         name: Routes.UV_USER_SIGNUP_PAGE,
         path: Routes.UV_USER_SIGNUP_PAGE,
         builder: (BuildContext context, GoRouterState state) {
-          return UserViewSignupPage();
+          return UserViewSignupPage(
+              firstName: lifecycle.getFirstName(),
+              lastName: lifecycle.getLastName(),
+              email: lifecycle.getEmail());
         },
       ),
       GoRoute(
