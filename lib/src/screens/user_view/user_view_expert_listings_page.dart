@@ -5,12 +5,14 @@ import 'package:expertapp/src/navigation/hamburger_menu.dart';
 import 'package:flutter/material.dart';
 
 class UserViewExpertListingsPage extends StatelessWidget {
+  final bool isSignedIn;
   final String? currentUserId;
 
   static final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 8));
 
-  const UserViewExpertListingsPage({required this.currentUserId});
+  const UserViewExpertListingsPage(
+      {required this.isSignedIn, this.currentUserId});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,7 @@ class UserViewExpertListingsPage extends StatelessWidget {
           title: Text('Expert Listings'),
         ),
         drawer: HamburgerMenu(
+          isSignedIn: isSignedIn,
           currentUserId: currentUserId,
         ),
         body: StreamBuilder(

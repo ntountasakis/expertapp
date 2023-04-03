@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class HamburgerMenu extends StatelessWidget {
+  final bool isSignedIn;
   final String? currentUserId;
 
-  const HamburgerMenu({required this.currentUserId});
+  const HamburgerMenu({required this.isSignedIn, this.currentUserId});
 
   ListTile pastChatsTile(BuildContext context) {
     return ListTile(
@@ -93,9 +94,11 @@ class HamburgerMenu extends StatelessWidget {
         });
   }
 
-  ListTile createAccountSignInTile(BuildContext context) {
+  ListTile createNoUserAccountSignInTile(BuildContext context) {
+    final text =
+        isSignedIn ? "Complete Account Signup" : "Create Account / Sign In";
     return ListTile(
-        title: Text("Create Account / Sign in"),
+        title: Text(text),
         onTap: () async {
           context.pushReplacementNamed(Routes.SIGN_IN_PAGE);
         });
@@ -164,7 +167,8 @@ class HamburgerMenu extends StatelessWidget {
           ),
           child: Text("Main Menu"),
         ),
-        createAccountSignInTile(context),
+        createNoUserAccountSignInTile(context),
+        isSignedIn ? signOutTile(context) : Container(),
       ]),
     );
   }

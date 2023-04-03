@@ -82,6 +82,7 @@ class AppRouter {
         path: Routes.HOME_PAGE,
         builder: (BuildContext context, GoRouterState state) {
           return UserViewExpertListingsPage(
+              isSignedIn: lifecycle.authenticatedUser != null,
               currentUserId: lifecycle.currentUserId());
         },
         routes: <GoRoute>[
