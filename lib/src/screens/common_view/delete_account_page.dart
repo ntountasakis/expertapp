@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 
 class DeleteAccountPage extends StatelessWidget {
-  final String uid;
-  const DeleteAccountPage({required this.uid});
-
   Widget buildWarningText() {
     const text =
         '''Are you sure you want to delete your account? Please note that this action is irreversible and all your data will be permanently deleted from our system.
@@ -46,7 +43,8 @@ If you're absolutely sure you want to proceed with the account deletion, please 
     ]);
   }
 
-  Future<void> showPostDeleteDialog(BuildContext context, UpdateResult result) async {
+  Future<void> showPostDeleteDialog(
+      BuildContext context, UpdateResult result) async {
     final title = result.success ? "Success" : "Error";
     await showDialog(
         context: context,

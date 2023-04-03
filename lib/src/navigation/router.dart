@@ -117,7 +117,7 @@ class AppRouter {
           name: Routes.DELETE_ACCOUNT_PAGE,
           path: Routes.DELETE_ACCOUNT_PAGE,
           builder: (BuildContext context, GoRouterState state) {
-            return DeleteAccountPage(uid: lifecycle.currentUserId()!);
+            return DeleteAccountPage();
           }),
       GoRoute(
         name: Routes.UV_USER_SIGNUP_PAGE,

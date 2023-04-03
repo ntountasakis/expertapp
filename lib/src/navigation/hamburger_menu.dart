@@ -168,6 +168,7 @@ class HamburgerMenu extends StatelessWidget {
           child: Text("Main Menu"),
         ),
         createNoUserAccountSignInTile(context),
+        isSignedIn ? deleteAccountTile(context) : Container(),
         isSignedIn ? signOutTile(context) : Container(),
       ]),
     );
