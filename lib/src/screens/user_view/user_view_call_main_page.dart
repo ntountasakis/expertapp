@@ -136,9 +136,6 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
             await model.callPaymentPromptModel.presentPaymentSheet();
           }),
           SizedBox(height: 20),
-          CallSummaryUtil.buildButton(model, "Cancel Call", (_) async {
-            await callServerManager.manuallyDisconnectFromServer();
-          }),
         ],
       ),
     );
@@ -195,6 +192,28 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
     return buildVideoCallView(context, model);
   }
 
+  Widget buildMain(
+      BuildContext context,
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+      CallServerModel model) {
+    final callNotStarted = model.callPaymentPromptModel.paymentState !=
+        PaymentState.PAYMENT_COMPLETE;
+    final scaffold = Scaffold(
+      appBar: ClientInCallAppbar(publicExpertInfo, callNotStarted),
+      body: buildCallView(context, model, publicExpertInfo),
+    );
+    if (model.callPaymentPromptModel.paymentState !=
+        PaymentState.PAYMENT_COMPLETE) {
+      return WillPopScope(
+          child: scaffold,
+          onWillPop: () async {
+            await callServerManager.manuallyDisconnectFromServer();
+            return Future.value(true);
+          });
+    }
+    return scaffold;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentWrapper<PublicExpertInfo>?>(
@@ -204,10 +223,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
           if (snapshot.hasData) {
             final publicExpertInfo = snapshot.data;
             return Consumer<CallServerModel>(builder: (context, model, child) {
-              return Scaffold(
-                appBar: ClientInCallAppbar(publicExpertInfo!),
-                body: buildCallView(context, model, publicExpertInfo),
-              );
+              return buildMain(context, publicExpertInfo!, model);
             });
           } else {
             return Scaffold(
