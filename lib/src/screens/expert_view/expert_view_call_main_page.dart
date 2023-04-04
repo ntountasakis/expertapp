@@ -2,6 +2,7 @@ import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
+import 'package:expertapp/src/call_server/call_server_error_dialog.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
@@ -33,6 +34,7 @@ class ExpertViewCallMainPage extends StatefulWidget {
 class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
   final CallServerManager callServerManager;
   bool requestedExit = false;
+  bool errorDialogShown = false;
   final RtcEngineWrapper engineWrapper = RtcEngineWrapper();
   AgoraVideoCall? videoCall;
 
@@ -47,10 +49,23 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
     });
   }
 
+  Widget buildErrorView(BuildContext context, CallServerModel model) {
+    if (!errorDialogShown) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        showCallServerErrorDialog(context, model, onServerDisconnect);
+        errorDialogShown = true;
+      });
+    }
+    return SizedBox();
+  }
+
   Widget buildCallView(BuildContext context, CallServerModel model) {
     if (model.callConnectionState == CallServerConnectionState.DISCONNECTED) {
       onServerDisconnect(model);
       return SizedBox();
+    }
+    if (model.callConnectionState == CallServerConnectionState.ERRORED) {
+      return buildErrorView(context, model);
     }
     if (model.agoraCredentials == null ||
         model.callCounterpartyConnectionState ==

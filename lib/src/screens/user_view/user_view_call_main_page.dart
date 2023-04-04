@@ -2,6 +2,8 @@ import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
+import 'package:expertapp/src/call_server/call_server_error_dialog.dart';
+import 'package:expertapp/src/call_server/call_server_error_reason.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
@@ -145,22 +147,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
   Widget buildErrorView(BuildContext context, CallServerModel model) {
     if (!errorDialogShown) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Error"),
-                content: Text("There was an error connecting to the server."),
-                actions: [
-                  TextButton(
-                    child: Text("OK"),
-                    onPressed: () {
-                      onServerDisconnect(model);
-                    },
-                  )
-                ],
-              );
-            });
+        showCallServerErrorDialog(context, model, onServerDisconnect);
         errorDialogShown = true;
       });
     }

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:expertapp/src/call_server/call_server_error_reason.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,8 @@ class CallServerMessageListener {
       final response = aMessage.serverCallJoinOrRequestResponse;
       if (!response.success) {
         log("Error from call server ${response.errorMessage}");
-        model.onErrored(response.errorMessage);
+        model.onErrored(
+            response.errorMessage, CallServerErrorReason.SERVER_ERROR);
       } else {
         model.onServerCallJoinOrRequestResponse(response);
       }
@@ -45,9 +47,9 @@ class CallServerMessageListener {
     }
   }
 
-  void onError(String errorMessage) {
+  void onError(String errorMessage, CallServerErrorReason errorReason) {
     Provider.of<CallServerModel>(connectedContext, listen: false)
-        .onErrored(errorMessage);
+        .onErrored(errorMessage, errorReason);
   }
 
   void onDisconnect() {

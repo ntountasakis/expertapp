@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:expertapp/src/call_server/call_server_connection_establisher.dart';
+import 'package:expertapp/src/call_server/call_server_error_reason.dart';
 import 'package:expertapp/src/call_server/call_server_message_listener.dart';
 import 'package:expertapp/src/call_server/call_server_message_producer.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
@@ -60,10 +61,12 @@ class CallServerManager {
 
     if (error is GrpcError && error.code == StatusCode.unavailable) {
       _serverMessageListener.onError(
-          "Unavailable to begin call. Server is down for maintenance.");
+          "Server is down for maintenance. Please try again later",
+          CallServerErrorReason.SERVER_DOWN);
     } else {
       _serverMessageListener.onError(
-          "Internal system error. Please contact us if issue persists.");
+          "Please contact us if issue persists.",
+          CallServerErrorReason.SERVER_ERROR);
     }
   }
 
