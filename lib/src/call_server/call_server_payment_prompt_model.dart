@@ -40,7 +40,8 @@ class CallServerPaymentPromptModel {
 
   Future<void> presentPaymentSheet() async {
     try {
-      bool platformPaySupported = await Stripe.instance.isPlatformPaySupported();
+      bool platformPaySupported = await Stripe.instance
+          .isPlatformPaySupported(googlePay: getGooglePayParams());
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           merchantDisplayName: 'Flutter Stripe Store Demo',
@@ -48,6 +49,7 @@ class CallServerPaymentPromptModel {
           customerEphemeralKeySecret: _ephemeralKey,
           customerId: stripeCustomerId,
           applePay: getPaymentSheetApplePay(platformPaySupported),
+          googlePay: getPaymentSheetGooglePay(platformPaySupported),
         ),
       );
       await Stripe.instance.presentPaymentSheet();
@@ -56,6 +58,25 @@ class CallServerPaymentPromptModel {
         onPaymentCanceled();
         onPaymentStateChanged();
       }
+    }
+  }
+
+  IsGooglePaySupportedParams? getGooglePayParams() {
+    // TODO: flip testenv to false
+    return IsGooglePaySupportedParams(
+        testEnv: true,
+        supportsTapToPay: false,
+        existingPaymentMethodRequired: false);
+  }
+
+  PaymentSheetGooglePay? getPaymentSheetGooglePay(bool platformPaySupported) {
+    // TODO: flip testenv to false
+    if (platformPaySupported) {
+      return PaymentSheetGooglePay(
+        merchantCountryCode: "US",
+        currencyCode: "USD",
+        testEnv: true,
+      );
     }
   }
 
