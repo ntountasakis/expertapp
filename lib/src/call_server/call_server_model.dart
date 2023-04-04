@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
+import 'package:expertapp/src/call_server/call_server_error_reason.dart';
 import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +18,13 @@ class CallServerModel extends ChangeNotifier {
   CallServerConnectionState _connectionState =
       CallServerConnectionState.UNCONNECTED;
 
+  CallServerErrorReason _errorReason = CallServerErrorReason.NOT_ERRORED;
+
   CallServerCounterpartyConnectionState _counterpartyConnectionState =
       CallServerCounterpartyConnectionState.DISCONNECTED;
 
   CallServerConnectionState get callConnectionState => _connectionState;
+  CallServerErrorReason get callErrorReason => _errorReason;
   String get errorMsg => _errorMessage;
   String get callTransactionId => _callTransactionId;
   ServerAgoraCredentials? get agoraCredentials => _agoraCredentials;
@@ -61,6 +65,7 @@ class CallServerModel extends ChangeNotifier {
     _connectionState = CallServerConnectionState.UNCONNECTED;
     _counterpartyConnectionState =
         CallServerCounterpartyConnectionState.DISCONNECTED;
+    _errorReason = CallServerErrorReason.NOT_ERRORED;
     _msEpochOfCounterpartyConnected = 0;
     callJoinTimeExpiryUtcMs = 0;
   }
@@ -77,9 +82,10 @@ class CallServerModel extends ChangeNotifier {
     }
   }
 
-  void onErrored(String aErrorMessage) {
+  void onErrored(String aErrorMessage, CallServerErrorReason aErrorReason) {
     _errorMessage = aErrorMessage;
     _connectionState = CallServerConnectionState.ERRORED;
+    _errorReason = aErrorReason;
     notifyListeners();
   }
 
