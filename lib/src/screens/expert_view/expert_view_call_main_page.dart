@@ -80,7 +80,7 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
   }
 
   Future<void> onEndCallTap() async {
-    await callServerManager.requestDisconnect();
+    await callServerManager.requestDisconnectFromServer();
   }
 
   void onServerDisconnect(CallServerModel model) {
