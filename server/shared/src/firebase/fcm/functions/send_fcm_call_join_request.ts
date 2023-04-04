@@ -22,6 +22,7 @@ export const sendFcmCallJoinRequest = function ({ fcmToken, callerUid, calledUid
   };
 
   // Send a message to the device corresponding to the provided registration token.
+  console.log("sendFcmCallJoinRequest: payload: " + JSON.stringify(payload));
   sendFcmMessage(payload);
 };
 
@@ -34,5 +35,6 @@ export const sendFcmCallJoinCancel = function ({ fcmToken }: { fcmToken: string 
   };
 
   // Send a message to the device corresponding to the provided registration token.
+  console.log("sendFcmCallJoinCancel: payload: " + JSON.stringify(payload));
   sendFcmMessage(payload);
 };
