@@ -411,7 +411,7 @@ class _CommonViewExpertProfilePageState
           addAdditionalParams: false,
           allowBackButton: true,
         );
-      } else if (widget._isEditable) {
+      } else {
         return AppBar(
           title: Text("Expert Profile"),
           actions: [
@@ -421,7 +421,7 @@ class _CommonViewExpertProfilePageState
                 IconButton(
                   icon: Icon(Icons.share),
                   onPressed: () async {
-                    final url = await getShareableExpertProfileDynamicLink();
+                    final url = await getShareableExpertProfileDynamicLink(snapshot.data!.documentId);
                     Share.share(url);
                     log('Shareable link: $url');
                   },
@@ -430,16 +430,11 @@ class _CommonViewExpertProfilePageState
             ),
           ],
         );
-      } else {
-        return AppBar(
-          title: Text("Expert Profile"),
-        );
       }
-    } else {
-      return AppBar(
-        title: Text("Loading..."),
-      );
     }
+    return AppBar(
+      title: Text("Loading..."),
+    );
   }
 
   @override
