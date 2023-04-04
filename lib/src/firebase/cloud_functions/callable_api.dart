@@ -143,10 +143,13 @@ Future<List<ChatroomPreview>> getAllChatroomsForUser() async {
   return chatroomPreviews;
 }
 
-Future<String> getShareableExpertProfileDynamicLink() async {
+Future<String> getShareableExpertProfileDynamicLink(String expertUid) async {
+  Map<String, dynamic> linkQuery = {
+    'expertUid': expertUid,
+  };
   HttpsCallableResult result =
       await getCallable(CallableFunctions.GET_SHAREABLE_DYNAMIC_PROFILE_LINK)
-          .call();
+          .call(linkQuery);
   final linkUrl = result.data;
   return linkUrl;
 }

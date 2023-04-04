@@ -4,18 +4,19 @@ import { FirebaseDynamicLinkProvider } from "../../../shared/src/firebase/dynami
 import { getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 
 export const generateExpertProfileDynamicLink = functions.https.onCall(async (data, context) => {
-    if (context.auth == null) {
-        throw new Error("Cannot call by unauthorized users");
+    const expertUid: string = data.expertUid;
+    if (expertUid == null || expertUid === "" || expertUid === undefined) {
+        throw new Error(`Expert uid is empty`);
     }
-    const uid = context.auth.uid;
+
     const exists = await admin.firestore().runTransaction(async (transaction) => {
-        const publicExpertInfoDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid }));
+        const publicExpertInfoDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: expertUid }));
         return publicExpertInfoDoc.exists;
     });
     if (!exists) {
-        throw new Error(`User ${uid} is not an expert`);
+        throw new Error(`User ${expertUid} is not an expert`);
     }
-    const link: string = await FirebaseDynamicLinkProvider.generateDynamicLinkExpertProfile({ expertUid: uid });
-    console.log(`Generated dynamic link for expert profile for uid ${uid}: ${link}`);
+    const link: string = await FirebaseDynamicLinkProvider.generateDynamicLinkExpertProfile({ expertUid: expertUid });
+    console.log(`Generated dynamic link for expert profile for uid ${expertUid}: ${link}`);
     return link;
 });
