@@ -11,8 +11,9 @@ import 'package:provider/provider.dart';
 
 class ClientInCallAppbar extends StatefulWidget with PreferredSizeWidget {
   final DocumentWrapper<PublicExpertInfo> userMetadata;
+  final bool allowBackButton;
 
-  ClientInCallAppbar(this.userMetadata);
+  ClientInCallAppbar(this.userMetadata, this.allowBackButton);
 
   @override
   State<ClientInCallAppbar> createState() => _ClientInCallAppbarState();
@@ -47,9 +48,12 @@ class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
           );
         });
       });
-      return AppBar();
+      return AppBar(
+        automaticallyImplyLeading: widget.allowBackButton,
+      );
     }
     return AppBar(
+      automaticallyImplyLeading: widget.allowBackButton,
       title: Row(
         children: [
           Expanded(
@@ -76,9 +80,12 @@ class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
               msRemaining: model.secMaxCallLength * 1000, onEnd: (() => {}));
         });
       });
-      return AppBar();
+      return AppBar(
+        automaticallyImplyLeading: widget.allowBackButton,
+      );
     }
     return AppBar(
+      automaticallyImplyLeading: widget.allowBackButton,
       title: Row(
         children: [
           Expanded(
@@ -105,6 +112,7 @@ class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
     return Consumer<CallServerModel>(builder: (context, model, child) {
       if (model.callConnectionState == CallServerConnectionState.UNCONNECTED) {
         return AppBar(
+          automaticallyImplyLeading: widget.allowBackButton,
           title: Text(
             "Connecting to server...",
             style: textStylePreCall,
@@ -113,6 +121,7 @@ class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
       }
       if (model.callJoinTimeExpiryUtcMs == 0) {
         return AppBar(
+          automaticallyImplyLeading: widget.allowBackButton,
           title: Text(
             "Awaiting payment pre-authorization",
             style: textStylePreCall,

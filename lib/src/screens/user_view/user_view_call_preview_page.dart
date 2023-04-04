@@ -48,7 +48,7 @@ class UserViewCallPreviewPage extends StatelessWidget {
       child: ElevatedButton(
         style: callButtonStyle,
         onPressed: () {
-          context.goNamed(Routes.UV_CALL_HOME_PAGE,
+          context.pushNamed(Routes.UV_CALL_HOME_PAGE,
               params: {Routes.EXPERT_ID_PARAM: _expertUid});
         },
         child: const Text('Begin Call'),
@@ -77,7 +77,8 @@ class UserViewCallPreviewPage extends StatelessWidget {
             final publicUserInfo =
                 snapshot.data![2] as DocumentWrapper<PublicUserInfo>?;
             return Scaffold(
-                appBar: UserPreviewAppbar(publicUserInfo!.documentType.firstName, "Call"),
+                appBar: UserPreviewAppbar(
+                    publicUserInfo!.documentType.firstName, "Call"),
                 body: Container(
                   padding: EdgeInsets.all(8.0),
                   child: Column(children: [
