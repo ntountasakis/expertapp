@@ -1,11 +1,10 @@
+import 'package:expertapp/src/util/chat_bubble_widget.dart';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/chat_message.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/appbars/user_view/user_preview_appbar.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
-import 'package:expertapp/src/util/time_util.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_bubble/chat_bubble.dart';
 
 class CommonViewChatPage extends StatefulWidget {
   final String currentUserUid;
@@ -54,69 +53,6 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
         });
       });
 
-  Widget buildSendChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
-    return ChatBubble(
-        clipper: ChatBubbleClipper3(type: BubbleType.sendBubble),
-        alignment: Alignment.topRight,
-        margin: EdgeInsets.only(top: 20),
-        backGroundColor: Colors.blue,
-        child: Text(
-          chatMessage.documentType.chatText,
-          style: TextStyle(color: Colors.white),
-        ));
-  }
-
-  Widget buildReceiverChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
-    return ChatBubble(
-      clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
-      backGroundColor: Color(0xffE7E7ED),
-      margin: EdgeInsets.only(top: 20),
-      child: Text(
-        chatMessage.documentType.chatText,
-        style: TextStyle(color: Colors.black),
-      ),
-    );
-  }
-
-  Widget buildChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
-    final messageTimeStyle = TextStyle(
-      fontSize: 12,
-    );
-    if (chatMessage.documentType.authorUid == widget.currentUserUid) {
-      return Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-        buildSendChatBubble(chatMessage),
-        SizedBox(
-          height: 5,
-        ),
-        Container(
-          margin: const EdgeInsets.only(right: 20),
-          child: Text(
-            "Sent: " +
-                messageTimeAnnotation(
-                    chatMessage.documentType.millisecondsSinceEpochUtc),
-            style: messageTimeStyle,
-          ),
-        ),
-      ]);
-    } else {
-      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        buildReceiverChatBubble(chatMessage),
-        SizedBox(
-          height: 5,
-        ),
-        Container(
-          margin: const EdgeInsets.only(left: 20),
-          child: Text(
-            "Received: " +
-                messageTimeAnnotation(
-                    chatMessage.documentType.millisecondsSinceEpochUtc),
-            style: messageTimeStyle,
-          ),
-        ),
-      ]);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
@@ -148,7 +84,11 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
                               itemBuilder: (context, index) {
                                 DocumentWrapper<ChatMessage> chatMessage =
                                     snapshot.data!.elementAt(index);
-                                return buildChatBubble(chatMessage);
+                                return new ChatBubbleWidget(
+                                  chatMessage,
+                                  widget.currentUserUid,
+                                  key: Key(chatMessage.documentId),
+                                );
                               });
                         } else {
                           return Text("Loading.....");

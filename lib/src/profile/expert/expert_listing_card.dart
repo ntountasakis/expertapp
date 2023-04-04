@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 class ExpertListingCard extends StatelessWidget {
   final DocumentWrapper<PublicExpertInfo> _publicExpertInfo;
 
-  const ExpertListingCard(this._publicExpertInfo);
+  const ExpertListingCard(this._publicExpertInfo, {Key? key}) : super(key: key);
 
   Widget buildTitle() {
     final TextStyle majorStyle =

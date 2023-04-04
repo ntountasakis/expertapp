@@ -8,7 +8,8 @@ class ExpertReview extends StatelessWidget {
   final DocumentWrapper<PublicUserInfo> _reviewerUserMetadata;
   final DocumentWrapper<Review> _expertReview;
 
-  ExpertReview(this._reviewerUserMetadata, this._expertReview);
+  ExpertReview(this._reviewerUserMetadata, this._expertReview, {Key? key})
+      : super(key: key);
 
   // todo bug, this should use name of reviewer,
   static Stream<Iterable<Widget>> getStream(String expertUserUid) {
@@ -20,7 +21,11 @@ class ExpertReview extends StatelessWidget {
             builder: (BuildContext context,
                 AsyncSnapshot<DocumentWrapper<PublicUserInfo>?> snapshot) {
               if (snapshot.hasData) {
-                return ExpertReview(snapshot.data!, wrappedReview);
+                return ExpertReview(
+                  snapshot.data!,
+                  wrappedReview,
+                  key: Key(wrappedReview.documentId),
+                );
               } else {
                 return CircularProgressIndicator();
               }
