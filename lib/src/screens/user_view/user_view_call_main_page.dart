@@ -38,6 +38,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
   final CallServerManager callServerManager;
   bool requestedExit = false;
   bool exiting = false;
+  bool errorDialogShown = false;
   final RtcEngineWrapper engineWrapper = RtcEngineWrapper();
   AgoraVideoCall? videoCall;
 
@@ -142,23 +143,27 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
   }
 
   Widget buildErrorView(BuildContext context, CallServerModel model) {
-    // not going to work, needs to be called only once from the event
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Error"),
-            content: Text("There was an error connecting to the server."),
-            actions: [
-              TextButton(
-                child: Text("OK"),
-                onPressed: () {
-                  onServerDisconnect(model);
-                },
-              )
-            ],
-          );
-        });
+    if (!errorDialogShown) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Error"),
+                content: Text("There was an error connecting to the server."),
+                actions: [
+                  TextButton(
+                    child: Text("OK"),
+                    onPressed: () {
+                      onServerDisconnect(model);
+                    },
+                  )
+                ],
+              );
+            });
+        errorDialogShown = true;
+      });
+    }
     return SizedBox();
   }
 
