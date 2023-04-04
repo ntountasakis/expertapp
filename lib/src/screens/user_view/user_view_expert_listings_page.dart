@@ -33,8 +33,10 @@ class UserViewExpertListingsPage extends StatelessWidget {
                 return ListView.builder(
                     itemCount: snapshot.data!.length,
                     itemBuilder: (context, index) {
+                      final expertDoc = snapshot.data!.elementAt(index);
                       return ExpertListingCard(
-                        snapshot.data!.elementAt(index),
+                        expertDoc,
+                        key: Key(expertDoc.documentId),
                       );
                     });
               } else {
