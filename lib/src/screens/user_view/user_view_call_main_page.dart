@@ -81,7 +81,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
 
   Future<void> onEndCallTap() async {
     requestedExit = true;
-    await callServerManager.requestDisconnect();
+    await callServerManager.requestDisconnectFromServer();
   }
 
   Future<void> onPaymentCancelled(
@@ -89,7 +89,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
     if (!requestedExit) {
       requestedExit = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
-        await callServerManager.requestDisconnect();
+        await callServerManager.manuallyDisconnectFromServer();
       });
     }
   }
@@ -137,7 +137,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
           }),
           SizedBox(height: 20),
           CallSummaryUtil.buildButton(model, "Cancel Call", (_) async {
-            await callServerManager.requestDisconnect();
+            await callServerManager.manuallyDisconnectFromServer();
           }),
         ],
       ),

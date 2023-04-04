@@ -44,11 +44,15 @@ class CallServerManager {
         onDone: this._onDone);
   }
 
-  Future<void> requestDisconnect() async {
+  Future<void> requestDisconnectFromServer() async {
     final disconnectRequest = ClientCallDisconnectRequest(uid: currentUserId);
     final messageContainer =
         new ClientMessageContainer(callDisconnectRequest: disconnectRequest);
     _serverMessageProducer.sendMessage(messageContainer);
+  }
+
+  Future<void> manuallyDisconnectFromServer() async {
+    return _serverMessageProducer.shutdown();
   }
 
   void _onError(Object error) {
