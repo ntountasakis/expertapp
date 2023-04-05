@@ -17,6 +17,7 @@ buildDockerImage() {
 buildLocalDockerImage() {
     docker build \
     --progress=plain \
+    --build-arg IS_PROD_ARG=$1 \
     -t $REPO_IMAGE_NAME \
     $DOCKER_CONTEXT
 }
