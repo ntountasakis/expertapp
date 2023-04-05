@@ -34,6 +34,9 @@ export { getAllChatroomPreviewsForUser }
 import { getDefaultProfilePicUrl } from "./endpoints/get_default_profile_pic_url";
 export { getDefaultProfilePicUrl };
 
+import { generateExpertProfileDynamicLink } from "./endpoints/generate_expert_profile_dynamic_link";
+export { generateExpertProfileDynamicLink };
+
 import { stripeWebhookListener } from "./endpoints/stripe_webhook_listener";
 export { stripeWebhookListener };
 
@@ -51,7 +54,3 @@ export { stripeConnectedAccountDashboardLinkRequest }
 
 import { stripeManagePaymentMethodsLinkRequest } from "./endpoints/stripe_customer_manage_payment_methods_dashboard_link_request";
 export { stripeManagePaymentMethodsLinkRequest };
-
-import { generateExpertProfileDynamicLink } from "./endpoints/generate_expert_profile_dynamic_link";
-export { generateExpertProfileDynamicLink };
-

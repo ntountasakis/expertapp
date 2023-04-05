@@ -3,21 +3,22 @@
 
 set -e
 
-if [ "$#" -ne 1 ]; then
+if [ "$#" -ne 2 ]; then
     echo "Illegal number of parameters"
     exit 1
 fi
 
 IS_PROD=$1
+STRIPE_PRIVATE_KEY_VERSION=$2
 
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 ROOT=$(git rev-parse --show-toplevel)
-source "${ROOT}/server/scripts/buildServerDockerImage.sh"
+source "${ROOT}/server/scripts/serverDockerImageUtil.sh"
 
 function startServerDockerContainer {
   echo "Building & running server docker container locally"
-  buildLocalDockerImage $IS_PROD
+  buildDockerImage $IS_PROD $STRIPE_PRIVATE_KEY_VERSION
   echo "Running docker container"
   runLocalDockerContainer
   echo "local name $LOCAL_NAME"

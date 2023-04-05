@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@google-cloud/logging": "^10.1.10",
+    "@google-cloud/secret-manager": "^4.2.1",
     "@grpc/proto-loader": "^0.7.3",
     "@types/uuid": "^8.3.4",
     "crc-32": "^1.2.2",
@@ -40,7 +41,7 @@
     "stripe": "^10.12.0",
     "uuid": "^9.0.0"
   },
-    "engines" : {
+  "engines": {
     "node": "18"
   }
 }
