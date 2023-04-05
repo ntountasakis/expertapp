@@ -14,6 +14,7 @@ export class CallTransactionServer implements CallTransactionHandlers {
   async InitiateCall(call: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>): Promise<void> {
     const metadata = call.metadata.getMap();
     if (!isMetadataValid(metadata)) {
+      call.emit('error', { code: grpc.status.INTERNAL, message: "Server is having technical difficulties", });
       call.end();
       return;
     }
@@ -24,13 +25,10 @@ export class CallTransactionServer implements CallTransactionHandlers {
     call.on("data", async (aClientMessage: ClientMessageContainer) => {
       const messageSender = new GrpcClientMessageSender(call);
       try {
-        const isValid = await dispatchClientMessage({
+        await dispatchClientMessage({
           clientMessage: aClientMessage, invalidMessageHandler: invalidMessageCallback,
           clientMessageSender: messageSender, callManager: callManager, callStream: call
         });
-        if (!isValid) {
-          call.end();
-        }
       } catch (error) {
         console.error(`Error dispatching client message: ${error}. Terminating connection to ${userId}`);
         call.emit('error', { code: grpc.status.INTERNAL, message: error, });
@@ -73,5 +71,5 @@ function isMetadataValid(metadata: { [key: string]: grpc.MetadataValue; }): bool
 }
 
 function invalidMessageCallback(errorMessage: string): void {
-  console.error(errorMessage);
+  throw new Error(errorMessage);
 }

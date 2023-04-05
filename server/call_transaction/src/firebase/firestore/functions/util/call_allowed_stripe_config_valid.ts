@@ -7,10 +7,10 @@ export default function callAllowedStripeConfigValid({callerUserInfo, calledUser
   const calledProperlyConfigured = isStringDefined(calledUserInfo.stripeConnectedId);
 
   if (!callerProperlyConfigured) {
-    console.error("Caller not properly configured, has no StripeCustomerId");
+    throw new Error("Caller not properly configured, has no StripeCustomerId");
   }
   if (!calledProperlyConfigured) {
-    console.error("Called not properly configured, has no StripeConnectedId");
+    throw new Error("Called not properly configured, has no StripeConnectedId");
   }
   return callerProperlyConfigured && calledProperlyConfigured;
 }
