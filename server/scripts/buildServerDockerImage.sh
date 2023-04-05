@@ -2,52 +2,35 @@
 # exit when any command fails
 set -e
 
-DOCKER_CONTEXT=$(git rev-parse --show-toplevel)
-IMAGE_NAME='expertapp-server'
-PROJECT_NAME='expert-app-backend'
-REPO_IMAGE_NAME="us-docker.pkg.dev/${PROJECT_NAME}/gcr.io/${IMAGE_NAME}:latest"
+ROOT=$(git rev-parse --show-toplevel)
+source "${ROOT}/server/scripts/serverDockerImageUtil.sh"
 
+OPT_STR="p:v:burs"
 
-buildDockerImage() {
-    docker build \
-    -t $REPO_IMAGE_NAME \
-    $DOCKER_CONTEXT
-}
+while getopts $OPT_STR opt; do
+    case $opt in
+    p)
+       IS_PROD=${OPTARG}
+       echo "IS_PROD: $IS_PROD"
+       ;;
+    v)
+        STRIPE_PRIVATE_KEY_VERSION=${OPTARG}
+        echo "STRIPE_PRIVATE_KEY_VERSION: $STRIPE_PRIVATE_KEY_VERSION"
+	;;
+    esac
+done
 
-buildLocalDockerImage() {
-    docker build \
-    --progress=plain \
-    --build-arg IS_PROD_ARG=$1 \
-    -t $REPO_IMAGE_NAME \
-    $DOCKER_CONTEXT
-}
+if [ -z "${IS_PROD}" ] || [ -z "${STRIPE_PRIVATE_KEY_VERSION}" ]; then
+    echo "Illegal number of parameters"
+    exit 1
+fi
 
-uploadToArtifactRegistry() {
-    docker push $REPO_IMAGE_NAME
-}
-
-runLocalDockerContainer() {
-  # 9002 for local firestore emulator
-  export LOCAL_NAME=$(docker run -d --env PORT=8080 \
-  --env GOOGLE_APPLICATION_CREDENTIALS='/server/conf/expert-app-localdev.json' \
-  -p 8080:8080 \
-  --add-host=host.docker.internal:host-gateway \
-  -t $REPO_IMAGE_NAME)
-}
-
-stopDockerContainer() {
-  docker rm $(docker stop $(docker ps -a -q --filter ancestor=${REPO_IMAGE_NAME} --format="{{.ID}}"))
-}
-
-while getopts "bdurs" opt; do
+OPTIND=0
+while getopts $OPT_STR opt; do
     case $opt in
     b)
 	echo "Building prod docker image"
-	buildDockerImage
-	;;
-    d)
-	echo "Building dev local docker image"
-	buildLocalDockerImage
+	buildDockerImage $IS_PROD $STRIPE_PRIVATE_KEY_VERSION
 	;;
     u)
 	echo "Uploading docker image to artifact registry"

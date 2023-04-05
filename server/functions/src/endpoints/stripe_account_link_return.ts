@@ -5,8 +5,10 @@ import { getPrivateUserDocumentNoTransact } from "../../../shared/src/firebase/f
 import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/private_user_info";
 import { createExpertUser } from "../../../shared/src/firebase/firestore/functions/create_expert_user";
 import { StoragePaths } from "../../../shared/src/firebase/storage/storage_paths";
+import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
 
 export const stripeAccountLinkReturn = functions.https.onRequest(async (request, response) => {
+  await configureStripeProviderForFunctions();
   const uid = request.query.uid;
   if (typeof uid !== "string") {
     console.log("Cannot parse uid, not instance of string");

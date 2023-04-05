@@ -5,8 +5,10 @@ import { updateConnectedAccountPrivateUserInfo } from "../../../shared/src/fireb
 import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/private_user_info";
 import { getPrivateUserDocumentNoTransact } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { checkTokenValidAndRemove } from "../../../shared/src/firebase/firestore/functions/check_token_valid_and_remove";
+import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
 
 export const stripeAccountLinkRefresh = functions.https.onRequest(async (request, response) => {
+  await configureStripeProviderForFunctions();
   const uid = request.query.uid;
   if (typeof uid !== "string") {
     console.log(`Cannot parse uid, not instance of string. Type: ${typeof uid}`);

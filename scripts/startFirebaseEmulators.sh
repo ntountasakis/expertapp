@@ -5,7 +5,7 @@ set -e
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 ROOT=$(git rev-parse --show-toplevel)
-source "${ROOT}/server/scripts/buildServerDockerImage.sh"
+source "${ROOT}/server/scripts/serverDockerImageUtil.sh"
 
 DATA_DIR="${SCRIPTPATH}/emulatorData/"
 mkdir -p ${DATA_DIR}

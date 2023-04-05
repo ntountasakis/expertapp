@@ -5,6 +5,7 @@ import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/p
 import { deleteStripeConnectedAccount, deleteStripeCustomer } from "../../../shared/src/stripe/util";
 import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
 import allBalancesZeroStripeConnectedAccount from "../../../shared/src/stripe/stripe_check_balances";
+import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
 
 export const deleteUser = functions.https.onCall(async (data, context) => {
     if (context.auth == null) {
@@ -17,6 +18,7 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
             return doc.exists ? doc.data() as PrivateUserInfo : null;
         });
         if (privateUserInfo != null) {
+            await configureStripeProviderForFunctions();
             if (privateUserInfo.stripeConnectedId != null && privateUserInfo.stripeConnectedId !== "") {
                 const [hasZeroBalance, nonZeroMessage] = await allBalancesZeroStripeConnectedAccount({ stripe: StripeProvider.STRIPE, connectedAccountId: privateUserInfo.stripeConnectedId });
                 if (!hasZeroBalance) {

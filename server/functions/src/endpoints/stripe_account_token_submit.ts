@@ -1,8 +1,10 @@
 
 import * as functions from "firebase-functions";
-import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
+import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
+import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
 
 export const stripeAccountTokenSubmit = functions.https.onRequest(async (request, response) => {
+  await configureStripeProviderForFunctions();
   const uid = request.query.uid;
   if (typeof uid !== "string") {
     console.log("Cannot parse uid, not instance of string");
@@ -10,7 +12,7 @@ export const stripeAccountTokenSubmit = functions.https.onRequest(async (request
     return;
   }
   const tokenInvalid = typeof request.query.tokenInvalid === "string";
-  const redirectUrl = StripeProvider.getAccountLinkRefreshUrl({hostname: request.hostname, uid: uid});
+  const redirectUrl = StripeProvider.getAccountLinkRefreshUrl({ hostname: request.hostname, uid: uid });
 
   response.set("Content-Type", "text/html");
   // eslint-disable-next-line max-len
