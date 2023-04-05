@@ -1,4 +1,6 @@
 FROM ubuntu:22.04 AS base
+ARG IS_PROD_ARG
+ENV IS_PROD=$IS_PROD_ARG
 WORKDIR /server
 RUN apt-get update && \
   apt-get install -y --no-install-recommends \
@@ -24,4 +26,4 @@ WORKDIR /server/call_transaction
 RUN npm run build
 WORKDIR /server/call_transaction/dist/call_transaction/src/
 EXPOSE 8080
-ENTRYPOINT ["node", "app.js"]
+ENTRYPOINT node app.js
