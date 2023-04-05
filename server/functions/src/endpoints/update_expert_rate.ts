@@ -1,7 +1,8 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {getExpertRateDocumentRef, getPrivateUserDocument} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
+import { getExpertRateDocumentRef, getPrivateUserDocument } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/private_user_info";
+import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
 
 export const updateExpertRate = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -9,8 +10,8 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
   }
 
   const uid = context.auth.uid;
-  const newCentsPerMinute : number = data.centsPerMinute;
-  const newCentsStartCall : number = data.centsStartCall;
+  const newCentsPerMinute: number = data.centsPerMinute;
+  const newCentsStartCall: number = data.centsStartCall;
 
   try {
     if (uid == null || newCentsPerMinute == null || newCentsStartCall == null) {
@@ -24,20 +25,20 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
       };
     }
 
-    if (newCentsStartCall <= 0) {
+    if (newCentsStartCall < StripeProvider.MIN_BILLABLE_AMOUNT_CENTS) {
       return {
         success: false,
-        message: "Rate earned to accept a call must be greater than 0",
+        message: "Rate earned to accept a call must at least " + StripeProvider.MIN_BILLABLE_AMOUNT_CENTS + " cents",
       };
     }
 
     await admin.firestore().runTransaction(async (transaction) => {
-      const privateUserDoc: PrivateUserInfo = await getPrivateUserDocument({transaction: transaction, uid: uid});
+      const privateUserDoc: PrivateUserInfo = await getPrivateUserDocument({ transaction: transaction, uid: uid });
 
       if (privateUserDoc.stripeConnectedId == null) {
         throw new Error(`Cannot update expert rate, user ${uid} has no stripeConnectedId`);
       }
-      transaction.update(getExpertRateDocumentRef({expertUid: uid}), {
+      transaction.update(getExpertRateDocumentRef({ expertUid: uid }), {
         "centsPerMinute": newCentsPerMinute,
         "centsCallStart": newCentsStartCall,
       });

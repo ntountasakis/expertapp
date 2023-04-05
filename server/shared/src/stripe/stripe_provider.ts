@@ -9,6 +9,7 @@ export class StripeProvider {
   static PLATFORM_PERCENT_FEE = 8.0;
   static STRIPE_PERCENT_FEE = 2.9;
   static STRIPE_FLAT_FEE_CENTS = 30;
+  static MIN_BILLABLE_AMOUNT_CENTS = 50;
 
   static getHttpPrefix({ hostname }: { hostname: string }) {
     // this should be localhost if running in iOS emulator
