@@ -59,14 +59,18 @@ class CallServerManager {
   void _onError(Object error) {
     log('On Error ${error}');
 
-    if (error is GrpcError && error.code == StatusCode.unavailable) {
-      _serverMessageListener.onError(
-          "Server is down for maintenance. Please try again later",
-          CallServerErrorReason.SERVER_DOWN);
-    } else {
-      _serverMessageListener.onError(
-          "Please contact us if issue persists.",
-          CallServerErrorReason.SERVER_ERROR);
+    if (error is GrpcError) {
+      if (error.code == StatusCode.unavailable) {
+        _serverMessageListener.onError(
+            "Server is down for maintenance. Please try again later",
+            CallServerErrorReason.SERVER_DOWN);
+      } else if (error.message != null) {
+        _serverMessageListener.onError(
+            error.message!, CallServerErrorReason.SERVER_ERROR);
+      } else {
+        _serverMessageListener.onError("Please contact us if issue persists.",
+            CallServerErrorReason.SERVER_ERROR);
+      }
     }
   }
 
