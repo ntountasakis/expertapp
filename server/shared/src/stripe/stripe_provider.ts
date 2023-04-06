@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
+import { GoogleCloudProvider } from "../google_cloud/google_cloud_provider";
 
 export class StripeProvider {
   static API_VERSION = "2022-08-01" as Stripe.LatestApiVersion;
@@ -14,7 +15,7 @@ export class StripeProvider {
 
   static async getStripeSecret(stripePrivateKeyVersion: string): Promise<string> {
     const client = new SecretManagerServiceClient();
-    const privateKeyString = "projects/expert-app-backend/secrets/stripe-private-key/versions/" + stripePrivateKeyVersion;
+    const privateKeyString = GoogleCloudProvider.STRIPE_PRIVATE_KEY_PREFIX + stripePrivateKeyVersion;
     const [version] = await client.accessSecretVersion({
       name: privateKeyString,
     });
