@@ -19,6 +19,13 @@ class ExpertViewCompletedCallsPage extends StatelessWidget {
             AsyncSnapshot<Iterable<DocumentWrapper<CallTransaction>>>
                 snapshot) {
           if (snapshot.hasData) {
+            if (snapshot.data!.isEmpty) {
+              return ExpertCompletedCallCard.buildCallCard(
+                  context,
+                  "No completed calls... yet.",
+                  "After your first call, the details will appear here.",
+                  () {});
+            }
             return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
