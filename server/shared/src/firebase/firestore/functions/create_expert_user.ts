@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import { Logger } from "../../../google_cloud/google_cloud_logger";
 import { getExpertRateDocumentRef, getPublicExpertInfoDocumentRef, getPublicUserDocument } from "../document_fetchers/fetchers";
 import { DayAvailability, WeekAvailability } from "../models/expert_availability";
 import { ExpertRate } from "../models/expert_rate";
@@ -32,9 +33,15 @@ export async function createExpertUser({ uid, profileDescription, profilePicUrl,
     return true;
   });
   if (didCreate) {
-    console.log(`Created expert user ${uid}.`)
+    Logger.log({
+      logName: "createExpertUser", message: `Created expert user ${uid}.`,
+      labels: new Map([["expertId", uid]])
+    });
   } else {
-    console.log(`User ${uid} is already an expert. Not creating expert user.`)
+    Logger.logError({
+      logName: "createExpertUser", message: `User ${uid} is already an expert. Not creating expert user.`,
+      labels: new Map([["expertId", uid]])
+    });
   }
 }
 

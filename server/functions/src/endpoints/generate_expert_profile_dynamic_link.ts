@@ -2,6 +2,7 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { FirebaseDynamicLinkProvider } from "../../../shared/src/firebase/dynamic_links/web_api_key";
 import { getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const generateExpertProfileDynamicLink = functions.https.onCall(async (data, context) => {
     const expertUid: string = data.expertUid;
@@ -17,6 +18,9 @@ export const generateExpertProfileDynamicLink = functions.https.onCall(async (da
         throw new Error(`User ${expertUid} is not an expert`);
     }
     const link: string = await FirebaseDynamicLinkProvider.generateDynamicLinkExpertProfile({ expertUid: expertUid });
-    console.log(`Generated dynamic link for expert profile for uid ${expertUid}: ${link}`);
+    Logger.log({
+        logName: "generateExpertProfileDynamicLink ", message: `Generated dynamic link for expert profile for uid ${expertUid}: ${link}`,
+        labels: new Map([["expertId", expertUid]]),
+    });
     return link;
 });

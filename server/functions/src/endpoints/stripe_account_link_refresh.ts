@@ -6,12 +6,15 @@ import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/p
 import { getPrivateUserDocumentNoTransact } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { checkTokenValidAndRemove } from "../../../shared/src/firebase/firestore/functions/check_token_valid_and_remove";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
+import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const stripeAccountLinkRefresh = functions.https.onRequest(async (request, response) => {
   await configureStripeProviderForFunctions();
   const uid = request.query.uid;
   if (typeof uid !== "string") {
-    console.log(`Cannot parse uid, not instance of string. Type: ${typeof uid}`);
+    Logger.logError({
+      logName: "stripeAccountLinkRefresh", message: `Cannot parse uid, not instance of string. Type: ${typeof uid}`,
+    });
     response.status(400);
     return;
   }
@@ -43,6 +46,8 @@ async function redirectToStripeAccountLink({ connectedAccountId, hostname, uid, 
     stripe: StripeProvider.STRIPE, account: connectedAccountId,
     refreshUrl: StripeProvider.getAccountLinkRefreshUrl({ hostname: hostname, uid: uid }),
     returnUrl: StripeProvider.getAccountLinkReturnUrl({ hostname: hostname, uid: uid }),
+    functionContext: "stripeAccountLinkRefresh",
+    expertUid: uid,
   });
   response.redirect(accountLink);
 }

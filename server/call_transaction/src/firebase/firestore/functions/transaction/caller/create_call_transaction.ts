@@ -43,7 +43,7 @@ export const createCallTransaction = async ({ callerUid, calledUid }: { callerUi
         calledUid: calledUid, calledUserFcmToken: calledUserFcmToken, expertRate: expertRate, maxCallTimeSec: maxCallLengthSec
       });
       const paymentStatus = createPaymentStatus({
-        transaction: transaction, uid: callerUid,
+        transaction: transaction, uid: callerUid, callTransactionId: callTransaction.callTransactionId,
         paymentStatusId: callTransaction.callerPaymentStatusId, transferGroup: callTransaction.callerTransferGroup, idempotencyKey: uuidv4(),
         centsRequestedAuthorized: amountCentsPreAuth, centsRequestedCapture: 0, paymentContext: PaymentContext.IN_CALL
       });

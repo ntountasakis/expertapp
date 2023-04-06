@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { getChatroomId } from "../../../shared/src/firebase/firestore/functions/chatroom_util";
 import { createChatroom } from "../../../shared/src/firebase/firestore/functions/create_chatroom";
+import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const chatroomLookup = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -18,7 +19,10 @@ export const chatroomLookup = functions.https.onCall(async (data, context) => {
     if (existingChatroomId != "") return existingChatroomId;
 
     const newChatroomId = await createChatroom({ transaction: transaction, currentUid: currentUid, otherUid: otherUid });
-    console.log(`Created new chatroomId: ${newChatroomId} for ${currentUid} and ${otherUid}`);
+    Logger.log({
+      logName: "chatroomLookup", message: `Created new chatroomId: ${newChatroomId} for ${currentUid} and ${otherUid}`,
+      labels: new Map([["chatroomId", newChatroomId], ["currentUid", currentUid], ["otherUid", otherUid]]),
+    });
     return newChatroomId;
   });
 });

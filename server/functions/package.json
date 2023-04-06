@@ -15,6 +15,7 @@
   },
   "main": "out/functions/src/index.js",
   "dependencies": {
+    "@google-cloud/logging": "^10.4.0",
     "@google-cloud/secret-manager": "^4.2.1",
     "@types/express-serve-static-core": "^4.17.31",
     "@types/uuid": "^8.3.4",
