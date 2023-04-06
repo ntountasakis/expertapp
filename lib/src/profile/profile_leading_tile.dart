@@ -1,5 +1,3 @@
-import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:flutter/material.dart';
 
@@ -12,17 +10,19 @@ Widget buildLeadingProfileTile(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        IntrinsicWidth(
-          child: Text(
-            shortName,
-            style: nameStyle,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        SizedBox(height: 5),
+        shortName != ""
+            ? IntrinsicWidth(
+                child: Text(
+                shortName,
+                style: nameStyle,
+                overflow: TextOverflow.ellipsis,
+              ))
+            : SizedBox(),
+        shortName != "" ? SizedBox(height: 5) : SizedBox(),
         Expanded(
           child: ProfilePicture(profilePicUrl),
         ),
+        SizedBox(height: 5),
       ],
     ),
   );

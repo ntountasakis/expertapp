@@ -1,7 +1,9 @@
+import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/call_transaction.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/util/completed_calls_util.dart';
+import 'package:expertapp/src/profile/profile_leading_tile.dart';
 import 'package:expertapp/src/util/expert_completed_call_card.dart';
+import 'package:expertapp/src/util/tappable_card.dart';
 import 'package:flutter/material.dart';
 
 class ExpertViewCompletedCallsPage extends StatelessWidget {
@@ -20,11 +22,24 @@ class ExpertViewCompletedCallsPage extends StatelessWidget {
                 snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
-              return ExpertCompletedCallCard.buildCallCard(
-                  context,
-                  "No completed calls... yet.",
-                  "After your first call, the details will appear here.",
-                  null);
+              return FutureBuilder(
+                  future: getDefaultProfilePicUrl(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    if (snapshot.hasData) {
+                      return buildTappableCard(
+                          context: context,
+                          leading: buildLeadingProfileTile(
+                              context, "", snapshot.data!),
+                          title: Text("No completed calls... yet."),
+                          subtitle: Text(
+                              "After your first call, the details will appear here."),
+                          trailing: SizedBox(),
+                          onTapCallback: null);
+                    } else {
+                      return SizedBox();
+                    }
+                  });
             }
             return ListView.builder(
                 itemCount: snapshot.data!.length,

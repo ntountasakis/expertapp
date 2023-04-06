@@ -1,7 +1,10 @@
+import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/call_transaction.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
+import 'package:expertapp/src/profile/profile_leading_tile.dart';
 import 'package:expertapp/src/util/completed_calls_util.dart';
+import 'package:expertapp/src/util/tappable_card.dart';
 import 'package:flutter/material.dart';
 
 class ExpertCompletedCallCard extends StatelessWidget {
@@ -10,23 +13,6 @@ class ExpertCompletedCallCard extends StatelessWidget {
   const ExpertCompletedCallCard(this.call, this.transactionId, {Key? key})
       : super(key: key);
 
-  static Widget buildCallCard(BuildContext context, String title,
-      String subtitle, VoidCallback? onTap) {
-    final card = Card(
-      child: ListTile(
-        title: Text(title),
-        subtitle: Text(subtitle),
-      ),
-    );
-    if (onTap != null) {
-      return GestureDetector(
-        onTap: onTap,
-        child: card,
-      );
-    }
-    return card;
-  }
-
   @override
   Widget build(BuildContext context) {
     String subtitle = 'Ended on ${CompletedCallsUtil.formatEndDate(call)}. '
@@ -34,24 +20,32 @@ class ExpertCompletedCallCard extends StatelessWidget {
         'Length ${CompletedCallsUtil.formatCallLength(call)}';
 
     return FutureBuilder(
-        future: PublicUserInfo.get(call.callerUid),
-        builder: (BuildContext context,
-            AsyncSnapshot<DocumentWrapper<PublicUserInfo>?> snapshot) {
-          String title = 'Completed call with ';
+        future: Future.wait(
+            [PublicUserInfo.get(call.callerUid), getDefaultProfilePicUrl()]),
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
-            if (snapshot.data == null) {
-              title += ' Deleted User';
-            } else {
-              title += snapshot.data!.documentType.shortName();
-            }
-            return buildCallCard(context, title, subtitle, () {
-              showDialog<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return CompletedCallsUtil.buildCallPopup(
-                        call, transactionId);
-                  });
-            });
+            final publicUserInfo =
+                snapshot.data![0] as DocumentWrapper<PublicUserInfo>?;
+            final profilePicUrl = snapshot.data![1] as String;
+            String shortName = publicUserInfo != null
+                ? publicUserInfo.documentType.shortName()
+                : 'Deleted User';
+            String title = 'Completed call with ' + shortName;
+            return buildTappableCard(
+                context: context,
+                leading:
+                    buildLeadingProfileTile(context, shortName, profilePicUrl),
+                title: Text(title),
+                subtitle: Text(subtitle),
+                trailing: SizedBox(),
+                onTapCallback: (context) {
+                  showDialog<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CompletedCallsUtil.buildCallPopup(
+                            call, transactionId);
+                      });
+                });
           } else {
             return SizedBox();
           }
