@@ -1,8 +1,5 @@
 import 'package:expertapp/src/firebase/firestore/document_models/call_transaction.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
-import 'package:expertapp/src/profile/profile_picture.dart';
-import 'package:expertapp/src/util/completed_calls_util.dart';
 import 'package:expertapp/src/util/user_completed_call_card.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +18,14 @@ class UserViewCompletedCallsPage extends StatelessWidget {
             AsyncSnapshot<Iterable<DocumentWrapper<CallTransaction>>>
                 snapshot) {
           if (snapshot.hasData) {
+            if (snapshot.data!.isEmpty) {
+              return UserCompletedCallCard.buildCallCard(
+                  context,
+                  "No completed calls... yet.",
+                  "After your first call, the details will appear here.",
+                  null,
+                  null);
+            }
             return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
