@@ -24,7 +24,7 @@ class ExpertViewCompletedCallsPage extends StatelessWidget {
                   context,
                   "No completed calls... yet.",
                   "After your first call, the details will appear here.",
-                  () {});
+                  null);
             }
             return ListView.builder(
                 itemCount: snapshot.data!.length,

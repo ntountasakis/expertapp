@@ -10,17 +10,21 @@ class ExpertCompletedCallCard extends StatelessWidget {
   const ExpertCompletedCallCard(this.call, this.transactionId, {Key? key})
       : super(key: key);
 
-  static Widget buildCallCard(
-      BuildContext context, String title, String subtitle, VoidCallback onTap) {
-    return Card(
-        child: ListTile(
-      title: Text(title),
-      subtitle: Text(subtitle),
-      trailing: GestureDetector(
-        onTap: onTap,
-        child: Icon(Icons.more_vert),
+  static Widget buildCallCard(BuildContext context, String title,
+      String subtitle, VoidCallback? onTap) {
+    final card = Card(
+      child: ListTile(
+        title: Text(title),
+        subtitle: Text(subtitle),
       ),
-    ));
+    );
+    if (onTap != null) {
+      return GestureDetector(
+        onTap: onTap,
+        child: card,
+      );
+    }
+    return card;
   }
 
   @override
