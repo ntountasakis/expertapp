@@ -1,9 +1,10 @@
+import { Logger } from "../../../google_cloud/google_cloud_logger";
 import { getPaymentStatusDocumentRef } from "../document_fetchers/fetchers";
 import { PaymentContext, PaymentStatus, PaymentStatusCancellationReason, PaymentStatusStates } from "../models/payment_status";
 
-export function createPaymentStatus({ transaction, uid, paymentStatusId, transferGroup, idempotencyKey,
+export function createPaymentStatus({ transaction, callTransactionId, uid, paymentStatusId, transferGroup, idempotencyKey,
   centsRequestedAuthorized, centsRequestedCapture, paymentContext }: {
-    transaction: FirebaseFirestore.Transaction, uid: string, paymentStatusId: string,
+    transaction: FirebaseFirestore.Transaction, callTransactionId: string, uid: string, paymentStatusId: string,
     idempotencyKey: string, transferGroup: string, centsRequestedAuthorized: number,
     centsRequestedCapture: number, paymentContext: PaymentContext
   }): PaymentStatus {
@@ -26,7 +27,10 @@ export function createPaymentStatus({ transaction, uid, paymentStatusId, transfe
   const callStartPaymentDoc = getPaymentStatusDocumentRef({ paymentStatusId: paymentStatusId });
   transaction.create(callStartPaymentDoc, callerCallStartPaymentStatus);
 
-  console.log(`Created PaymentStatus. ID: ${paymentStatusId} CentsRequestedAuthorized: ${centsRequestedAuthorized} Uid: ${uid}`);
+  Logger.log({
+    logName: Logger.CALL_SERVER, message: `Created PaymentStatus. ID: ${paymentStatusId} CentsRequestedAuthorized: ${centsRequestedAuthorized} Uid: ${uid}`,
+    labels: new Map([["userId", uid], ["callTransactionId", callTransactionId]])
+  });
 
   return callerCallStartPaymentStatus;
 

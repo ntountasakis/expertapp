@@ -6,17 +6,22 @@ import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/p
 import { createExpertUser } from "../../../shared/src/firebase/firestore/functions/create_expert_user";
 import { StoragePaths } from "../../../shared/src/firebase/storage/storage_paths";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
+import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const stripeAccountLinkReturn = functions.https.onRequest(async (request, response) => {
   await configureStripeProviderForFunctions();
   const uid = request.query.uid;
   if (typeof uid !== "string") {
-    console.log("Cannot parse uid, not instance of string");
+    Logger.logError({
+      logName: "stripeAccountLinkReturn", message: `Cannot parse uid, not instance of string. Type: ${typeof uid}`,
+    });
     response.status(400).end();
     return;
   }
-
-  console.log(`Handling account link return for account ${uid}`);
+  Logger.log({
+    logName: "stripeAccountLinkReturn", message: `Handling account link return for account ${uid}`,
+    labels: new Map([["userId", uid]]),
+  });
   const privateUserInfo: PrivateUserInfo = await getPrivateUserDocumentNoTransact({ uid: uid });
   const account = await retrieveAccount({ stripe: StripeProvider.STRIPE, account: privateUserInfo.stripeConnectedId });
 
@@ -28,11 +33,16 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
     if (!account.details_submitted) {
       messagePrefix += " to finish submitting details ";
     }
-    console.warn(messagePrefix);
+    Logger.log({
+      logName: "stripeAccountLinkReturn", message: messagePrefix,
+      labels: new Map([["userId", uid]]),
+    });
     const accountLink = await createAccountLinkOnboarding({
       stripe: StripeProvider.STRIPE, account: uid,
       refreshUrl: StripeProvider.getAccountLinkRefreshUrl({ hostname: request.hostname, uid: uid }),
-      returnUrl: StripeProvider.getAccountLinkReturnUrl({ hostname: request.hostname, uid: uid })
+      returnUrl: StripeProvider.getAccountLinkReturnUrl({ hostname: request.hostname, uid: uid }),
+      functionContext: "stripeAccountLinkReturn",
+      expertUid: uid,
     });
     response.redirect(accountLink);
   } else {
@@ -40,7 +50,11 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
       uid: uid, profileDescription: "", profilePicUrl: StoragePaths.DEFAULT_PROFILE_PIC_URL,
       majorExpertCategory: "major", minorExpertCategory: "minor"
     }));
-    console.log(`Connected account: ${uid} sign up process complete`);
+
+    Logger.log({
+      logName: "stripeAccountLinkReturn", message: `Connected account: ${uid} sign up process complete`,
+      labels: new Map([["userId", uid]]),
+    });
 
     response.set("Content-Type", "text/html");
     // eslint-disable-next-line max-len

@@ -4,12 +4,15 @@ import { handleChargeCaptured } from "../stripe/handle_charge_captured";
 import { handlePaymentIntentCanceled } from "../stripe/handle_payment_intent_canceled";
 import { handlePaymentIntentSucceeded } from "../stripe/handle_payment_intent_succeeded";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
+import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const stripeWebhookListener = functions.https.onRequest(async (request, response) => {
   try {
     await configureStripeProviderForFunctions();
     const eventType = request.body.type;
-    console.log(`Stripe webhook event: ${eventType}`);
+    Logger.log({
+      logName: "stripeWebhookListener", message: `Stripe webhook event: ${eventType}`,
+    });
     if (eventType == "charge.succeeded") {
       await handleChargeSuceeded(request.body.data.object);
     } else if (eventType == "charge.captured") {
@@ -20,7 +23,9 @@ export const stripeWebhookListener = functions.https.onRequest(async (request, r
       await handlePaymentIntentCanceled(request.body.data.object);
     }
   } catch (error) {
-    console.error(`Stripe webhook unknown error: ${error}`);
+    Logger.logError({
+      logName: "stripeWebhookListener", message: `Stripe webhook unknown error: ${error}`,
+    });
     response.status(500).end();
   }
   response.status(200).end();

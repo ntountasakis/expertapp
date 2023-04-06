@@ -3,6 +3,7 @@ import * as admin from "firebase-admin";
 import { getExpertRateDocumentRef, getPrivateUserDocument } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/private_user_info";
 import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
+import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const updateExpertRate = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -43,7 +44,10 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
         "centsCallStart": newCentsStartCall,
       });
     });
-    console.log(`Updated expert rate for ${uid}. New rate: ${newCentsPerMinute} cents per minute and ${newCentsStartCall} cents to start call`);
+    Logger.log({
+      logName: "updateExpertRate", message: `Updated expert rate for ${uid}. New rate: ${newCentsPerMinute} cents per minute and ${newCentsStartCall} cents to start call`,
+      labels: new Map([["expertId", uid]]),
+    });
   } catch (e) {
     return {
       success: false,

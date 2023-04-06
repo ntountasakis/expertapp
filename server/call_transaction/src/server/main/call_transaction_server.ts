@@ -1,4 +1,5 @@
 import * as grpc from "@grpc/grpc-js";
+import { Logger } from "../../../../shared/src/google_cloud/google_cloud_logger";
 import { CallManager } from "../../call_state/common/call_manager";
 import { dispatchClientMessage } from "../../message_handlers/client_message_dispatcher";
 import { GrpcClientMessageSender } from "../../message_sender/grpc_client_message_sender";
@@ -20,7 +21,10 @@ export class CallTransactionServer implements CallTransactionHandlers {
     }
     const userId = metadata["uid"] as string;
     const isCaller: boolean = (metadata["iscaller"] as string) === "true";
-    console.log(`UserId: ${userId} initiate call`);
+    Logger.log({
+      logName: Logger.CALL_SERVER, message: `UserId: ${userId} initiate call`,
+      labels: new Map([["userId", userId], ["isCaller", isCaller.toString()]])
+    });
 
     call.on("data", async (aClientMessage: ClientMessageContainer) => {
       const messageSender = new GrpcClientMessageSender(call);
@@ -30,46 +34,64 @@ export class CallTransactionServer implements CallTransactionHandlers {
           clientMessageSender: messageSender, callManager: callManager, callStream: call
         });
       } catch (error) {
-        console.error(`Error dispatching client message: ${error}. Terminating connection to ${userId}`);
+        Logger.logError({
+          logName: Logger.CALL_SERVER, message: `Error dispatching client message: ${error}. Terminating connection to ${userId}`,
+          labels: new Map([["userId", userId], ["isCaller", isCaller.toString()]])
+        });
         call.emit('error', { code: grpc.status.INTERNAL, message: error, });
         call.end();
       }
     });
     call.on("error", (error: Error) => {
-      console.log(`Error Initiate Call: ${error}`);
+      Logger.logError({
+        logName: Logger.CALL_SERVER, message: `Error Initiate Call: ${error}. Terminating connection to ${userId}`,
+        labels: new Map([["userId", userId], ["isCaller", isCaller.toString()]])
+      });
       call.end();
     });
     call.on("end", () => {
-      console.log("End Initiate Call Stream");
+      Logger.log({
+        logName: Logger.CALL_SERVER, message: "End Initiate Call Stream",
+        labels: new Map([["userId", userId], ["isCaller", isCaller.toString()]])
+      });
       disconnectClient({ userId: userId });
       call.end();
     });
     call.on("cancelled", () => {
-      console.log(`UserId: ${userId} cancelled call. IsCaller: ${isCaller}`);
+      Logger.log({
+        logName: Logger.CALL_SERVER, message: `UserId: ${userId} cancelled call`,
+        labels: new Map([["userId", userId], ["isCaller", isCaller.toString()]])
+      });
       call.end();
     });
   }
 }
 
 function disconnectClient({ userId }: { userId: string }) {
-  console.log(`Disconnecting from ${userId}`);
   callManager.onClientDisconnect({ userId: userId });
 }
 
 function isMetadataValid(metadata: { [key: string]: grpc.MetadataValue; }): boolean {
   const userId = metadata["uid"] as string;
   if (userId === undefined || userId.length === 0) {
-    console.error("Cannot find metadata with Key: uid");
+    Logger.logError({
+      logName: Logger.CALL_SERVER, message: "Cannot find metadata with Key: uid"
+    });
     return false;
   }
   const isCaller = metadata["iscaller"] as string;
   if (isCaller === undefined || isCaller.length === 0 || (isCaller !== "true" && isCaller !== "false")) {
-    console.error(`Cannot find/parse metadata with Key: iscaller: ${isCaller}`);
+    Logger.logError({
+      logName: Logger.CALL_SERVER, message: `Cannot find/parse metadata with Key: isCaller: ${isCaller}`
+    });
     return false;
   }
   return true;
 }
 
 function invalidMessageCallback(errorMessage: string): void {
+  Logger.logError({
+    logName: Logger.CALL_SERVER, message: `Invalid message: ${errorMessage}`
+  });
   throw new Error(errorMessage);
 }

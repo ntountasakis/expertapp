@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { getExpertCategoryRef, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const updateExpertCategory = functions.https.onCall(async (data, context) => {
     if (context.auth == null) {
@@ -33,9 +34,15 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
                 "minorExpertCategory": newMinorCategory,
             });
         });
-        console.log(`Updated expert category for ${uid}. New major category: ${newMajorCategory} new minor category: ${newMinorCategory}`);
+        Logger.log({
+            logName: "updateExpertCategory", message: `Updated expert category for ${uid}. New major category: ${newMajorCategory} new minor category: ${newMinorCategory}`,
+            labels: new Map([["expertId", uid]]),
+        });
     } catch (e) {
-        console.error(`Failed to update expert category for ${uid}. Error: ${e}`);
+        Logger.logError({
+            logName: "updateExpertCategory", message: `Failed to update expert category for ${uid}. Error: ${e}`,
+            labels: new Map([["expertId", uid]]),
+        });
         return {
             success: false,
             message: "Internal Server Error",

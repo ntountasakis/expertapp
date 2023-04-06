@@ -6,6 +6,7 @@ import * as admin from "firebase-admin";
 import { ProtoGrpcType } from "./protos/call_transaction";
 import { CallTransactionServer } from "./server/main/call_transaction_server";
 import { StripeProvider } from "../../shared/src/stripe/stripe_provider";
+import { Logger } from "../../shared/src/google_cloud/google_cloud_logger";
 
 function getServer(): Server {
   const packageDefinition = protoLoader.loadSync("../protos/call_transaction.proto");
@@ -35,13 +36,18 @@ server.bindAsync(`0.0.0.0:${process.env.PORT}`, ServerCredentials.createInsecure
     }
     await StripeProvider.configureStripe(process.env.STRIPE_PRIVATE_KEY_VERSION);
 
-    console.log(`gRPC:Server:${bindPort} isProd: ${process.env.IS_PROD}`, new Date().toLocaleString());
+    Logger.log({
+      logName: Logger.CALL_SERVER, message: `gRPC:Server:${bindPort} isProd: ${process.env.IS_PROD}`,
+      labels: new Map([["isProd", process.env.IS_PROD], ["port", bindPort.toString()]])
+    });
 
     const useEmulator = process.env.IS_PROD === "false";
     if (useEmulator) {
       const firestoreUrl = "host.docker.internal:9002";
-      console.log(`Configuring firestore to point to local emulator ${firestoreUrl}`);
       process.env["FIRESTORE_EMULATOR_HOST"] = firestoreUrl;
+      Logger.log({
+        logName: Logger.CALL_SERVER, message: `Configuring firestore to point to local emulator ${firestoreUrl}`,
+      });
     }
     admin.initializeApp();
     server.start();

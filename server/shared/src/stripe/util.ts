@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { Logger } from "../google_cloud/google_cloud_logger";
 import handleStripeError from "./stripe_error_handler";
 
 async function createStripeCustomer({ stripe }: { stripe: Stripe }): Promise<string> {
@@ -58,8 +59,8 @@ async function createStripeConnectAccount({ stripe, firstName, lastName, email }
   return account.id;
 }
 
-export async function createAccountLinkOnboarding({ stripe, account, refreshUrl, returnUrl }:
-  { stripe: Stripe, account: string, refreshUrl: string, returnUrl: string }): Promise<string> {
+export async function createAccountLinkOnboarding({ stripe, account, refreshUrl, returnUrl, functionContext, expertUid }:
+  { stripe: Stripe, account: string, refreshUrl: string, returnUrl: string, functionContext: string, expertUid: string }): Promise<string> {
   const accountLink = await stripe.accountLinks.create(
     {
       account: account,
@@ -68,7 +69,10 @@ export async function createAccountLinkOnboarding({ stripe, account, refreshUrl,
       type: "account_onboarding",
     },
   );
-  console.log(`Created account link for account ${account}: refresh_url: ${refreshUrl}, return_url: ${returnUrl}`);
+  Logger.log({
+    logName: functionContext, message: `Created account link for account ${account}: refresh_url: ${refreshUrl}, return_url: ${returnUrl}`,
+    labels: new Map([["expertId", expertUid]])
+  });
 
   return accountLink.url;
 }

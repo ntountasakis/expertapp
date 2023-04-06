@@ -1,5 +1,6 @@
 
 import * as functions from "firebase-functions";
+import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
 
@@ -7,7 +8,9 @@ export const stripeAccountTokenSubmit = functions.https.onRequest(async (request
   await configureStripeProviderForFunctions();
   const uid = request.query.uid;
   if (typeof uid !== "string") {
-    console.log("Cannot parse uid, not instance of string");
+    Logger.logError({
+      logName: "stripeAccountTokenSubmit", message: `Cannot parse uid, not instance of string. Type: ${typeof uid}`
+    });
     response.status(400).end();
     return;
   }

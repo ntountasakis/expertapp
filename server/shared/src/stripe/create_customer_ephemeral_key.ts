@@ -9,7 +9,6 @@ export default async function createCustomerEphemeralKey({ customerId }: { custo
             errorMessage += `Secret is null`;
             throw new Error(errorMessage);
         }
-        console.log(`Client ephemeral key is: ${ephemeralKey.secret}`);
         return ephemeralKey.secret;
     } catch (error) {
         errorMessage += handleStripeError(error);

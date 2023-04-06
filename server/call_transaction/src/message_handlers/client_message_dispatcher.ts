@@ -34,8 +34,9 @@ export async function dispatchClientMessage(
       clientMessageSender, callManager, callStream);
   } else if (clientMessage.callDisconnectRequest) {
     await dispatchCallDisconnectRequest(clientMessage.callDisconnectRequest, invalidMessageHandler, callManager);
+  } else {
+    invalidMessageHandler("Unknown client message type");
   }
-  invalidMessageHandler("Unknown client message type");
 }
 
 function checkMessageContainerValid(clientMessage: ClientMessageContainer,

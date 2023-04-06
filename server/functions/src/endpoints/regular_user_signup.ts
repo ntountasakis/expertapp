@@ -3,6 +3,7 @@ import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
 import { createStripeCustomer } from "../../../shared/src/stripe/util";
 import { createRegularUser } from "../../../shared/src/firebase/firestore/functions/create_regular_user";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
+import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const regularUserSignup = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -21,6 +22,8 @@ export const regularUserSignup = functions.https.onCall(async (data, context) =>
     uid: uid, email: email, stripeCustomerId: stripeCustomerId,
     firstName: firstName, lastName: lastName
   });
-
-  console.log(`User ${uid} signed up!`);
+  Logger.log({
+    logName: "regularUserSignup", message: `User ${uid} signed up!`,
+    labels: new Map([["userId", uid]]),
+  });
 });
