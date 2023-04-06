@@ -4,6 +4,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/public_expert_i
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/profile/profile_leading_tile.dart';
 import 'package:expertapp/src/profile/expert/expert_rating.dart';
+import 'package:expertapp/src/util/tappable_card.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -70,25 +71,18 @@ class ExpertListingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        context.pushNamed(Routes.UV_EXPERT_PROFILE_PAGE,
-            params: {Routes.EXPERT_ID_PARAM: _publicExpertInfo.documentId});
-      },
-      child: Card(
-        child: ListTile(
-          dense: true,
-          visualDensity: VisualDensity(
-              horizontal: VisualDensity.maximumDensity,
-              vertical: VisualDensity.maximumDensity),
-          leading: buildLeadingProfileTile(
-              context,
-              _publicExpertInfo.documentType.shortName(),
-              _publicExpertInfo.documentType.profilePicUrl),
-          title: buildTitle(),
-          trailing: buildTrailing(),
-        ),
-      ),
-    );
+    return buildTappableCard(
+        context: context,
+        leading: buildLeadingProfileTile(
+            context,
+            _publicExpertInfo.documentType.shortName(),
+            _publicExpertInfo.documentType.profilePicUrl),
+        title: buildTitle(),
+        subtitle: SizedBox(),
+        trailing: buildTrailing(),
+        onTapCallback: (BuildContext context) {
+          context.pushNamed(Routes.UV_EXPERT_PROFILE_PAGE,
+              params: {Routes.EXPERT_ID_PARAM: _publicExpertInfo.documentId});
+        });
   }
 }

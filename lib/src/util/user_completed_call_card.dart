@@ -2,8 +2,9 @@ import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/call_transaction.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
-import 'package:expertapp/src/profile/profile_picture.dart';
+import 'package:expertapp/src/profile/profile_leading_tile.dart';
 import 'package:expertapp/src/util/completed_calls_util.dart';
+import 'package:expertapp/src/util/tappable_card.dart';
 import 'package:flutter/material.dart';
 
 class UserCompletedCallCard extends StatelessWidget {
@@ -11,32 +12,6 @@ class UserCompletedCallCard extends StatelessWidget {
   final String transactionId;
   const UserCompletedCallCard(this.call, this.transactionId, {Key? key})
       : super(key: key);
-
-  static Widget buildCallCard(
-      BuildContext context,
-      String title,
-      String subtitle,
-      String? profilePicUrl,
-      Function(BuildContext authState)? onTapCallback) {
-    final card = Card(
-      child: ListTile(
-        title: Text(title),
-        subtitle: Text(subtitle),
-        leading: profilePicUrl != null
-            ? SizedBox(width: 50, child: ProfilePicture(profilePicUrl))
-            : null,
-      ),
-    );
-    if (onTapCallback != null) {
-      return GestureDetector(
-        onTap: () {
-          onTapCallback(context);
-        },
-        child: card,
-      );
-    }
-    return card;
-  }
 
   void onTapCallback(BuildContext context) {
     showDialog<void>(
@@ -68,16 +43,30 @@ class UserCompletedCallCard extends StatelessWidget {
                 'Length ${CompletedCallsUtil.formatCallLength(call)}';
 
             if (expertMetadata != null) {
-              return buildCallCard(context, title, subtitle,
-                  expertMetadata.documentType.profilePicUrl, onTapCallback);
+              return buildTappableCard(
+                  context: context,
+                  leading: buildLeadingProfileTile(
+                      context,
+                      expertMetadata.documentType.shortName(),
+                      expertMetadata.documentType.profilePicUrl),
+                  title: Text(title),
+                  subtitle: Text(subtitle),
+                  trailing: SizedBox(),
+                  onTapCallback: onTapCallback);
             } else {
               return FutureBuilder(
                   future: getDefaultProfilePicUrl(),
                   builder:
                       (BuildContext context, AsyncSnapshot<String> snapshot) {
                     if (snapshot.hasData) {
-                      return buildCallCard(context, title, subtitle,
-                          snapshot.data!, onTapCallback);
+                      return buildTappableCard(
+                          context: context,
+                          leading: buildLeadingProfileTile(
+                              context, "", snapshot.data!),
+                          title: Text(title),
+                          subtitle: Text(subtitle),
+                          trailing: SizedBox(),
+                          onTapCallback: onTapCallback);
                     } else {
                       return SizedBox();
                     }
