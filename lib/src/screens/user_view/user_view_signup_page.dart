@@ -28,54 +28,63 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 12));
 
   Widget _buildFirstName() {
-    return TextFormField(
-        initialValue: widget.firstName,
-        decoration: InputDecoration(labelText: 'First Name'),
-        validator: (value) {
-          if (!RegExprValidator.isValidName(value!)) {
-            return 'Please enter a valid name';
-          }
-          return null;
-        },
-        onSaved: (value) {
-          setState(() {
-            widget.firstName = value!;
-          });
-        });
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: TextFormField(
+          initialValue: widget.firstName,
+          decoration: InputDecoration(labelText: 'First Name'),
+          validator: (value) {
+            if (!RegExprValidator.isValidName(value!)) {
+              return 'Please enter a valid name';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            setState(() {
+              widget.firstName = value!;
+            });
+          }),
+    );
   }
 
   Widget _buildLastName() {
-    return TextFormField(
-        initialValue: widget.lastName,
-        decoration: InputDecoration(labelText: 'Last Name'),
-        validator: (value) {
-          if (value != null && !RegExprValidator.isValidName(value)) {
-            return 'Please enter a valid name';
-          }
-          return null;
-        },
-        onSaved: (value) {
-          setState(() {
-            widget.lastName = value!;
-          });
-        });
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: TextFormField(
+          initialValue: widget.lastName,
+          decoration: InputDecoration(labelText: 'Last Name'),
+          validator: (value) {
+            if (value != null && !RegExprValidator.isValidName(value)) {
+              return 'Please enter a valid name';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            setState(() {
+              widget.lastName = value!;
+            });
+          }),
+    );
   }
 
   Widget _buildEmail() {
-    return TextFormField(
-        initialValue: widget.email,
-        decoration: InputDecoration(labelText: 'Email'),
-        validator: (value) {
-          if (value != null && !RegExprValidator.isValidEmail(value)) {
-            return 'Please enter a valid email';
-          }
-          return null;
-        },
-        onSaved: (value) {
-          setState(() {
-            widget.email = value!;
-          });
-        });
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: TextFormField(
+          initialValue: widget.email,
+          decoration: InputDecoration(labelText: 'Email'),
+          validator: (value) {
+            if (value != null && !RegExprValidator.isValidEmail(value)) {
+              return 'Please enter a valid email';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            setState(() {
+              widget.email = value!;
+            });
+          }),
+    );
   }
 
   Widget _buildSubmitButton(AppLifecycle lifecycle) {
