@@ -12,6 +12,8 @@ export class StripeProvider {
   static STRIPE_PERCENT_FEE = 2.9;
   static STRIPE_FLAT_FEE_CENTS = 30;
   static MIN_BILLABLE_AMOUNT_CENTS = 50;
+  static MAX_MINUTELY_RATE_CENTS = 500;
+  static MAX_START_CALL_RATE_CENTS = 10 * 100;
 
   static async getStripeSecret(stripePrivateKeyVersion: string): Promise<string> {
     const client = new SecretManagerServiceClient();

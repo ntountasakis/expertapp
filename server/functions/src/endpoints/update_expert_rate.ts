@@ -26,10 +26,24 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
       };
     }
 
+    if (newCentsPerMinute > StripeProvider.MAX_MINUTELY_RATE_CENTS) {
+      return {
+        success: false,
+        message: "Rate per minute cannot exceed " + StripeProvider.MAX_MINUTELY_RATE_CENTS + " cents",
+      };
+    }
+
     if (newCentsStartCall < StripeProvider.MIN_BILLABLE_AMOUNT_CENTS) {
       return {
         success: false,
-        message: "Rate earned to accept a call must at least " + StripeProvider.MIN_BILLABLE_AMOUNT_CENTS + " cents",
+        message: "Rate to accept a call must at least " + StripeProvider.MIN_BILLABLE_AMOUNT_CENTS + " cents",
+      };
+    }
+
+    if (newCentsStartCall > StripeProvider.MAX_START_CALL_RATE_CENTS) {
+      return {
+        success: false,
+        message: "Rate to accept a call cannot exceed " + StripeProvider.MAX_START_CALL_RATE_CENTS + " cents",
       };
     }
 
