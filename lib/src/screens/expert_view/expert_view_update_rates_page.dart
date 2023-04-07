@@ -196,9 +196,12 @@ class _MyRatePickerState extends State<RatePickers> {
                     title: Text(result.success ? "Success" : "Error"),
                     children: [
                       Center(
-                        child: Text(
-                          result.message,
-                          style: CallSummaryUtil.LIGHT_STYLE,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            result.message,
+                            style: CallSummaryUtil.LIGHT_STYLE,
+                          ),
                         ),
                       ),
                     ],
