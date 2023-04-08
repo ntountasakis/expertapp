@@ -2,7 +2,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dar
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/preferences/preferences.dart';
-import 'package:expertapp/src/profile/expert/expert_view_expert_profile_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_expert_profile_page.dart';
 import 'package:expertapp/src/screens/auth/sign_in_page.dart';
 import 'package:expertapp/src/screens/common_view/delete_account_page.dart';
 import 'package:expertapp/src/screens/user_view/past_chats_page.dart';
@@ -17,7 +17,7 @@ import 'package:expertapp/src/screens/user_view/user_view_completed_calls_page.d
 import 'package:expertapp/src/screens/user_view/user_view_call_summary_page.dart';
 import 'package:expertapp/src/screens/common_view/common_view_chat_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_expert_listings_page.dart';
-import 'package:expertapp/src/screens/common_view/common_view_expert_profile_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_expert_profile_sign_up_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_call_summary_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_expert_profile_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_review_submit_page.dart';
@@ -95,7 +95,9 @@ class AppRouter {
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.params[Routes.EXPERT_ID_PARAM];
                 return UserViewExpertProfilePage(
-                    lifecycle.currentUserId(), expertId!);
+                    key: ValueKey(expertId),
+                    currentUid: lifecycle.currentUserId(),
+                    expertUid: expertId!);
               },
               routes: <GoRoute>[
                 GoRoute(
@@ -139,11 +141,12 @@ class AppRouter {
         builder: (BuildContext context, GoRouterState state) {
           final fromSignupFlow =
               state.params[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
-          if (fromSignupFlow != 'true') {
-            return ExpertViewExpertProfilePage(lifecycle.currentUserId()!);
+          if (fromSignupFlow == 'true') {
+            return ExpertViewExpertProfileSignUpPage(
+                expertUid: lifecycle.currentUserId()!);
           } else {
-            return CommonViewExpertProfilePage(lifecycle.currentUserId()!,
-                lifecycle.currentUserId()!, true, true);
+            return ExpertViewExpertProfilePage(
+                expertUid: lifecycle.currentUserId()!);
           }
         },
       ),

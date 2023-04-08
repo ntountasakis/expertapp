@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/firebase/storage/storage_paths.dart';
@@ -11,9 +10,13 @@ import 'package:image/image.dart' as img;
 
 class ProfilePicture extends StatelessWidget {
   final String? profilePicUrl;
-  final Function(Uint8List selectedProfilePicBytes)? onProfilePicSelection;
+  final VoidCallback? onProfilePicUpload;
+  final Function(
+          Uint8List selectedProfilePicBytes, VoidCallback? onProfilePicUpload)?
+      onProfilePicSelection;
 
-  ProfilePicture(this.profilePicUrl, [this.onProfilePicSelection]);
+  ProfilePicture(this.profilePicUrl,
+      [this.onProfilePicUpload, this.onProfilePicSelection]);
 
   Widget _imageWidget(String url) {
     if (!EnvironmentConfig.getConfig().isProd()) {
@@ -61,7 +64,7 @@ class ProfilePicture extends StatelessWidget {
                 log('Failed to decode image');
               } else {
                 Uint8List jpegBytes = img.encodeJpg(imageHandle, quality: 50);
-                onProfilePicSelection!(jpegBytes);
+                onProfilePicSelection!(jpegBytes, onProfilePicUpload);
               }
             } else {
               log('User cancelled profile pic image upload');

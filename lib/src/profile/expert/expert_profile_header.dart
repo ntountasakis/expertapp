@@ -10,6 +10,7 @@ Widget buildExpertProfileHeaderHelper(
     DocumentWrapper<PublicExpertInfo> publicExpertInfo,
     TextEditingController? controller,
     ExpertCategorySelector? categorySelector,
+    VoidCallback? onProfilePictureChanged,
     bool isExpertView) {
   return Row(
     children: [
@@ -17,7 +18,8 @@ Widget buildExpertProfileHeaderHelper(
         width: 5,
       ),
       isExpertView
-          ? buildProfilePictureExpertView(publicExpertInfo)
+          ? buildProfilePictureExpertView(
+              publicExpertInfo, onProfilePictureChanged)
           : buildProfilePictureUserView(publicExpertInfo),
       SizedBox(
         width: 10,
@@ -33,15 +35,18 @@ Widget buildExpertProfileHeaderHelper(
 }
 
 Widget buildExpertProfileHeaderExpertView(
-    BuildContext context,
-    DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-    TextEditingController controller,
-    ExpertCategorySelector categorySelector) {
-  return buildExpertProfileHeaderHelper(
-      context, publicExpertInfo, controller, categorySelector, true);
+  BuildContext context,
+  DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+  TextEditingController controller,
+  ExpertCategorySelector categorySelector,
+  VoidCallback? onProfilePictureChanged,
+) {
+  return buildExpertProfileHeaderHelper(context, publicExpertInfo, controller,
+      categorySelector, onProfilePictureChanged, true);
 }
 
 Widget buildExpertProfileHeaderUserView(
     BuildContext context, DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
-  return buildExpertProfileHeaderHelper(context, publicExpertInfo, null, null, false);
+  return buildExpertProfileHeaderHelper(
+      context, publicExpertInfo, null, null, null, false);
 }

@@ -39,7 +39,8 @@ Future<List<String>> getMinorExpertCategories(String majorCategory) async {
 
 class ExpertCategorySelector extends StatefulWidget {
   final String uid;
-  ExpertCategorySelector(this.uid);
+  final VoidCallback onComplete;
+  ExpertCategorySelector(this.uid, this.onComplete);
 
   @override
   State<ExpertCategorySelector> createState() => _ExpertCategorySelectorState();
@@ -55,6 +56,7 @@ class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
     setState(() {
       aSelectedMajorCategory = aNewMajorCategory;
       aSelectedMinorCategory = defaultMinor;
+      widget.onComplete();
     });
   }
 
@@ -62,6 +64,7 @@ class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
     log("Changed minor category to $aNewMinorCategory");
     setState(() {
       aSelectedMinorCategory = aNewMinorCategory;
+      widget.onComplete();
     });
   }
 

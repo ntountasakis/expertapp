@@ -1,6 +1,6 @@
 import 'package:expertapp/firebase_options.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
-import 'package:expertapp/src/screens/common_view/common_view_expert_profile_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_expert_profile_sign_up_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 

@@ -24,6 +24,8 @@ class ExpertViewConnectedAccountSignupPage extends StatelessWidget {
         nextRoute: Routes.EV_UPDATE_AVAILABILITY_PAGE,
         addAdditionalParams: true,
         allowBackButton: false,
+        allowProceed: true,
+        onDisallowedProceedPressed: null,
       );
     }
     return AppBar(

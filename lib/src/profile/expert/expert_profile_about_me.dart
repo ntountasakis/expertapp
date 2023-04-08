@@ -18,6 +18,7 @@ Widget buildExpertProfileAboutMeHelper(
     DocumentWrapper<PublicExpertInfo> publicExpertInfo,
     ScrollController controller,
     TextEditingController? textController,
+    Function(String)? onAboutMeChanged,
     bool isExpertView) {
   return Container(
     margin: const EdgeInsets.all(4),
@@ -36,8 +37,8 @@ Widget buildExpertProfileAboutMeHelper(
                 buildExpertProfileAboutMeTitle(publicExpertInfo),
                 Spacer(),
                 isExpertView
-                    ? buildExpertProfileEditAboutMeButton(
-                        context, publicExpertInfo, textController!)
+                    ? buildExpertProfileEditAboutMeButton(context,
+                        publicExpertInfo, textController!, onAboutMeChanged)
                     : SizedBox(),
               ],
             ),
@@ -56,14 +57,15 @@ Widget buildExpertProfileAboutMeUserView(
     DocumentWrapper<PublicExpertInfo> publicExpertInfo,
     ScrollController controller) {
   return buildExpertProfileAboutMeHelper(
-      context, publicExpertInfo, controller, null, false);
+      context, publicExpertInfo, controller, null, null, false);
 }
 
 Widget buildExpertProfileAboutMeExpertView(
     BuildContext context,
     DocumentWrapper<PublicExpertInfo> publicExpertInfo,
     ScrollController controller,
-    TextEditingController textController) {
-  return buildExpertProfileAboutMeHelper(
-      context, publicExpertInfo, controller, textController, true);
+    TextEditingController textController,
+    Function(String)? onAboutMeChanged) {
+  return buildExpertProfileAboutMeHelper(context, publicExpertInfo, controller,
+      textController, onAboutMeChanged, true);
 }

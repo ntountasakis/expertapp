@@ -66,14 +66,28 @@ class _ExpertViewUpdateRatesPageState extends State<ExpertViewUpdateRatesPage> {
         onRateUpdated: onRateUpdate);
   }
 
+  void onDisallowedProceedPressed() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Please update your call rates"),
+            content: Text(
+                "You must update your call rates before proceeding further"),
+          );
+        });
+  }
+
   PreferredSizeWidget buildAppBar(BuildContext context) {
-    if (widget.fromSignupFlow && rateWasUpdated) {
+    if (widget.fromSignupFlow) {
       return ExpertPostSignupAppbar(
         uid: widget.uid,
         titleText: 'Continue to edit your profile',
         nextRoute: Routes.EV_PROFILE_EDIT_PAGE,
         addAdditionalParams: true,
         allowBackButton: true,
+        allowProceed: rateWasUpdated,
+        onDisallowedProceedPressed: onDisallowedProceedPressed,
       );
     }
     return AppBar(

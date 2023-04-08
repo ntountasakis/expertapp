@@ -337,14 +337,28 @@ class _ExpertViewUpdateAvailabilityPageState
         });
   }
 
+  void onDisallowedProceedPressed() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Please update your availability"),
+            content:
+                Text("You must update your availability before proceeding"),
+          );
+        });
+  }
+
   PreferredSizeWidget buildAppbar() {
-    if (widget.fromSignupFlow && _updatedAtLeastOnce) {
+    if (widget.fromSignupFlow) {
       return ExpertPostSignupAppbar(
         uid: widget.uid,
         titleText: "Continue to set your rates",
         nextRoute: Routes.EV_UPDATE_RATE_PAGE,
         addAdditionalParams: true,
         allowBackButton: true,
+        allowProceed: _updatedAtLeastOnce,
+        onDisallowedProceedPressed: onDisallowedProceedPressed,
       );
     } else {
       return AppBar(

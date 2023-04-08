@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import { Logger } from "../../../google_cloud/google_cloud_logger";
+import { StripeProvider } from "../../../stripe/stripe_provider";
 import { getExpertRateDocumentRef, getPublicExpertInfoDocumentRef, getPublicUserDocument } from "../document_fetchers/fetchers";
 import { DayAvailability, WeekAvailability } from "../models/expert_availability";
 import { ExpertRate } from "../models/expert_rate";
@@ -67,7 +68,7 @@ function createDefaultAvailability() {
 
 function createDefaultCallRate() {
   const defaultRate: ExpertRate = {
-    "centsCallStart": 100,
+    "centsCallStart": StripeProvider.MIN_BILLABLE_AMOUNT_CENTS,
     "centsPerMinute": 100,
   };
   return defaultRate;

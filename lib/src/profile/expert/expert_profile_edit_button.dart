@@ -5,9 +5,11 @@ import 'package:expertapp/src/util/expert_category_util.dart';
 import 'package:flutter/material.dart';
 
 Future openExpertProfileEditDescriptionDialog(
-    BuildContext context,
-    DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-    TextEditingController textController) {
+  BuildContext context,
+  DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+  TextEditingController textController,
+  Function(String)? onAboutMeChanged,
+) {
   return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -34,6 +36,9 @@ Future openExpertProfileEditDescriptionDialog(
                   final newDescription =
                       textController.text.trim().replaceAll("\n", " ");
                   await updateProfileDescription(newDescription);
+                  if (onAboutMeChanged != null) {
+                    onAboutMeChanged(newDescription);
+                  }
                   Navigator.of(context).pop();
                 },
                 child: Text("Save"),
@@ -79,6 +84,7 @@ Widget buildExpertProfileEditAboutMeButton(
   BuildContext context,
   DocumentWrapper<PublicExpertInfo> publicExpertInfo,
   TextEditingController textController,
+  Function(String)? onAboutMeChanged,
 ) {
   return IconButton(
     icon: const Icon(
@@ -88,7 +94,7 @@ Widget buildExpertProfileEditAboutMeButton(
     ),
     onPressed: () {
       openExpertProfileEditDescriptionDialog(
-          context, publicExpertInfo, textController);
+          context, publicExpertInfo, textController, onAboutMeChanged);
     },
   );
 }
