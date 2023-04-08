@@ -8,13 +8,17 @@ class ExpertPostSignupAppbar extends StatelessWidget with PreferredSizeWidget {
   final String nextRoute;
   final bool addAdditionalParams;
   final bool allowBackButton;
+  final bool allowProceed;
+  final VoidCallback? onDisallowedProceedPressed;
 
   const ExpertPostSignupAppbar(
       {required this.uid,
       required this.titleText,
       required this.nextRoute,
       required this.addAdditionalParams,
-      required this.allowBackButton});
+      required this.allowBackButton,
+      required this.allowProceed,
+      required this.onDisallowedProceedPressed});
 
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
@@ -28,27 +32,28 @@ class ExpertPostSignupAppbar extends StatelessWidget with PreferredSizeWidget {
           padding: const EdgeInsets.all(5.0),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.green[800],
+              color: allowProceed ? Colors.green[800] : Colors.grey,
               shape: BoxShape.circle,
             ),
-            // padding: EdgeInsets.only(right: 20.0),
             child: GestureDetector(
                 onTap: () {},
                 child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_circle_right_outlined,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    if (addAdditionalParams) {
-                      context.pushNamed(nextRoute, params: {
-                        Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"
-                      });
-                    } else {
-                      context.pushNamed(nextRoute);
-                    }
-                  },
-                )),
+                    icon: Icon(
+                      Icons.arrow_circle_right_outlined,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (allowProceed) {
+                        if (addAdditionalParams) {
+                          context.pushNamed(nextRoute, params: {
+                            Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"
+                          });
+                        } else {
+                          context.pushNamed(nextRoute);
+                        }
+                      } else if (onDisallowedProceedPressed != null)
+                        onDisallowedProceedPressed!();
+                    })),
           ),
         ),
       ],

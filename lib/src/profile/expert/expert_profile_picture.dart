@@ -5,18 +5,23 @@ import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-void onProfilePicSelection(Uint8List profilePicBytes) async {
+void onProfilePicSelection(
+    Uint8List profilePicBytes, VoidCallback? onProfilePictureChanged) async {
   // TODO, this crashes iOS 13 simulator via Rosetta.
   await onProfilePicUpload(pictureBytes: profilePicBytes);
+  if (onProfilePictureChanged != null) {
+    onProfilePictureChanged();
+  }
 }
 
 Widget buildProfilePictureExpertView(
-    DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+    DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+    VoidCallback? onProfilePictureUploaded) {
   return SizedBox(
     width: 150,
     height: 150,
-    child: ProfilePicture(
-        publicExpertInfo.documentType.profilePicUrl, onProfilePicSelection),
+    child: ProfilePicture(publicExpertInfo.documentType.profilePicUrl,
+        onProfilePictureUploaded, onProfilePicSelection),
   );
 }
 
