@@ -16,28 +16,45 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
             throw new Error("Cannot update expert category, some attributes null");
         }
 
-        await admin.firestore().runTransaction(async (transaction) => {
+        const success = await admin.firestore().runTransaction(async (transaction) => {
             const publicExpertDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid }));
             const expertCategoryDoc = await transaction.get(getExpertCategoryRef({ majorCategory: newMajorCategory }));
             if (!publicExpertDoc.exists) {
-                throw new Error(`Cannot update expert category, ${uid} is not a expert`);
+                Logger.logError({
+                    logName: "updateExpertCategory", message: `Cannot update expert category for ${uid} because they are not a expert.`,
+                    labels: new Map([["expertId", uid]]),
+                });
+                return false;
             }
             if (!expertCategoryDoc.exists) {
-                throw new Error(`Cannot update expert category, ${newMajorCategory} is not a valid major category`);
+                Logger.logError({
+                    logName: "updateExpertCategory", message: `Cannot update expert category, ${newMajorCategory} is not a valid major category`,
+                    labels: new Map([["expertId", uid]]),
+                });
+                return false;
             }
             const categoryTypes: Array<String> = Object.keys(expertCategoryDoc.data() as Object);
             if (!categoryTypes.includes(newMinorCategory)) {
-                throw new Error(`Cannot update expert category, ${newMinorCategory} is not a valid minor category`);
+                Logger.logError({
+                    logName: "updateExpertCategory", message: `Cannot update expert category, ${newMinorCategory} is not a valid minor category`,
+                    labels: new Map([["expertId", uid]]),
+                });
+                return false;
             }
             transaction.update(getPublicExpertInfoDocumentRef({ uid: uid }), {
                 "majorExpertCategory": newMajorCategory,
                 "minorExpertCategory": newMinorCategory,
             });
+            Logger.log({
+                logName: "updateExpertCategory", message: `Updated expert category for ${uid}. New major category: ${newMajorCategory} new minor category: ${newMinorCategory}`,
+                labels: new Map([["expertId", uid]]),
+            });
+            return true;
         });
-        Logger.log({
-            logName: "updateExpertCategory", message: `Updated expert category for ${uid}. New major category: ${newMajorCategory} new minor category: ${newMinorCategory}`,
-            labels: new Map([["expertId", uid]]),
-        });
+        return {
+            success: success,
+            message: success ? "Your categories have been updated successfully" : "Internal Server Error",
+        };
     } catch (e) {
         Logger.logError({
             logName: "updateExpertCategory", message: `Failed to update expert category for ${uid}. Error: ${e}`,
@@ -48,8 +65,4 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
             message: "Internal Server Error",
         };
     }
-    return {
-        success: true,
-        message: "Your categories have been updated successfully",
-    };
 });

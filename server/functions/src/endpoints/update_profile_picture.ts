@@ -15,9 +15,13 @@ export const updateProfilePicture = functions.https.onCall(async (data, context)
   const pictureBytes: Buffer = Buffer.from(data.pictureBytes);
   const publicUrl = await uploadFromMemory(pictureBytes, uid);
 
-  await admin.firestore().runTransaction(async (transaction) => {
-    updateProfilePicUrl({ transaction: transaction, uid: uid, profilePicUrl: publicUrl });
+  const success = await admin.firestore().runTransaction(async (transaction) => {
+    return updateProfilePicUrl({ transaction: transaction, uid: uid, profilePicUrl: publicUrl });
   });
+  return {
+    success: success,
+    message: success ? "Your profile picture was updated" : "Internal Server Error",
+  };
 });
 
 async function uploadFromMemory(buffer: Buffer, uid: string): Promise<string> {
