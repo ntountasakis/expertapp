@@ -68,12 +68,17 @@ class _ExpertViewExpertProfilePageState
       appBarBuilder: ExpertProfileScaffold.buildDefaultAppbar,
       profileHeaderBuilder:
           (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
-        return buildExpertProfileHeaderExpertView(
-            context, publicExpertInfo!, textController, categorySelector, null);
+        return buildExpertProfileHeaderExpertView(context, publicExpertInfo!,
+            textController, categorySelector, false, null);
       },
       aboutMeBuilder: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
-        return buildExpertProfileAboutMeExpertView(context, publicExpertInfo!,
-            descriptionScrollController, textController, onAboutMeChanged);
+        return buildExpertProfileAboutMeExpertView(
+            context,
+            publicExpertInfo!,
+            descriptionScrollController,
+            textController,
+            false,
+            onAboutMeChanged);
       },
       onUpdate: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         updateProfileDescriptionIfChanged(publicExpertInfo!);

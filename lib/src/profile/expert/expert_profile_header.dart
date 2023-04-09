@@ -11,7 +11,8 @@ Widget buildExpertProfileHeaderHelper(
     TextEditingController? controller,
     ExpertCategorySelector? categorySelector,
     VoidCallback? onProfilePictureChanged,
-    bool isExpertView) {
+    bool isExpertView,
+    bool fromSignUpFlow) {
   return Row(
     children: [
       SizedBox(
@@ -19,7 +20,7 @@ Widget buildExpertProfileHeaderHelper(
       ),
       isExpertView
           ? buildProfilePictureExpertView(
-              publicExpertInfo, onProfilePictureChanged)
+              publicExpertInfo, fromSignUpFlow, onProfilePictureChanged)
           : buildProfilePictureUserView(publicExpertInfo),
       SizedBox(
         width: 10,
@@ -39,14 +40,15 @@ Widget buildExpertProfileHeaderExpertView(
   DocumentWrapper<PublicExpertInfo> publicExpertInfo,
   TextEditingController controller,
   ExpertCategorySelector categorySelector,
+  bool fromSignUpFlow,
   VoidCallback? onProfilePictureChanged,
 ) {
   return buildExpertProfileHeaderHelper(context, publicExpertInfo, controller,
-      categorySelector, onProfilePictureChanged, true);
+      categorySelector, onProfilePictureChanged, fromSignUpFlow, true);
 }
 
 Widget buildExpertProfileHeaderUserView(
     BuildContext context, DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
   return buildExpertProfileHeaderHelper(
-      context, publicExpertInfo, null, null, null, false);
+      context, publicExpertInfo, null, null, null, false, false);
 }

@@ -10,7 +10,12 @@ export const updateExpertAvailability = functions.https.onCall(async (data, cont
   if (context.auth == null || context.auth.uid == null) {
     throw new Error("Cannot call by unauthorized users");
   }
-  const isPayloadValid = validatePayload(data);
+  const availability = data.availability;
+  if (availability == null) {
+    throw new Error("Cannot update expert rate with null payload");
+  }
+
+  const isPayloadValid = validatePayload(availability);
   if (!isPayloadValid) {
     return {
       success: false,
