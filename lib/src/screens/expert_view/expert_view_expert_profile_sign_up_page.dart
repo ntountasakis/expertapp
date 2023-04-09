@@ -36,7 +36,7 @@ class _ExpertViewExpertProfileSignUpPageState
   String textControllerText = "Loading...";
   bool categorySelectionFinished = false;
   bool profilePictureChanged = false;
-  String aboutMeUpdatedText = "";
+  String? aboutMeUpdatedTextError = null;
 
   @override
   void initState() {
@@ -75,14 +75,10 @@ class _ExpertViewExpertProfileSignUpPageState
     });
   }
 
-  void onAboutMeChanged(String aboutMeUpdatedText) {
+  void onAboutMeChanged(String aboutMeUpdatedTextError) {
     setState(() {
-      this.aboutMeUpdatedText = aboutMeUpdatedText;
+      this.aboutMeUpdatedTextError = aboutMeUpdatedTextError;
     });
-  }
-
-  bool aboutMeTextSufficientLength() {
-    return aboutMeUpdatedText.length > 30;
   }
 
   void onDisallowedProceedPressed() {
@@ -91,11 +87,8 @@ class _ExpertViewExpertProfileSignUpPageState
       text = "Please upload a profile picture";
     } else if (!categorySelectionFinished) {
       text = "Please select your category of expertise";
-    } else if (!aboutMeTextSufficientLength()) {
-      if (aboutMeUpdatedText == "") {
-        text = "Please fill out your about me section";
-      } else
-        text = "Your about me section is too short";
+    } else if (aboutMeUpdatedTextError != null) {
+      text = aboutMeUpdatedTextError!;
     }
     showDialog(
         context: context,
@@ -110,7 +103,7 @@ class _ExpertViewExpertProfileSignUpPageState
   PreferredSizeWidget buildAppbar(
       AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
     if (snapshot.hasData) {
-      final allowProceed = aboutMeTextSufficientLength() &&
+      final allowProceed = aboutMeUpdatedTextError == "" &&
           profilePictureChanged &&
           categorySelectionFinished;
       return ExpertPostSignupAppbar(

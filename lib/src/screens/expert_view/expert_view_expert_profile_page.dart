@@ -48,6 +48,19 @@ class _ExpertViewExpertProfilePageState
     }
   }
 
+  void onAboutMeChanged(String aboutMeUpdatedTextError) {
+    if (aboutMeUpdatedTextError != "") {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Please revise your profile description"),
+              content: Text(aboutMeUpdatedTextError),
+            );
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExpertProfileScaffold(
@@ -60,7 +73,7 @@ class _ExpertViewExpertProfilePageState
       },
       aboutMeBuilder: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         return buildExpertProfileAboutMeExpertView(context, publicExpertInfo!,
-            descriptionScrollController, textController, null);
+            descriptionScrollController, textController, onAboutMeChanged);
       },
       onUpdate: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         updateProfileDescriptionIfChanged(publicExpertInfo!);

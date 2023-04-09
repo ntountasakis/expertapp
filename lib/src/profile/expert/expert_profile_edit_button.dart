@@ -33,13 +33,13 @@ Future openExpertProfileEditDescriptionDialog(
               ),
               TextButton(
                 onPressed: () async {
+                  Navigator.of(context).pop();
                   final newDescription =
                       textController.text.trim().replaceAll("\n", " ");
-                  await updateProfileDescription(newDescription);
+                  final result = await updateProfileDescription(newDescription);
                   if (onAboutMeChanged != null) {
-                    onAboutMeChanged(newDescription);
+                    onAboutMeChanged(result.success ? "" : result.message);
                   }
-                  Navigator.of(context).pop();
                 },
                 child: Text("Save"),
               ),

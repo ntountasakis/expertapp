@@ -4,6 +4,13 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:expertapp/src/firebase/cloud_functions/callable_functions.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_availability.dart';
 
+class UpdateResult {
+  final bool success;
+  final String message;
+
+  UpdateResult({required this.success, required this.message});
+}
+
 HttpsCallable getCallable(String functionName) {
   return FirebaseFunctions.instance.httpsCallable(functionName);
 }
@@ -70,19 +77,17 @@ Future<String> lookupChatroomId(String otherUid) async {
   return chatroomId;
 }
 
-Future<void> updateProfileDescription(String newDescription) async {
+Future<UpdateResult> updateProfileDescription(String newDescription) async {
   Map<String, dynamic> chatroomQuery = {
     'description': newDescription,
   };
-  await getCallable(CallableFunctions.UPDATE_PROFILE_DESCRIPTION)
-      .call(chatroomQuery);
-}
+  HttpsCallableResult result =
+      await getCallable(CallableFunctions.UPDATE_PROFILE_DESCRIPTION)
+          .call(chatroomQuery);
+  bool success = result.data['success'];
+  String message = result.data['message'];
 
-class UpdateResult {
-  final bool success;
-  final String message;
-
-  UpdateResult({required this.success, required this.message});
+  return UpdateResult(success: success, message: message);
 }
 
 Future<UpdateResult> updateExpertRate(
