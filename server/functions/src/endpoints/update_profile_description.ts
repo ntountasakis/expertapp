@@ -14,6 +14,13 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
   if (uid == null || description == null) {
     throw new Error("Uid or description is null");
   }
+
+  if (description.length < 30) {
+    return {
+      success: false,
+      message: "Your profile description must be at least 30 characters long"
+    };
+  }
   await admin.firestore().runTransaction(async (transaction) => {
     transaction.update(getPublicExpertInfoDocumentRef({ uid: uid }), {
       "description": description,
@@ -23,4 +30,8 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
     logName: "updateProfileDescription", message: `Updated description for ${uid}. New description: ${description}`,
     labels: new Map([["expertId", uid]]),
   });
+  return {
+    success: true,
+    message: ""
+  };
 });
