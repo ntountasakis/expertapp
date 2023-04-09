@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { getExpertRateDocumentRef, getPrivateUserDocument } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import { getExpertRateDocumentRef, getPrivateUserDocument, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/private_user_info";
 import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
 import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
@@ -47,29 +47,42 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
       };
     }
 
-    await admin.firestore().runTransaction(async (transaction) => {
+    const success = await admin.firestore().runTransaction(async (transaction) => {
       const privateUserDoc: PrivateUserInfo = await getPrivateUserDocument({ transaction: transaction, uid: uid });
+      const publicExpertInfoDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid }));
 
       if (privateUserDoc.stripeConnectedId == null) {
-        throw new Error(`Cannot update expert rate, user ${uid} has no stripeConnectedId`);
+        Logger.logError({
+          logName: "updateExpertRate", message: `Cannot update expert rate for ${uid} because they have no stripe connected id`,
+          labels: new Map([["expertId", uid]]),
+        });
+        return false;
+      }
+      if (!publicExpertInfoDoc.exists) {
+        Logger.logError({
+          logName: "updateExpertRate", message: `Cannot update expert rate for ${uid} because they are not an expert`,
+          labels: new Map([["expertId", uid]]),
+        });
+        return false;
       }
       transaction.update(getExpertRateDocumentRef({ expertUid: uid }), {
         "centsPerMinute": newCentsPerMinute,
         "centsCallStart": newCentsStartCall,
       });
+      Logger.log({
+        logName: "updateExpertRate", message: `Updated expert rate for ${uid}. New rate: ${newCentsPerMinute} cents per minute and ${newCentsStartCall} cents to start call`,
+        labels: new Map([["expertId", uid]]),
+      });
+      return true;
     });
-    Logger.log({
-      logName: "updateExpertRate", message: `Updated expert rate for ${uid}. New rate: ${newCentsPerMinute} cents per minute and ${newCentsStartCall} cents to start call`,
-      labels: new Map([["expertId", uid]]),
-    });
+    return {
+      success: success,
+      message: success ? "Your expert rate has been updated successfully" : "Internal Server Error",
+    };
   } catch (e) {
     return {
       success: false,
       message: "Internal Server Error",
     };
   }
-  return {
-    success: true,
-    message: "Your rates have been updated successfully",
-  };
 });

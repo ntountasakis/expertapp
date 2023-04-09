@@ -21,17 +21,27 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
       message: "Your profile description must be at least 30 characters long"
     };
   }
-  await admin.firestore().runTransaction(async (transaction) => {
+  const success = await admin.firestore().runTransaction(async (transaction) => {
+    const publicExpertDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid }));
+    if (!publicExpertDoc.exists) {
+      Logger.logError({
+        logName: "updateProfileDescription", message: `Failed to update description for ${uid} because they are not a expert.`,
+        labels: new Map([["expertId", uid]]),
+      });
+      return false;
+    }
     transaction.update(getPublicExpertInfoDocumentRef({ uid: uid }), {
       "description": description,
     });
+    Logger.log({
+      logName: "updateProfileDescription", message: `Updated description for ${uid}. New description: ${description}`,
+      labels: new Map([["expertId", uid]]),
+    });
+    return true;
   });
-  Logger.log({
-    logName: "updateProfileDescription", message: `Updated description for ${uid}. New description: ${description}`,
-    labels: new Map([["expertId", uid]]),
-  });
+
   return {
-    success: true,
-    message: ""
+    success: success,
+    message: success ? "Your profile description has been updated successfully" : "Internal Server Error",
   };
 });
