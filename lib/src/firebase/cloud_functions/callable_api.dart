@@ -59,9 +59,11 @@ Future<String> getDefaultProfilePicUrl() async {
   return result.data;
 }
 
-Future<void> onProfilePicUpload({required Uint8List pictureBytes}) async {
-  Map<String, Uint8List> picture = {
+Future<void> onProfilePicUpload(
+    {required Uint8List pictureBytes, required bool fromSignUpFlow}) async {
+  Map<String, dynamic> picture = {
     'pictureBytes': pictureBytes,
+    'fromSignUpFlow': fromSignUpFlow,
   };
   await getCallable(CallableFunctions.UPDATE_PROFILE_PIC).call(picture);
 }
@@ -77,9 +79,11 @@ Future<String> lookupChatroomId(String otherUid) async {
   return chatroomId;
 }
 
-Future<UpdateResult> updateProfileDescription(String newDescription) async {
+Future<UpdateResult> updateProfileDescription(
+    String newDescription, bool fromSignUpFlow) async {
   Map<String, dynamic> chatroomQuery = {
     'description': newDescription,
+    'fromSignUpFlow': fromSignUpFlow,
   };
   HttpsCallableResult result =
       await getCallable(CallableFunctions.UPDATE_PROFILE_DESCRIPTION)
@@ -91,10 +95,13 @@ Future<UpdateResult> updateProfileDescription(String newDescription) async {
 }
 
 Future<UpdateResult> updateExpertRate(
-    {required int centsPerMinute, required int centsStartCall}) async {
+    {required int centsPerMinute,
+    required int centsStartCall,
+    required bool fromSignUpFlow}) async {
   Map<String, dynamic> updateQuery = {
     'centsStartCall': centsStartCall,
     'centsPerMinute': centsPerMinute,
+    'fromSignUpFlow': fromSignUpFlow,
   };
   HttpsCallableResult result =
       await getCallable(CallableFunctions.UPDATE_EXPERT_RATE).call(updateQuery);
@@ -106,10 +113,14 @@ Future<UpdateResult> updateExpertRate(
 }
 
 Future<UpdateResult> updateExpertAvailability(
-    ExpertAvailability availability) async {
+    ExpertAvailability availability, bool fromSignUpFlow) async {
+  Map<String, dynamic> updateQuery = {
+    'availability': availability.toJson(),
+    'fromSignUpFlow': fromSignUpFlow,
+  };
   HttpsCallableResult result =
       await getCallable(CallableFunctions.UPDATE_EXPERT_AVAILABILITY)
-          .call(availability.toJson());
+          .call(updateQuery);
 
   bool success = result.data['success'];
   String message = result.data['message'];

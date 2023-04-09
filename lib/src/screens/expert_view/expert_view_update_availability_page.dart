@@ -279,7 +279,8 @@ class _ExpertViewUpdateAvailabilityPageState
       sundayAvailability:
           buildAvailabilityForDay(ExpertAvailabilityUtil.DAYS[6]),
     );
-    final result = await updateExpertAvailability(availability);
+    final result =
+        await updateExpertAvailability(availability, widget.fromSignupFlow);
     if (result.success) {
       showDialog(
           context: context,

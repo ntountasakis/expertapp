@@ -8,6 +8,7 @@ Future openExpertProfileEditDescriptionDialog(
   BuildContext context,
   DocumentWrapper<PublicExpertInfo> publicExpertInfo,
   TextEditingController textController,
+  bool fromSignUpFlow,
   Function(String)? onAboutMeChanged,
 ) {
   return showDialog(
@@ -36,7 +37,8 @@ Future openExpertProfileEditDescriptionDialog(
                   Navigator.of(context).pop();
                   final newDescription =
                       textController.text.trim().replaceAll("\n", " ");
-                  final result = await updateProfileDescription(newDescription);
+                  final result = await updateProfileDescription(
+                      newDescription, fromSignUpFlow);
                   if (onAboutMeChanged != null) {
                     onAboutMeChanged(result.success ? "" : result.message);
                   }
@@ -84,6 +86,7 @@ Widget buildExpertProfileEditAboutMeButton(
   BuildContext context,
   DocumentWrapper<PublicExpertInfo> publicExpertInfo,
   TextEditingController textController,
+  bool fromSignUpFlow,
   Function(String)? onAboutMeChanged,
 ) {
   return IconButton(
@@ -93,8 +96,8 @@ Widget buildExpertProfileEditAboutMeButton(
       color: Colors.grey,
     ),
     onPressed: () {
-      openExpertProfileEditDescriptionDialog(
-          context, publicExpertInfo, textController, onAboutMeChanged);
+      openExpertProfileEditDescriptionDialog(context, publicExpertInfo,
+          textController, fromSignUpFlow, onAboutMeChanged);
     },
   );
 }

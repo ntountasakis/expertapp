@@ -10,13 +10,15 @@ import 'package:image/image.dart' as img;
 
 class ProfilePicture extends StatelessWidget {
   final String? profilePicUrl;
+  final bool fromSignUpFlow;
   final VoidCallback? onProfilePicUpload;
-  final Function(
-          Uint8List selectedProfilePicBytes, VoidCallback? onProfilePicUpload)?
-      onProfilePicSelection;
+  final Function(Uint8List selectedProfilePicBytes, bool fromSignUpFlow,
+      VoidCallback? onProfilePicUpload)? onProfilePicSelection;
 
   ProfilePicture(this.profilePicUrl,
-      [this.onProfilePicUpload, this.onProfilePicSelection]);
+      [this.fromSignUpFlow = false,
+      this.onProfilePicUpload,
+      this.onProfilePicSelection]);
 
   Widget _imageWidget(String url) {
     if (!EnvironmentConfig.getConfig().isProd()) {
@@ -64,7 +66,8 @@ class ProfilePicture extends StatelessWidget {
                 log('Failed to decode image');
               } else {
                 Uint8List jpegBytes = img.encodeJpg(imageHandle, quality: 50);
-                onProfilePicSelection!(jpegBytes, onProfilePicUpload);
+                onProfilePicSelection!(
+                    jpegBytes, fromSignUpFlow, onProfilePicUpload);
               }
             } else {
               log('User cancelled profile pic image upload');

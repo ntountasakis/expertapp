@@ -130,11 +130,16 @@ class _ExpertViewExpertProfileSignUpPageState
       profileHeaderBuilder:
           (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         return buildExpertProfileHeaderExpertView(context, publicExpertInfo!,
-            textController, categorySelector, onProfilePictureChanged);
+            textController, categorySelector, true, onProfilePictureChanged);
       },
       aboutMeBuilder: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
-        return buildExpertProfileAboutMeExpertView(context, publicExpertInfo!,
-            descriptionScrollController, textController, onAboutMeChanged);
+        return buildExpertProfileAboutMeExpertView(
+            context,
+            publicExpertInfo!,
+            descriptionScrollController,
+            textController,
+            true,
+            onAboutMeChanged);
       },
       onUpdate: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         updateProfileDescriptionIfChanged(publicExpertInfo!);

@@ -61,9 +61,11 @@ class _ExpertViewUpdateRatesPageState extends State<ExpertViewUpdateRatesPage> {
       existingRateStartCall = expertRate.documentType.centsCallStart;
     }
     return new RatePickers(
-        initialValueRateStartCall: existingRateStartCall,
-        initialValueRatePerMinute: existingRatePerMinute,
-        onRateUpdated: onRateUpdate);
+      initialValueRateStartCall: existingRateStartCall,
+      initialValueRatePerMinute: existingRatePerMinute,
+      onRateUpdated: onRateUpdate,
+      fromSignUpFlow: widget.fromSignupFlow,
+    );
   }
 
   void onDisallowedProceedPressed() {
@@ -126,12 +128,14 @@ class RatePickers extends StatefulWidget {
   final num initialValueRateStartCall;
   final num initialValueRatePerMinute;
   final VoidCallback onRateUpdated;
+  final bool fromSignUpFlow;
 
   const RatePickers(
       {Key? key,
       required this.initialValueRateStartCall,
       required this.initialValueRatePerMinute,
-      required this.onRateUpdated})
+      required this.onRateUpdated,
+      required this.fromSignUpFlow})
       : super(key: key);
 
   @override
@@ -202,7 +206,9 @@ class _MyRatePickerState extends State<RatePickers> {
               return;
             }
             final UpdateResult result = await updateExpertRate(
-                centsPerMinute: _ratePerMinute, centsStartCall: _rateStartCall);
+                centsPerMinute: _ratePerMinute,
+                centsStartCall: _rateStartCall,
+                fromSignUpFlow: widget.fromSignUpFlow);
             showDialog(
                 context: context,
                 builder: (context) {
