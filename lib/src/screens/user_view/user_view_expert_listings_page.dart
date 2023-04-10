@@ -25,7 +25,7 @@ class UserViewExpertListingsPage extends StatelessWidget {
           currentUserId: currentUserId,
         ),
         body: StreamBuilder(
-            stream: PublicExpertInfo.getStream(),
+            stream: PublicExpertInfo.getStream(fromSignUpFlow: false),
             builder: (BuildContext context,
                 AsyncSnapshot<Iterable<DocumentWrapper<PublicExpertInfo>>>
                     snapshot) {

@@ -11,7 +11,7 @@ export default async function createCustomerManagePaymentMethodsDashboardLoginLi
         }
         return loginLink.url;
     } catch (error) {
-        errorMessage += handleStripeError(error);
+        errorMessage += handleStripeError("createCustomerManagePaymentMethodsDashboardLoginLink", error);
         throw new Error(errorMessage);
     }
 }

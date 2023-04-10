@@ -8,6 +8,7 @@ import 'package:expertapp/src/util/call_summary_util.dart';
 import 'package:expertapp/src/util/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 class ExpertViewUpdateRatesPage extends StatefulWidget {
   final String uid;
@@ -80,16 +81,20 @@ class _ExpertViewUpdateRatesPageState extends State<ExpertViewUpdateRatesPage> {
         });
   }
 
+  void onProceedPressed(BuildContext context) {
+    context.pushNamed(Routes.EV_PROFILE_EDIT_PAGE,
+        params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
+  }
+
   PreferredSizeWidget buildAppBar(BuildContext context) {
     if (widget.fromSignupFlow) {
       return ExpertPostSignupAppbar(
         uid: widget.uid,
         titleText: 'Continue to edit your profile',
-        nextRoute: Routes.EV_PROFILE_EDIT_PAGE,
-        addAdditionalParams: true,
         allowBackButton: true,
         allowProceed: rateWasUpdated,
         onDisallowedProceedPressed: onDisallowedProceedPressed,
+        onAllowProceedPressed: onProceedPressed,
       );
     }
     return AppBar(

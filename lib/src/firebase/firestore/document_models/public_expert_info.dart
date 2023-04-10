@@ -72,27 +72,32 @@ class PublicExpertInfo {
     return runningSumReviewRatings / numReviews;
   }
 
-  Future<void> updateProfilePic(String aDocumentId, String url) async {
+  Future<void> updateProfilePic(
+      {required String uid,
+      required String url,
+      required bool fromSignUpFlow}) async {
     profilePicUrl = url;
-    await update(aDocumentId);
+    await update(uid: uid, fromSignUpFlow: fromSignUpFlow);
   }
 
   static Future<DocumentWrapper<PublicExpertInfo>?> get(
-      String documentId) async {
-    DocumentSnapshot snapshot = await _userMetadataRef().doc(documentId).get();
+      {required String uid, required bool fromSignUpFlow}) async {
+    DocumentSnapshot snapshot =
+        await _userMetadataRef(fromSignUpFlow: fromSignUpFlow).doc(uid).get();
     if (snapshot.exists) {
-      return DocumentWrapper(documentId, snapshot.data() as PublicExpertInfo);
+      return DocumentWrapper(uid, snapshot.data() as PublicExpertInfo);
     }
     return null;
   }
 
-  Future<void> update(String documentId) async {
-    await _userMetadataRef().doc(documentId).set(this);
+  Future<void> update(
+      {required String uid, required bool fromSignUpFlow}) async {
+    await _userMetadataRef(fromSignUpFlow: fromSignUpFlow).doc(uid).set(this);
   }
 
   static Stream<DocumentWrapper<PublicExpertInfo>> getStreamForUser(
-      String uid) {
-    return _userMetadataRef()
+      {required String uid, required bool fromSignUpFlow}) {
+    return _userMetadataRef(fromSignUpFlow: fromSignUpFlow)
         .doc(uid)
         .snapshots()
         .map((DocumentSnapshot<PublicExpertInfo> documentSnapshot) {
@@ -100,8 +105,9 @@ class PublicExpertInfo {
     });
   }
 
-  static Stream<Iterable<DocumentWrapper<PublicExpertInfo>>> getStream() {
-    return _userMetadataRef()
+  static Stream<Iterable<DocumentWrapper<PublicExpertInfo>>> getStream(
+      {required bool fromSignUpFlow}) {
+    return _userMetadataRef(fromSignUpFlow: fromSignUpFlow)
         .orderBy('majorExpertCategory')
         .orderBy('minorExpertCategory')
         .orderBy('firstName')
@@ -122,9 +128,12 @@ class PublicExpertInfo {
     throw Exception('DocumentSnapshot data is null');
   }
 
-  static CollectionReference<PublicExpertInfo> _userMetadataRef() {
+  static CollectionReference<PublicExpertInfo> _userMetadataRef(
+      {required bool fromSignUpFlow}) {
     return FirebaseFirestore.instance
-        .collection(CollectionPaths.PUBLIC_EXPERT_INFO)
+        .collection(fromSignUpFlow
+            ? CollectionPaths.PUBLIC_EXPERT_INFO_STAGING
+            : CollectionPaths.PUBLIC_EXPERT_INFO)
         .withConverter<PublicExpertInfo>(
           fromFirestore: (DocumentSnapshot<Map<String, dynamic>> snapshot, _) =>
               test(snapshot),

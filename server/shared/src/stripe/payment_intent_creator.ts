@@ -49,7 +49,7 @@ export async function chargeStripePaymentIntent({ amountToCaptureInCents, paymen
       return capture.client_secret;
     }
   } catch (error) {
-    errorMessage += handleStripeError(error);
+    errorMessage += handleStripeError("chargeStripePaymentIntent", error);
   }
   throw new Error(errorMessage);
 }
@@ -101,7 +101,7 @@ async function paymentIntentCreateHelper({ customerId, customerEmail,
     }
     errorMessage += "Null client_secret";
   } catch (error) {
-    errorMessage += handleStripeError(error);
+    errorMessage += handleStripeError("paymentIntentCreateHelper", error);
   }
   throw new Error(errorMessage);
 }

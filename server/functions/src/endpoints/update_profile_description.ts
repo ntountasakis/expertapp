@@ -10,9 +10,10 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
   }
   const uid = context.auth.uid;
   const description = data.description;
+  const fromSignUpFlow = data.fromSignUpFlow;
 
-  if (uid == null || description == null) {
-    throw new Error("Uid or description is null");
+  if (uid == null || description == null || fromSignUpFlow == null) {
+    throw new Error("Uid or description or fromSignUpFlow is null");
   }
 
   if (description.length < 30) {
@@ -22,19 +23,20 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
     };
   }
   const success = await admin.firestore().runTransaction(async (transaction) => {
-    const publicExpertDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid }));
+    const publicExpertDocRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow });
+    const publicExpertDoc = await transaction.get(publicExpertDocRef);
     if (!publicExpertDoc.exists) {
       Logger.logError({
-        logName: "updateProfileDescription", message: `Failed to update description for ${uid} because they are not a expert.`,
+        logName: "updateProfileDescription", message: `Failed to update description for ${uid} because they are not a expert. From sign up flow: ${fromSignUpFlow}`,
         labels: new Map([["expertId", uid]]),
       });
       return false;
     }
-    transaction.update(getPublicExpertInfoDocumentRef({ uid: uid }), {
+    transaction.update(publicExpertDocRef, {
       "description": description,
     });
     Logger.log({
-      logName: "updateProfileDescription", message: `Updated description for ${uid}. New description: ${description}`,
+      logName: "updateProfileDescription", message: `Updated description for ${uid}. From sign up flow: ${fromSignUpFlow}`,
       labels: new Map([["expertId", uid]]),
     });
     return true;

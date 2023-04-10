@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 class ExpertProfileScaffold extends StatelessWidget {
   final String expertUid;
+  final bool fromSignUpFlow;
   final PreferredSizeWidget Function(
       AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?>) appBarBuilder;
   final Function(DocumentWrapper<PublicExpertInfo>?) profileHeaderBuilder;
@@ -16,6 +17,7 @@ class ExpertProfileScaffold extends StatelessWidget {
   const ExpertProfileScaffold(
       {Key? key,
       required this.expertUid,
+      required this.fromSignUpFlow,
       required this.appBarBuilder,
       required this.profileHeaderBuilder,
       required this.aboutMeBuilder,
@@ -59,7 +61,8 @@ class ExpertProfileScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentWrapper<PublicExpertInfo>?>(
-        stream: PublicExpertInfo.getStreamForUser(expertUid),
+        stream: PublicExpertInfo.getStreamForUser(
+            uid: expertUid, fromSignUpFlow: fromSignUpFlow),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
           return Scaffold(

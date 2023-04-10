@@ -10,7 +10,7 @@ class UserViewExpertAvailabilityPage extends StatelessWidget {
 
   Widget buildAvailabilityView() {
     return FutureBuilder(
-        future: PublicExpertInfo.get(uid),
+        future: PublicExpertInfo.get(uid: uid, fromSignUpFlow: false),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
           if (snapshot.hasData) {

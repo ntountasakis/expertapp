@@ -11,6 +11,7 @@ import 'package:day_picker/day_picker.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:time_range/time_range.dart';
 import 'package:uuid/uuid.dart';
+import 'package:go_router/go_router.dart';
 
 class ExpertViewUpdateAvailabilityPage extends StatefulWidget {
   final String uid;
@@ -47,7 +48,8 @@ class _ExpertViewUpdateAvailabilityPageState
   void refreshAvailability() {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _hasChanges = false;
-      final expertInfo = await PublicExpertInfo.get(widget.uid);
+      final expertInfo = await PublicExpertInfo.get(
+          uid: widget.uid, fromSignUpFlow: widget.fromSignupFlow);
       if (expertInfo == null) {
         throw Exception('No expert info for user ${widget.uid}');
       }
@@ -350,16 +352,20 @@ class _ExpertViewUpdateAvailabilityPageState
         });
   }
 
+  void onProceedPressed(BuildContext context) {
+    context.pushNamed(Routes.EV_UPDATE_RATE_PAGE,
+        params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
+  }
+
   PreferredSizeWidget buildAppbar() {
     if (widget.fromSignupFlow) {
       return ExpertPostSignupAppbar(
         uid: widget.uid,
         titleText: "Continue to set your rates",
-        nextRoute: Routes.EV_UPDATE_RATE_PAGE,
-        addAdditionalParams: true,
         allowBackButton: true,
         allowProceed: _updatedAtLeastOnce,
         onDisallowedProceedPressed: onDisallowedProceedPressed,
+        onAllowProceedPressed: onProceedPressed,
       );
     } else {
       return AppBar(

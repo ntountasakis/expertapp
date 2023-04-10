@@ -17,7 +17,9 @@ class CallableFunctions {
   static final String GET_ALL_CHATROOM_PREVIEWS_FOR_USER =
       'getAllChatroomPreviewsForUser';
   static final String GET_DEFAULT_PROFILE_PIC_URL = 'getDefaultProfilePicUrl';
-  static final String GET_SHAREABLE_DYNAMIC_PROFILE_LINK = 'generateExpertProfileDynamicLink';
+  static final String GET_SHAREABLE_DYNAMIC_PROFILE_LINK =
+      'generateExpertProfileDynamicLink';
+  static final String COMPLETE_EXPERT_SIGN_UP = 'completeExpertSignUp';
 }
 
 class HttpEndpoints {

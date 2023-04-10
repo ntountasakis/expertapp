@@ -10,25 +10,27 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
     const uid = context.auth.uid;
     const newMajorCategory: string = data.newMajorCategory;
     const newMinorCategory: string = data.newMinorCategory;
+    const fromSignUpFlow: boolean = data.fromSignUpFlow;
 
     try {
-        if (uid == null || newMajorCategory == null || newMinorCategory == null) {
+        if (uid == null || newMajorCategory == null || newMinorCategory == null || fromSignUpFlow == null) {
             throw new Error("Cannot update expert category, some attributes null");
         }
 
         const success = await admin.firestore().runTransaction(async (transaction) => {
-            const publicExpertDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid }));
+            const publicExpertDocRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow });
+            const publicExpertDoc = await transaction.get(publicExpertDocRef);
             const expertCategoryDoc = await transaction.get(getExpertCategoryRef({ majorCategory: newMajorCategory }));
             if (!publicExpertDoc.exists) {
                 Logger.logError({
-                    logName: "updateExpertCategory", message: `Cannot update expert category for ${uid} because they are not a expert.`,
+                    logName: "updateExpertCategory", message: `Cannot update expert category for ${uid} because they are not a expert. From sign up flow: ${fromSignUpFlow}`,
                     labels: new Map([["expertId", uid]]),
                 });
                 return false;
             }
             if (!expertCategoryDoc.exists) {
                 Logger.logError({
-                    logName: "updateExpertCategory", message: `Cannot update expert category, ${newMajorCategory} is not a valid major category`,
+                    logName: "updateExpertCategory", message: `Cannot update expert category for ${uid} because they are not a expert. From sign up flow: ${fromSignUpFlow}`,
                     labels: new Map([["expertId", uid]]),
                 });
                 return false;
@@ -36,17 +38,17 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
             const categoryTypes: Array<String> = Object.keys(expertCategoryDoc.data() as Object);
             if (!categoryTypes.includes(newMinorCategory)) {
                 Logger.logError({
-                    logName: "updateExpertCategory", message: `Cannot update expert category, ${newMinorCategory} is not a valid minor category`,
+                    logName: "updateExpertCategory", message: `Cannot update expert category for ${uid} because they are not a expert. From sign up flow: ${fromSignUpFlow}`,
                     labels: new Map([["expertId", uid]]),
                 });
                 return false;
             }
-            transaction.update(getPublicExpertInfoDocumentRef({ uid: uid }), {
+            transaction.update(publicExpertDocRef, {
                 "majorExpertCategory": newMajorCategory,
                 "minorExpertCategory": newMinorCategory,
             });
             Logger.log({
-                logName: "updateExpertCategory", message: `Updated expert category for ${uid}. New major category: ${newMajorCategory} new minor category: ${newMinorCategory}`,
+                logName: "updateExpertCategory", message: `Updated expert category for ${uid}. New major category: ${newMajorCategory} new minor category: ${newMinorCategory} From sign up flow: ${fromSignUpFlow}`,
                 labels: new Map([["expertId", uid]]),
             });
             return true;
@@ -57,7 +59,7 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
         };
     } catch (e) {
         Logger.logError({
-            logName: "updateExpertCategory", message: `Failed to update expert category for ${uid}. Error: ${e}`,
+            logName: "updateExpertCategory", message: `Failed to update expert category for ${uid}. From sign up flow ${fromSignUpFlow} Error: ${e}`,
             labels: new Map([["expertId", uid]]),
         });
         return {

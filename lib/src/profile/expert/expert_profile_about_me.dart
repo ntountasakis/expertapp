@@ -14,13 +14,13 @@ Widget buildExpertProfileAboutMeTitle(
 }
 
 Widget buildExpertProfileAboutMeHelper(
-    BuildContext context,
-    DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-    ScrollController controller,
-    TextEditingController? textController,
-    Function(String)? onAboutMeChanged,
-    bool isExpertView,
-    bool fromSignUpFlow) {
+    {required BuildContext context,
+    required DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+    required ScrollController scrollController,
+    required TextEditingController? textController,
+    required Function(String)? onAboutMeChanged,
+    required bool isExpertView,
+    required bool fromSignUpFlow}) {
   return Container(
     margin: const EdgeInsets.all(4),
     decoration: BoxDecoration(
@@ -39,17 +39,19 @@ Widget buildExpertProfileAboutMeHelper(
                 Spacer(),
                 isExpertView
                     ? buildExpertProfileEditAboutMeButton(
-                        context,
-                        publicExpertInfo,
-                        textController!,
-                        fromSignUpFlow,
-                        onAboutMeChanged)
+                        context: context,
+                        publicExpertInfo: publicExpertInfo,
+                        textController: textController!,
+                        fromSignUpFlow: fromSignUpFlow,
+                        onAboutMeChanged: onAboutMeChanged)
                     : SizedBox(),
               ],
             ),
             buildExpertProfileRating(publicExpertInfo),
             SizedBox(height: 10),
-            buildExpertProfileDescription(controller, publicExpertInfo),
+            buildExpertProfileDescription(
+                scrollController: scrollController,
+                publicExpertInfo: publicExpertInfo),
           ],
         ),
       ),
@@ -58,20 +60,32 @@ Widget buildExpertProfileAboutMeHelper(
 }
 
 Widget buildExpertProfileAboutMeUserView(
-    BuildContext context,
-    DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-    ScrollController controller) {
+    {required BuildContext context,
+    required DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+    required ScrollController controller}) {
   return buildExpertProfileAboutMeHelper(
-      context, publicExpertInfo, controller, null, null, false, false);
+      context: context,
+      publicExpertInfo: publicExpertInfo,
+      scrollController: controller,
+      textController: null,
+      onAboutMeChanged: null,
+      fromSignUpFlow: false,
+      isExpertView: false);
 }
 
 Widget buildExpertProfileAboutMeExpertView(
-    BuildContext context,
-    DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-    ScrollController controller,
-    TextEditingController textController,
-    bool fromSignUpFlow,
-    Function(String)? onAboutMeChanged) {
-  return buildExpertProfileAboutMeHelper(context, publicExpertInfo, controller,
-      textController, onAboutMeChanged, true, fromSignUpFlow);
+    {required BuildContext context,
+    required DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+    required ScrollController scrollController,
+    required TextEditingController textController,
+    required bool fromSignUpFlow,
+    required Function(String)? onAboutMeChanged}) {
+  return buildExpertProfileAboutMeHelper(
+      context: context,
+      publicExpertInfo: publicExpertInfo,
+      scrollController: scrollController,
+      textController: textController,
+      onAboutMeChanged: onAboutMeChanged,
+      fromSignUpFlow: fromSignUpFlow,
+      isExpertView: true);
 }

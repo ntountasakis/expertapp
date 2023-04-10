@@ -6,6 +6,7 @@ export class CollectionPaths {
   static FCM_TOKENS = "fcm_tokens";
   static PAYMENT_STATUSES = "payment_statuses";
   static PUBLIC_EXPERT_INFO = "public_expert_info";
+  static PUBLIC_EXPERT_INFO_STAGING = "public_expert_info_staging";
   static REVIEWS = "reviews";
   static SIGN_UP_TOKENS = "sign_up_tokens";
   static PRIVATE_USER_INFO = "private_user_info";

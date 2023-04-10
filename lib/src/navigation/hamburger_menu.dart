@@ -1,3 +1,4 @@
+import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
@@ -86,6 +87,14 @@ class HamburgerMenu extends StatelessWidget {
         });
   }
 
+  ListTile finishSignUpExpertTile(BuildContext context) {
+    return ListTile(
+        title: Text("Complete Expert Signup"),
+        onTap: () {
+          context.pushNamed(Routes.EV_CONNECTED_ACCOUNT_SIGNUP_PAGE);
+        });
+  }
+
   ListTile signOutTile(BuildContext context) {
     return ListTile(
         title: Text("Sign Out"),
@@ -139,6 +148,22 @@ class HamburgerMenu extends StatelessWidget {
     );
   }
 
+  Widget buildMidSignUpExpertMenu(BuildContext context) {
+    return Drawer(
+      child: ListView(children: [
+        const DrawerHeader(
+          decoration: BoxDecoration(
+            color: Colors.blue,
+          ),
+          child: Text("Main Menu"),
+        ),
+        finishSignUpExpertTile(context),
+        signOutTile(context),
+        deleteAccountTile(context),
+      ]),
+    );
+  }
+
   Widget buildRegularUserMenu(BuildContext context) {
     return Drawer(
       child: ListView(children: [
@@ -177,13 +202,26 @@ class HamburgerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (currentUserId == null) return buildNoAccountMenu(context);
-    return FutureBuilder(
-      future: PublicExpertInfo.get(currentUserId!),
+    return FutureBuilder<List<DocumentWrapper<PublicExpertInfo>?>>(
+      future: Future.wait([
+        PublicExpertInfo.get(uid: currentUserId!, fromSignUpFlow: true),
+        PublicExpertInfo.get(uid: currentUserId!, fromSignUpFlow: false),
+      ]),
       builder: (BuildContext context,
-          AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
-        return snapshot.hasData
-            ? buildExpertMenu(context)
-            : buildRegularUserMenu(context);
+          AsyncSnapshot<List<DocumentWrapper<PublicExpertInfo>?>> snapshot) {
+        if (snapshot.hasData) {
+          final stagingExpertInfo = snapshot.data![0];
+          final publicExpertInfo = snapshot.data![1];
+          if (stagingExpertInfo != null) {
+            return buildMidSignUpExpertMenu(context);
+          } else if (publicExpertInfo != null) {
+            return buildExpertMenu(context);
+          } else {
+            return buildRegularUserMenu(context);
+          }
+        } else {
+          return buildRegularUserMenu(context);
+        }
       },
     );
   }

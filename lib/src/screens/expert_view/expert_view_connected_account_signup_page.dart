@@ -5,6 +5,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/public_expert_i
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/util/webview_wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ExpertViewConnectedAccountSignupPage extends StatelessWidget {
   final String uid;
@@ -15,17 +16,21 @@ class ExpertViewConnectedAccountSignupPage extends StatelessWidget {
         initUrl: HttpEndpoints.getExpertConnectedAccountSignup(this.uid));
   }
 
+  void onProceedPressed(BuildContext context) {
+    context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE,
+        params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
+  }
+
   PreferredSizeWidget _buildAppbar(
       AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
     if (snapshot.hasData) {
       return ExpertPostSignupAppbar(
         uid: uid,
         titleText: 'Continue to set your availability',
-        nextRoute: Routes.EV_UPDATE_AVAILABILITY_PAGE,
-        addAdditionalParams: true,
         allowBackButton: false,
         allowProceed: true,
         onDisallowedProceedPressed: null,
+        onAllowProceedPressed: onProceedPressed,
       );
     }
     return AppBar(
@@ -36,7 +41,8 @@ class ExpertViewConnectedAccountSignupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentWrapper<PublicExpertInfo>?>(
-        stream: PublicExpertInfo.getStreamForUser(uid),
+        stream:
+            PublicExpertInfo.getStreamForUser(uid: uid, fromSignUpFlow: true),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
           return Scaffold(

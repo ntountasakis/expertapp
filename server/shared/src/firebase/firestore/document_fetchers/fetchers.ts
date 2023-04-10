@@ -56,21 +56,13 @@ async function getPrivateUserDocumentNoTransact({ uid }: { uid: string }): Promi
   return doc.data() as PrivateUserInfo;
 }
 
-function getPublicExpertInfoDocumentRef({ uid }: { uid: string }):
+function getPublicExpertInfoDocumentRef({ uid, fromSignUpFlow }: { uid: string, fromSignUpFlow: boolean }):
   FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
-  return admin.firestore().collection(CollectionPaths.PUBLIC_EXPERT_INFO).doc(uid);
+  return admin.firestore().collection(fromSignUpFlow ? CollectionPaths.PUBLIC_EXPERT_INFO_STAGING : CollectionPaths.PUBLIC_EXPERT_INFO).doc(uid);
 }
 
 async function getPublicExpertInfo({ transaction, uid }: { transaction: FirebaseFirestore.Transaction, uid: string }): Promise<PublicExpertInfo> {
-  const doc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid }));
-  if (!doc.exists) {
-    throw new Error(`No public expert info with uid: ${uid}`);
-  }
-  return doc.data() as PublicExpertInfo;
-}
-
-async function getPublicExpertInfoNoTransact({ uid }: { uid: string }): Promise<PublicExpertInfo> {
-  const doc = await getPublicExpertInfoDocumentRef({ uid: uid }).get();
+  const doc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: false }));
   if (!doc.exists) {
     throw new Error(`No public expert info with uid: ${uid}`);
   }
@@ -126,14 +118,6 @@ async function getExpertRateDocument({ transaction, expertUid }: { transaction: 
   return doc.data() as ExpertRate;
 }
 
-async function getExpertRateDocumentNoTransact({ expertUid }: { expertUid: string }): Promise<ExpertRate> {
-  const doc = await getExpertRateDocumentRef({ expertUid: expertUid }).get();
-  if (!doc.exists) {
-    throw new Error(`No expert rate exists for expert: ${expertUid}`);
-  }
-  return doc.data() as ExpertRate;
-}
-
 function getCallTransactionCollectionRef():
   FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData> {
   return admin.firestore().collection(CollectionPaths.CALL_TRANSACTIONS);
@@ -175,7 +159,7 @@ export {
   getPrivateUserDocumentRef, getPublicExpertInfoDocumentRef, getReviewsCollectionRef,
   getChatroomMetadataCollectionRef, getChatroomCollectionRef, getPaymentStatusDocumentRef, getExpertRateDocumentRef,
   getCallTransactionDocumentRef, getCallTransactionCollectionRef, getFcmTokenDocumentRef, getCallTransactionDocument,
-  getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getPublicExpertInfo, getPublicExpertInfoNoTransact,
-  getFcmTokenDocument, getPrivateUserDocument, getPrivateUserDocumentNoTransact, getExpertRateDocumentNoTransact, getSignUpTokenDocumentRef,
+  getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getPublicExpertInfo,
+  getFcmTokenDocument, getPrivateUserDocument, getPrivateUserDocumentNoTransact, getSignUpTokenDocumentRef,
   getPublicUserDocumentRef, getPublicUserDocument, getPublicUserDocumentNoTransact, getExpertCategoryRef,
 };

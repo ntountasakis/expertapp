@@ -25,6 +25,9 @@ export { updateExpertAvailability };
 import { updateExpertCategory } from "./endpoints/update_expert_category";
 export { updateExpertCategory };
 
+import { completeExpertSignUp } from "./endpoints/complete_expert_signup";
+export { completeExpertSignUp };
+
 import { chatroomLookup } from "./endpoints/chatroom_lookup";
 export { chatroomLookup };
 

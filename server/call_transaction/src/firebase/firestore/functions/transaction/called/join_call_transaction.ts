@@ -42,7 +42,7 @@ export const joinCallTransaction = async ({ request }: { request: ClientCallJoin
       "calledHasJoined": callTransaction.calledHasJoined,
       "calledJoinTimeUtcMs": callTransaction.calledJoinTimeUtcMs,
     });
-    transaction.update(getPublicExpertInfoDocumentRef({ uid: callTransaction.calledUid }), {
+    transaction.update(getPublicExpertInfoDocumentRef({ uid: callTransaction.calledUid, fromSignUpFlow: false }), {
       "inCall": true,
     });
     return [true, callTransaction];

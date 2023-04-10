@@ -9,6 +9,7 @@ import 'package:flutter/scheduler.dart';
 
 class ExpertViewExpertProfilePage extends StatefulWidget {
   final String expertUid;
+  static bool FROM_SIGN_UP_FLOW = false;
 
   ExpertViewExpertProfilePage({required this.expertUid});
 
@@ -29,7 +30,8 @@ class _ExpertViewExpertProfilePageState
     super.initState();
     textController = TextEditingController();
     textController.text = textControllerText;
-    categorySelector = new ExpertCategorySelector(widget.expertUid, () {});
+    categorySelector = new ExpertCategorySelector(
+        uid: widget.expertUid, onComplete: () {}, fromSignUpFlow: false);
   }
 
   @override
@@ -64,21 +66,27 @@ class _ExpertViewExpertProfilePageState
   @override
   Widget build(BuildContext context) {
     return ExpertProfileScaffold(
+      fromSignUpFlow: ExpertViewExpertProfilePage.FROM_SIGN_UP_FLOW,
       expertUid: widget.expertUid,
       appBarBuilder: ExpertProfileScaffold.buildDefaultAppbar,
       profileHeaderBuilder:
           (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
-        return buildExpertProfileHeaderExpertView(context, publicExpertInfo!,
-            textController, categorySelector, false, null);
+        return buildExpertProfileHeaderExpertView(
+            context: context,
+            publicExpertInfo: publicExpertInfo!,
+            textController: textController,
+            categorySelector: categorySelector,
+            fromSignUpFlow: ExpertViewExpertProfilePage.FROM_SIGN_UP_FLOW,
+            onProfilePictureChanged: null);
       },
       aboutMeBuilder: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         return buildExpertProfileAboutMeExpertView(
-            context,
-            publicExpertInfo!,
-            descriptionScrollController,
-            textController,
-            false,
-            onAboutMeChanged);
+            context: context,
+            publicExpertInfo: publicExpertInfo!,
+            scrollController: descriptionScrollController,
+            textController: textController,
+            fromSignUpFlow: ExpertViewExpertProfilePage.FROM_SIGN_UP_FLOW,
+            onAboutMeChanged: onAboutMeChanged);
       },
       onUpdate: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         updateProfileDescriptionIfChanged(publicExpertInfo!);

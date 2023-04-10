@@ -24,7 +24,8 @@ class UserCompletedCallCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.wait([PublicExpertInfo.get(call.calledUid)]),
+        future: Future.wait(
+            [PublicExpertInfo.get(uid: call.calledUid, fromSignUpFlow: false)]),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
             final expertMetadata =

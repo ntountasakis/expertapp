@@ -3,7 +3,6 @@ import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_error_dialog.dart';
-import 'package:expertapp/src/call_server/call_server_error_reason.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
@@ -209,7 +208,8 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentWrapper<PublicExpertInfo>?>(
-        future: PublicExpertInfo.get(widget.otherUserId),
+        future: PublicExpertInfo.get(
+            uid: widget.otherUserId, fromSignUpFlow: false),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
           if (snapshot.hasData) {

@@ -1,13 +1,5 @@
-// return ExpertPostSignupAppbar(
-//   uid: widget._expertUid,
-//   titleText: "Click arrow to finish",
-//   nextRoute: Routes.HOME_PAGE,
-//   addAdditionalParams: false,
-//   allowBackButton: true,
-// );
-
 import 'package:expertapp/src/appbars/expert_view/expert_post_signup_appbar.dart';
-import 'package:expertapp/src/appbars/user_view/expert_profile_appbar.dart';
+import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
@@ -17,9 +9,11 @@ import 'package:expertapp/src/profile/expert/expert_profile_scaffold.dart';
 import 'package:expertapp/src/util/expert_category_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:go_router/go_router.dart';
 
 class ExpertViewExpertProfileSignUpPage extends StatefulWidget {
   final String expertUid;
+  static bool FROM_SIGN_UP_FLOW = true;
 
   ExpertViewExpertProfileSignUpPage({required this.expertUid});
 
@@ -43,8 +37,10 @@ class _ExpertViewExpertProfileSignUpPageState
     super.initState();
     textController = TextEditingController();
     textController.text = textControllerText;
-    categorySelector =
-        new ExpertCategorySelector(widget.expertUid, onExpertCategoryChanged);
+    categorySelector = new ExpertCategorySelector(
+        uid: widget.expertUid,
+        onComplete: onExpertCategoryChanged,
+        fromSignUpFlow: ExpertViewExpertProfileSignUpPage.FROM_SIGN_UP_FLOW);
   }
 
   @override
@@ -89,6 +85,8 @@ class _ExpertViewExpertProfileSignUpPageState
       text = "Please select your category of expertise";
     } else if (aboutMeUpdatedTextError != null) {
       text = aboutMeUpdatedTextError!;
+    } else {
+      text = "Please fill in your about me";
     }
     showDialog(
         context: context,
@@ -98,6 +96,30 @@ class _ExpertViewExpertProfileSignUpPageState
             content: Text(text),
           );
         });
+  }
+
+  Future<void> onProceedPressed(BuildContext context) async {
+    final result = await completeExpertSignUp();
+    if (result.success) {
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Thanks for signing up!"),
+              content: Text("You may now start accepting calls"),
+            );
+          });
+      context.pushReplacementNamed(Routes.HOME_PAGE);
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("An error occurred"),
+              content: Text(result.message),
+            );
+          });
+    }
   }
 
   PreferredSizeWidget buildAppbar(
@@ -110,11 +132,10 @@ class _ExpertViewExpertProfileSignUpPageState
         uid: widget.expertUid,
         titleText:
             allowProceed ? "Click arrow to finish" : "Fill out profile details",
-        nextRoute: Routes.HOME_PAGE,
-        addAdditionalParams: false,
         allowBackButton: true,
         allowProceed: allowProceed,
         onDisallowedProceedPressed: onDisallowedProceedPressed,
+        onAllowProceedPressed: onProceedPressed,
       );
     }
     return AppBar(
@@ -125,21 +146,27 @@ class _ExpertViewExpertProfileSignUpPageState
   @override
   Widget build(BuildContext context) {
     return ExpertProfileScaffold(
+      fromSignUpFlow: ExpertViewExpertProfileSignUpPage.FROM_SIGN_UP_FLOW,
       appBarBuilder: buildAppbar,
       expertUid: widget.expertUid,
       profileHeaderBuilder:
           (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
-        return buildExpertProfileHeaderExpertView(context, publicExpertInfo!,
-            textController, categorySelector, true, onProfilePictureChanged);
+        return buildExpertProfileHeaderExpertView(
+            context: context,
+            publicExpertInfo: publicExpertInfo!,
+            textController: textController,
+            categorySelector: categorySelector,
+            fromSignUpFlow: ExpertViewExpertProfileSignUpPage.FROM_SIGN_UP_FLOW,
+            onProfilePictureChanged: onProfilePictureChanged);
       },
       aboutMeBuilder: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         return buildExpertProfileAboutMeExpertView(
-            context,
-            publicExpertInfo!,
-            descriptionScrollController,
-            textController,
-            true,
-            onAboutMeChanged);
+            context: context,
+            publicExpertInfo: publicExpertInfo!,
+            scrollController: descriptionScrollController,
+            textController: textController,
+            fromSignUpFlow: ExpertViewExpertProfileSignUpPage.FROM_SIGN_UP_FLOW,
+            onAboutMeChanged: onAboutMeChanged);
       },
       onUpdate: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         updateProfileDescriptionIfChanged(publicExpertInfo!);

@@ -11,7 +11,7 @@ export const generateExpertProfileDynamicLink = functions.https.onCall(async (da
     }
 
     const exists = await admin.firestore().runTransaction(async (transaction) => {
-        const publicExpertInfoDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: expertUid }));
+        const publicExpertInfoDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: expertUid, fromSignUpFlow: false }));
         return publicExpertInfoDoc.exists;
     });
     if (!exists) {
@@ -19,7 +19,7 @@ export const generateExpertProfileDynamicLink = functions.https.onCall(async (da
     }
     const link: string = await FirebaseDynamicLinkProvider.generateDynamicLinkExpertProfile({ expertUid: expertUid });
     Logger.log({
-        logName: "generateExpertProfileDynamicLink ", message: `Generated dynamic link for expert profile for uid ${expertUid}: ${link}`,
+        logName: "generateExpertProfileDynamicLink", message: `Generated dynamic link for expert profile for uid ${expertUid}: ${link}`,
         labels: new Map([["expertId", expertUid]]),
     });
     return link;

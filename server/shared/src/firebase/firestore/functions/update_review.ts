@@ -17,7 +17,7 @@ export function updateReview(
 
     transaction.update(existingReviewDocumentReference.ref, "reviewText", newReviewText);
     transaction.update(existingReviewDocumentReference.ref, "rating", newReviewRating);
-    transaction.update(getPublicExpertInfoDocumentRef({ uid: reviewedUid }),
+    transaction.update(getPublicExpertInfoDocumentRef({ uid: reviewedUid, fromSignUpFlow: false }),
         "runningSumReviewRatings", reviewedUserNewReviewSum);
     updateUserMetadataReviewAttributes({
         transaction: transaction, reviewedUid: reviewedUid,

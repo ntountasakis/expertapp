@@ -13,9 +13,10 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
   const uid = context.auth.uid;
   const newCentsPerMinute: number = data.centsPerMinute;
   const newCentsStartCall: number = data.centsStartCall;
+  const fromSignUpFlow: boolean = data.fromSignUpFlow;
 
   try {
-    if (uid == null || newCentsPerMinute == null || newCentsStartCall == null) {
+    if (uid == null || newCentsPerMinute == null || newCentsStartCall == null || fromSignUpFlow == null) {
       throw new Error("Cannot update expert rate, some attributes null");
     }
 
@@ -49,7 +50,7 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
 
     const success = await admin.firestore().runTransaction(async (transaction) => {
       const privateUserDoc: PrivateUserInfo = await getPrivateUserDocument({ transaction: transaction, uid: uid });
-      const publicExpertInfoDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid }));
+      const publicExpertInfoDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow }));
 
       if (privateUserDoc.stripeConnectedId == null) {
         Logger.logError({
