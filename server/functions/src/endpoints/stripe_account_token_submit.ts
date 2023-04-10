@@ -69,7 +69,7 @@ function accountTokenSubmitHtml(requestUrl: string, wasTokenInvalid: boolean): s
             </style>
         </head>
         <body>
-            <h2>Please enter the token you were given:</h2>`;
+            <h2>Please enter the token you were given</h2>`;
   if (wasTokenInvalid) {
     html += `
             <h3>Token invalid, try again.</h3>
