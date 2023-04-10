@@ -4,12 +4,13 @@ import 'package:expertapp/src/profile/expert/expert_profile_edit_button.dart';
 import 'package:expertapp/src/util/expert_category_util.dart';
 import 'package:flutter/material.dart';
 
-Widget buildExpertProfileHeadingDescriptionHelper(
-    BuildContext context,
-    DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-    TextEditingController? textController,
-    ExpertCategorySelector? categorySelector,
-    bool isExpertView) {
+Widget buildExpertProfileHeadingDescriptionHelper({
+  required BuildContext context,
+  required DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+  required TextEditingController? textController,
+  required ExpertCategorySelector? categorySelector,
+  required bool isExpertView,
+}) {
   final name = Text(
     publicExpertInfo.documentType.shortName(),
     style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
@@ -32,7 +33,10 @@ Widget buildExpertProfileHeadingDescriptionHelper(
   );
   final editCategoryButton = isExpertView
       ? buildExpertProfileEditCategoryButton(
-          context, publicExpertInfo, textController!, categorySelector!)
+          context: context,
+          publicExpertInfo: publicExpertInfo,
+          textController: textController!,
+          categorySelector: categorySelector!)
       : SizedBox();
   return Expanded(
     child: Column(
@@ -51,14 +55,18 @@ Widget buildExpertProfileHeadingDescriptionHelper(
   );
 }
 
-Widget buildExpertProfileHeadingDescriptionExpertView(
-  BuildContext context,
-  DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-  TextEditingController textController,
-  ExpertCategorySelector categorySelector,
-) {
+Widget buildExpertProfileHeadingDescriptionExpertView({
+  required BuildContext context,
+  required DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+  required TextEditingController textController,
+  required ExpertCategorySelector categorySelector,
+}) {
   return buildExpertProfileHeadingDescriptionHelper(
-      context, publicExpertInfo, textController, categorySelector, true);
+      context: context,
+      publicExpertInfo: publicExpertInfo,
+      textController: textController,
+      categorySelector: categorySelector,
+      isExpertView: true);
 }
 
 Widget buildExpertProfileHeadingDescriptionUserView(
@@ -66,5 +74,9 @@ Widget buildExpertProfileHeadingDescriptionUserView(
   DocumentWrapper<PublicExpertInfo> publicExpertInfo,
 ) {
   return buildExpertProfileHeadingDescriptionHelper(
-      context, publicExpertInfo, null, null, false);
+      context: context,
+      publicExpertInfo: publicExpertInfo,
+      textController: null,
+      categorySelector: null,
+      isExpertView: false);
 }

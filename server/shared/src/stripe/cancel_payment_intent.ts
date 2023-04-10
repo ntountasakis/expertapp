@@ -6,7 +6,7 @@ export default async function cancelStripePaymentIntent({ paymentIntentId }: { p
     try {
         await StripeProvider.STRIPE.paymentIntents.cancel(paymentIntentId);
     } catch (error) {
-        errorMessage += handleStripeError(error);
+        errorMessage += handleStripeError("cancelStripePaymentIntent", error);
         throw new Error(errorMessage);
     }
 }

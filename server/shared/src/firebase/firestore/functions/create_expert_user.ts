@@ -12,7 +12,8 @@ export async function createExpertUser({ uid, profileDescription, profilePicUrl,
     uid: string, profilePicUrl: string, profileDescription: string, majorExpertCategory: string, minorExpertCategory: string
   }): Promise<void> {
   const didCreate: boolean = await admin.firestore().runTransaction(async (transaction) => {
-    const doc = await getPublicExpertInfoDocumentRef({ uid: uid }).get();
+    const docRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: true });
+    const doc = await transaction.get(docRef);
     if (doc.exists) {
       return false;
     }
@@ -29,7 +30,7 @@ export async function createExpertUser({ uid, profileDescription, profilePicUrl,
       "availability": createDefaultAvailability(),
       "inCall": false,
     };
-    transaction.set(getPublicExpertInfoDocumentRef({ uid: uid }), publicExpertInfo);
+    transaction.set(docRef, publicExpertInfo);
     transaction.set(getExpertRateDocumentRef({ expertUid: uid }), createDefaultCallRate());
     return true;
   });

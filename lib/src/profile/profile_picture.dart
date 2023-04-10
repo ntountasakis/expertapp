@@ -12,8 +12,10 @@ class ProfilePicture extends StatelessWidget {
   final String? profilePicUrl;
   final bool fromSignUpFlow;
   final VoidCallback? onProfilePicUpload;
-  final Function(Uint8List selectedProfilePicBytes, bool fromSignUpFlow,
-      VoidCallback? onProfilePicUpload)? onProfilePicSelection;
+  final void Function(
+      {required Uint8List selectedProfilePicBytes,
+      required bool fromSignUpFlow,
+      required VoidCallback? onProfilePictureChanged})? onProfilePicSelection;
 
   ProfilePicture(this.profilePicUrl,
       [this.fromSignUpFlow = false,
@@ -67,7 +69,9 @@ class ProfilePicture extends StatelessWidget {
               } else {
                 Uint8List jpegBytes = img.encodeJpg(imageHandle, quality: 50);
                 onProfilePicSelection!(
-                    jpegBytes, fromSignUpFlow, onProfilePicUpload);
+                    selectedProfilePicBytes: jpegBytes,
+                    fromSignUpFlow: fromSignUpFlow,
+                    onProfilePictureChanged: onProfilePicUpload);
               }
             } else {
               log('User cancelled profile pic image upload');

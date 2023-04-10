@@ -65,7 +65,7 @@ class PastChatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
         future: Future.wait([
-          PublicExpertInfo.get(preview.otherUid),
+          PublicExpertInfo.get(uid: preview.otherUid, fromSignUpFlow: false),
           PublicUserInfo.get(preview.otherUid)
         ]),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
@@ -81,14 +81,14 @@ class PastChatCard extends StatelessWidget {
                 context: context,
                 leading: buildLeading(context, expertInfo, userInfo),
                 title: buildTitle(),
-                subtitle: buildSubtitle(userInfo), 
+                subtitle: buildSubtitle(userInfo),
                 trailing: SizedBox(),
                 onTapCallback: (context) {
-              context.pushNamed(Routes.UV_CALL_CHAT_PAGE, params: {
-                Routes.EXPERT_ID_PARAM: preview.otherUid,
-                Routes.IS_EDITABLE_PARAM: "false",
-              });
-            });
+                  context.pushNamed(Routes.UV_CALL_CHAT_PAGE, params: {
+                    Routes.EXPERT_ID_PARAM: preview.otherUid,
+                    Routes.IS_EDITABLE_PARAM: "false",
+                  });
+                });
           }
           return SizedBox();
         });

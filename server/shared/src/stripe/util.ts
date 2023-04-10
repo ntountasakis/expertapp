@@ -9,7 +9,7 @@ async function createStripeCustomer({ stripe }: { stripe: Stripe }): Promise<str
     const stripeCustomerResponse = await stripe.customers.create();
     stripeCustomerId = stripeCustomerResponse.id;
   } catch (error) {
-    errorMessage += handleStripeError(error);
+    errorMessage += handleStripeError("createStripeCustomer", error);
     throw new Error(errorMessage);
   }
   return stripeCustomerId;
@@ -22,7 +22,7 @@ async function deleteStripeCustomer({ stripe, customerId }:
   try {
     await stripe.customers.del(customerId);
   } catch (error) {
-    errorMessage += handleStripeError(error);
+    errorMessage += handleStripeError("deleteStripeCustomer", error);
     throw new Error(errorMessage);
   }
 };
@@ -36,7 +36,7 @@ async function deleteStripeConnectedAccount({ stripe, connectedAccountId }:
       throw new Error(errorMessage);
     }
   } catch (error) {
-    errorMessage += handleStripeError(error);
+    errorMessage += handleStripeError("deleteStripeConnectedAccount", error);
     throw new Error(errorMessage);
   }
 };

@@ -12,11 +12,18 @@ export const updateProfilePicture = functions.https.onCall(async (data, context)
     throw new Error("Cannot call by unauthorized users");
   }
   const uid = context.auth.uid;
-  const pictureBytes: Buffer = Buffer.from(data.pictureBytes);
+  const pictureData = data.pictureBytes;
+  const fromSignUpFlow = data.fromSignUpFlow;
+
+  if (pictureData == null || fromSignUpFlow == null) {
+    throw new Error("Cannot updateProfilePicture with missing parameters");
+  }
+
+  const pictureBytes: Buffer = Buffer.from(pictureData);
   const publicUrl = await uploadFromMemory(pictureBytes, uid);
 
   const success = await admin.firestore().runTransaction(async (transaction) => {
-    return updateProfilePicUrl({ transaction: transaction, uid: uid, profilePicUrl: publicUrl });
+    return updateProfilePicUrl({ transaction: transaction, uid: uid, profilePicUrl: publicUrl, fromSignUpFlow: fromSignUpFlow });
   });
   return {
     success: success,

@@ -8,7 +8,7 @@ export function updateUserMetadataReviewAttributes(
             runningSumReviewRatings: number,
             numReviews: number
         }): void {
-    const reviewedUserMetadataRef = getPublicExpertInfoDocumentRef({ uid: reviewedUid });
+    const reviewedUserMetadataRef = getPublicExpertInfoDocumentRef({ uid: reviewedUid, fromSignUpFlow: false });
     transaction.update(reviewedUserMetadataRef,
         "runningSumReviewRatings", runningSumReviewRatings);
     transaction.update(reviewedUserMetadataRef,

@@ -16,6 +16,7 @@ class UserViewExpertProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpertProfileScaffold(
+      fromSignUpFlow: false,
       appBarBuilder: ExpertProfileScaffold.buildDefaultAppbar,
       expertUid: expertUid,
       profileHeaderBuilder:
@@ -24,7 +25,9 @@ class UserViewExpertProfilePage extends StatelessWidget {
       },
       aboutMeBuilder: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         return buildExpertProfileAboutMeUserView(
-            context, publicExpertInfo!, _descriptionScrollController);
+            context: context,
+            publicExpertInfo: publicExpertInfo!,
+            controller: _descriptionScrollController);
       },
       onUpdate: null,
     );

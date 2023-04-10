@@ -111,7 +111,8 @@ class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
         title: const Text("Submit a Review"),
       ),
       body: FutureBuilder<DocumentWrapper<PublicExpertInfo>?>(
-          future: PublicExpertInfo.get(widget.expertUserId),
+          future: PublicExpertInfo.get(
+              uid: widget.expertUserId, fromSignUpFlow: false),
           builder: (BuildContext context,
               AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
             if (snapshot.hasData) {

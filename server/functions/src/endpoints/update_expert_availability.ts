@@ -10,19 +10,23 @@ export const updateExpertAvailability = functions.https.onCall(async (data, cont
   if (context.auth == null || context.auth.uid == null) {
     throw new Error("Cannot call by unauthorized users");
   }
+  const fromSignUpFlow = data.fromSignUpFlow;
   const availability = data.availability;
   if (availability == null) {
     throw new Error("Cannot update expert rate with null payload");
   }
+  if (fromSignUpFlow == null) {
+    throw new Error("Cannot update expert rate with null fromSignUpFlow");
+  }
 
-  const isPayloadValid = validatePayload(availability);
+  const isPayloadValid = validatePayload(context.auth.uid, availability);
   if (!isPayloadValid) {
     return {
       success: false,
       message: "Please contact customer service. We are experiencing technical difficulties",
     };
   }
-  const success = await updateAvailability(context.auth.uid, data);
+  const success = await updateAvailability(context.auth.uid, fromSignUpFlow, availability);
   return {
     success: success,
     message: success ? "Your availability was updated successfully" : "Internal Server Error",
@@ -30,22 +34,25 @@ export const updateExpertAvailability = functions.https.onCall(async (data, cont
 });
 
 
-function validatePayload(payload: Map<string, unknown>): boolean {
+function validatePayload(uid: string, payload: Map<string, unknown>): boolean {
   const ajv = new Ajv();
   const validator = ajv.compile(WeekAvailabilitySchema);
   const isValid = validator(payload);
   if (!isValid) {
-    console.error(validator.errors);
+    Logger.logError({
+      logName: "updateExpertAvailability", message: `Cannot update availability because payload is invalid. Payload: ${payload}`,
+      labels: new Map([["expertId", uid]]),
+    });
   }
   return isValid;
 }
 
-async function updateAvailability(uid: string, payload: Map<string, unknown>): Promise<boolean> {
+async function updateAvailability(uid: string, fromSignUpFlow: boolean, payload: Map<string, unknown>): Promise<boolean> {
   const ajv = new Ajv();
   const parser = ajv.compileParser(WeekAvailabilitySchema);
   const result = parser(JSON.stringify(payload)) as WeekAvailability;
   return await admin.firestore().runTransaction(async (transaction) => {
-    const docRef = getPublicExpertInfoDocumentRef({ uid: uid });
+    const docRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow });
     const publicExpertInfoDoc = await transaction.get(docRef);
     if (!publicExpertInfoDoc.exists) {
       Logger.logError({
@@ -54,11 +61,11 @@ async function updateAvailability(uid: string, payload: Map<string, unknown>): P
       });
       return false;
     }
-    transaction.update(getPublicExpertInfoDocumentRef({ uid: uid }), {
+    transaction.update(docRef, {
       "availability": result,
     });
     Logger.log({
-      logName: "updateExpertAvailability", message: `Updated availability for ${uid}. New availability: ${result}`,
+      logName: "updateExpertAvailability", message: `Updated availability for ${uid}. New availability: ${result}. From sign up flow: ${fromSignUpFlow}`,
       labels: new Map([["expertId", uid]]),
     });
     return true;

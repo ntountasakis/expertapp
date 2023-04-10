@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
-import 'package:expertapp/src/firebase/cloud_functions/callable_functions.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
@@ -40,47 +39,49 @@ Future<List<String>> getMinorExpertCategories(String majorCategory) async {
 class ExpertCategorySelector extends StatefulWidget {
   final String uid;
   final VoidCallback onComplete;
-  ExpertCategorySelector(this.uid, this.onComplete);
+  final bool fromSignUpFlow;
+  ExpertCategorySelector(
+      {required this.uid,
+      required this.onComplete,
+      required this.fromSignUpFlow});
 
   @override
   State<ExpertCategorySelector> createState() => _ExpertCategorySelectorState();
 }
 
 class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
-  String? aSelectedMajorCategory;
-  String? aSelectedMinorCategory;
+  String? theSelectedMajorCategory;
+  String? theSelectedMinorCategory;
 
   Future<void> onChangedMajorCategory(String aNewMajorCategory) async {
     log("Changed major category to $aNewMajorCategory");
     final defaultMinor = (await getMinorExpertCategories(aNewMajorCategory))[0];
     setState(() {
-      aSelectedMajorCategory = aNewMajorCategory;
-      aSelectedMinorCategory = defaultMinor;
-      widget.onComplete();
+      theSelectedMajorCategory = aNewMajorCategory;
+      theSelectedMinorCategory = defaultMinor;
     });
   }
 
   void onChangedMinorCategory(String aNewMinorCategory) {
     log("Changed minor category to $aNewMinorCategory");
     setState(() {
-      aSelectedMinorCategory = aNewMinorCategory;
-      widget.onComplete();
+      theSelectedMinorCategory = aNewMinorCategory;
     });
   }
 
   Future<String> effectiveMinorCategory(PublicExpertInfo info) async {
-    if (aSelectedMinorCategory != null) {
-      return aSelectedMinorCategory!;
+    if (theSelectedMinorCategory != null) {
+      return theSelectedMinorCategory!;
     }
-    if (aSelectedMajorCategory != null) {
-      return (await getMinorExpertCategories(aSelectedMajorCategory!))[0];
+    if (theSelectedMajorCategory != null) {
+      return (await getMinorExpertCategories(theSelectedMajorCategory!))[0];
     }
     return info.minorExpertCategory;
   }
 
   String effectiveMajorCategory(PublicExpertInfo info) {
-    return aSelectedMajorCategory != null
-        ? aSelectedMajorCategory!
+    return theSelectedMajorCategory != null
+        ? theSelectedMajorCategory!
         : info.majorExpertCategory;
   }
 
@@ -90,11 +91,23 @@ class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
     return ElevatedButton(
         style: buttonStyle,
         onPressed: () async {
-          if (aSelectedMajorCategory == null) {
-            return;
+          if (theSelectedMajorCategory != null ||
+              theSelectedMinorCategory != null) {
+            String? nextMajorCategory = effectiveMajorCategory(info);
+            String? nextMinorCategory = await effectiveMinorCategory(info);
+            final result = await updateExpertCategory(
+                newMajorCategory: nextMajorCategory,
+                newMinorCategory: nextMinorCategory,
+                fromSignUpFlow: widget.fromSignUpFlow);
+            setState(() {
+              theSelectedMajorCategory = null;
+              theSelectedMinorCategory = null;
+            });
+            if (result.success) {
+              widget.onComplete();
+            }
+            Navigator.of(context).pop();
           }
-          await updateExpertCategory(
-              effectiveMajorCategory(info), await effectiveMinorCategory(info));
         },
         child: Text("Submit"));
   }
@@ -102,7 +115,8 @@ class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentWrapper<PublicExpertInfo>?>(
-        stream: PublicExpertInfo.getStreamForUser(widget.uid),
+        stream: PublicExpertInfo.getStreamForUser(
+            uid: widget.uid, fromSignUpFlow: widget.fromSignUpFlow),
         builder: (BuildContext context,
             AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?>
                 expertInfoSnapshot) {
@@ -176,14 +190,4 @@ class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
       }),
     );
   }
-}
-
-Future<void> updateExpertCategory(
-    String newMajorCategory, String newMinorCategory) async {
-  Map<String, dynamic> updateCategoryQuery = {
-    'newMajorCategory': newMajorCategory,
-    'newMinorCategory': newMinorCategory,
-  };
-  await getCallable(CallableFunctions.UPDATE_EXPERT_CATEGORY)
-      .call(updateCategoryQuery);
 }

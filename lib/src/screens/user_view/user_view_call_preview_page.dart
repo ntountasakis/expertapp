@@ -64,7 +64,7 @@ class UserViewCallPreviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
         future: Future.wait([
-          PublicExpertInfo.get(_expertUid),
+          PublicExpertInfo.get(uid: _expertUid, fromSignUpFlow: false),
           ExpertRate.get(_expertUid),
           PublicUserInfo.get(_expertUid)
         ]),

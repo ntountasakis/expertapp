@@ -4,13 +4,13 @@ import 'package:expertapp/src/firebase/firestore/document_models/public_expert_i
 import 'package:expertapp/src/util/expert_category_util.dart';
 import 'package:flutter/material.dart';
 
-Future openExpertProfileEditDescriptionDialog(
-  BuildContext context,
-  DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-  TextEditingController textController,
-  bool fromSignUpFlow,
-  Function(String)? onAboutMeChanged,
-) {
+Future openExpertProfileEditDescriptionDialog({
+  required BuildContext context,
+  required DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+  required TextEditingController textController,
+  required bool fromSignUpFlow,
+  required Function(String)? onAboutMeChanged,
+}) {
   return showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -49,10 +49,11 @@ Future openExpertProfileEditDescriptionDialog(
           ));
 }
 
-Future openExpertProfileEditCategoryDialog(
-    BuildContext context,
-    DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-    ExpertCategorySelector categorySelector) async {
+Future openExpertProfileEditCategoryDialog({
+  required BuildContext context,
+  required DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+  required ExpertCategorySelector categorySelector,
+}) async {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -63,12 +64,12 @@ Future openExpertProfileEditCategoryDialog(
   );
 }
 
-Widget buildExpertProfileEditCategoryButton(
-  BuildContext context,
-  DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-  TextEditingController textController,
-  ExpertCategorySelector categorySelector,
-) {
+Widget buildExpertProfileEditCategoryButton({
+  required BuildContext context,
+  required DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+  required TextEditingController textController,
+  required ExpertCategorySelector categorySelector,
+}) {
   return IconButton(
     icon: const Icon(
       Icons.edit,
@@ -77,18 +78,20 @@ Widget buildExpertProfileEditCategoryButton(
     ),
     onPressed: () {
       openExpertProfileEditCategoryDialog(
-          context, publicExpertInfo, categorySelector);
+          context: context,
+          publicExpertInfo: publicExpertInfo,
+          categorySelector: categorySelector);
     },
   );
 }
 
-Widget buildExpertProfileEditAboutMeButton(
-  BuildContext context,
-  DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-  TextEditingController textController,
-  bool fromSignUpFlow,
-  Function(String)? onAboutMeChanged,
-) {
+Widget buildExpertProfileEditAboutMeButton({
+  required BuildContext context,
+  required DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+  required TextEditingController textController,
+  required bool fromSignUpFlow,
+  required Function(String)? onAboutMeChanged,
+}) {
   return IconButton(
     icon: const Icon(
       Icons.edit,
@@ -96,8 +99,12 @@ Widget buildExpertProfileEditAboutMeButton(
       color: Colors.grey,
     ),
     onPressed: () {
-      openExpertProfileEditDescriptionDialog(context, publicExpertInfo,
-          textController, fromSignUpFlow, onAboutMeChanged);
+      openExpertProfileEditDescriptionDialog(
+          context: context,
+          publicExpertInfo: publicExpertInfo,
+          textController: textController,
+          fromSignUpFlow: fromSignUpFlow,
+          onAboutMeChanged: onAboutMeChanged);
     },
   );
 }

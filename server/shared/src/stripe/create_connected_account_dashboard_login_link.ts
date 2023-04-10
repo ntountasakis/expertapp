@@ -11,7 +11,7 @@ export default async function createConnectedAccountDashboardLoginLink({ connect
         }
         return loginLink.url;
     } catch (error) {
-        errorMessage += handleStripeError(error);
+        errorMessage += handleStripeError("createConnectedAccountDashboardLoginLink", error);
         throw new Error(errorMessage);
     }
 }

@@ -10,7 +10,7 @@ export const markCallEndGenerateCallSummary = async ({transaction, callTransacti
     {transaction: FirebaseFirestore.Transaction, callTransaction: CallTransaction, endCallTimeUtcMs: number,
       callState: BaseCallState}): Promise<ServerCallSummary> => {
   const transactionDocumentRef = getCallTransactionDocumentRef({transactionId: callTransaction.callTransactionId});
-  const publicExpertInfoDocumentRef = getPublicExpertInfoDocumentRef({uid: callTransaction.calledUid});
+  const publicExpertInfoDocumentRef = getPublicExpertInfoDocumentRef({uid: callTransaction.calledUid, fromSignUpFlow: false});
   if (callTransaction.calledHasJoined) {
     const lengthOfCallSec: number = (endCallTimeUtcMs - callTransaction.calledJoinTimeUtcMs) / 1000;
     const costOfCall: number = calculateCostOfCallInCents({beginTimeUtcMs: callTransaction.calledJoinTimeUtcMs, endTimeUtcMs: endCallTimeUtcMs,

@@ -113,7 +113,7 @@ export default async function allBalancesZeroStripeConnectedAccount({ stripe, co
 
         return [false, formattedAvailableFunds + formattedPendingFunds + formattedInstantAvailable + formattedConnectReserved];
     } catch (error) {
-        errorMessage += handleStripeError(error);
+        errorMessage += handleStripeError("allBalancesZeroStripeConnectedAccount", error);
         throw new Error(errorMessage);
     }
 };

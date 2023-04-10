@@ -169,3 +169,31 @@ Future<String> getShareableExpertProfileDynamicLink(String expertUid) async {
   final linkUrl = result.data;
   return linkUrl;
 }
+
+Future<UpdateResult> updateExpertCategory({
+  required String newMajorCategory,
+  required String newMinorCategory,
+  required bool fromSignUpFlow,
+}) async {
+  Map<String, dynamic> updateCategoryQuery = {
+    'newMajorCategory': newMajorCategory,
+    'newMinorCategory': newMinorCategory,
+    'fromSignUpFlow': fromSignUpFlow,
+  };
+  HttpsCallableResult result =
+      await getCallable(CallableFunctions.UPDATE_EXPERT_CATEGORY)
+          .call(updateCategoryQuery);
+  bool success = result.data['success'];
+  String message = result.data['message'];
+
+  return UpdateResult(success: success, message: message);
+}
+
+Future<UpdateResult> completeExpertSignUp() async {
+  HttpsCallableResult result =
+      await getCallable(CallableFunctions.COMPLETE_EXPERT_SIGN_UP).call();
+  bool success = result.data['success'];
+  String message = result.data['message'];
+
+  return UpdateResult(success: success, message: message);
+}

@@ -6,6 +6,7 @@ import { deleteStripeConnectedAccount, deleteStripeCustomer } from "../../../sha
 import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
 import allBalancesZeroStripeConnectedAccount from "../../../shared/src/stripe/stripe_check_balances";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
+import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const deleteUser = functions.https.onCall(async (data, context) => {
     if (context.auth == null) {
@@ -33,13 +34,15 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
             await admin.firestore().runTransaction(async (transaction) => {
                 transaction.delete(getPublicUserDocumentRef({ uid: uid }));
                 transaction.delete(getPrivateUserDocumentRef({ uid: uid }));
-                transaction.delete(getPublicExpertInfoDocumentRef({ uid: uid }));
+                transaction.delete(getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: false }));
                 transaction.delete(getExpertRateDocumentRef({ expertUid: uid }));
             });
         }
         await admin.auth().deleteUser(uid);
     } catch (e) {
-        console.error(e);
+        Logger.logError({
+            logName: "deleteUser", message: `Cannot delete user ${context.auth.uid} because of error ${e}`,
+        });
         return {
             success: false,
             message: "Please contact customer service. We are experiencing technical difficulties",

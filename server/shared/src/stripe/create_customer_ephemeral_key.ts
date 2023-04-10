@@ -11,7 +11,7 @@ export default async function createCustomerEphemeralKey({ customerId }: { custo
         }
         return ephemeralKey.secret;
     } catch (error) {
-        errorMessage += handleStripeError(error);
+        errorMessage += handleStripeError("createCustomerEphemeralKey", error);
         throw new Error(errorMessage);
     }
 }

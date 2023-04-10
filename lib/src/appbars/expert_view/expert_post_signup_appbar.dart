@@ -1,24 +1,21 @@
-import 'package:expertapp/src/navigation/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class ExpertPostSignupAppbar extends StatelessWidget with PreferredSizeWidget {
   final String uid;
   final String titleText;
-  final String nextRoute;
-  final bool addAdditionalParams;
   final bool allowBackButton;
   final bool allowProceed;
+  final Function(BuildContext) onAllowProceedPressed;
   final VoidCallback? onDisallowedProceedPressed;
 
-  const ExpertPostSignupAppbar(
-      {required this.uid,
-      required this.titleText,
-      required this.nextRoute,
-      required this.addAdditionalParams,
-      required this.allowBackButton,
-      required this.allowProceed,
-      required this.onDisallowedProceedPressed});
+  const ExpertPostSignupAppbar({
+    required this.uid,
+    required this.titleText,
+    required this.allowBackButton,
+    required this.allowProceed,
+    required this.onAllowProceedPressed,
+    required this.onDisallowedProceedPressed,
+  });
 
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
@@ -44,13 +41,7 @@ class ExpertPostSignupAppbar extends StatelessWidget with PreferredSizeWidget {
                     ),
                     onPressed: () {
                       if (allowProceed) {
-                        if (addAdditionalParams) {
-                          context.pushNamed(nextRoute, params: {
-                            Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"
-                          });
-                        } else {
-                          context.pushNamed(nextRoute);
-                        }
+                        onAllowProceedPressed(context);
                       } else if (onDisallowedProceedPressed != null)
                         onDisallowedProceedPressed!();
                     })),

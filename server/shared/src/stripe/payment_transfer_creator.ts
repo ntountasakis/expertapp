@@ -1,3 +1,4 @@
+import { Logger } from "../google_cloud/google_cloud_logger";
 import handleStripeError from "./stripe_error_handler";
 import { StripeProvider } from "./stripe_provider";
 
@@ -6,7 +7,9 @@ export default async function createStripePaymentTransfer({ connectedAccountId, 
   // eslint-disable-next-line max-len
 
   if (sourceChargeId == "") {
-    console.error(`Source charge id empty for connectedAccountId: ${connectedAccountId} transferGroup: ${transferGroup}`);
+    Logger.logError({
+      logName: "createStripePaymentTransfer", message: `Source charge id empty for connectedAccountId: ${connectedAccountId} transferGroup: ${transferGroup}`,
+    });
   }
 
   let errorMessage = `Transfer cancel fail for connectedAccountId: ${connectedAccountId} transferGroup: ${transferGroup} \n`;
@@ -23,7 +26,7 @@ export default async function createStripePaymentTransfer({ connectedAccountId, 
       });
     return paymentTransferResponse.id;
   } catch (error) {
-    errorMessage += handleStripeError(error);
+    errorMessage += handleStripeError("createStripePaymentTransfer", error);
   }
   throw new Error(errorMessage);
 }
