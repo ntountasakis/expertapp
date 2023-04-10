@@ -35,10 +35,14 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
                 transaction.delete(getPublicUserDocumentRef({ uid: uid }));
                 transaction.delete(getPrivateUserDocumentRef({ uid: uid }));
                 transaction.delete(getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: false }));
+                transaction.delete(getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: true }));
                 transaction.delete(getExpertRateDocumentRef({ expertUid: uid }));
             });
         }
         await admin.auth().deleteUser(uid);
+        Logger.log({
+            logName: "deleteUser", message: `Deleted user ${uid}`,
+        });
     } catch (e) {
         Logger.logError({
             logName: "deleteUser", message: `Cannot delete user ${context.auth.uid} because of error ${e}`,
