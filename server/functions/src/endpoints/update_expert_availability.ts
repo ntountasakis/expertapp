@@ -2,7 +2,7 @@ import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import Ajv, { JTDSchemaType } from "ajv/dist/jtd";
 import { DayAvailability, WeekAvailability } from "../../../shared/src/firebase/firestore/models/expert_availability";
-import { getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import { getExpertSignUpProgressDocumentRef, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 
@@ -52,8 +52,10 @@ async function updateAvailability(uid: string, fromSignUpFlow: boolean, payload:
   const parser = ajv.compileParser(WeekAvailabilitySchema);
   const result = parser(JSON.stringify(payload)) as WeekAvailability;
   return await admin.firestore().runTransaction(async (transaction) => {
-    const docRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow });
-    const publicExpertInfoDoc = await transaction.get(docRef);
+    const expertSignUpProgressDocRef = getExpertSignUpProgressDocumentRef({ uid: uid });
+    const expertSignUpProgressDoc = fromSignUpFlow ? await transaction.get(expertSignUpProgressDocRef) : null;
+    const publicExpertInfoDocRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow });
+    const publicExpertInfoDoc = await transaction.get(publicExpertInfoDocRef);
     if (!publicExpertInfoDoc.exists) {
       Logger.logError({
         logName: "updateExpertAvailability", message: `Cannot update availability for ${uid} because they are not a expert.`,
@@ -61,7 +63,19 @@ async function updateAvailability(uid: string, fromSignUpFlow: boolean, payload:
       });
       return false;
     }
-    transaction.update(docRef, {
+    if (fromSignUpFlow && !(expertSignUpProgressDoc!.exists)) {
+      Logger.logError({
+        logName: "updateExpertAvailability", message: `Cannot update availability for ${uid} because they have no sign up progress document.`,
+        labels: new Map([["expertId", uid]])
+      });
+      return false;
+    }
+    if (fromSignUpFlow) {
+      transaction.update(expertSignUpProgressDocRef, {
+        "updatedAvailability": true,
+      });
+    }
+    transaction.update(publicExpertInfoDocRef, {
       "availability": result,
     });
     Logger.log({

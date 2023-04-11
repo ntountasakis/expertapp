@@ -109,6 +109,7 @@ class _ExpertViewExpertProfileSignUpPageState
               content: Text("You may now start accepting calls"),
             );
           });
+          // todo: this context is invalid, throws error sometimes
       context.pushReplacementNamed(Routes.HOME_PAGE);
     } else {
       showDialog(

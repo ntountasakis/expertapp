@@ -1,7 +1,7 @@
 
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import { getExpertSignUpProgressDocumentRef, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const updateProfileDescription = functions.https.onCall(async (data, context) => {
@@ -24,6 +24,8 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
   }
   const success = await admin.firestore().runTransaction(async (transaction) => {
     const publicExpertDocRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow });
+    const expertSignUpProgressDocRef = getExpertSignUpProgressDocumentRef({ uid: uid });
+    const expertSignUpProgressDoc = fromSignUpFlow ? await transaction.get(expertSignUpProgressDocRef) : null;
     const publicExpertDoc = await transaction.get(publicExpertDocRef);
     if (!publicExpertDoc.exists) {
       Logger.logError({
@@ -31,6 +33,18 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
         labels: new Map([["expertId", uid]]),
       });
       return false;
+    }
+    if (fromSignUpFlow && !(expertSignUpProgressDoc!.exists)) {
+      Logger.logError({
+        logName: "updateProfileDescription", message: `Failed to update description for ${uid} because they have no expert sign up progress doc.`,
+        labels: new Map([["expertId", uid]]),
+      });
+      return false;
+    }
+    if (fromSignUpFlow) {
+      transaction.update(expertSignUpProgressDocRef, {
+        "updatedProfileDescription": true,
+      });
     }
     transaction.update(publicExpertDocRef, {
       "description": description,

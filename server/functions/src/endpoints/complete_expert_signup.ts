@@ -1,8 +1,9 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import { getExpertSignUpProgressDocumentRef, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 import { PublicExpertInfo } from "../../../shared/src/firebase/firestore/models/public_expert_info";
+import { ExpertSignupProgress, isExpertSignupProgressComplete } from "../../../shared/src/firebase/firestore/models/expert_signup_progress";
 
 export const completeExpertSignUp = functions.https.onCall(async (data, context) => {
     if (context.auth == null) {
@@ -20,10 +21,27 @@ export const completeExpertSignUp = functions.https.onCall(async (data, context)
                 });
                 return false;
             }
+            const expertSignupProgressDoc = await transaction.get(getExpertSignUpProgressDocumentRef({ uid: uid }));
+            if (!expertSignupProgressDoc.exists) {
+                Logger.logError({
+                    logName: "completeExpertSignUp", message: `Cannot complete expert sign up for ${uid} because they have no expert signup progress doc`,
+                    labels: new Map([["expertId", uid]]),
+                });
+                return false;
+            }
+            if (!isExpertSignupProgressComplete(expertSignupProgressDoc.data() as ExpertSignupProgress)) {
+                Logger.logError({
+                    logName: "completeExpertSignUp", message: `Cannot complete expert sign up for ${uid} because their expert signup progress doc is not complete: ${JSON.stringify(expertSignupProgressDoc.data())}`,
+                    labels: new Map([["expertId", uid]]),
+                });
+                return false;
+            }
+
             const finalPublicExpertRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: false });
 
             transaction.set(finalPublicExpertRef, stagingPublicExpertDoc.data() as PublicExpertInfo);
             transaction.delete(stagingPublicExpertDoc.ref);
+            transaction.delete(getExpertSignUpProgressDocumentRef({ uid: uid }));
             Logger.log({
                 logName: "completeExpertSignUp", message: `Completed expert sign up for ${uid}`,
                 labels: new Map([["expertId", uid]]),
