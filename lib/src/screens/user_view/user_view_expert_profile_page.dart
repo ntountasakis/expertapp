@@ -17,7 +17,7 @@ class UserViewExpertProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExpertProfileScaffold(
       fromSignUpFlow: false,
-      appBarBuilder: ExpertProfileScaffold.buildDefaultAppbar,
+      appBarBuilder: null,
       expertUid: expertUid,
       profileHeaderBuilder:
           (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {

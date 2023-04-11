@@ -39,6 +39,17 @@ Future openExpertProfileEditDescriptionDialog({
                       textController.text.trim().replaceAll("\n", " ");
                   final result = await updateProfileDescription(
                       newDescription, fromSignUpFlow);
+                  if (!result.success) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title:
+                                Text("Please revise your profile description"),
+                            content: Text(result.message),
+                          );
+                        });
+                  }
                   if (onAboutMeChanged != null) {
                     onAboutMeChanged(result.success ? "" : result.message);
                   }

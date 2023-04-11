@@ -1,4 +1,5 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/expert_signup_progress.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/profile/expert/expert_profile_about_me.dart';
 import 'package:expertapp/src/profile/expert/expert_profile_header.dart';
@@ -63,12 +64,19 @@ class _ExpertViewExpertProfilePageState
     }
   }
 
+  PreferredSizeWidget buildAppbar(
+      BuildContext context, DocumentWrapper<ExpertSignupProgress>? progress) {
+    return AppBar(
+      title: Text("Edit Your Profile"),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExpertProfileScaffold(
       fromSignUpFlow: ExpertViewExpertProfilePage.FROM_SIGN_UP_FLOW,
       expertUid: widget.expertUid,
-      appBarBuilder: ExpertProfileScaffold.buildDefaultAppbar,
+      appBarBuilder: buildAppbar,
       profileHeaderBuilder:
           (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         return buildExpertProfileHeaderExpertView(

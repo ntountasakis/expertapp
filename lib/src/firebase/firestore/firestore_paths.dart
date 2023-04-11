@@ -8,6 +8,7 @@ class CollectionPaths {
   static final String REVIEWS = 'reviews';
   static final String PUBLIC_EXPERT_INFO = 'public_expert_info';
   static final String PUBLIC_EXPERT_INFO_STAGING = 'public_expert_info_staging';
+  static final String EXPERT_SIGNUP_PROGRESS = 'expert_signup_progress';
   static final String PRIVATE_USER_INFO = 'private_user_info';
   static final String PUBLIC_USER_INFO = 'public_user_info';
   static final String EXPERT_CATEGORIES = 'expert_categories';
