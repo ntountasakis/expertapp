@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { getExpertRateDocumentRef, getPrivateUserDocument, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import { getExpertRateDocumentRef, getExpertSignUpProgressDocumentRef, getPrivateUserDocument, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/private_user_info";
 import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
 import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
@@ -51,6 +51,8 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
     const success = await admin.firestore().runTransaction(async (transaction) => {
       const privateUserDoc: PrivateUserInfo = await getPrivateUserDocument({ transaction: transaction, uid: uid });
       const publicExpertInfoDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow }));
+      const expertSignUpProgressDocRef = getExpertSignUpProgressDocumentRef({ uid: uid });
+      const expertSignUpProgressDoc = fromSignUpFlow ? await transaction.get(expertSignUpProgressDocRef) : null;
 
       if (privateUserDoc.stripeConnectedId == null) {
         Logger.logError({
@@ -65,6 +67,18 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
           labels: new Map([["expertId", uid]]),
         });
         return false;
+      }
+      if (fromSignUpFlow && !(expertSignUpProgressDoc!.exists)) {
+        Logger.logError({
+          logName: "updateExpertRate", message: `Cannot update expert rate for ${uid} because they havbe no expert sign up progress doc`,
+          labels: new Map([["expertId", uid]]),
+        });
+        return false;
+      }
+      if (fromSignUpFlow) {
+        transaction.update(expertSignUpProgressDocRef, {
+          "updatedCallRate": true,
+        });
       }
       transaction.update(getExpertRateDocumentRef({ expertUid: uid }), {
         "centsPerMinute": newCentsPerMinute,

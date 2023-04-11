@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { getExpertCategoryRef, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import { getExpertCategoryRef, getExpertSignUpProgressDocumentRef, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const updateExpertCategory = functions.https.onCall(async (data, context) => {
@@ -21,6 +21,8 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
             const publicExpertDocRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow });
             const publicExpertDoc = await transaction.get(publicExpertDocRef);
             const expertCategoryDoc = await transaction.get(getExpertCategoryRef({ majorCategory: newMajorCategory }));
+            const expertSignUpProgressDocRef = getExpertSignUpProgressDocumentRef({ uid: uid });
+            const expertSignUpProgressDoc = fromSignUpFlow ? await transaction.get(expertSignUpProgressDocRef) : null;
             if (!publicExpertDoc.exists) {
                 Logger.logError({
                     logName: "updateExpertCategory", message: `Cannot update expert category for ${uid} because they are not a expert. From sign up flow: ${fromSignUpFlow}`,
@@ -35,6 +37,13 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
                 });
                 return false;
             }
+            if (fromSignUpFlow && !(expertSignUpProgressDoc!.exists)) {
+                Logger.logError({
+                    logName: "updateExpertCategory", message: `Cannot update expert category for ${uid} because they have no expert sign up progress doc.`,
+                    labels: new Map([["expertId", uid]])
+                });
+                return false;
+            }
             const categoryTypes: Array<String> = Object.keys(expertCategoryDoc.data() as Object);
             if (!categoryTypes.includes(newMinorCategory)) {
                 Logger.logError({
@@ -42,6 +51,9 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
                     labels: new Map([["expertId", uid]]),
                 });
                 return false;
+            }
+            if (fromSignUpFlow) {
+                transaction.update(expertSignUpProgressDocRef, "updatedExpertCategory", true);
             }
             transaction.update(publicExpertDocRef, {
                 "majorExpertCategory": newMajorCategory,

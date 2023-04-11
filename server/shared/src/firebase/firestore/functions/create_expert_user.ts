@@ -1,20 +1,21 @@
 import * as admin from "firebase-admin";
 import { Logger } from "../../../google_cloud/google_cloud_logger";
 import { StripeProvider } from "../../../stripe/stripe_provider";
-import { getExpertRateDocumentRef, getPublicExpertInfoDocumentRef, getPublicUserDocument } from "../document_fetchers/fetchers";
+import { getExpertRateDocumentRef, getExpertSignUpProgressDocumentRef, getPublicExpertInfoDocumentRef, getPublicUserDocument } from "../document_fetchers/fetchers";
 import { DayAvailability, WeekAvailability } from "../models/expert_availability";
 import { ExpertRate } from "../models/expert_rate";
 import { PublicExpertInfo } from "../models/public_expert_info";
 import { PublicUserInfo } from "../models/public_user_info";
+import { ExpertSignupProgress } from "../models/expert_signup_progress";
 
 export async function createExpertUser({ uid, profileDescription, profilePicUrl, majorExpertCategory, minorExpertCategory }:
   {
     uid: string, profilePicUrl: string, profileDescription: string, majorExpertCategory: string, minorExpertCategory: string
   }): Promise<void> {
   const didCreate: boolean = await admin.firestore().runTransaction(async (transaction) => {
-    const docRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: true });
-    const doc = await transaction.get(docRef);
-    if (doc.exists) {
+    const publicExpertInfoDocRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: true });
+    const publicExpertInfoDoc = await transaction.get(publicExpertInfoDocRef);
+    if (publicExpertInfoDoc.exists) {
       return false;
     }
     const publicUserInfo: PublicUserInfo = await getPublicUserDocument({ transaction: transaction, uid: uid });
@@ -30,7 +31,15 @@ export async function createExpertUser({ uid, profileDescription, profilePicUrl,
       "availability": createDefaultAvailability(),
       "inCall": false,
     };
-    transaction.set(docRef, publicExpertInfo);
+    const signUpProgress: ExpertSignupProgress = {
+      "updatedProfilePic": false,
+      "updatedProfileDescription": false,
+      "updatedExpertCategory": false,
+      "updatedCallRate": false,
+      "updatedAvailability": false,
+    }
+    transaction.set(publicExpertInfoDocRef, publicExpertInfo);
+    transaction.set(getExpertSignUpProgressDocumentRef({ uid: uid }), signUpProgress);
     transaction.set(getExpertRateDocumentRef({ expertUid: uid }), createDefaultCallRate());
     return true;
   });

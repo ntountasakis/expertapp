@@ -61,6 +61,11 @@ function getPublicExpertInfoDocumentRef({ uid, fromSignUpFlow }: { uid: string, 
   return admin.firestore().collection(fromSignUpFlow ? CollectionPaths.PUBLIC_EXPERT_INFO_STAGING : CollectionPaths.PUBLIC_EXPERT_INFO).doc(uid);
 }
 
+function getExpertSignUpProgressDocumentRef({ uid }: { uid: string }):
+  FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData> {
+  return admin.firestore().collection(CollectionPaths.EXPERT_SIGNUP_PROGRESS).doc(uid);
+}
+
 async function getPublicExpertInfo({ transaction, uid }: { transaction: FirebaseFirestore.Transaction, uid: string }): Promise<PublicExpertInfo> {
   const doc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: false }));
   if (!doc.exists) {
@@ -162,4 +167,5 @@ export {
   getPaymentStatusDocument, getPaymentStatusDocumentTransaction, getExpertRateDocument, getPublicExpertInfo,
   getFcmTokenDocument, getPrivateUserDocument, getPrivateUserDocumentNoTransact, getSignUpTokenDocumentRef,
   getPublicUserDocumentRef, getPublicUserDocument, getPublicUserDocumentNoTransact, getExpertCategoryRef,
+  getExpertSignUpProgressDocumentRef,
 };
