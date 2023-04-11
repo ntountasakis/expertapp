@@ -5,9 +5,11 @@ import 'package:expertapp/src/preferences/preferences.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_expert_profile_page.dart';
 import 'package:expertapp/src/screens/auth/sign_in_page.dart';
 import 'package:expertapp/src/screens/common_view/delete_account_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_update_rates_sign_up_page.dart';
 import 'package:expertapp/src/screens/user_view/past_chats_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_stripe_earnings_dashboard.dart';
-import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_sign_up_page.dart';
 import 'package:expertapp/src/screens/intro/onboarding_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_expert_availability_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_connected_account_signup_page.dart';
@@ -285,9 +287,12 @@ class AppRouter {
           builder: (BuildContext context, GoRouterState state) {
             final fromSignupFlow =
                 state.params[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
-            return ExpertViewUpdateRatesPage(
-                uid: lifecycle.currentUserId()!,
-                fromSignupFlow: fromSignupFlow == 'true');
+            if (fromSignupFlow == 'true') {
+              return ExpertViewUpdateRatesSignUpPage(
+                  uid: lifecycle.currentUserId()!);
+            } else {
+              return ExpertViewUpdateRatesPage(uid: lifecycle.currentUserId()!);
+            }
           }),
       GoRoute(
           name: Routes.EV_UPDATE_AVAILABILITY_PAGE,
@@ -297,9 +302,13 @@ class AppRouter {
           builder: (BuildContext context, GoRouterState state) {
             final fromSignupFlow =
                 state.params[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
-            return ExpertViewUpdateAvailabilityPage(
-                uid: lifecycle.currentUserId()!,
-                fromSignupFlow: fromSignupFlow == 'true');
+            if (fromSignupFlow == 'true') {
+              return ExpertViewUpdateAvailabilitySignUpPage(
+                  uid: lifecycle.currentUserId()!);
+            } else {
+              return ExpertViewUpdateAvailabilityPage(
+                  uid: lifecycle.currentUserId()!);
+            }
           }),
       GoRoute(
           name: Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,

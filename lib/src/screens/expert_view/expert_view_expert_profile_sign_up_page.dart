@@ -1,6 +1,7 @@
 import 'package:expertapp/src/appbars/expert_view/expert_post_signup_appbar.dart';
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/expert_signup_progress.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/profile/expert/expert_profile_about_me.dart';
@@ -28,8 +29,6 @@ class _ExpertViewExpertProfileSignUpPageState
   late ExpertCategorySelector categorySelector;
   late TextEditingController textController;
   String textControllerText = "Loading...";
-  bool categorySelectionFinished = false;
-  bool profilePictureChanged = false;
   String? aboutMeUpdatedTextError = null;
 
   @override
@@ -39,7 +38,7 @@ class _ExpertViewExpertProfileSignUpPageState
     textController.text = textControllerText;
     categorySelector = new ExpertCategorySelector(
         uid: widget.expertUid,
-        onComplete: onExpertCategoryChanged,
+        onComplete: () {},
         fromSignUpFlow: ExpertViewExpertProfileSignUpPage.FROM_SIGN_UP_FLOW);
   }
 
@@ -59,34 +58,29 @@ class _ExpertViewExpertProfileSignUpPageState
     }
   }
 
-  void onExpertCategoryChanged() {
-    setState(() {
-      categorySelectionFinished = true;
-    });
-  }
-
-  void onProfilePictureChanged() {
-    setState(() {
-      profilePictureChanged = true;
-    });
-  }
-
   void onAboutMeChanged(String aboutMeUpdatedTextError) {
     setState(() {
       this.aboutMeUpdatedTextError = aboutMeUpdatedTextError;
     });
   }
 
-  void onDisallowedProceedPressed() {
+  void onDisallowedProceedPressed(
+      BuildContext context, ExpertSignupProgress progress) {
     String text = "";
-    if (!profilePictureChanged) {
+    if (!progress.updatedProfilePic) {
       text = "Please upload a profile picture";
-    } else if (!categorySelectionFinished) {
+    } else if (!progress.updatedExpertCategory) {
       text = "Please select your category of expertise";
-    } else if (aboutMeUpdatedTextError != null) {
-      text = aboutMeUpdatedTextError!;
+    } else if (!progress.updatedProfileDescription) {
+      if (aboutMeUpdatedTextError != null) {
+        text = aboutMeUpdatedTextError!;
+      } else {
+        text = "Please fill in your about me";
+      }
     } else {
-      text = "Please fill in your about me";
+      throw Exception(
+          "Disallow proceed pressed in expert profile sign up page but progress in unexcepted state: " +
+              progress.toString());
     }
     showDialog(
         context: context,
@@ -109,7 +103,7 @@ class _ExpertViewExpertProfileSignUpPageState
               content: Text("You may now start accepting calls"),
             );
           });
-          // todo: this context is invalid, throws error sometimes
+      // todo: this context is invalid, throws error sometimes
       context.pushReplacementNamed(Routes.HOME_PAGE);
     } else {
       showDialog(
@@ -124,24 +118,24 @@ class _ExpertViewExpertProfileSignUpPageState
   }
 
   PreferredSizeWidget buildAppbar(
-      AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> snapshot) {
-    if (snapshot.hasData) {
-      final allowProceed = aboutMeUpdatedTextError == "" &&
-          profilePictureChanged &&
-          categorySelectionFinished;
-      return ExpertPostSignupAppbar(
-        uid: widget.expertUid,
-        titleText:
-            allowProceed ? "Click arrow to finish" : "Fill out profile details",
-        allowBackButton: true,
-        allowProceed: allowProceed,
-        onDisallowedProceedPressed: onDisallowedProceedPressed,
-        onAllowProceedPressed: onProceedPressed,
-      );
+      BuildContext context, DocumentWrapper<ExpertSignupProgress>? progress) {
+    if (progress == null) {
+      return ExpertProfileScaffold.buildDefaultAppBar();
     }
-    return AppBar(
-      title: Text("Loading..."),
+    bool allowProceed = progress.documentType.updatedExpertCategory &&
+        progress.documentType.updatedProfileDescription &&
+        progress.documentType.updatedProfilePic;
+    final builder = ExpertPostSignupAppbar(
+      uid: widget.expertUid,
+      titleText:
+          allowProceed ? "Click arrow to finish" : "Filli Out Profile Details",
+      progress: progress.documentType,
+      allowBackButton: true,
+      allowProceed: allowProceed,
+      onDisallowedProceedPressed: onDisallowedProceedPressed,
+      onAllowProceedPressed: onProceedPressed,
     );
+    return builder.buildAppBar(context);
   }
 
   @override
@@ -158,7 +152,7 @@ class _ExpertViewExpertProfileSignUpPageState
             textController: textController,
             categorySelector: categorySelector,
             fromSignUpFlow: ExpertViewExpertProfileSignUpPage.FROM_SIGN_UP_FLOW,
-            onProfilePictureChanged: onProfilePictureChanged);
+            onProfilePictureChanged: () {});
       },
       aboutMeBuilder: (DocumentWrapper<PublicExpertInfo>? publicExpertInfo) {
         return buildExpertProfileAboutMeExpertView(

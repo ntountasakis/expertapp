@@ -1,26 +1,29 @@
+import 'package:expertapp/src/firebase/firestore/document_models/expert_signup_progress.dart';
 import 'package:flutter/material.dart';
 
-class ExpertPostSignupAppbar extends StatelessWidget with PreferredSizeWidget {
+class ExpertPostSignupAppbar {
   final String uid;
   final String titleText;
   final bool allowBackButton;
   final bool allowProceed;
+  final ExpertSignupProgress progress;
   final Function(BuildContext) onAllowProceedPressed;
-  final VoidCallback? onDisallowedProceedPressed;
+  final Function(BuildContext, ExpertSignupProgress)?
+      onDisallowedProceedPressed;
 
   const ExpertPostSignupAppbar({
     required this.uid,
     required this.titleText,
     required this.allowBackButton,
     required this.allowProceed,
+    required this.progress,
     required this.onAllowProceedPressed,
     required this.onDisallowedProceedPressed,
   });
 
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
-  @override
-  Widget build(BuildContext context) {
+  PreferredSizeWidget buildAppBar(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: allowBackButton,
       title: Text(this.titleText),
@@ -43,7 +46,7 @@ class ExpertPostSignupAppbar extends StatelessWidget with PreferredSizeWidget {
                       if (allowProceed) {
                         onAllowProceedPressed(context);
                       } else if (onDisallowedProceedPressed != null)
-                        onDisallowedProceedPressed!();
+                        onDisallowedProceedPressed!(context, progress);
                     })),
           ),
         ),
