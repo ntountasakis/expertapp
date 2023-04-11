@@ -128,7 +128,7 @@ class _ExpertViewExpertProfileSignUpPageState
     final builder = ExpertPostSignupAppbar(
       uid: widget.expertUid,
       titleText:
-          allowProceed ? "Click arrow to finish" : "Filli Out Profile Details",
+          allowProceed ? "Click arrow to finish" : "Fill Out Profile Details",
       progress: progress.documentType,
       allowBackButton: true,
       allowProceed: allowProceed,

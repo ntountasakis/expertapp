@@ -1,4 +1,5 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
+import 'package:expertapp/src/firebase/firestore/document_models/expert_signup_progress.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
@@ -86,11 +87,22 @@ class HamburgerMenu extends StatelessWidget {
         });
   }
 
-  ListTile finishSignUpExpertTile(BuildContext context) {
+  ListTile finishSignUpExpertTile(
+      BuildContext context, ExpertSignupProgress progress) {
     return ListTile(
         title: Text("Complete Expert Signup"),
         onTap: () {
           context.pushNamed(Routes.EV_CONNECTED_ACCOUNT_SIGNUP_PAGE);
+          context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE,
+              params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
+          if (progress.updatedAvailability) {
+            context.pushNamed(Routes.EV_UPDATE_RATE_PAGE,
+                params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
+            if (progress.updatedCallRate) {
+              context.pushNamed(Routes.EV_PROFILE_EDIT_PAGE,
+                  params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
+            }
+          }
         });
   }
 
@@ -147,7 +159,8 @@ class HamburgerMenu extends StatelessWidget {
     );
   }
 
-  Widget buildMidSignUpExpertMenu(BuildContext context) {
+  Widget buildMidSignUpExpertMenu(
+      BuildContext context, ExpertSignupProgress progress) {
     return Drawer(
       child: ListView(children: [
         const DrawerHeader(
@@ -156,7 +169,7 @@ class HamburgerMenu extends StatelessWidget {
           ),
           child: Text("Main Menu"),
         ),
-        finishSignUpExpertTile(context),
+        finishSignUpExpertTile(context, progress),
         signOutTile(context),
         deleteAccountTile(context),
       ]),
@@ -201,18 +214,23 @@ class HamburgerMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (currentUserId == null) return buildNoAccountMenu(context);
-    return FutureBuilder<List<DocumentWrapper<PublicExpertInfo>?>>(
+    return FutureBuilder<List<DocumentWrapper<dynamic>?>>(
       future: Future.wait([
         PublicExpertInfo.get(uid: currentUserId!, fromSignUpFlow: true),
         PublicExpertInfo.get(uid: currentUserId!, fromSignUpFlow: false),
+        ExpertSignupProgress.get(uid: currentUserId!),
       ]),
       builder: (BuildContext context,
-          AsyncSnapshot<List<DocumentWrapper<PublicExpertInfo>?>> snapshot) {
+          AsyncSnapshot<List<DocumentWrapper<dynamic>?>> snapshot) {
         if (snapshot.hasData) {
           final stagingExpertInfo = snapshot.data![0];
           final publicExpertInfo = snapshot.data![1];
-          if (stagingExpertInfo != null) {
-            return buildMidSignUpExpertMenu(context);
+          final expertSignupProgress = snapshot.data![2];
+          if (stagingExpertInfo != null && expertSignupProgress != null) {
+            final signupWrapper =
+                snapshot.data![2] as DocumentWrapper<ExpertSignupProgress>;
+            return buildMidSignUpExpertMenu(
+                context, signupWrapper.documentType);
           } else if (publicExpertInfo != null) {
             return buildExpertMenu(context);
           } else {

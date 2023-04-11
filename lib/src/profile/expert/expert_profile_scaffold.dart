@@ -41,9 +41,11 @@ class ExpertProfileScaffold extends StatelessWidget {
         SizedBox(height: 10),
         profileHeaderBuilder(snapshot),
         aboutMeBuilder(snapshot),
-        buildExpertProfileReviewHeading(),
-        buildExpertProfileReviewList(snapshot!),
-        buildExpertProfileCallActionButton(context, snapshot, expertUid),
+        !fromSignUpFlow ? buildExpertProfileReviewHeading() : SizedBox(),
+        !fromSignUpFlow ? buildExpertProfileReviewList(snapshot!) : SizedBox(),
+        !fromSignUpFlow
+            ? buildExpertProfileCallActionButton(context, snapshot!, expertUid)
+            : SizedBox(),
         SizedBox(height: 30),
       ],
     );

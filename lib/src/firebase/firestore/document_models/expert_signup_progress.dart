@@ -46,6 +46,15 @@ class ExpertSignupProgress {
     });
   }
 
+  static Future<DocumentWrapper<ExpertSignupProgress>?> get(
+      {required String uid}) async {
+    DocumentSnapshot snapshot = await _signupProgressRef().doc(uid).get();
+    if (snapshot.exists) {
+      return DocumentWrapper(uid, snapshot.data() as ExpertSignupProgress);
+    }
+    return null;
+  }
+
   static ExpertSignupProgress test(
       DocumentSnapshot<Map<String, dynamic>> snapshot) {
     if (snapshot.data() != null) {

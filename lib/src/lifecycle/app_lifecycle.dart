@@ -22,7 +22,9 @@ class AppLifecycle extends ChangeNotifier {
     }
     if (_theAuthenticatedUser != null &&
         _theAuthenticatedUser!.displayName != null) {
-      return _theAuthenticatedUser!.displayName!.split(' ')[0];
+      final splitNames = _theAuthenticatedUser!.displayName!.split(' ');
+      if (splitNames.length < 2) return null;
+      return splitNames[0];
     }
     return null;
   }
@@ -33,7 +35,9 @@ class AppLifecycle extends ChangeNotifier {
     }
     if (_theAuthenticatedUser != null &&
         _theAuthenticatedUser!.displayName != null) {
-      return _theAuthenticatedUser!.displayName!.split(' ')[1];
+      final splitNames = _theAuthenticatedUser!.displayName!.split(' ');
+      if (splitNames.length < 2) return null;
+      return splitNames[1];
     }
     return null;
   }
