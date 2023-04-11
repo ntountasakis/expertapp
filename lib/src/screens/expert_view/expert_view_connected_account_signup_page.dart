@@ -16,7 +16,7 @@ class ExpertViewConnectedAccountSignupPage extends StatelessWidget {
         initUrl: HttpEndpoints.getExpertConnectedAccountSignup(this.uid));
   }
 
-  void onProceedPressed(BuildContext context) {
+  static void onProceedPressed(BuildContext context) {
     context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE,
         params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
   }
