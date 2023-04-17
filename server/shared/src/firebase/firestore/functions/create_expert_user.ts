@@ -30,6 +30,7 @@ export async function createExpertUser({ uid, profileDescription, profilePicUrl,
       "numReviews": 0,
       "availability": createDefaultAvailability(),
       "inCall": false,
+      "isOnline": true,
     };
     const signUpProgress: ExpertSignupProgress = {
       "updatedProfilePic": false,

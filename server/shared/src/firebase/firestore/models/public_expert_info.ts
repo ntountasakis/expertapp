@@ -11,4 +11,5 @@ export interface PublicExpertInfo {
   numReviews: number;
   availability: WeekAvailability;
   inCall: boolean;
+  isOnline: boolean;
 }
