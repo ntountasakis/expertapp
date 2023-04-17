@@ -33,8 +33,12 @@ class ExpertCompletedCallCard extends StatelessWidget {
             String title = 'Completed call with ' + shortName;
             return buildTappableCard(
                 context: context,
-                leading:
-                    buildLeadingProfileTile(context, shortName, profilePicUrl),
+                leading: buildLeadingProfileTile(
+                    context: context,
+                    shortName: shortName,
+                    profilePicUrl: profilePicUrl,
+                    showOnlineStatus: false,
+                    isOnline: false),
                 title: Text(title),
                 subtitle: Text(subtitle),
                 trailing: SizedBox(),

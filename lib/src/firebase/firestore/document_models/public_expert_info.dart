@@ -15,6 +15,7 @@ class PublicExpertInfo {
   final int numReviews;
   ExpertAvailability availability;
   final bool inCall;
+  final bool isOnline;
 
   PublicExpertInfo(
       this.firstName,
@@ -26,20 +27,23 @@ class PublicExpertInfo {
       this.runningSumReviewRatings,
       this.numReviews,
       this.availability,
-      this.inCall);
+      this.inCall,
+      this.isOnline);
 
   PublicExpertInfo.fromJson(Map<String, dynamic> json)
       : this(
-            json['firstName'] as String,
-            json['lastName'] as String,
-            json['description'] as String,
-            json['majorExpertCategory'] as String,
-            json['minorExpertCategory'] as String,
-            json['profilePicUrl'] as String,
-            json['runningSumReviewRatings'] + 0.0,
-            json['numReviews'] as int,
-            ExpertAvailability.fromJson(json['availability']),
-            json['inCall'] as bool);
+          json['firstName'] as String,
+          json['lastName'] as String,
+          json['description'] as String,
+          json['majorExpertCategory'] as String,
+          json['minorExpertCategory'] as String,
+          json['profilePicUrl'] as String,
+          json['runningSumReviewRatings'] + 0.0,
+          json['numReviews'] as int,
+          ExpertAvailability.fromJson(json['availability']),
+          json['inCall'] as bool,
+          json['isOnline'] as bool,
+        );
 
   Map<String, dynamic> _toJson() {
     var fieldsMap = {
@@ -51,6 +55,7 @@ class PublicExpertInfo {
       'numReviews': numReviews,
       'availability': availability.toJson(),
       'inCall': inCall,
+      'isOnline': isOnline,
     };
     return fieldsMap;
   }
