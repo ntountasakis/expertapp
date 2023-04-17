@@ -6,6 +6,7 @@ import 'package:expertapp/src/profile/expert/expert_profile_reviews.dart';
 import 'package:flutter/material.dart';
 
 class ExpertProfileScaffold extends StatelessWidget {
+  final String? currentUserId;
   final String expertUid;
   final bool fromSignUpFlow;
   final PreferredSizeWidget Function(BuildContext context,
@@ -17,6 +18,7 @@ class ExpertProfileScaffold extends StatelessWidget {
 
   const ExpertProfileScaffold(
       {Key? key,
+      required this.currentUserId,
       required this.expertUid,
       required this.fromSignUpFlow,
       required this.appBarBuilder,
@@ -32,19 +34,26 @@ class ExpertProfileScaffold extends StatelessWidget {
   }
 
   Widget buildBody(
-      BuildContext context, DocumentWrapper<PublicExpertInfo>? snapshot) {
+      {required BuildContext context,
+      required DocumentWrapper<PublicExpertInfo>? publicExpertInfo,
+      required String? currentUserId}) {
     if (onUpdate != null) {
-      onUpdate!(snapshot);
+      onUpdate!(publicExpertInfo);
     }
     return Column(
       children: [
         SizedBox(height: 10),
-        profileHeaderBuilder(snapshot),
-        aboutMeBuilder(snapshot),
+        profileHeaderBuilder(publicExpertInfo),
+        aboutMeBuilder(publicExpertInfo),
         !fromSignUpFlow ? buildExpertProfileReviewHeading() : SizedBox(),
-        !fromSignUpFlow ? buildExpertProfileReviewList(snapshot!) : SizedBox(),
         !fromSignUpFlow
-            ? buildExpertProfileCallActionButton(context, snapshot!, expertUid)
+            ? buildExpertProfileReviewList(publicExpertInfo!)
+            : SizedBox(),
+        !fromSignUpFlow
+            ? buildExpertProfileCallActionButton(
+                context: context,
+                publicExpertInfo: publicExpertInfo!,
+                currentUserUid: currentUserId)
             : SizedBox(),
         SizedBox(height: 30),
       ],
@@ -52,9 +61,12 @@ class ExpertProfileScaffold extends StatelessWidget {
   }
 
   Widget buildHelper(
-      BuildContext context,
-      AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?> expertInfoSnapshot,
-      AsyncSnapshot<DocumentWrapper<ExpertSignupProgress>?>? progressSnapshot) {
+      {required BuildContext context,
+      required AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?>
+          expertInfoSnapshot,
+      required AsyncSnapshot<DocumentWrapper<ExpertSignupProgress>?>?
+          progressSnapshot,
+      required String? currentUserId}) {
     if (!expertInfoSnapshot.hasData) {
       return Scaffold(
         appBar: buildDefaultAppBar(),
@@ -65,7 +77,10 @@ class ExpertProfileScaffold extends StatelessWidget {
       appBar: appBarBuilder != null
           ? appBarBuilder!(context, progressSnapshot?.data)
           : buildDefaultAppBar(),
-      body: buildBody(context, expertInfoSnapshot.data),
+      body: buildBody(
+          context: context,
+          publicExpertInfo: expertInfoSnapshot.data,
+          currentUserId: currentUserId),
     );
   }
 
@@ -78,15 +93,22 @@ class ExpertProfileScaffold extends StatelessWidget {
             AsyncSnapshot<DocumentWrapper<PublicExpertInfo>?>
                 publicExpertInfoSnapshot) {
           if (!fromSignUpFlow) {
-            return buildHelper(context, publicExpertInfoSnapshot, null);
+            return buildHelper(
+                context: context,
+                expertInfoSnapshot: publicExpertInfoSnapshot,
+                progressSnapshot: null,
+                currentUserId: currentUserId);
           } else {
             return StreamBuilder<DocumentWrapper<ExpertSignupProgress>?>(
                 stream: ExpertSignupProgress.getStreamForUser(uid: expertUid),
                 builder: (BuildContext context,
                     AsyncSnapshot<DocumentWrapper<ExpertSignupProgress>?>
                         expertSignupProgressSnapshot) {
-                  return buildHelper(context, publicExpertInfoSnapshot,
-                      expertSignupProgressSnapshot);
+                  return buildHelper(
+                      context: context,
+                      expertInfoSnapshot: publicExpertInfoSnapshot,
+                      progressSnapshot: expertSignupProgressSnapshot,
+                      currentUserId: currentUserId);
                 });
           }
         });

@@ -30,7 +30,11 @@ class UserViewCompletedCallsPage extends StatelessWidget {
                       return buildTappableCard(
                           context: context,
                           leading: buildLeadingProfileTile(
-                              context, "", snapshot.data!),
+                              context: context,
+                              shortName: "",
+                              profilePicUrl: snapshot.data!,
+                              showOnlineStatus: false,
+                              isOnline: false),
                           title: Text("No completed calls... yet."),
                           subtitle: Text("View after your first call"),
                           trailing: SizedBox(),

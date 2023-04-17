@@ -74,6 +74,7 @@ class _ExpertViewExpertProfilePageState
   @override
   Widget build(BuildContext context) {
     return ExpertProfileScaffold(
+      currentUserId: widget.expertUid,
       fromSignUpFlow: ExpertViewExpertProfilePage.FROM_SIGN_UP_FLOW,
       expertUid: widget.expertUid,
       appBarBuilder: buildAppbar,

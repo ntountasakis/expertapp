@@ -62,6 +62,18 @@ Widget buildCallPreviewButton(
       true);
 }
 
+Widget buildCallUnableExpertOfflineStatus(
+    BuildContext context, DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
+  return buildCallButtonHelper(
+      context,
+      Colors.red[500]!,
+      Colors.red[900]!,
+      'They are currently offline.  View ${publicExpertInfo.documentType.firstName}\'s availability',
+      Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
+      {Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId},
+      true);
+}
+
 Widget buildCallUnableShowInCallStatus(
     BuildContext context, DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
   return buildCallButtonHelper(
@@ -80,19 +92,16 @@ Widget buildCallUnableShowAvailabilityButton(
       context,
       Colors.purple[500]!,
       Colors.purple[900]!,
-      'View ${publicExpertInfo.documentType.firstName}\'s Availability',
+      'View ${publicExpertInfo.documentType.firstName}\'s availability',
       Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
       {Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId},
       true);
 }
 
 Widget buildExpertProfileCallActionButton(
-    BuildContext context,
-    DocumentWrapper<PublicExpertInfo> publicExpertInfo,
-    String? currentUserUid) {
-  if (currentUserUid == null) {
-    return buildMakeAccountButton(context);
-  }
+    {required BuildContext context,
+    required DocumentWrapper<PublicExpertInfo> publicExpertInfo,
+    required String? currentUserUid}) {
   if ((currentUserUid == publicExpertInfo.documentId) ||
       !TimezoneUtil.isWithinTimeRange(
           publicExpertInfo.documentType.availability)) {
@@ -100,6 +109,12 @@ Widget buildExpertProfileCallActionButton(
   }
   if (publicExpertInfo.documentType.inCall) {
     return buildCallUnableShowInCallStatus(context, publicExpertInfo);
+  }
+  if (!publicExpertInfo.documentType.isOnline) {
+    return buildCallUnableExpertOfflineStatus(context, publicExpertInfo);
+  }
+  if (currentUserUid == null) {
+    return buildMakeAccountButton(context);
   }
   return buildCallPreviewButton(context, publicExpertInfo);
 }

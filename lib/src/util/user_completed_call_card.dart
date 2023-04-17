@@ -47,9 +47,11 @@ class UserCompletedCallCard extends StatelessWidget {
               return buildTappableCard(
                   context: context,
                   leading: buildLeadingProfileTile(
-                      context,
-                      expertMetadata.documentType.shortName(),
-                      expertMetadata.documentType.profilePicUrl),
+                      context: context,
+                      shortName: expertMetadata.documentType.shortName(),
+                      profilePicUrl: expertMetadata.documentType.profilePicUrl,
+                      showOnlineStatus: false,
+                      isOnline: false),
                   title: Text(title),
                   subtitle: Text(subtitle),
                   trailing: SizedBox(),
@@ -63,7 +65,11 @@ class UserCompletedCallCard extends StatelessWidget {
                       return buildTappableCard(
                           context: context,
                           leading: buildLeadingProfileTile(
-                              context, "", snapshot.data!),
+                              context: context,
+                              shortName: "",
+                              profilePicUrl: snapshot.data!,
+                              showOnlineStatus: false,
+                              isOnline: false),
                           title: Text(title),
                           subtitle: Text(subtitle),
                           trailing: SizedBox(),

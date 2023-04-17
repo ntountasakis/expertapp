@@ -63,9 +63,9 @@ class AppLifecycle extends ChangeNotifier {
 
   void onUserLogin(DocumentWrapper<PublicUserInfo>? currentUser) async {
     _thePublicUserInfo = currentUser;
-    _presenceSubscription =
-        keepPresenceUpdated(currentUserId: currentUserId()!);
     if (currentUser != null) {
+      _presenceSubscription =
+          keepPresenceUpdated(currentUserId: currentUserId()!);
       await _onUserConfirmation();
     }
     notifyListeners();
@@ -73,7 +73,7 @@ class AppLifecycle extends ChangeNotifier {
 
   Future<void> onUserLogout() async {
     if (_presenceSubscription != null) {
-      if (_thePublicUserInfo != null) {
+      if (currentUserId() != null) {
         await markPresenceOffline(currentUserId: currentUserId()!);
       }
       await _presenceSubscription!.cancel();
