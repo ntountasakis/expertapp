@@ -57,3 +57,6 @@ export { stripeConnectedAccountDashboardLinkRequest }
 
 import { stripeManagePaymentMethodsLinkRequest } from "./endpoints/stripe_customer_manage_payment_methods_dashboard_link_request";
 export { stripeManagePaymentMethodsLinkRequest };
+
+import { updatePresence } from "./endpoints/update_presence";
+export { updatePresence }

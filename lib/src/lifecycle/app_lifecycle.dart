@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:expertapp/src/firebase/cloud_messaging/fcm_token_updater.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
+import 'package:expertapp/src/firebase/real_time_database/update_presence.dart';
 import 'package:flutter/material.dart';
 import 'package:google_api_availability/google_api_availability.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
@@ -12,6 +14,7 @@ class AppLifecycle extends ChangeNotifier {
   final _tokenUpdater = FcmTokenUpdater();
   FirebaseAuth.User? _theAuthenticatedUser = null;
   DocumentWrapper<PublicUserInfo>? _thePublicUserInfo = null;
+  StreamSubscription? _presenceSubscription = null;
 
   FirebaseAuth.User? get authenticatedUser => _theAuthenticatedUser;
   DocumentWrapper<PublicUserInfo>? get publicUserInfo => _thePublicUserInfo;
@@ -54,16 +57,29 @@ class AppLifecycle extends ChangeNotifier {
     if (_theAuthenticatedUser != null) {
       onUserLogin(await PublicUserInfo.get(_theAuthenticatedUser!.uid));
     } else {
-      _thePublicUserInfo = null;
-      notifyListeners();
+      onUserLogout();
     }
   }
 
   void onUserLogin(DocumentWrapper<PublicUserInfo>? currentUser) async {
     _thePublicUserInfo = currentUser;
+    _presenceSubscription =
+        keepPresenceUpdated(currentUserId: currentUserId()!);
     if (currentUser != null) {
       await _onUserConfirmation();
     }
+    notifyListeners();
+  }
+
+  Future<void> onUserLogout() async {
+    if (_presenceSubscription != null) {
+      if (_thePublicUserInfo != null) {
+        await markPresenceOffline(currentUserId: currentUserId()!);
+      }
+      await _presenceSubscription!.cancel();
+      _presenceSubscription = null;
+    }
+    _thePublicUserInfo = null;
     notifyListeners();
   }
 

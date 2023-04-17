@@ -31,7 +31,7 @@ dependencies:
   firebase_auth: ^4.2.10
   firebase_core: ^2.7.1
   firebase_core_platform_interface: ^4.5.3
-  firebase_database: ^10.0.15
+  firebase_database: ^10.1.0
   firebase_dynamic_links: ^5.1.0
   firebase_messaging: ^14.2.6
   firebase_storage: ^11.0.15
