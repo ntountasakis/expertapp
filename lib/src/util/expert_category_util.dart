@@ -69,20 +69,29 @@ class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
     });
   }
 
-  Future<String> effectiveMinorCategory(PublicExpertInfo info) async {
+  Future<String> effectiveMinorCategory(
+      PublicExpertInfo info, String effectiveMajorCategory) async {
     if (theSelectedMinorCategory != null) {
       return theSelectedMinorCategory!;
     }
-    if (theSelectedMajorCategory != null) {
-      return (await getMinorExpertCategories(theSelectedMajorCategory!))[0];
+    final categories = await getMinorExpertCategories(effectiveMajorCategory);
+    if (categories.length > 0) {
+      return categories[0];
     }
-    return info.minorExpertCategory;
+    return "";
   }
 
-  String effectiveMajorCategory(PublicExpertInfo info) {
-    return theSelectedMajorCategory != null
-        ? theSelectedMajorCategory!
-        : info.majorExpertCategory;
+  Future<String> effectiveMajorCategory(PublicExpertInfo info) async {
+    if (theSelectedMajorCategory != null) {
+      return theSelectedMajorCategory!;
+    } else if (info.majorExpertCategory != "") {
+      return info.majorExpertCategory;
+    }
+    final categories = await getMajorExpertCategories();
+    if (categories.length > 0) {
+      return categories[0];
+    }
+    return "";
   }
 
   Widget buildSubmitButton(PublicExpertInfo info) {
@@ -91,23 +100,21 @@ class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
     return ElevatedButton(
         style: buttonStyle,
         onPressed: () async {
-          if (theSelectedMajorCategory != null ||
-              theSelectedMinorCategory != null) {
-            String? nextMajorCategory = effectiveMajorCategory(info);
-            String? nextMinorCategory = await effectiveMinorCategory(info);
-            final result = await updateExpertCategory(
-                newMajorCategory: nextMajorCategory,
-                newMinorCategory: nextMinorCategory,
-                fromSignUpFlow: widget.fromSignUpFlow);
-            setState(() {
-              theSelectedMajorCategory = null;
-              theSelectedMinorCategory = null;
-            });
-            if (result.success) {
-              widget.onComplete();
-            }
-            Navigator.of(context).pop();
+          String nextMajorCategory = await effectiveMajorCategory(info);
+          String nextMinorCategory =
+              await effectiveMinorCategory(info, nextMajorCategory);
+          final result = await updateExpertCategory(
+              newMajorCategory: nextMajorCategory,
+              newMinorCategory: nextMinorCategory,
+              fromSignUpFlow: widget.fromSignUpFlow);
+          setState(() {
+            theSelectedMajorCategory = null;
+            theSelectedMinorCategory = null;
+          });
+          if (result.success) {
+            widget.onComplete();
           }
+          Navigator.of(context).pop();
         },
         child: Text("Submit"));
   }
@@ -122,18 +129,17 @@ class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
                 expertInfoSnapshot) {
           if (expertInfoSnapshot.hasData) {
             final expertInfo = expertInfoSnapshot.data!.documentType;
+            List<Future> futureDropdowns = [
+              buildDropdown(
+                  "Select broad area of expertise",
+                  effectiveMajorCategory(expertInfo),
+                  getMajorExpertCategories(),
+                  onChangedMajorCategory),
+              buildMinorDropdown(expertInfo, "Select expertise specialization",
+                  onChangedMinorCategory)
+            ];
             return FutureBuilder<List<dynamic>>(
-                future: Future.wait([
-                  buildDropdown(
-                      "Select broad area of expertise",
-                      effectiveMajorCategory(expertInfo),
-                      getMajorExpertCategories(),
-                      onChangedMajorCategory),
-                  buildMinorDropdown(
-                      expertInfo,
-                      "Select expertise specialization",
-                      onChangedMinorCategory),
-                ]),
+                future: Future.wait(futureDropdowns),
                 builder: (BuildContext context,
                     AsyncSnapshot<List<dynamic>> categorySnapshot) {
                   if (categorySnapshot.hasData) {
@@ -164,21 +170,22 @@ class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
 
   Future<Widget> buildMinorDropdown(
       PublicExpertInfo info, String aKey, Function(String) onChanged) async {
-    final minorCategory = await effectiveMinorCategory(info);
+    final effectiveMajor = await effectiveMajorCategory(info);
+    final minorCategory = effectiveMinorCategory(info, effectiveMajor);
     return buildDropdown(aKey, minorCategory,
-        getMinorExpertCategories(effectiveMajorCategory(info)), onChanged);
+        getMinorExpertCategories(effectiveMajor), onChanged);
   }
 
   Future<DropdownButtonFormField> buildDropdown(
       String aKey,
-      String? initialValue,
+      Future<String> initialValue,
       Future<List<String>> aCategoryFuture,
       Function(String) onChanged) async {
     final categories = await aCategoryFuture;
     return DropdownButtonFormField(
       decoration: InputDecoration(labelText: aKey),
       key: Key(aKey),
-      value: initialValue,
+      value: await initialValue,
       items: categories
           .map((category) => DropdownMenuItem(
                 value: category,

@@ -61,7 +61,7 @@ class PublicExpertInfo {
   }
 
   String majorCategory() {
-    return majorExpertCategory.capitalize();
+    return majorExpertCategory != "" ? majorExpertCategory.capitalize() : "";
   }
 
   String minorCategory() {

@@ -7,10 +7,11 @@ import { ExpertRate } from "../models/expert_rate";
 import { PublicExpertInfo } from "../models/public_expert_info";
 import { PublicUserInfo } from "../models/public_user_info";
 import { ExpertSignupProgress } from "../models/expert_signup_progress";
+import { StoragePaths } from "../../storage/storage_paths";
 
-export async function createExpertUser({ uid, profileDescription, profilePicUrl, majorExpertCategory, minorExpertCategory }:
+export async function createExpertUser({ uid }:
   {
-    uid: string, profilePicUrl: string, profileDescription: string, majorExpertCategory: string, minorExpertCategory: string
+    uid: string
   }): Promise<void> {
   const didCreate: boolean = await admin.firestore().runTransaction(async (transaction) => {
     const publicExpertInfoDocRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: true });
@@ -22,10 +23,10 @@ export async function createExpertUser({ uid, profileDescription, profilePicUrl,
     const publicExpertInfo: PublicExpertInfo = {
       "firstName": publicUserInfo.firstName,
       "lastName": publicUserInfo.lastName,
-      "description": profileDescription,
-      "majorExpertCategory": majorExpertCategory,
-      "minorExpertCategory": minorExpertCategory,
-      "profilePicUrl": profilePicUrl,
+      "description": "",
+      "majorExpertCategory": "",
+      "minorExpertCategory": "",
+      "profilePicUrl": StoragePaths.DEFAULT_PROFILE_PIC_URL,
       "runningSumReviewRatings": 0,
       "numReviews": 0,
       "availability": createDefaultAvailability(),
