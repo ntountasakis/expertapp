@@ -6,6 +6,7 @@ import 'package:expertapp/src/call_server/call_server_error_reason.dart';
 import 'package:expertapp/src/call_server/call_server_message_listener.dart';
 import 'package:expertapp/src/call_server/call_server_message_producer.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
+import 'package:expertapp/src/version/app_version.dart';
 import 'package:flutter/material.dart';
 import 'package:grpc/grpc_or_grpcweb.dart';
 
@@ -83,7 +84,10 @@ class CallServerManager {
 
   void _beginCall(BuildContext context) {
     final initiateRequest = ClientCallInitiateRequest(
-        callerUid: currentUserId, calledUid: otherUserId);
+      callerUid: currentUserId,
+      calledUid: otherUserId,
+      version: AppVersion.version,
+    );
     final messageContainer =
         new ClientMessageContainer(callInitiateRequest: initiateRequest);
     _serverMessageProducer.sendMessage(messageContainer);
@@ -91,7 +95,10 @@ class CallServerManager {
 
   void _joinCall(BuildContext context, String callTransactionId) {
     final joinRequest = ClientCallJoinRequest(
-        callTransactionId: callTransactionId, joinerUid: currentUserId);
+      callTransactionId: callTransactionId,
+      joinerUid: currentUserId,
+      version: AppVersion.version,
+    );
     final messageContainer =
         new ClientMessageContainer(callJoinRequest: joinRequest);
     _serverMessageProducer.sendMessage(messageContainer);

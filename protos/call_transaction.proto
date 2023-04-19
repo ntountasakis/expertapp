@@ -9,11 +9,13 @@ service CallTransaction
 message ClientCallInitiateRequest {
     string callerUid = 1;
     string calledUid = 2;
+    string version = 3;
 }
 
 message ClientCallJoinRequest {
     string callTransactionId = 1;
     string joinerUid = 2;
+    string version = 3;
 }
 
 message ClientCallDisconnectRequest {

@@ -27,6 +27,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>): Promise<void> {
   const calledUid = callInitiateRequest.calledUid as string;
   const callerUid = callInitiateRequest.callerUid as string;
+  const version = callInitiateRequest.version as string;
 
   const [didCreateCall, stripeCustomerId, paymentIntentClientSecret, ephemeralKey, centsRequestedAuth, optCallTransaction, optExpertRate] =
     await createCallTransaction({ callerUid: callerUid, calledUid: calledUid });
@@ -39,7 +40,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   const newClientCallState: CallerCallState = _createNewCallState({
     callManager: clientCallManager, callTransaction: callTransaction,
     calledUid: calledUid, callerUid: callerUid, expertRate: expertRate, clientMessageSender: clientMessageSender,
-    callStream: callStream
+    callStream: callStream, version: version,
   });
 
   newClientCallState.log(`Created caller call state. They called CalledUid: ${callInitiateRequest.calledUid}`);
@@ -53,10 +54,10 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   sendGrpcServerFeeBreakdowns(clientMessageSender, callTransaction);
 }
 
-function _createNewCallState({ callTransaction, callerUid, calledUid, expertRate, clientMessageSender, callManager, callStream }:
+function _createNewCallState({ callTransaction, callerUid, calledUid, expertRate, clientMessageSender, callManager, callStream, version }:
   {
     callManager: CallManager, callTransaction: CallTransaction, callerUid: string, calledUid: string,
-    expertRate: ExpertRate, clientMessageSender: ClientMessageSenderInterface,
+    version: string, expertRate: ExpertRate, clientMessageSender: ClientMessageSenderInterface,
     callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>
   }): CallerCallState {
   const callBeginCallerContext = new CallerBeginCallContext({
@@ -67,7 +68,7 @@ function _createNewCallState({ callTransaction, callerUid, calledUid, expertRate
   return callManager.createCallStateOnCallerBegin({
     userId: callTransaction.callerUid, callerBeginCallContext: callBeginCallerContext,
     callerDisconnectFunction: onCallerDisconnect,
-    clientMessageSender: clientMessageSender, callStream: callStream
+    clientMessageSender: clientMessageSender, callStream: callStream, version: version,
   });
 }
 

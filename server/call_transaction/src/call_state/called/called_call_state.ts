@@ -9,15 +9,15 @@ import { CallOnDisconnectInterface } from "../functions/call_on_disconnect_inter
 export class CalledCallState extends BaseCallState {
   maxCallLengthTimer?: NodeJS.Timeout;
 
-  constructor({ transactionId, clientMessageSender, onDisconnect, userId, callStream }:
+  constructor({ transactionId, clientMessageSender, onDisconnect, userId, version, callStream }:
     {
       transactionId: string, clientMessageSender: ClientMessageSenderInterface,
       onDisconnect: CallOnDisconnectInterface,
-      userId: string, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>
+      userId: string, version: string, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>
     }) {
     super({
       transactionId: transactionId, clientMessageSender: clientMessageSender, onDisconnect: onDisconnect, userId: userId,
-      callStream: callStream, isCaller: false
+      callStream: callStream, isCaller: false, version: version,
     })
     this.maxCallLengthTimer = undefined;
   }

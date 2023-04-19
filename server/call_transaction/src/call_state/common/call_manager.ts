@@ -31,31 +31,31 @@ export class CallManager {
   }
 
   createCallStateOnCallerBegin({ userId, callerBeginCallContext, callerDisconnectFunction,
-    clientMessageSender, callStream }: {
-      userId: string, callerBeginCallContext: CallerBeginCallContext,
+    clientMessageSender, callStream, version }: {
+      userId: string, version: string, callerBeginCallContext: CallerBeginCallContext,
       callerDisconnectFunction: CallOnDisconnectInterface,
       clientMessageSender: ClientMessageSenderInterface, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>
     }): CallerCallState {
     const callState = new CallerCallState(
       {
         callerBeginCallContext: callerBeginCallContext, onDisconnect: callerDisconnectFunction,
-        clientMessageSender: clientMessageSender, userId: userId, callStream: callStream
+        clientMessageSender: clientMessageSender, userId: userId, callStream: callStream, version: version,
       });
     this.creatCallState({ userId: userId, state: callState });
     callState.log(`Created CallerCallState for UID: ${userId}`);
     return callState;
   }
 
-  createCallStateOnCallJoin({ userId, transactionId, disconnectionFunction: disconnectFunction, clientMessageSender, callStream }:
+  createCallStateOnCallJoin({ userId, transactionId, disconnectionFunction: disconnectFunction, clientMessageSender, callStream, version }:
     {
-      userId: string, transactionId: string,
+      userId: string, transactionId: string, version: string,
       disconnectionFunction: CallOnDisconnectInterface,
       clientMessageSender: ClientMessageSenderInterface, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>
     }): CalledCallState {
     const callState = new CalledCallState(
       {
         transactionId: transactionId, onDisconnect: disconnectFunction,
-        clientMessageSender: clientMessageSender, userId: userId, callStream: callStream
+        clientMessageSender: clientMessageSender, userId: userId, callStream: callStream, version: version
       });
     this.creatCallState({ userId: userId, state: callState });
     return callState;
