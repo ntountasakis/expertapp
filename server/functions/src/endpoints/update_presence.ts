@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
-import { getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import { getPublicExpertInfoDocumentRef, getStatusDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { PublicExpertInfo } from "../../../shared/src/firebase/firestore/models/public_expert_info";
 
 // taken from https://firebase.google.com/docs/firestore/solutions/presence
@@ -12,8 +12,7 @@ export const updatePresence = functions.database.ref('/status/{uid}').onUpdate(a
 
     // Then use other event data to create a reference to the
     // corresponding Firestore document.
-    const firestore = admin.firestore();
-    const userStatusFirestoreRef = firestore.doc(`status/${context.params.uid}`);
+    const userStatusFirestoreRef = getStatusDocumentRef({ uid: context.params.uid });
 
     // It is likely that the Realtime Database change that triggered
     // this event has already been overwritten by a fast change in
