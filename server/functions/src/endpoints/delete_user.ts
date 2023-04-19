@@ -14,6 +14,7 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
     }
     try {
         const uid = context.auth.uid;
+        const version: string = data.version;
         const privateUserInfo: PrivateUserInfo | null = await admin.firestore().runTransaction(async (transaction) => {
             const doc = await transaction.get(getPrivateUserDocumentRef({ uid: uid }));
             return doc.exists ? doc.data() as PrivateUserInfo : null;
@@ -44,6 +45,7 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
         await admin.auth().deleteUser(uid);
         Logger.log({
             logName: "deleteUser", message: `Deleted user ${uid}`,
+            labels: new Map([["userId", uid], ["version", version]]),
         });
     } catch (e) {
         Logger.logError({

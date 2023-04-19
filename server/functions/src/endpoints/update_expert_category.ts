@@ -11,6 +11,7 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
     const newMajorCategory: string = data.newMajorCategory;
     const newMinorCategory: string = data.newMinorCategory;
     const fromSignUpFlow: boolean = data.fromSignUpFlow;
+    const version: string = data.version;
 
     try {
         if (uid == null || newMajorCategory == null || newMinorCategory == null || fromSignUpFlow == null) {
@@ -26,21 +27,21 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
             if (!publicExpertDoc.exists) {
                 Logger.logError({
                     logName: "updateExpertCategory", message: `Cannot update expert category for ${uid} because they are not a expert. From sign up flow: ${fromSignUpFlow}`,
-                    labels: new Map([["expertId", uid]]),
+                    labels: new Map([["expertId", uid], ["version", version]]),
                 });
                 return false;
             }
             if (!expertCategoryDoc.exists) {
                 Logger.logError({
                     logName: "updateExpertCategory", message: `Cannot update expert category for ${uid} because they are not a expert. From sign up flow: ${fromSignUpFlow}`,
-                    labels: new Map([["expertId", uid]]),
+                    labels: new Map([["expertId", uid], ["version", version]]),
                 });
                 return false;
             }
             if (fromSignUpFlow && !(expertSignUpProgressDoc!.exists)) {
                 Logger.logError({
                     logName: "updateExpertCategory", message: `Cannot update expert category for ${uid} because they have no expert sign up progress doc.`,
-                    labels: new Map([["expertId", uid]])
+                    labels: new Map([["expertId", uid], ["version", version]])
                 });
                 return false;
             }
@@ -48,7 +49,7 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
             if (!categoryTypes.includes(newMinorCategory)) {
                 Logger.logError({
                     logName: "updateExpertCategory", message: `Cannot update expert category for ${uid} because they are not a expert. From sign up flow: ${fromSignUpFlow}`,
-                    labels: new Map([["expertId", uid]]),
+                    labels: new Map([["expertId", uid], ["version", version]]),
                 });
                 return false;
             }
@@ -61,7 +62,7 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
             });
             Logger.log({
                 logName: "updateExpertCategory", message: `Updated expert category for ${uid}. New major category: ${newMajorCategory} new minor category: ${newMinorCategory} From sign up flow: ${fromSignUpFlow}`,
-                labels: new Map([["expertId", uid]]),
+                labels: new Map([["expertId", uid], ["version", version]]),
             });
             return true;
         });
@@ -72,7 +73,7 @@ export const updateExpertCategory = functions.https.onCall(async (data, context)
     } catch (e) {
         Logger.logError({
             logName: "updateExpertCategory", message: `Failed to update expert category for ${uid}. From sign up flow ${fromSignUpFlow} Error: ${e}`,
-            labels: new Map([["expertId", uid]]),
+            labels: new Map([["expertId", uid], ["version", version]]),
         });
         return {
             success: false,

@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:expertapp/src/firebase/cloud_functions/callable_functions.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_availability.dart';
+import 'package:expertapp/src/version/app_version.dart';
 
 class UpdateResult {
   final bool success;
@@ -16,8 +17,11 @@ HttpsCallable getCallable(String functionName) {
 }
 
 Future<UpdateResult> onAccountDelete() async {
+  Map<String, String> query = {
+    'version': AppVersion.version,
+  };
   HttpsCallableResult result =
-      await getCallable(CallableFunctions.DELETE_USER).call();
+      await getCallable(CallableFunctions.DELETE_USER).call(query);
 
   bool success = result.data['success'];
   String message = result.data['message'];
@@ -31,6 +35,7 @@ Future<void> onUserSignup(String firstName, String lastName, String email,
     'firstName': firstName,
     'lastName': lastName,
     'email': email,
+    'version': AppVersion.version,
   };
 
   if (profilePicUrl != null) {
@@ -47,6 +52,7 @@ Future<String> onSubmitReview(
     'reviewedUid': reviewedUid,
     'reviewText': reviewText,
     'reviewRating': reviewRating,
+    'version': AppVersion.version,
   };
   final result =
       await getCallable(CallableFunctions.SUBMIT_REVIEW).call(review);
@@ -54,8 +60,12 @@ Future<String> onSubmitReview(
 }
 
 Future<String> getDefaultProfilePicUrl() async {
+  Map<String, dynamic> query = {
+    'version': AppVersion.version,
+  };
   final result =
-      await getCallable(CallableFunctions.GET_DEFAULT_PROFILE_PIC_URL).call();
+      await getCallable(CallableFunctions.GET_DEFAULT_PROFILE_PIC_URL)
+          .call(query);
   return result.data;
 }
 
@@ -64,6 +74,7 @@ Future<void> onProfilePicUpload(
   Map<String, dynamic> picture = {
     'pictureBytes': pictureBytes,
     'fromSignUpFlow': fromSignUpFlow,
+    'version': AppVersion.version,
   };
   await getCallable(CallableFunctions.UPDATE_PROFILE_PIC).call(picture);
 }
@@ -71,6 +82,7 @@ Future<void> onProfilePicUpload(
 Future<String> lookupChatroomId(String otherUid) async {
   Map<String, dynamic> chatroomQuery = {
     'otherUid': otherUid,
+    'version': AppVersion.version,
   };
   HttpsCallableResult result =
       await getCallable(CallableFunctions.CHATROOM_LOOKUP).call(chatroomQuery);
@@ -84,6 +96,7 @@ Future<UpdateResult> updateProfileDescription(
   Map<String, dynamic> chatroomQuery = {
     'description': newDescription,
     'fromSignUpFlow': fromSignUpFlow,
+    'version': AppVersion.version,
   };
   HttpsCallableResult result =
       await getCallable(CallableFunctions.UPDATE_PROFILE_DESCRIPTION)
@@ -102,6 +115,7 @@ Future<UpdateResult> updateExpertRate(
     'centsStartCall': centsStartCall,
     'centsPerMinute': centsPerMinute,
     'fromSignUpFlow': fromSignUpFlow,
+    'version': AppVersion.version,
   };
   HttpsCallableResult result =
       await getCallable(CallableFunctions.UPDATE_EXPERT_RATE).call(updateQuery);
@@ -117,6 +131,7 @@ Future<UpdateResult> updateExpertAvailability(
   Map<String, dynamic> updateQuery = {
     'availability': availability.toJson(),
     'fromSignUpFlow': fromSignUpFlow,
+    'version': AppVersion.version,
   };
   HttpsCallableResult result =
       await getCallable(CallableFunctions.UPDATE_EXPERT_AVAILABILITY)
@@ -142,9 +157,12 @@ class ChatroomPreview {
 }
 
 Future<List<ChatroomPreview>> getAllChatroomsForUser() async {
+  Map<String, dynamic> query = {
+    'version': AppVersion.version,
+  };
   HttpsCallableResult result =
       await getCallable(CallableFunctions.GET_ALL_CHATROOM_PREVIEWS_FOR_USER)
-          .call();
+          .call(query);
   final rawPreviews = result.data as List<Object?>;
   final chatroomPreviews = <ChatroomPreview>[];
   rawPreviews.forEach((elem) {
@@ -162,6 +180,7 @@ Future<List<ChatroomPreview>> getAllChatroomsForUser() async {
 Future<String> getShareableExpertProfileDynamicLink(String expertUid) async {
   Map<String, dynamic> linkQuery = {
     'expertUid': expertUid,
+    'version': AppVersion.version,
   };
   HttpsCallableResult result =
       await getCallable(CallableFunctions.GET_SHAREABLE_DYNAMIC_PROFILE_LINK)
@@ -179,6 +198,7 @@ Future<UpdateResult> updateExpertCategory({
     'newMajorCategory': newMajorCategory,
     'newMinorCategory': newMinorCategory,
     'fromSignUpFlow': fromSignUpFlow,
+    'version': AppVersion.version,
   };
   HttpsCallableResult result =
       await getCallable(CallableFunctions.UPDATE_EXPERT_CATEGORY)
@@ -190,8 +210,11 @@ Future<UpdateResult> updateExpertCategory({
 }
 
 Future<UpdateResult> completeExpertSignUp() async {
+  Map<String, dynamic> query = {
+    'version': AppVersion.version,
+  };
   HttpsCallableResult result =
-      await getCallable(CallableFunctions.COMPLETE_EXPERT_SIGN_UP).call();
+      await getCallable(CallableFunctions.COMPLETE_EXPERT_SIGN_UP).call(query);
   bool success = result.data['success'];
   String message = result.data['message'];
 

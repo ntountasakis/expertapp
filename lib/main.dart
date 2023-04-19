@@ -6,6 +6,7 @@ import 'package:expertapp/src/firebase/dynamic_links/link_handler.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/router.dart';
+import 'package:expertapp/src/version/app_version.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await AppVersion.initVersion();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

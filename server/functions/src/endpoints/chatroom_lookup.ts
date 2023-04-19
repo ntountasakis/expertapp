@@ -11,6 +11,7 @@ export const chatroomLookup = functions.https.onCall(async (data, context) => {
 
   const currentUid: string = context.auth.uid;
   const otherUid: string = data.otherUid;
+  const version: string = data.version;
 
   return await admin.firestore().runTransaction(async (transaction) => {
     const existingChatroomId = await getChatroomId({
@@ -21,7 +22,7 @@ export const chatroomLookup = functions.https.onCall(async (data, context) => {
     const newChatroomId = await createChatroom({ transaction: transaction, currentUid: currentUid, otherUid: otherUid });
     Logger.log({
       logName: "chatroomLookup", message: `Created new chatroomId: ${newChatroomId} for ${currentUid} and ${otherUid}`,
-      labels: new Map([["chatroomId", newChatroomId], ["currentUid", currentUid], ["otherUid", otherUid]]),
+      labels: new Map([["chatroomId", newChatroomId], ["currentUid", currentUid], ["otherUid", otherUid], ["version", version]]),
     });
     return newChatroomId;
   });

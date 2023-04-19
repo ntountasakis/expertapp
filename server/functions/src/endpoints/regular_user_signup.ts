@@ -14,7 +14,7 @@ export const regularUserSignup = functions.https.onCall(async (data, context) =>
   const email: string = data.email;
   const firstName: string = data.firstName;
   const lastName: string = data.lastName;
-
+  const version: string = data.version;
 
   await configureStripeProviderForFunctions();
   const stripeCustomerId = await createStripeCustomer({ stripe: StripeProvider.STRIPE });
@@ -24,6 +24,6 @@ export const regularUserSignup = functions.https.onCall(async (data, context) =>
   });
   Logger.log({
     logName: "regularUserSignup", message: `User ${uid} signed up!`,
-    labels: new Map([["userId", uid]]),
+    labels: new Map([["userId", uid], ["version", version]]),
   });
 });

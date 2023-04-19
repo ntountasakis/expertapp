@@ -16,8 +16,9 @@ export const submitReview = functions.https.onCall(async (data, context) => {
   const reviewedUid: string = data.reviewedUid;
   const reviewText: string = data.reviewText;
   const reviewRating: number = data.reviewRating;
+  const version: string = data.version;
 
-  if (authorUid == null || reviewedUid == null || reviewText == null) {
+  if (authorUid == null || reviewedUid == null || reviewText == null || reviewRating == null || version == null) {
     throw new Error("Cannot leave review, some review attributes null");
   }
 
@@ -34,14 +35,22 @@ export const submitReview = functions.https.onCall(async (data, context) => {
     const matchingReviews = await transaction.get(
       getReviewsFromAuthorForReviewed({ authorUid: authorUid, reviewedUid: reviewedUid }));
     if (matchingReviews.size > 1) {
-      throw new Error(`Author ${authorUid} managed to leave ${matchingReviews.size} for ${reviewedUid}. 
-      Not leaving additional`);
+      const msg = `Author ${authorUid} managed to leave ${matchingReviews.size} for ${reviewedUid}.`;
+      Logger.logError({
+        logName: "submitReview", message: msg,
+        labels: new Map([["userId", authorUid], ["expertId", reviewedUid], ["version", version]])
+      });
+      throw new Error(msg);
     }
     if (matchingReviews.size == 1) {
       const rawReviewDoc = matchingReviews.docs.at(0);
       if (rawReviewDoc == null) {
-        throw new Error(`Firestore DB error. 
-            Review size 1 yet data is null`);
+        const msg = `Firestore DB error.  Review size 1 yet data is null`;
+        Logger.logError({
+          logName: "submitReview", message: msg,
+          labels: new Map([["userId", authorUid], ["expertId", reviewedUid], ["version", version]])
+        });
+        throw new Error(msg);
       }
       updateReview({
         transaction: transaction, existingReviewDocumentReference: rawReviewDoc,
@@ -50,7 +59,7 @@ export const submitReview = functions.https.onCall(async (data, context) => {
       });
       Logger.log({
         logName: "submitReview", message: `Updated review by ${authorUid} for ${reviewedUid}`,
-        labels: new Map([["userId", authorUid], ["expertId", reviewedUid]]),
+        labels: new Map([["userId", authorUid], ["expertId", reviewedUid], ["version", version]]),
       });
       return {
         message: "Review Updated",
@@ -65,7 +74,7 @@ export const submitReview = functions.https.onCall(async (data, context) => {
     });
     Logger.log({
       logName: "submitReview", message: `Review added by ${authorUid} for ${reviewedUid}`,
-      labels: new Map([["userId", authorUid], ["expertId", reviewedUid]]),
+      labels: new Map([["userId", authorUid], ["expertId", reviewedUid], ["version", version]]),
     });
     return {
       message: "Review Submitted",

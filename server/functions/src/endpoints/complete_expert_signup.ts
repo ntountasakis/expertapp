@@ -10,6 +10,7 @@ export const completeExpertSignUp = functions.https.onCall(async (data, context)
         throw new Error("Cannot call by unauthorized users");
     }
     const uid = context.auth.uid;
+    const version = data.version;
 
     try {
         const success = await admin.firestore().runTransaction(async (transaction) => {
@@ -17,7 +18,7 @@ export const completeExpertSignUp = functions.https.onCall(async (data, context)
             if (!stagingPublicExpertDoc.exists) {
                 Logger.logError({
                     logName: "completeExpertSignUp", message: `Cannot complete expert sign up for ${uid} because they have no staging doc`,
-                    labels: new Map([["expertId", uid]]),
+                    labels: new Map([["expertId", uid], ["version", version]]),
                 });
                 return false;
             }
@@ -25,14 +26,14 @@ export const completeExpertSignUp = functions.https.onCall(async (data, context)
             if (!expertSignupProgressDoc.exists) {
                 Logger.logError({
                     logName: "completeExpertSignUp", message: `Cannot complete expert sign up for ${uid} because they have no expert signup progress doc`,
-                    labels: new Map([["expertId", uid]]),
+                    labels: new Map([["expertId", uid], ["version", version]]),
                 });
                 return false;
             }
             if (!isExpertSignupProgressComplete(expertSignupProgressDoc.data() as ExpertSignupProgress)) {
                 Logger.logError({
                     logName: "completeExpertSignUp", message: `Cannot complete expert sign up for ${uid} because their expert signup progress doc is not complete: ${JSON.stringify(expertSignupProgressDoc.data())}`,
-                    labels: new Map([["expertId", uid]]),
+                    labels: new Map([["expertId", uid], ["version", version]]),
                 });
                 return false;
             }
@@ -44,7 +45,7 @@ export const completeExpertSignUp = functions.https.onCall(async (data, context)
             transaction.delete(getExpertSignUpProgressDocumentRef({ uid: uid }));
             Logger.log({
                 logName: "completeExpertSignUp", message: `Completed expert sign up for ${uid}`,
-                labels: new Map([["expertId", uid]]),
+                labels: new Map([["expertId", uid], ["version", version]]),
             });
             return true;
         });
@@ -55,7 +56,7 @@ export const completeExpertSignUp = functions.https.onCall(async (data, context)
     } catch (e) {
         Logger.logError({
             logName: "completeExpertSignUp", message: `Failed to complete expert sign up for ${uid} because of error: ${e}`,
-            labels: new Map([["expertId", uid]]),
+            labels: new Map([["expertId", uid], ["version", version]]),
         });
         return {
             success: false,

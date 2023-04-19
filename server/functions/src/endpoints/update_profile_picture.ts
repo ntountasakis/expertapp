@@ -14,13 +14,14 @@ export const updateProfilePicture = functions.https.onCall(async (data, context)
   const uid = context.auth.uid;
   const pictureData = data.pictureBytes;
   const fromSignUpFlow = data.fromSignUpFlow;
+  const version = data.version;
 
-  if (pictureData == null || fromSignUpFlow == null) {
+  if (pictureData == null || fromSignUpFlow == null || version == null) {
     throw new Error("Cannot updateProfilePicture with missing parameters");
   }
 
   const pictureBytes: Buffer = Buffer.from(pictureData);
-  const publicUrl = await uploadFromMemory(pictureBytes, uid);
+  const publicUrl = await uploadFromMemory(pictureBytes, uid, version);
 
   const success = await admin.firestore().runTransaction(async (transaction) => {
     return updateProfilePicUrl({ transaction: transaction, uid: uid, profilePicUrl: publicUrl, fromSignUpFlow: fromSignUpFlow });
@@ -31,7 +32,7 @@ export const updateProfilePicture = functions.https.onCall(async (data, context)
   };
 });
 
-async function uploadFromMemory(buffer: Buffer, uid: string): Promise<string> {
+async function uploadFromMemory(buffer: Buffer, uid: string, version: string): Promise<string> {
   const pictureBucket: Bucket = await getProfilePicBucket();
   const filename = StoragePaths.PROFILE_PIC_FOLDER + uuidv4() + ".jpeg";
   const pictureFile = pictureBucket.file(filename);
@@ -40,7 +41,7 @@ async function uploadFromMemory(buffer: Buffer, uid: string): Promise<string> {
   });
   Logger.log({
     logName: "updateProfilePicture", message: `profile pic ${filename} uploaded to ${pictureBucket.name}.`,
-    labels: new Map([["expertId", uid]]),
+    labels: new Map([["expertId", uid], ["version", version]]),
   });
   return pictureFile.publicUrl();
 }

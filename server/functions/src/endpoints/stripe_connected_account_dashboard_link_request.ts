@@ -8,9 +8,10 @@ import configureStripeProviderForFunctions from "../stripe/stripe_provider_funct
 export const stripeConnectedAccountDashboardLinkRequest = functions.https.onRequest(async (request, response) => {
     await configureStripeProviderForFunctions();
     const uid = request.query.uid;
-    if (typeof uid !== "string") {
+    const version = request.query.version;
+    if (typeof uid !== "string" || typeof version !== "string") {
         Logger.logError({
-            logName: "stripeConnectedAccountDashboardLinkRequest", message: `Cannot parse uid, not instance of string. Type: ${typeof uid}`
+            logName: "stripeConnectedAccountDashboardLinkRequest", message: `Cannot parse uid/version, not instance of string. Type uid: ${typeof uid} Type version: ${typeof version}`
         });
         response.status(400);
         return;
@@ -19,7 +20,7 @@ export const stripeConnectedAccountDashboardLinkRequest = functions.https.onRequ
     if (!privateUserInfo.stripeConnectedId) {
         Logger.logError({
             logName: "stripeConnectedAccountDashboardLinkRequest", message: `Uid ${uid} does not have a connected account.`,
-            labels: new Map([["userId", uid]]),
+            labels: new Map([["userId", uid], ["version", version]]),
         });
         response.status(400);
         return;
@@ -27,7 +28,7 @@ export const stripeConnectedAccountDashboardLinkRequest = functions.https.onRequ
     const url = await createConnectedAccountDashboardLoginLink({ connectedAccountId: privateUserInfo.stripeConnectedId });
     Logger.log({
         logName: "stripeConnectedAccountDashboardLinkRequest", message: `Generated stripe connected account dashboard link for uid ${uid}: ${url}`,
-        labels: new Map([["expertId", uid]]),
+        labels: new Map([["expertId", uid], ["version", version]]),
     });
     response.redirect(url);
 });

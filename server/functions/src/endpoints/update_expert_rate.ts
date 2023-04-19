@@ -14,9 +14,10 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
   const newCentsPerMinute: number = data.centsPerMinute;
   const newCentsStartCall: number = data.centsStartCall;
   const fromSignUpFlow: boolean = data.fromSignUpFlow;
+  const version: string = data.version;
 
   try {
-    if (uid == null || newCentsPerMinute == null || newCentsStartCall == null || fromSignUpFlow == null) {
+    if (uid == null || newCentsPerMinute == null || newCentsStartCall == null || fromSignUpFlow == null || version == null) {
       throw new Error("Cannot update expert rate, some attributes null");
     }
 
@@ -57,21 +58,21 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
       if (privateUserDoc.stripeConnectedId == null) {
         Logger.logError({
           logName: "updateExpertRate", message: `Cannot update expert rate for ${uid} because they have no stripe connected id`,
-          labels: new Map([["expertId", uid]]),
+          labels: new Map([["expertId", uid], ["version", version]]),
         });
         return false;
       }
       if (!publicExpertInfoDoc.exists) {
         Logger.logError({
           logName: "updateExpertRate", message: `Cannot update expert rate for ${uid} because they are not an expert`,
-          labels: new Map([["expertId", uid]]),
+          labels: new Map([["expertId", uid], ["version", version]]),
         });
         return false;
       }
       if (fromSignUpFlow && !(expertSignUpProgressDoc!.exists)) {
         Logger.logError({
           logName: "updateExpertRate", message: `Cannot update expert rate for ${uid} because they havbe no expert sign up progress doc`,
-          labels: new Map([["expertId", uid]]),
+          labels: new Map([["expertId", uid], ["version", version]]),
         });
         return false;
       }
@@ -86,7 +87,7 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
       });
       Logger.log({
         logName: "updateExpertRate", message: `Updated expert rate for ${uid}. New rate: ${newCentsPerMinute} cents per minute and ${newCentsStartCall} cents to start call`,
-        labels: new Map([["expertId", uid]]),
+        labels: new Map([["expertId", uid], ["version", version]]),
       });
       return true;
     });
