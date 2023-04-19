@@ -6,8 +6,9 @@ import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const generateExpertProfileDynamicLink = functions.https.onCall(async (data, context) => {
     const expertUid: string = data.expertUid;
-    if (expertUid == null || expertUid === "" || expertUid === undefined) {
-        throw new Error(`Expert uid is empty`);
+    const version: string = data.version;
+    if (expertUid == null || version == null) {
+        throw new Error(`Expert uid or version is null`);
     }
 
     const exists = await admin.firestore().runTransaction(async (transaction) => {
@@ -20,7 +21,7 @@ export const generateExpertProfileDynamicLink = functions.https.onCall(async (da
     const link: string = await FirebaseDynamicLinkProvider.generateDynamicLinkExpertProfile({ expertUid: expertUid });
     Logger.log({
         logName: "generateExpertProfileDynamicLink", message: `Generated dynamic link for expert profile for uid ${expertUid}: ${link}`,
-        labels: new Map([["expertId", expertUid]]),
+        labels: new Map([["expertId", expertUid], ["version", version]]),
     });
     return link;
 });

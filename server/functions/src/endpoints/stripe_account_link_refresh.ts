@@ -11,9 +11,10 @@ import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
 export const stripeAccountLinkRefresh = functions.https.onRequest(async (request, response) => {
   await configureStripeProviderForFunctions();
   const uid = request.query.uid;
-  if (typeof uid !== "string") {
+  const version = request.query.version;
+  if (typeof uid !== "string"  || typeof version !== "string") {
     Logger.logError({
-      logName: "stripeAccountLinkRefresh", message: `Cannot parse uid, not instance of string. Type: ${typeof uid}`,
+      logName: "stripeAccountLinkRefresh", message: `Cannot parse uid/version, not instance of string. Type uid: ${typeof uid} Type version: ${typeof version}`,
     });
     response.status(400);
     return;

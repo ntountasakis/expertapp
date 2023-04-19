@@ -11,8 +11,9 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
   const uid = context.auth.uid;
   const description = data.description;
   const fromSignUpFlow = data.fromSignUpFlow;
+  const version = data.version;
 
-  if (uid == null || description == null || fromSignUpFlow == null) {
+  if (uid == null || description == null || fromSignUpFlow == null || version == null) {
     throw new Error("Uid or description or fromSignUpFlow is null");
   }
 
@@ -30,14 +31,14 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
     if (!publicExpertDoc.exists) {
       Logger.logError({
         logName: "updateProfileDescription", message: `Failed to update description for ${uid} because they are not a expert. From sign up flow: ${fromSignUpFlow}`,
-        labels: new Map([["expertId", uid]]),
+        labels: new Map([["expertId", uid], ["version", version]]),
       });
       return false;
     }
     if (fromSignUpFlow && !(expertSignUpProgressDoc!.exists)) {
       Logger.logError({
         logName: "updateProfileDescription", message: `Failed to update description for ${uid} because they have no expert sign up progress doc.`,
-        labels: new Map([["expertId", uid]]),
+        labels: new Map([["expertId", uid], ["version", version]]),
       });
       return false;
     }
@@ -51,7 +52,7 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
     });
     Logger.log({
       logName: "updateProfileDescription", message: `Updated description for ${uid}. From sign up flow: ${fromSignUpFlow}`,
-      labels: new Map([["expertId", uid]]),
+      labels: new Map([["expertId", uid], ["version", version]]),
     });
     return true;
   });

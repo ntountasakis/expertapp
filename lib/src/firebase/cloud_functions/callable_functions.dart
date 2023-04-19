@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
+import 'package:expertapp/src/version/app_version.dart';
 
 class CallableFunctions {
   static final String DELETE_USER = 'deleteUser';
@@ -41,21 +42,21 @@ class HttpEndpoints {
 
   static String getExpertConnectedAccountSignup(String uid) {
     final url =
-        getCloudFunctionsBaseUrl() + 'stripeAccountLinkRefresh?uid=$uid';
+        getCloudFunctionsBaseUrl() + 'stripeAccountLinkRefresh?uid=${uid}&version=${AppVersion.version}';
     log("Navigating to : " + url);
     return url;
   }
 
   static String getExpertStripeEarningsDashboard(String uid) {
     final url = getCloudFunctionsBaseUrl() +
-        'stripeConnectedAccountDashboardLinkRequest?uid=$uid';
+        'stripeConnectedAccountDashboardLinkRequest?uid=${uid}&version=${AppVersion.version}';
     log("Navigating to : " + url);
     return url;
   }
 
   static String getCustomerStripePaymentMethodsDashboard(String uid) {
     final url = getCloudFunctionsBaseUrl() +
-        'stripeManagePaymentMethodsLinkRequest?uid=$uid';
+        'stripeManagePaymentMethodsLinkRequest?uid=${uid}&version=${AppVersion.version}';
     log("Navigating to : " + url);
     return url;
   }
