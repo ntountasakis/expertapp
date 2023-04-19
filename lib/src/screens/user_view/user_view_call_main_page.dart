@@ -1,4 +1,3 @@
-import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
@@ -40,7 +39,6 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
   bool requestedExit = false;
   bool exiting = false;
   bool errorDialogShown = false;
-  final RtcEngineWrapper engineWrapper = RtcEngineWrapper();
   AgoraVideoCall? videoCall;
 
   _UserViewCallMainPageState(this.callServerManager);
@@ -68,7 +66,6 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
         agoraUid: agoraUid,
         onChatButtonTap: onChatButtonTap,
         onEndCallButtonTap: onEndCallTap,
-        engineWrapper: engineWrapper,
       );
     }
     return videoCall!;
@@ -100,9 +97,6 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
     if (!exiting) {
       exiting = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
-        if (videoCall != null) {
-          await engineWrapper.teardown();
-        }
         final counterpartyJoined = model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.JOINED;
         if (counterpartyJoined) {

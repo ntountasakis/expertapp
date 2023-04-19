@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_app_id.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'agora_video_controls.dart';
@@ -15,45 +15,50 @@ class AgoraVideoCall extends StatefulWidget {
   final int agoraUid;
   final VoidCallback onChatButtonTap;
   final VoidCallback onEndCallButtonTap;
-  final RtcEngineWrapper engineWrapper;
 
   AgoraVideoCall(
       {required this.agoraChannelName,
       required this.agoraToken,
       required this.agoraUid,
       required this.onChatButtonTap,
-      required this.onEndCallButtonTap,
-      required this.engineWrapper});
+      required this.onEndCallButtonTap});
 
   @override
-  _AgoraVideoCallState createState() =>
-      _AgoraVideoCallState(this.engineWrapper);
+  _AgoraVideoCallState createState() => _AgoraVideoCallState();
 }
 
 class _AgoraVideoCallState extends State<AgoraVideoCall> {
-  final RtcEngineWrapper _engineWrapper;
   int? _remoteUid;
   bool _localUserJoined = false;
   final buttonState = AgoraVideoCallButtonState();
-
-  _AgoraVideoCallState(this._engineWrapper);
+  late RtcEngine _engine;
 
   @override
   void initState() {
     super.initState();
-    initAgora();
+    _engine = createAgoraRtcEngine();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      initAgora();
+    });
+  }
+
+  @override
+  void dispose() async {
+    Future.delayed(Duration.zero, () async {
+      await _engine.leaveChannel();
+      await _engine.release();
+    });
+    super.dispose();
   }
 
   Future<void> initAgora() async {
     // retrieve permissions
     await [Permission.microphone, Permission.camera].request();
-
-    _engineWrapper.setEngine(createAgoraRtcEngine());
-    await _engineWrapper.engine.initialize(const RtcEngineContext(
+    await _engine.initialize(const RtcEngineContext(
       appId: AgoraAppId.ID,
     ));
-    await _engineWrapper.engine.enableVideo();
-    _engineWrapper.engine.registerEventHandler(
+    await _engine.enableVideo();
+    _engine.registerEventHandler(
       RtcEngineEventHandler(
         onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
           log("local user ${connection.localUid} joined");
@@ -82,8 +87,8 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
       channelProfile: ChannelProfileType.channelProfileCommunication,
     );
 
-    await _engineWrapper.engine.startPreview();
-    await _engineWrapper.engine.joinChannel(
+    await _engine.startPreview();
+    await _engine.joinChannel(
         token: widget.agoraToken,
         channelId: widget.agoraChannelName,
         uid: widget.agoraUid,
@@ -91,21 +96,20 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
   }
 
   void onCameraMuteTap(bool cameraMuted) async {
-    await _engineWrapper.engine.muteLocalVideoStream(cameraMuted);
+    await _engine.muteLocalVideoStream(cameraMuted);
     setState(() {
       buttonState.videoMuted = cameraMuted;
     });
   }
 
   void onMicButtonMuteTap(bool audioMuted) async {
-    await _engineWrapper.engine.muteLocalAudioStream(audioMuted);
+    await _engine.muteLocalAudioStream(audioMuted);
     setState(() {
       buttonState.audioMuted = audioMuted;
     });
   }
 
   void onEndCallTap() async {
-    await _engineWrapper.teardown();
     widget.onEndCallButtonTap();
   }
 
@@ -124,7 +128,7 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
         child: _localUserJoined
             ? AgoraVideoView(
                 controller: VideoViewController(
-                  rtcEngine: _engineWrapper.engine,
+                  rtcEngine: _engine,
                   canvas: VideoCanvas(uid: 0),
                 ),
               )
@@ -168,7 +172,7 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
     if (_remoteUid != null) {
       return AgoraVideoView(
           controller: VideoViewController.remote(
-        rtcEngine: _engineWrapper.engine,
+        rtcEngine: _engine,
         canvas: VideoCanvas(uid: _remoteUid),
         connection: RtcConnection(channelId: widget.agoraChannelName),
       ));
