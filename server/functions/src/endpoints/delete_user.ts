@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { getExpertRateDocumentRef, getExpertSignUpProgressDocumentRef, getPrivateUserDocumentRef, getPublicExpertInfoDocumentRef, getPublicUserDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import { getExpertRateDocumentRef, getExpertSignUpProgressDocumentRef, getPrivateUserDocumentRef, getPublicExpertInfoDocumentRef, getPublicUserDocumentRef, getStatusDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
 import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/private_user_info";
 import { deleteStripeConnectedAccount, deleteStripeCustomer } from "../../../shared/src/stripe/util";
 import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
@@ -38,6 +38,7 @@ export const deleteUser = functions.https.onCall(async (data, context) => {
                 transaction.delete(getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: true }));
                 transaction.delete(getExpertSignUpProgressDocumentRef({ uid: uid }));
                 transaction.delete(getExpertRateDocumentRef({ expertUid: uid }));
+                transaction.delete(getStatusDocumentRef({ uid: uid }));
             });
         }
         await admin.auth().deleteUser(uid);

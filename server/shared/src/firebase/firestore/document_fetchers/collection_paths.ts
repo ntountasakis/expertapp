@@ -4,6 +4,7 @@ export class CollectionPaths {
   static CHATROOM_METADATA = "chatroom_metadata";
   static EXPERT_RATES = "expert_rates";
   static FCM_TOKENS = "fcm_tokens";
+  static STATUS = "status";
   static PAYMENT_STATUSES = "payment_statuses";
   static PUBLIC_EXPERT_INFO = "public_expert_info";
   static PUBLIC_EXPERT_INFO_STAGING = "public_expert_info_staging";
