@@ -1,4 +1,3 @@
-import 'package:expertapp/src/agora/agora_rtc_engine_wrapper.dart';
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
@@ -6,7 +5,6 @@ import 'package:expertapp/src/call_server/call_server_error_dialog.dart';
 import 'package:expertapp/src/call_server/call_server_manager.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/appbars/expert_view/expert_in_call_appbar.dart';
@@ -35,7 +33,6 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
   final CallServerManager callServerManager;
   bool requestedExit = false;
   bool errorDialogShown = false;
-  final RtcEngineWrapper engineWrapper = RtcEngineWrapper();
   AgoraVideoCall? videoCall;
 
   _ExpertViewCallMainPageState(this.callServerManager);
@@ -81,7 +78,6 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
         agoraUid: agoraUid,
         onChatButtonTap: onChatButtonTap,
         onEndCallButtonTap: onEndCallTap,
-        engineWrapper: engineWrapper,
       );
     }
     return videoCall!;
@@ -102,9 +98,6 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
     if (!requestedExit) {
       requestedExit = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
-        if (videoCall != null) {
-          await engineWrapper.teardown();
-        }
         context.goNamed(Routes.EV_CALL_SUMMARY_PAGE);
       });
     }
