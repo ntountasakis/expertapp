@@ -19,12 +19,13 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
   CallManager: CallManager, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>): Promise<void> {
   const transactionId = callJoinRequest.callTransactionId as string;
   const joinerId = callJoinRequest.joinerUid as string;
+  const version = callJoinRequest.version as string;
 
   const [, callTransaction] = await joinCallTransaction({ request: callJoinRequest });
   const newCalledState: CalledCallState = _createNewCallState(
     {
       callManager: CallManager, transactionId: transactionId,
-      joinerId: joinerId, clientMessageSender: clientMessageSender, callStream: callStream
+      joinerId: joinerId, clientMessageSender: clientMessageSender, callStream: callStream, version: version,
     });
 
   _listenForCallTransactionUpdates({ callState: newCalledState, callTransaction: callTransaction });
@@ -35,16 +36,16 @@ export async function handleClientCallJoinRequest(callJoinRequest: ClientCallJoi
   sendGrpcServerFeeBreakdowns(clientMessageSender, callTransaction);
 }
 
-function _createNewCallState({ callManager, transactionId, joinerId, clientMessageSender, callStream }:
+function _createNewCallState({ callManager, transactionId, joinerId, clientMessageSender, callStream, version }:
   {
-    callManager: CallManager, transactionId: string, joinerId: string,
+    callManager: CallManager, transactionId: string, joinerId: string, version: string,
     clientMessageSender: ClientMessageSenderInterface,
     callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>
   }): CalledCallState {
   return callManager.createCallStateOnCallJoin({
     userId: joinerId, transactionId: transactionId,
     disconnectionFunction: onCalledDisconnect,
-    clientMessageSender: clientMessageSender, callStream: callStream
+    clientMessageSender: clientMessageSender, callStream: callStream, version: version
   });
 }
 

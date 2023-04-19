@@ -9,19 +9,21 @@ import { CallOnDisconnectInterface } from "../functions/call_on_disconnect_inter
 export class BaseCallState {
   userId: string;
   transactionId: string;
+  version: string;
   eventListenerManager: FirestoreListenerManager;
   onDisconnectFunction?: CallOnDisconnectInterface;
   callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>;
   isCaller: boolean;
   _timer?: NodeJS.Timeout;
 
-  constructor({ userId, transactionId, clientMessageSender, onDisconnect, callStream, isCaller }:
+  constructor({ userId, transactionId, version, clientMessageSender, onDisconnect, callStream, isCaller }:
     {
       onDisconnect: CallOnDisconnectInterface, clientMessageSender: ClientMessageSenderInterface,
-      transactionId: string, userId: string, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>,
+      transactionId: string, userId: string, version: string, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>,
       isCaller: boolean,
     }) {
     this.transactionId = transactionId;
+    this.version = version;
     this.eventListenerManager = new FirestoreListenerManager(clientMessageSender, this);
     this.onDisconnectFunction = onDisconnect;
     this.userId = userId;
@@ -63,7 +65,7 @@ export class BaseCallState {
     const userKey = this.isCaller ? "userId" : "expertId";
     Logger.log({
       logName: Logger.CALL_SERVER, message: message,
-      labels: new Map([["callTransactionId", this.transactionId], [userKey, this.userId]])
+      labels: new Map([["callTransactionId", this.transactionId], [userKey, this.userId], ["version", this.version]])
     });
   }
 
