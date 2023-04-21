@@ -1,11 +1,11 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { v4 as uuidv4 } from "uuid";
-import { Bucket } from "@google-cloud/storage";
-import { getProfilePicBucket } from "../../../shared/src/firebase/storage/functions/get_profile_pic_bucket_ref";
-import { updateProfilePicUrl } from "../../../shared/src/firebase/firestore/functions/update_profile_pic_url";
-import { StoragePaths } from "../../../shared/src/firebase/storage/storage_paths";
-import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
+import {v4 as uuidv4} from "uuid";
+import {Bucket} from "@google-cloud/storage";
+import {getProfilePicBucket} from "../../../shared/src/firebase/storage/functions/get_profile_pic_bucket_ref";
+import {updateProfilePicUrl} from "../../../shared/src/firebase/firestore/functions/update_profile_pic_url";
+import {StoragePaths} from "../../../shared/src/firebase/storage/storage_paths";
+import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const updateProfilePicture = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -24,7 +24,8 @@ export const updateProfilePicture = functions.https.onCall(async (data, context)
   const publicUrl = await uploadFromMemory(pictureBytes, uid, version);
 
   const success = await admin.firestore().runTransaction(async (transaction) => {
-    return updateProfilePicUrl({ transaction: transaction, uid: uid, profilePicUrl: publicUrl, fromSignUpFlow: fromSignUpFlow });
+    return updateProfilePicUrl({transaction: transaction, uid: uid, profilePicUrl: publicUrl,
+      fromSignUpFlow: fromSignUpFlow, version: version});
   });
   return {
     success: success,

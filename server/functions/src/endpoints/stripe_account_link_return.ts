@@ -1,19 +1,20 @@
 import * as functions from "firebase-functions";
-import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
-import { createAccountLinkOnboarding, retrieveAccount } from "../../../shared/src/stripe/util";
-import { getPrivateUserDocumentNoTransact } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/private_user_info";
-import { createExpertUser } from "../../../shared/src/firebase/firestore/functions/create_expert_user";
-import { StoragePaths } from "../../../shared/src/firebase/storage/storage_paths";
+import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
+import {createAccountLinkOnboarding, retrieveAccount} from "../../../shared/src/stripe/util";
+import {getPrivateUserDocumentNoTransact} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
+import {createExpertUser} from "../../../shared/src/firebase/firestore/functions/create_expert_user";
+import {StoragePaths} from "../../../shared/src/firebase/storage/storage_paths";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
-import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
+import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const stripeAccountLinkReturn = functions.https.onRequest(async (request, response) => {
   await configureStripeProviderForFunctions();
   const uid = request.query.uid;
-  if (typeof uid !== "string") {
+  const version = request.query.version;
+  if (typeof uid !== "string" || typeof version !== "string") {
     Logger.logError({
-      logName: "stripeAccountLinkReturn", message: `Cannot parse uid, not instance of string. Type: ${typeof uid}`,
+      logName: "stripeAccountLinkReturn", message: `Cannot parse uid, not instance of string. Type: ${typeof uid} Type version: ${typeof version}.`,
     });
     response.status(400).end();
     return;
@@ -22,8 +23,8 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
     logName: "stripeAccountLinkReturn", message: `Handling account link return for account ${uid}`,
     labels: new Map([["userId", uid]]),
   });
-  const privateUserInfo: PrivateUserInfo = await getPrivateUserDocumentNoTransact({ uid: uid });
-  const account = await retrieveAccount({ stripe: StripeProvider.STRIPE, account: privateUserInfo.stripeConnectedId });
+  const privateUserInfo: PrivateUserInfo = await getPrivateUserDocumentNoTransact({uid: uid});
+  const account = await retrieveAccount({stripe: StripeProvider.STRIPE, account: privateUserInfo.stripeConnectedId});
 
   if (!account.payouts_enabled || !account.details_submitted) {
     let messagePrefix = `Connected account: ${uid} still needs `;
@@ -39,14 +40,14 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
     });
     const accountLink = await createAccountLinkOnboarding({
       stripe: StripeProvider.STRIPE, account: uid,
-      refreshUrl: StripeProvider.getAccountLinkRefreshUrl({ hostname: request.hostname, uid: uid }),
-      returnUrl: StripeProvider.getAccountLinkReturnUrl({ hostname: request.hostname, uid: uid }),
+      refreshUrl: StripeProvider.getAccountLinkRefreshUrl({hostname: request.hostname, uid: uid, version: version}),
+      returnUrl: StripeProvider.getAccountLinkReturnUrl({hostname: request.hostname, uid: uid, version: version}),
       functionContext: "stripeAccountLinkReturn",
       expertUid: uid,
     });
     response.redirect(accountLink);
   } else {
-    await createExpertUser(({ uid: uid }));
+    await createExpertUser(({uid: uid}));
 
     Logger.log({
       logName: "stripeAccountLinkReturn", message: `Connected account: ${uid} sign up process complete`,
@@ -86,7 +87,7 @@ function accountCreateSuccessHtml(): string {
   </head>
   <body>
     <h1>You have successfully signed up!</h1>
-    <img src=\"${StoragePaths.CONFETTI_PIC_URL}\" alt="Confetti">
+    <img src="${StoragePaths.CONFETTI_PIC_URL}" alt="Confetti">
     <p>Click the arrow at the top to continue the signup process.</p>
   </body>
   </html>

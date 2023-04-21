@@ -1,9 +1,9 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
-import Ajv, { JTDSchemaType } from "ajv/dist/jtd";
-import { DayAvailability, WeekAvailability } from "../../../shared/src/firebase/firestore/models/expert_availability";
-import { getExpertSignUpProgressDocumentRef, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
+import Ajv, {JTDSchemaType} from "ajv/dist/jtd";
+import {DayAvailability, WeekAvailability} from "../../../shared/src/firebase/firestore/models/expert_availability";
+import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {FirebaseDocRef, getExpertInfoConditionalOnSignup} from "../../../shared/src/firebase/firestore/functions/expert_info_conditional_sign_up_fetcher";
 
 
 export const updateExpertAvailability = functions.https.onCall(async (data, context) => {
@@ -51,42 +51,42 @@ function validatePayload(uid: string, version: string, payload: Map<string, unkn
   return isValid;
 }
 
+function updateAvailabilityProgress(signupProgressDocRef: FirebaseDocRef, transaction: FirebaseFirestore.Transaction) {
+  if (signupProgressDocRef == null) {
+    throw new Error("Cannot update availability because signup progress doc ref is null");
+  }
+  transaction.update(signupProgressDocRef, {
+    "updatedAvailability": true,
+  });
+}
+
+function updateAvailabilityInfo(expertInfoRef: FirebaseDocRef, transaction: FirebaseFirestore.Transaction, newAvailability: WeekAvailability) {
+  if (expertInfoRef == null) {
+    throw new Error("Cannot update availability because expert info ref is null");
+  }
+  transaction.update(expertInfoRef, {
+    "availability": newAvailability,
+  });
+}
+
 async function updateAvailability(uid: string, version: string, fromSignUpFlow: boolean, payload: Map<string, unknown>): Promise<boolean> {
   const ajv = new Ajv();
   const parser = ajv.compileParser(WeekAvailabilitySchema);
   const result = parser(JSON.stringify(payload)) as WeekAvailability;
   return await admin.firestore().runTransaction(async (transaction) => {
-    const expertSignUpProgressDocRef = getExpertSignUpProgressDocumentRef({ uid: uid });
-    const expertSignUpProgressDoc = fromSignUpFlow ? await transaction.get(expertSignUpProgressDocRef) : null;
-    const publicExpertInfoDocRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow });
-    const publicExpertInfoDoc = await transaction.get(publicExpertInfoDocRef);
-    if (!publicExpertInfoDoc.exists) {
-      Logger.logError({
-        logName: "updateExpertAvailability", message: `Cannot update availability for ${uid} because they are not a expert.`,
+    const success: boolean = await getExpertInfoConditionalOnSignup({functionNameForLogging: "updateExpertAvailability",
+      uid: uid, fromSignUpFlow: fromSignUpFlow,
+      transaction: transaction, version: version, updateSignupProgressFunc: updateAvailabilityProgress,
+      updateExpertInfoFunc: updateAvailabilityInfo,
+      contextData: result,
+    });
+    if (success) {
+      Logger.log({
+        logName: "updateExpertAvailability", message: `Updated availability for ${uid}. New availability: ${result}. From sign up flow: ${fromSignUpFlow}`,
         labels: new Map([["expertId", uid], ["version", version]]),
       });
-      return false;
     }
-    if (fromSignUpFlow && !(expertSignUpProgressDoc!.exists)) {
-      Logger.logError({
-        logName: "updateExpertAvailability", message: `Cannot update availability for ${uid} because they have no sign up progress document.`,
-        labels: new Map([["expertId", uid], ["version", version]])
-      });
-      return false;
-    }
-    if (fromSignUpFlow) {
-      transaction.update(expertSignUpProgressDocRef, {
-        "updatedAvailability": true,
-      });
-    }
-    transaction.update(publicExpertInfoDocRef, {
-      "availability": result,
-    });
-    Logger.log({
-      logName: "updateExpertAvailability", message: `Updated availability for ${uid}. New availability: ${result}. From sign up flow: ${fromSignUpFlow}`,
-      labels: new Map([["expertId", uid], ["version", version]]),
-    });
-    return true;
+    return success;
   });
 }
 
@@ -94,21 +94,21 @@ const WeekAvailabilitySchema: JTDSchemaType<WeekAvailability, { DayAvailabilityS
   definitions: {
     DayAvailabilitySchema: {
       properties: {
-        isAvailable: { type: "boolean" },
-        startHourUtc: { type: "int32" },
-        startMinuteUtc: { type: "int32" },
-        endHourUtc: { type: "int32" },
-        endMinuteUtc: { type: "int32" },
+        isAvailable: {type: "boolean"},
+        startHourUtc: {type: "int32"},
+        startMinuteUtc: {type: "int32"},
+        endHourUtc: {type: "int32"},
+        endMinuteUtc: {type: "int32"},
       },
     },
   },
   properties: {
-    mondayAvailability: { ref: "DayAvailabilitySchema" },
-    tuesdayAvailability: { ref: "DayAvailabilitySchema" },
-    wednesdayAvailability: { ref: "DayAvailabilitySchema" },
-    thursdayAvailability: { ref: "DayAvailabilitySchema" },
-    fridayAvailability: { ref: "DayAvailabilitySchema" },
-    saturdayAvailability: { ref: "DayAvailabilitySchema" },
-    sundayAvailability: { ref: "DayAvailabilitySchema" },
+    mondayAvailability: {ref: "DayAvailabilitySchema"},
+    tuesdayAvailability: {ref: "DayAvailabilitySchema"},
+    wednesdayAvailability: {ref: "DayAvailabilitySchema"},
+    thursdayAvailability: {ref: "DayAvailabilitySchema"},
+    fridayAvailability: {ref: "DayAvailabilitySchema"},
+    saturdayAvailability: {ref: "DayAvailabilitySchema"},
+    sundayAvailability: {ref: "DayAvailabilitySchema"},
   },
 };

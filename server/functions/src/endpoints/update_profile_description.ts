@@ -1,8 +1,8 @@
 
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { getExpertSignUpProgressDocumentRef, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
+import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {FirebaseDocRef, getExpertInfoConditionalOnSignup} from "../../../shared/src/firebase/firestore/functions/expert_info_conditional_sign_up_fetcher";
 
 export const updateProfileDescription = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -20,41 +20,23 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
   if (description.length < 30) {
     return {
       success: false,
-      message: "Your profile description must be at least 30 characters long"
+      message: "Your profile description must be at least 30 characters long",
     };
   }
   const success = await admin.firestore().runTransaction(async (transaction) => {
-    const publicExpertDocRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow });
-    const expertSignUpProgressDocRef = getExpertSignUpProgressDocumentRef({ uid: uid });
-    const expertSignUpProgressDoc = fromSignUpFlow ? await transaction.get(expertSignUpProgressDocRef) : null;
-    const publicExpertDoc = await transaction.get(publicExpertDocRef);
-    if (!publicExpertDoc.exists) {
-      Logger.logError({
-        logName: "updateProfileDescription", message: `Failed to update description for ${uid} because they are not a expert. From sign up flow: ${fromSignUpFlow}`,
+    const wasSuccess: boolean = await getExpertInfoConditionalOnSignup({functionNameForLogging: "updateProfileDescription",
+      uid: uid, fromSignUpFlow: fromSignUpFlow,
+      transaction: transaction, version: version, updateSignupProgressFunc: updateSignupProgress,
+      updateExpertInfoFunc: updateExpertInfo,
+      contextData: description,
+    });
+    if (wasSuccess) {
+      Logger.log({
+        logName: "updateProfileDescription", message: `Updated description for ${uid}. From sign up flow: ${fromSignUpFlow}`,
         labels: new Map([["expertId", uid], ["version", version]]),
       });
-      return false;
     }
-    if (fromSignUpFlow && !(expertSignUpProgressDoc!.exists)) {
-      Logger.logError({
-        logName: "updateProfileDescription", message: `Failed to update description for ${uid} because they have no expert sign up progress doc.`,
-        labels: new Map([["expertId", uid], ["version", version]]),
-      });
-      return false;
-    }
-    if (fromSignUpFlow) {
-      transaction.update(expertSignUpProgressDocRef, {
-        "updatedProfileDescription": true,
-      });
-    }
-    transaction.update(publicExpertDocRef, {
-      "description": description,
-    });
-    Logger.log({
-      logName: "updateProfileDescription", message: `Updated description for ${uid}. From sign up flow: ${fromSignUpFlow}`,
-      labels: new Map([["expertId", uid], ["version", version]]),
-    });
-    return true;
+    return wasSuccess;
   });
 
   return {
@@ -62,3 +44,21 @@ export const updateProfileDescription = functions.https.onCall(async (data, cont
     message: success ? "Your profile description has been updated successfully" : "Internal Server Error",
   };
 });
+
+function updateSignupProgress(signupProgressDocRef: FirebaseDocRef, transaction: FirebaseFirestore.Transaction) {
+  if (signupProgressDocRef == null) {
+    throw new Error("Cannot update signup progress for updateProfileDescription because signup progress doc ref is null");
+  }
+  transaction.update(signupProgressDocRef, {
+    "updatedProfileDescription": true,
+  });
+}
+
+function updateExpertInfo(expertInfoRef: FirebaseDocRef, transaction: FirebaseFirestore.Transaction, updatedDescription: string) {
+  if (expertInfoRef == null) {
+    throw new Error("Cannot update expert category for updateProfileDescription because expert info doc ref is null");
+  }
+  transaction.update(expertInfoRef, {
+    "description": updatedDescription,
+  });
+}

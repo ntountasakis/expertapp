@@ -1,11 +1,11 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { getPublicExpertInfo } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import { createReview } from "../../../shared/src/firebase/firestore/functions/create_review";
-import { getReviewsFromAuthorForReviewed } from "../../../shared/src/firebase/firestore/functions/get_reviews_from_author_for_reviewed";
-import { updateReview } from "../../../shared/src/firebase/firestore/functions/update_review";
-import { PublicExpertInfo } from "../../../shared/src/firebase/firestore/models/public_expert_info";
-import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
+import {getPublicExpertInfo} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {createReview} from "../../../shared/src/firebase/firestore/functions/create_review";
+import {getReviewsFromAuthorForReviewed} from "../../../shared/src/firebase/firestore/functions/get_reviews_from_author_for_reviewed";
+import {updateReview} from "../../../shared/src/firebase/firestore/functions/update_review";
+import {PublicExpertInfo} from "../../../shared/src/firebase/firestore/models/public_expert_info";
+import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
 
 export const submitReview = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -28,34 +28,34 @@ export const submitReview = functions.https.onCall(async (data, context) => {
 
   return await admin.firestore().runTransaction(async (transaction) => {
     const authorUserMetadata: PublicExpertInfo = await getPublicExpertInfo(
-      { transaction: transaction, uid: authorUid });
+        {transaction: transaction, uid: authorUid});
     const reviewedUserMetadata: PublicExpertInfo = await getPublicExpertInfo(
-      { transaction: transaction, uid: reviewedUid });
+        {transaction: transaction, uid: reviewedUid});
 
     const matchingReviews = await transaction.get(
-      getReviewsFromAuthorForReviewed({ authorUid: authorUid, reviewedUid: reviewedUid }));
+        getReviewsFromAuthorForReviewed({authorUid: authorUid, reviewedUid: reviewedUid}));
     if (matchingReviews.size > 1) {
       const msg = `Author ${authorUid} managed to leave ${matchingReviews.size} for ${reviewedUid}.`;
       Logger.logError({
         logName: "submitReview", message: msg,
-        labels: new Map([["userId", authorUid], ["expertId", reviewedUid], ["version", version]])
+        labels: new Map([["userId", authorUid], ["expertId", reviewedUid], ["version", version]]),
       });
       throw new Error(msg);
     }
     if (matchingReviews.size == 1) {
       const rawReviewDoc = matchingReviews.docs.at(0);
       if (rawReviewDoc == null) {
-        const msg = `Firestore DB error.  Review size 1 yet data is null`;
+        const msg = "Firestore DB error.  Review size 1 yet data is null";
         Logger.logError({
           logName: "submitReview", message: msg,
-          labels: new Map([["userId", authorUid], ["expertId", reviewedUid], ["version", version]])
+          labels: new Map([["userId", authorUid], ["expertId", reviewedUid], ["version", version]]),
         });
         throw new Error(msg);
       }
       updateReview({
         transaction: transaction, existingReviewDocumentReference: rawReviewDoc,
         reviewedUserMetadata: reviewedUserMetadata, reviewedUid: reviewedUid, newReviewRating: reviewRating,
-        newReviewText: reviewText
+        newReviewText: reviewText,
       });
       Logger.log({
         logName: "submitReview", message: `Updated review by ${authorUid} for ${reviewedUid}`,
@@ -70,7 +70,7 @@ export const submitReview = functions.https.onCall(async (data, context) => {
       transaction: transaction, authorUid: authorUid, reviewedUid: reviewedUid,
       authorUserMetadata: authorUserMetadata,
       reviewedUserMetadata: reviewedUserMetadata,
-      reviewText: reviewText, reviewRating: reviewRating
+      reviewText: reviewText, reviewRating: reviewRating,
     });
     Logger.log({
       logName: "submitReview", message: `Review added by ${authorUid} for ${reviewedUid}`,
