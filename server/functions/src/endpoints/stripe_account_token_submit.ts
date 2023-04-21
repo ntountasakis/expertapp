@@ -1,21 +1,22 @@
 
 import * as functions from "firebase-functions";
-import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
-import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
+import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
 
 export const stripeAccountTokenSubmit = functions.https.onRequest(async (request, response) => {
   await configureStripeProviderForFunctions();
   const uid = request.query.uid;
-  if (typeof uid !== "string") {
+  const version = request.query.version;
+  if (typeof uid !== "string" || typeof version !== "string") {
     Logger.logError({
-      logName: "stripeAccountTokenSubmit", message: `Cannot parse uid, not instance of string. Type: ${typeof uid}`
+      logName: "stripeAccountTokenSubmit", message: `Cannot parse uid/version, not instance of string. Type: ${typeof uid} Type version: ${typeof version}. `,
     });
     response.status(400).end();
     return;
   }
   const tokenInvalid = typeof request.query.tokenInvalid === "string";
-  const redirectUrl = StripeProvider.getAccountLinkRefreshUrl({ hostname: request.hostname, uid: uid });
+  const redirectUrl = StripeProvider.getAccountLinkRefreshUrl({hostname: request.hostname, uid: uid, version: version});
 
   response.set("Content-Type", "text/html");
   // eslint-disable-next-line max-len

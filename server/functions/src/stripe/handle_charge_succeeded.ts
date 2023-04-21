@@ -1,9 +1,10 @@
 import * as admin from "firebase-admin";
-import { getPaymentStatusDocumentTransaction } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import { updatePaymentStatus } from "../../../shared/src/firebase/firestore/functions/update_payment_status";
-import { PaymentStatusStates } from "../../../shared/src/firebase/firestore/models/payment_status";
-import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
+import {getPaymentStatusDocumentTransaction} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {updatePaymentStatus} from "../../../shared/src/firebase/firestore/functions/update_payment_status";
+import {PaymentStatusStates} from "../../../shared/src/firebase/firestore/models/payment_status";
+import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function handleChargeSuceeded(payload: any): Promise<void> {
   //   const livemode: boolean = payload.livemode;
   const chargeId: string = payload.id;
@@ -14,13 +15,13 @@ export async function handleChargeSuceeded(payload: any): Promise<void> {
 
   if (paymentStatusId == undefined) {
     Logger.logError({
-      logName: "handleChargeSuceeded", message: `Cannot handle ChargeSuceeded. PaymentStatusId undefined`,
+      logName: "handleChargeSuceeded", message: "Cannot handle ChargeSuceeded. PaymentStatusId undefined",
     });
     return;
   }
   if (callerUid == undefined) {
     Logger.logError({
-      logName: "handleChargeSuceeded", message: `Cannot handle ChargeSuceeded. CallerUid undefined`,
+      logName: "handleChargeSuceeded", message: "Cannot handle ChargeSuceeded. CallerUid undefined",
       labels: new Map([["paymentStatusId", paymentStatusId]]),
     });
     return;
@@ -28,12 +29,12 @@ export async function handleChargeSuceeded(payload: any): Promise<void> {
 
   try {
     await admin.firestore().runTransaction(async (transaction) => {
-      const paymentStatus = await getPaymentStatusDocumentTransaction({ transaction: transaction, paymentStatusId: paymentStatusId });
+      const paymentStatus = await getPaymentStatusDocumentTransaction({transaction: transaction, paymentStatusId: paymentStatusId});
       await updatePaymentStatus({
         transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
         centsAuthorized: amountAuthorized, centsCaptured: amountCaptured, centsPaid: paymentStatus.centsPaid,
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
-        paymentStatusId: paymentStatusId, chargeId: chargeId, status: PaymentStatusStates.CHARGE_CONFIRMED
+        paymentStatusId: paymentStatusId, chargeId: chargeId, status: PaymentStatusStates.CHARGE_CONFIRMED,
       });
     });
   } catch (error) {

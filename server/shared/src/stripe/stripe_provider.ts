@@ -49,20 +49,20 @@ export class StripeProvider {
     return isRunningInEmulator() ? "http://10.0.2.2:9001" : "https://" + hostname + '/';
   }
 
-  static getHttpSuffix({ endpoint, uid }: { endpoint: string, uid: string }) {
-    return endpoint + "?uid=" + uid;
+  static getHttpSuffix({ endpoint, uid, version }: { endpoint: string, uid: string, version: string }) {
+    return endpoint + "?uid=" + uid + "&version=" + version;
   }
 
-  static getAccountLinkRefreshUrl({ hostname, uid }: { hostname: string, uid: string }): string {
-    return this.getHttpPrefix({ hostname: hostname }) + this.getHttpSuffix({ endpoint: "stripeAccountLinkRefresh", uid: uid });
+  static getAccountLinkRefreshUrl({ hostname, uid, version }: { hostname: string, uid: string, version: string }): string {
+    return this.getHttpPrefix({ hostname: hostname }) + this.getHttpSuffix({ endpoint: "stripeAccountLinkRefresh", uid: uid, version: version });
   }
 
-  static getAccountLinkReturnUrl({ hostname, uid }: { hostname: string, uid: string }): string {
-    return this.getHttpPrefix({ hostname: hostname }) + this.getHttpSuffix({ endpoint: "stripeAccountLinkReturn", uid: uid });
+  static getAccountLinkReturnUrl({ hostname, uid, version }: { hostname: string, uid: string, version: string }): string {
+    return this.getHttpPrefix({ hostname: hostname }) + this.getHttpSuffix({ endpoint: "stripeAccountLinkReturn", uid: uid, version: version });
   }
 
-  static getAccountTokenSubmitUrl({ hostname, uid, tokenInvalid }: { hostname: string, uid: string, tokenInvalid: boolean }): string {
-    let url = this.getHttpPrefix({ hostname: hostname }) + this.getHttpSuffix({ endpoint: "stripeAccountTokenSubmit", uid: uid });
+  static getAccountTokenSubmitUrl({ hostname, uid, tokenInvalid, version }: { hostname: string, uid: string, tokenInvalid: boolean, version: string }): string {
+    let url = this.getHttpPrefix({ hostname: hostname }) + this.getHttpSuffix({ endpoint: "stripeAccountTokenSubmit", uid: uid, version: version });
     if (tokenInvalid) {
       url += '&tokenInvalid=true';
     }

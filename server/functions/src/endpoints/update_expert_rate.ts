@@ -1,9 +1,10 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { getExpertRateDocumentRef, getExpertSignUpProgressDocumentRef, getPrivateUserDocument, getPublicExpertInfoDocumentRef } from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import { PrivateUserInfo } from "../../../shared/src/firebase/firestore/models/private_user_info";
-import { StripeProvider } from "../../../shared/src/stripe/stripe_provider";
-import { Logger } from "../../../shared/src/google_cloud/google_cloud_logger";
+import {getExpertRateDocumentRef, getPrivateUserDocument} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
+import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
+import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {FirebaseDocRef, getExpertInfoConditionalOnSignup} from "../../../shared/src/firebase/firestore/functions/expert_info_conditional_sign_up_fetcher";
 
 export const updateExpertRate = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
@@ -50,11 +51,7 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
     }
 
     const success = await admin.firestore().runTransaction(async (transaction) => {
-      const privateUserDoc: PrivateUserInfo = await getPrivateUserDocument({ transaction: transaction, uid: uid });
-      const publicExpertInfoDoc = await transaction.get(getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow }));
-      const expertSignUpProgressDocRef = getExpertSignUpProgressDocumentRef({ uid: uid });
-      const expertSignUpProgressDoc = fromSignUpFlow ? await transaction.get(expertSignUpProgressDocRef) : null;
-
+      const privateUserDoc: PrivateUserInfo = await getPrivateUserDocument({transaction: transaction, uid: uid});
       if (privateUserDoc.stripeConnectedId == null) {
         Logger.logError({
           logName: "updateExpertRate", message: `Cannot update expert rate for ${uid} because they have no stripe connected id`,
@@ -62,34 +59,20 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
         });
         return false;
       }
-      if (!publicExpertInfoDoc.exists) {
-        Logger.logError({
-          logName: "updateExpertRate", message: `Cannot update expert rate for ${uid} because they are not an expert`,
+      const wasSuccess: boolean = await getExpertInfoConditionalOnSignup({functionNameForLogging: "updateExpertRate",
+        uid: uid, fromSignUpFlow: fromSignUpFlow,
+        transaction: transaction, version: version, updateSignupProgressFunc: updateSignupProgress,
+        updateExpertInfoFunc: updateExpertInfo,
+        contextData: [newCentsPerMinute, newCentsStartCall],
+      });
+      if (wasSuccess) {
+        Logger.log({
+          logName: "updateExpertRate", message: `Updated expert rate for ${uid}. \
+        New rate: ${newCentsPerMinute} cents per minute and ${newCentsStartCall} cents to start call`,
           labels: new Map([["expertId", uid], ["version", version]]),
         });
-        return false;
       }
-      if (fromSignUpFlow && !(expertSignUpProgressDoc!.exists)) {
-        Logger.logError({
-          logName: "updateExpertRate", message: `Cannot update expert rate for ${uid} because they havbe no expert sign up progress doc`,
-          labels: new Map([["expertId", uid], ["version", version]]),
-        });
-        return false;
-      }
-      if (fromSignUpFlow) {
-        transaction.update(expertSignUpProgressDocRef, {
-          "updatedCallRate": true,
-        });
-      }
-      transaction.update(getExpertRateDocumentRef({ expertUid: uid }), {
-        "centsPerMinute": newCentsPerMinute,
-        "centsCallStart": newCentsStartCall,
-      });
-      Logger.log({
-        logName: "updateExpertRate", message: `Updated expert rate for ${uid}. New rate: ${newCentsPerMinute} cents per minute and ${newCentsStartCall} cents to start call`,
-        labels: new Map([["expertId", uid], ["version", version]]),
-      });
-      return true;
+      return wasSuccess;
     });
     return {
       success: success,
@@ -102,3 +85,24 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
     };
   }
 });
+
+function updateSignupProgress(signupProgressDocRef: FirebaseDocRef, transaction: FirebaseFirestore.Transaction) {
+  if (signupProgressDocRef == null) {
+    throw new Error("Cannot update signup progress for updateExpertCategory because signup progress doc ref is null");
+  }
+  transaction.update(signupProgressDocRef, {
+    "updatedCallRate": true,
+  });
+}
+
+function updateExpertInfo(expertInfoRef: FirebaseDocRef, transaction: FirebaseFirestore.Transaction, updatedRates: [number, number]) {
+  if (expertInfoRef == null) {
+    throw new Error("Cannot update expert category for updateExpertCategory because expert info doc ref is null");
+  }
+  const newCentsPerMinute = updatedRates[0];
+  const newCentsStartCall = updatedRates[1];
+  transaction.update(getExpertRateDocumentRef({expertUid: expertInfoRef.id}), {
+    "centsPerMinute": newCentsPerMinute,
+    "centsCallStart": newCentsStartCall,
+  });
+}

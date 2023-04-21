@@ -1,33 +1,36 @@
 import { Logger } from "../../../google_cloud/google_cloud_logger";
-import { getExpertSignUpProgressDocumentRef, getPublicExpertInfoDocumentRef } from "../document_fetchers/fetchers";
+import { FirebaseDocRef, getExpertInfoConditionalOnSignup } from "./expert_info_conditional_sign_up_fetcher";
 
-export async function updateProfilePicUrl({ transaction, uid, profilePicUrl, fromSignUpFlow }:
-    { transaction: FirebaseFirestore.Transaction, uid: string, profilePicUrl: string, fromSignUpFlow: boolean }): Promise<boolean> {
-    const publicInfoDocRef = getPublicExpertInfoDocumentRef({ uid: uid, fromSignUpFlow: fromSignUpFlow });
-    const expertSignUpProgressDocRef = getExpertSignUpProgressDocumentRef({ uid: uid });
-    const expertSignUpProgressDoc = fromSignUpFlow ? await transaction.get(expertSignUpProgressDocRef) : null;
-    const publicExpertInfoDoc = await transaction.get(publicInfoDocRef);
-    if (!publicExpertInfoDoc.exists) {
-        Logger.logError({
-            logName: "updateProfilePicture", message: `Cannot update profile pic for user ${uid} because they are not an expert. From sign up flow: ${fromSignUpFlow}`,
-            labels: new Map([["expertId", uid]])
-        });
-        return false;
-    }
-    if (fromSignUpFlow && !(expertSignUpProgressDoc!.exists)) {
-        Logger.logError({
-            logName: "updateProfilePicture", message: `Cannot update profile pic for user ${uid} because there is no expert progress doc.`,
-            labels: new Map([["expertId", uid]])
-        });
-        return false;
-    }
-    if (fromSignUpFlow) {
-        transaction.update(expertSignUpProgressDocRef, "updatedProfilePic", true);
-    }
-    transaction.update(publicInfoDocRef, "profilePicUrl", profilePicUrl);
-    Logger.log({
-        logName: "updateProfilePicture", message: `profile pic firestore updated to ${profilePicUrl} for user ${uid}. From sign up flow: ${fromSignUpFlow}`,
-        labels: new Map([["expertId", uid]])
+export async function updateProfilePicUrl({ transaction, uid, profilePicUrl, fromSignUpFlow, version }:
+    { transaction: FirebaseFirestore.Transaction, uid: string, profilePicUrl: string, fromSignUpFlow: boolean, version: string }): Promise<boolean> {
+    const wasSuccess: boolean = await getExpertInfoConditionalOnSignup({
+        functionNameForLogging: "updateProfilePicture",
+        uid: uid, fromSignUpFlow: fromSignUpFlow,
+        transaction: transaction, version: version, updateSignupProgressFunc: updateSignupProgress,
+        updateExpertInfoFunc: updateExpertInfo,
+        contextData: profilePicUrl
     });
-    return true;
+    if (wasSuccess) {
+        Logger.log({
+            logName: "updateProfilePicture", message: `profile pic firestore updated to ${profilePicUrl} for user ${uid}. From sign up flow: ${fromSignUpFlow}`,
+            labels: new Map([["expertId", uid]])
+        });
+    }
+    return wasSuccess;
+}
+
+function updateSignupProgress(signupProgressDocRef: FirebaseDocRef, transaction: FirebaseFirestore.Transaction) {
+    if (signupProgressDocRef == null) {
+        throw new Error("Cannot update signup progress for updateProfilePicUrl because signup progress doc ref is null");
+    }
+    transaction.update(signupProgressDocRef, {
+        "updatedProfilePic": true,
+    });
+}
+
+function updateExpertInfo(expertInfoRef: FirebaseDocRef, transaction: FirebaseFirestore.Transaction, profilePicUrl: string) {
+    if (expertInfoRef == null) {
+        throw new Error("Cannot update expert category for updateProfilePicUrl because expert info doc ref is null");
+    }
+    transaction.update(expertInfoRef, "profilePicUrl", profilePicUrl);
 }
