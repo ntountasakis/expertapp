@@ -1,9 +1,10 @@
-import { Logger } from "../../../../../shared/src/google_cloud/google_cloud_logger";
-import { ClientMessageSenderInterface } from "../../../message_sender/client_message_sender_interface";
-import { ServerCallJoinOrRequestResponse } from "../../../protos/call_transaction_package/ServerCallJoinOrRequestResponse";
+import {Logger} from "../../../../../shared/src/google_cloud/google_cloud_logger";
+import {BaseCallState} from "../../../call_state/common/base_call_state";
+import {ClientMessageSenderInterface} from "../../../message_sender/client_message_sender_interface";
+import {ServerCallJoinOrRequestResponse} from "../../../protos/call_transaction_package/ServerCallJoinOrRequestResponse";
 
 export async function sendGrpcCallJoinOrRequestFailure(
-  errorMessage: string, clientMessageSender: ClientMessageSenderInterface): Promise<void> {
+    errorMessage: string, clientMessageSender: ClientMessageSenderInterface, callState: BaseCallState): Promise<void> {
   Logger.logError({
     logName: "sendGrpcCallJoinOrRequestFailure", message: `Error: ${errorMessage} `,
   });
@@ -11,5 +12,5 @@ export async function sendGrpcCallJoinOrRequestFailure(
     "success": false,
     "errorMessage": errorMessage,
   };
-  clientMessageSender.sendCallJoinOrRequestResponse(serverCallJoinOrRequestResponse);
+  clientMessageSender.sendCallJoinOrRequestResponse(serverCallJoinOrRequestResponse, callState);
 }

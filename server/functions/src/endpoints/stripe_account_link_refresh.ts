@@ -47,7 +47,7 @@ async function redirectToStripeAccountLink({connectedAccountId, hostname, uid, v
   connectedAccountId: string, hostname: string, uid: string, response: functions.Response, version: string,
 }) {
   const accountLink = await createAccountLinkOnboarding({
-    stripe: StripeProvider.STRIPE, account: connectedAccountId,
+    stripe: StripeProvider.STRIPE, stripeConnectedId: connectedAccountId,
     refreshUrl: StripeProvider.getAccountLinkRefreshUrl({hostname: hostname, uid: uid, version: version}),
     returnUrl: StripeProvider.getAccountLinkReturnUrl({hostname: hostname, uid: uid, version: version}),
     functionContext: "stripeAccountLinkRefresh",

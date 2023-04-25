@@ -59,18 +59,18 @@ async function createStripeConnectAccount({ stripe, firstName, lastName, email }
   return account.id;
 }
 
-export async function createAccountLinkOnboarding({ stripe, account, refreshUrl, returnUrl, functionContext, expertUid }:
-  { stripe: Stripe, account: string, refreshUrl: string, returnUrl: string, functionContext: string, expertUid: string }): Promise<string> {
+export async function createAccountLinkOnboarding({ stripe, stripeConnectedId, refreshUrl, returnUrl, functionContext, expertUid }:
+  { stripe: Stripe, stripeConnectedId: string, refreshUrl: string, returnUrl: string, functionContext: string, expertUid: string }): Promise<string> {
   const accountLink = await stripe.accountLinks.create(
     {
-      account: account,
+      account: stripeConnectedId,
       refresh_url: refreshUrl,
       return_url: returnUrl,
       type: "account_onboarding",
     },
   );
   Logger.log({
-    logName: functionContext, message: `Created account link for account ${account}: refresh_url: ${refreshUrl}, return_url: ${returnUrl}`,
+    logName: functionContext, message: `Created account link for account ${stripeConnectedId}: refresh_url: ${refreshUrl}, return_url: ${returnUrl}`,
     labels: new Map([["expertId", expertUid]])
   });
 

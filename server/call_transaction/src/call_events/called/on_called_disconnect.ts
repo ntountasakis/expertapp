@@ -5,9 +5,9 @@ import {ClientMessageSenderInterface} from "../../message_sender/client_message_
 export async function onCalledDisconnect({transactionId, clientMessageSender, callState}:
     {transactionId: string, clientMessageSender: ClientMessageSenderInterface,
         callState: BaseCallState, clientRequested: boolean}): Promise<void> {
-  callState.log("Running onCalledDisconnect");
+  await callState.log("Running onCalledDisconnect");
   const callSummary = await endCallTransactionCalled({transactionId: transactionId, callState: callState});
   if (callState.isConnected()) {
-    await clientMessageSender.sendCallSummary(callSummary);
+    await clientMessageSender.sendCallSummary(callSummary, callState);
   }
 }

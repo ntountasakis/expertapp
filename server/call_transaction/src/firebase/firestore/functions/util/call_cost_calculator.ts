@@ -24,24 +24,24 @@ export function calculatePreAuthAmountForDesiredCallLength({desiredLengthSeconds
     centsPerMinute: centsPerMinute, centsStartCall: centsStartCall});
 }
 
-export function calculatePlatformFeeCents({costOfCallCents, platformFeePercent, callState}:
-  {costOfCallCents: number, platformFeePercent: number, callState: BaseCallState}): number {
+export async function calculatePlatformFeeCents({costOfCallCents, platformFeePercent, callState}:
+  {costOfCallCents: number, platformFeePercent: number, callState: BaseCallState}): Promise<number> {
   const platformFee = Math.round(costOfCallCents * (platformFeePercent / 100));
-  callState.log(`Platform fee (cents): ${platformFee}`);
+  await callState.log(`Platform fee (cents): ${platformFee}`);
   return platformFee;
 }
 
-export function calculatePaymentProcessorFeeCents({costOfCallCents, processorFeePercent, processorFlatFeeCents, callState}:
-  {costOfCallCents: number, processorFeePercent: number, processorFlatFeeCents: number, callState: BaseCallState}): number {
+export async function calculatePaymentProcessorFeeCents({costOfCallCents, processorFeePercent, processorFlatFeeCents, callState}:
+  {costOfCallCents: number, processorFeePercent: number, processorFlatFeeCents: number, callState: BaseCallState}): Promise<number> {
   const processorFee = Math.round((costOfCallCents * (processorFeePercent / 100)) + processorFlatFeeCents);
-  callState.log(`Processor fee (cents): ${processorFee}`);
+  await callState.log(`Processor fee (cents): ${processorFee}`);
   return processorFee;
 }
 
-export function calculateEarnedCents({costOfCallCents, platformFeeCents, processorFeeCents, callState}:
-  {costOfCallCents: number, platformFeeCents: number, processorFeeCents: number, callState: BaseCallState}): number {
+export async function calculateEarnedCents({costOfCallCents, platformFeeCents, processorFeeCents, callState}:
+  {costOfCallCents: number, platformFeeCents: number, processorFeeCents: number, callState: BaseCallState}): Promise<number> {
   const earnedCents = costOfCallCents - platformFeeCents - processorFeeCents;
-  callState.log(`Earned (cents): ${earnedCents}`);
+  await callState.log(`Earned (cents): ${earnedCents}`);
   return earnedCents;
 }
 

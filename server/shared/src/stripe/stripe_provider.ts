@@ -1,9 +1,10 @@
 import Stripe from "stripe";
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 import { GoogleCloudProvider } from "../google_cloud/google_cloud_provider";
+import { Logger } from "../google_cloud/google_cloud_logger";
 
 export class StripeProvider {
-  static API_VERSION = "2022-08-01" as Stripe.LatestApiVersion;
+  static API_VERSION = "2022-11-15" as Stripe.LatestApiVersion;
 
   static STRIPE_CONFIGURED = false;
   static STRIPE: Stripe;
@@ -22,7 +23,9 @@ export class StripeProvider {
       name: privateKeyString,
     });
     if (version.payload === undefined || version.payload!.data === undefined) {
-      throw new Error("Cannot get stripe private key from secret manager");
+      const errorMsg = "Cannot get stripe private key from secret manager"
+      Logger.logError({ logName: "StripeProvider", message: errorMsg });
+      throw new Error(errorMsg);
     }
     const payload = version.payload!.data!.toString();
     return payload;
@@ -30,7 +33,9 @@ export class StripeProvider {
 
   static async configureStripe(stripePrivateKeyVersion?: string): Promise<void> {
     if (stripePrivateKeyVersion === undefined || stripePrivateKeyVersion === null) {
-      throw new Error("Stripe private key version is not defined");
+      const errorMsg = "Stripe private key version is not defined";
+      Logger.logError({ logName: "StripeProvider", message: errorMsg });
+      throw new Error(errorMsg);
     }
     if (!StripeProvider.STRIPE_CONFIGURED) {
       const stripeKey = await this.getStripeSecret(stripePrivateKeyVersion!);

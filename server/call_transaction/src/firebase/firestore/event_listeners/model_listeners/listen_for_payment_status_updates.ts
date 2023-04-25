@@ -5,15 +5,15 @@ import {FirestoreUnsubscribeInterface} from "../firestore_unsubscribe_interface"
 
 export function listenForPaymentStatusUpdates(paymentStatusId: string, callState: BaseCallState): FirestoreUnsubscribeInterface {
   const doc = getPaymentStatusDocumentRef({paymentStatusId: paymentStatusId});
-  const unsubscribeFn = doc.onSnapshot((docSnapshot) => {
+  const unsubscribeFn = doc.onSnapshot(async (docSnapshot) => {
     const paymentStatus = docSnapshot.data() as PaymentStatus;
-    callState.log(`On payment status update. PaymentStatusId: ${paymentStatusId} 
+    await callState.log(`On payment status update. PaymentStatusId: ${paymentStatusId} 
       Uid: ${paymentStatus.uid} Status: ${paymentStatus.status} CentsRequestedAuthorized: ${paymentStatus.centsRequestedAuthorized}
       CentsAuthorized: ${paymentStatus.centsAuthorized} CentsRequestedCapture: ${paymentStatus.centsRequestedCapture} 
       CentsCaptured: ${paymentStatus.centsCaptured} CentsPaid: ${paymentStatus.centsPaid}`);
     callState.eventListenerManager.onEventUpdate({key: docSnapshot.id, type: "PaymentStatus", update: paymentStatus});
-  }, (err) => {
-    callState.log(`Encountered error: ${err}`);
+  }, async (err) => {
+    await callState.log(`Encountered error: ${err}`);
   });
 
   return unsubscribeFn;

@@ -15,12 +15,12 @@ export const markCallEndGenerateCallSummary = async ({transaction, callTransacti
     const lengthOfCallSec: number = (endCallTimeUtcMs - callTransaction.calledJoinTimeUtcMs) / 1000;
     const costOfCall: number = calculateCostOfCallInCents({beginTimeUtcMs: callTransaction.calledJoinTimeUtcMs, endTimeUtcMs: endCallTimeUtcMs,
       centsPerMinute: callTransaction.expertRateCentsPerMinute, centsStartCall: callTransaction.expertRateCentsCallStart});
-    const platformFees: number = calculatePlatformFeeCents({costOfCallCents: costOfCall, platformFeePercent: StripeProvider.PLATFORM_PERCENT_FEE,
+    const platformFees: number = await calculatePlatformFeeCents({costOfCallCents: costOfCall, platformFeePercent: StripeProvider.PLATFORM_PERCENT_FEE,
       callState: callState});
-    const paymentProcessorFees: number = calculatePaymentProcessorFeeCents({costOfCallCents: costOfCall,
+    const paymentProcessorFees: number = await calculatePaymentProcessorFeeCents({costOfCallCents: costOfCall,
       processorFeePercent: StripeProvider.STRIPE_PERCENT_FEE, processorFlatFeeCents: StripeProvider.STRIPE_FLAT_FEE_CENTS, callState: callState});
-    const earnedTotal: number = calculateEarnedCents({costOfCallCents: costOfCall, platformFeeCents: platformFees, processorFeeCents: paymentProcessorFees,
-      callState: callState});
+    const earnedTotal: number = await calculateEarnedCents({costOfCallCents: costOfCall,
+      platformFeeCents: platformFees, processorFeeCents: paymentProcessorFees, callState: callState});
     transaction.update(transactionDocumentRef, {
       "callEndTimeUtsMs": endCallTimeUtcMs,
       "lengthOfCallSec": lengthOfCallSec,

@@ -5,12 +5,12 @@ import {ClientMessageSenderInterface} from "../../message_sender/client_message_
 export async function onCalledTransactionUpdate(clientMessageSender: ClientMessageSenderInterface,
     callState: BaseCallState, update: CallTransaction): Promise<boolean> {
   if (update.callerFinishedTransaction) {
-    callState.log("Counterparty ended the call");
+    await callState.log("Counterparty ended the call");
     await callState.disconnect();
     return true;
   } else if (update.calledHasJoined) {
-    callState.log("Counterparty joined the call");
-    clientMessageSender.sendCounterpartyJoinedCall({});
+    await callState.log("Counterparty joined the call");
+    clientMessageSender.sendCounterpartyJoinedCall({}, callState);
   }
   return false;
 }

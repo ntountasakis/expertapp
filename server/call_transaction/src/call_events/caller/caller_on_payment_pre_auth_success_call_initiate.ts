@@ -28,12 +28,12 @@ export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSen
     const startRateString = callTransaction.expertRateCentsCallStart.toString();
     const perMinuteRateString = callTransaction.expertRateCentsPerMinute.toString();
 
-    callerCallState.setCallJoinExpirationTimer(30);
+    await callerCallState.setCallJoinExpirationTimer(30);
 
     const paymentPreAuthResolved: ServerCallBeginPaymentPreAuthResolved = {
       "joinCallTimeExpiryUtcMs": callerCallState.callJoinExpirationTimeUtcMs,
     };
-    clientMessageSender.sendCallBeginPaymentPreAuthResolved(paymentPreAuthResolved);
+    clientMessageSender.sendCallBeginPaymentPreAuthResolved(paymentPreAuthResolved, callerCallState);
 
     sendFcmCallJoinRequest({fcmToken: callerCallState.callerBeginCallContext.calledFcmToken,
       callerUid: callerCallState.callerBeginCallContext.callerUid,
@@ -42,7 +42,7 @@ export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSen
       callRateStartCents: startRateString,
       callRatePerMinuteCents: perMinuteRateString,
       callJoinExpirationTimeUtcMs: callerCallState.callJoinExpirationTimeUtcMs});
-    sendGrpcServerAgoraCredentials(clientMessageSender, callerCallState.callerBeginCallContext.agoraChannelName,
+    await sendGrpcServerAgoraCredentials(clientMessageSender, callerCallState.callerBeginCallContext.agoraChannelName,
         callerCallState.callerBeginCallContext.callerUid, callerCallState);
     return Promise.resolve(true);
   }

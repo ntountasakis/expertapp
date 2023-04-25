@@ -1,10 +1,10 @@
 import * as grpc from "@grpc/grpc-js";
-import { Logger } from "../../../../shared/src/google_cloud/google_cloud_logger";
-import { FirestoreListenerManager } from "../../firebase/firestore/event_listeners/firestore_listener_manager";
-import { ClientMessageSenderInterface } from "../../message_sender/client_message_sender_interface";
-import { ClientMessageContainer } from "../../protos/call_transaction_package/ClientMessageContainer";
-import { ServerMessageContainer } from "../../protos/call_transaction_package/ServerMessageContainer";
-import { CallOnDisconnectInterface } from "../functions/call_on_disconnect_interface";
+import {Logger} from "../../../../shared/src/google_cloud/google_cloud_logger";
+import {FirestoreListenerManager} from "../../firebase/firestore/event_listeners/firestore_listener_manager";
+import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
+import {ClientMessageContainer} from "../../protos/call_transaction_package/ClientMessageContainer";
+import {ServerMessageContainer} from "../../protos/call_transaction_package/ServerMessageContainer";
+import {CallOnDisconnectInterface} from "../functions/call_on_disconnect_interface";
 
 export class BaseCallState {
   userId: string;
@@ -16,7 +16,7 @@ export class BaseCallState {
   isCaller: boolean;
   _timer?: NodeJS.Timeout;
 
-  constructor({ userId, transactionId, version, clientMessageSender, onDisconnect, callStream, isCaller }:
+  constructor({userId, transactionId, version, clientMessageSender, onDisconnect, callStream, isCaller}:
     {
       onDisconnect: CallOnDisconnectInterface, clientMessageSender: ClientMessageSenderInterface,
       transactionId: string, userId: string, version: string, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>,
@@ -44,7 +44,7 @@ export class BaseCallState {
       await this.onDisconnectFunction({
         transactionId: this.transactionId,
         clientMessageSender: this.eventListenerManager.clientMessageSender,
-        callState: this.eventListenerManager.callState, clientRequested: clientRequested
+        callState: this.eventListenerManager.callState, clientRequested: clientRequested,
       });
       this.onDisconnectFunction = undefined;
     }
@@ -61,11 +61,11 @@ export class BaseCallState {
     }
   }
 
-  log(message: string): void {
+  async log(message: string): Promise<void> {
     const userKey = this.isCaller ? "userId" : "expertId";
-    Logger.log({
+    await Logger.log({
       logName: Logger.CALL_SERVER, message: message,
-      labels: new Map([["callTransactionId", this.transactionId], [userKey, this.userId], ["version", this.version]])
+      labels: new Map([["callTransactionId", this.transactionId], [userKey, this.userId], ["version", this.version]]),
     });
   }
 
