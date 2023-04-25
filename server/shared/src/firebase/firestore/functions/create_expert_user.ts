@@ -60,11 +60,11 @@ export async function createExpertUser({ uid }:
 
 function createDefaultAvailability() {
   const defaultDayAvailability: DayAvailability = {
-    "isAvailable": true,
+    "isAvailable": false,
     "startHourUtc": 0,
     "startMinuteUtc": 0,
-    "endHourUtc": 23,
-    "endMinuteUtc": 59,
+    "endHourUtc": 0,
+    "endMinuteUtc": 0,
   };
   const defaultWeekAvailability: WeekAvailability = {
     "mondayAvailability": defaultDayAvailability,
