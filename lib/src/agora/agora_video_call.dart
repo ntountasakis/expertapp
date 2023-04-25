@@ -15,13 +15,15 @@ class AgoraVideoCall extends StatefulWidget {
   final int agoraUid;
   final VoidCallback onChatButtonTap;
   final VoidCallback onEndCallButtonTap;
+  final VoidCallback onRemoteUserJoined;
 
   AgoraVideoCall(
       {required this.agoraChannelName,
       required this.agoraToken,
       required this.agoraUid,
       required this.onChatButtonTap,
-      required this.onEndCallButtonTap});
+      required this.onEndCallButtonTap,
+      required this.onRemoteUserJoined});
 
   @override
   _AgoraVideoCallState createState() => _AgoraVideoCallState();
@@ -68,6 +70,7 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
         },
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           log("remote user $remoteUid joined");
+          widget.onRemoteUserJoined();
           setState(() {
             _remoteUid = remoteUid;
           });

@@ -26,6 +26,8 @@ export function createCallTransactionDocument({ transaction, callerUid, calledUi
     "calledJoinTimeUtcMs": 0,
     "callerFinishedTransaction": false,
     "calledFinishedTransaction": false,
+    "callerNotifiedCalledJoined": false,
+    "calledNotifiedCallerJoined": false,
     "callEndTimeUtsMs": 0,
     "maxCallTimeSec": maxCallTimeSec,
     "lengthOfCallSec": 0,

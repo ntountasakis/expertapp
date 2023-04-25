@@ -14,6 +14,7 @@ export interface ProtoGrpcType {
     ClientCallInitiateRequest: MessageTypeDefinition
     ClientCallJoinRequest: MessageTypeDefinition
     ClientMessageContainer: MessageTypeDefinition
+    ClientNotifyRemoteJoinedCall: MessageTypeDefinition
     ServerAgoraCredentials: MessageTypeDefinition
     ServerCallBeginPaymentPreAuth: MessageTypeDefinition
     ServerCallBeginPaymentPreAuthResolved: MessageTypeDefinition

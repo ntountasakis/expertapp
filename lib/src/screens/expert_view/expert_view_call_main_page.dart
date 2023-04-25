@@ -78,6 +78,7 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
         agoraUid: agoraUid,
         onChatButtonTap: onChatButtonTap,
         onEndCallButtonTap: onEndCallTap,
+        onRemoteUserJoined: callServerManager.onRemoteUserJoined,
       );
     }
     return videoCall!;
