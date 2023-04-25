@@ -10,6 +10,5 @@ export function sendGrpcServerCallBeginPaymentInitiate(clientMessageSender: Clie
     "ephemeralKey": ephemeralKey,
     "centsRequestedAuthorized": centsRequestedAuth,
   };
-  callState.log(`Sending ServerCallBeginPaymentPreAuth for CustomerId: ${customerId}`);
-  clientMessageSender.sendCallBeginPaymentPreAuth(serverCallBeginPaymentInitiate);
+  clientMessageSender.sendCallBeginPaymentPreAuth(serverCallBeginPaymentInitiate, callState);
 }

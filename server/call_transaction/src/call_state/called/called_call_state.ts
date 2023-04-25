@@ -22,8 +22,8 @@ export class CalledCallState extends BaseCallState {
     this.maxCallLengthTimer = undefined;
   }
 
-  setMaxCallLengthTimer(maxCallTimeSec: number): void {
-    this.log(`Max call length started for ${maxCallTimeSec * 1000} ms at ${getUtcMsSinceEpoch()}`);
+  async setMaxCallLengthTimer(maxCallTimeSec: number): Promise<void> {
+    await this.log(`Max call length started for ${maxCallTimeSec * 1000} ms at ${getUtcMsSinceEpoch()}`);
     this.setTimer(maxCallTimeSec);
   }
 }

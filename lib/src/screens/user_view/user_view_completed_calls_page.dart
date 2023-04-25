@@ -14,7 +14,7 @@ class UserViewCompletedCallsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Completed Calls with Experts")),
+      appBar: AppBar(title: Text("Past Calls with Experts")),
       body: StreamBuilder(
         stream: CallTransaction.getStreamForCaller(callerUid: uid),
         builder: (BuildContext context,
@@ -35,7 +35,7 @@ class UserViewCompletedCallsPage extends StatelessWidget {
                               profilePicUrl: snapshot.data!,
                               showOnlineStatus: false,
                               isOnline: false),
-                          title: Text("No completed calls... yet."),
+                          title: Text("No calls... yet."),
                           subtitle: Text("View after your first call"),
                           trailing: SizedBox(),
                           onTapCallback: null);

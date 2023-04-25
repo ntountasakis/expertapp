@@ -9,6 +9,7 @@ import {ServerCounterpartyJoinedCall} from "../protos/call_transaction_package/S
 import {ServerFeeBreakdowns} from "../protos/call_transaction_package/ServerFeeBreakdowns";
 import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
 import {ClientMessageSenderInterface} from "./client_message_sender_interface";
+import {BaseCallState} from "../call_state/common/base_call_state";
 
 export class GrpcClientMessageSender extends ClientMessageSenderInterface {
   sendingStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>;
@@ -17,58 +18,65 @@ export class GrpcClientMessageSender extends ClientMessageSenderInterface {
     super();
     this.sendingStream = sendingStream;
   }
-  async sendCallJoinOrRequestResponse(callRequestResponse: ServerCallJoinOrRequestResponse): Promise<void> {
+  async sendCallJoinOrRequestResponse(callRequestResponse: ServerCallJoinOrRequestResponse, callState: BaseCallState): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverCallJoinOrRequestResponse": callRequestResponse,
       "messageWrapper": "serverCallJoinOrRequestResponse",
     };
     await this.writeWrapper(clientMessageContainer);
+    await callState.log("Sent ServerCallJoinOrRequestResponse: " + JSON.stringify(callRequestResponse));
   }
-  async sendCallAgoraCredentials(callAgoraCredentials: ServerAgoraCredentials): Promise<void> {
+  async sendCallAgoraCredentials(callAgoraCredentials: ServerAgoraCredentials, callState: BaseCallState): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverAgoraCredentials": callAgoraCredentials,
       "messageWrapper": "serverAgoraCredentials",
     };
     await this.writeWrapper(clientMessageContainer);
+    await callState.log("Sent ServerAgoraCredentials: " + JSON.stringify(callAgoraCredentials));
   }
-  async sendCallBeginPaymentPreAuth(callBeginPaymentPreAuth: ServerCallBeginPaymentPreAuth): Promise<void> {
+  async sendCallBeginPaymentPreAuth(callBeginPaymentPreAuth: ServerCallBeginPaymentPreAuth, callState: BaseCallState): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverCallBeginPaymentPreAuth": callBeginPaymentPreAuth,
       "messageWrapper": "serverCallBeginPaymentPreAuth",
     };
     await this.writeWrapper(clientMessageContainer);
+    await callState.log("Sent ServerCallBeginPaymentPreAuth: " + JSON.stringify(callBeginPaymentPreAuth));
   }
 
-  async sendCallBeginPaymentPreAuthResolved(callBeginPaymentPreAuthResolved: ServerCallBeginPaymentPreAuthResolved): Promise<void> {
+  async sendCallBeginPaymentPreAuthResolved(callBeginPaymentPreAuthResolved: ServerCallBeginPaymentPreAuthResolved, callState: BaseCallState): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverCallBeginPaymentPreAuthResolved": callBeginPaymentPreAuthResolved,
       "messageWrapper": "serverCallBeginPaymentPreAuthResolved",
     };
     await this.writeWrapper(clientMessageContainer);
+    await callState.log("Sent ServerCallBeginPaymentPreAuthResolved: " + JSON.stringify(callBeginPaymentPreAuthResolved));
   }
 
-  async sendCounterpartyJoinedCall(counterpartyJoinedCall: ServerCounterpartyJoinedCall): Promise<void> {
+  async sendCounterpartyJoinedCall(counterpartyJoinedCall: ServerCounterpartyJoinedCall, callState: BaseCallState): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverCounterpartyJoinedCall": counterpartyJoinedCall,
       "messageWrapper": "serverCounterpartyJoinedCall",
     };
     await this.writeWrapper(clientMessageContainer);
+    await callState.log("Sent ServerCounterpartyJoinedCall: " + JSON.stringify(counterpartyJoinedCall));
   }
 
-  async sendServerFeeBreakdowns(feeBreakdowns: ServerFeeBreakdowns): Promise<void> {
+  async sendServerFeeBreakdowns(feeBreakdowns: ServerFeeBreakdowns, callState: BaseCallState): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverFeeBreakdowns": feeBreakdowns,
       "messageWrapper": "serverFeeBreakdowns",
     };
     await this.writeWrapper(clientMessageContainer);
+    await callState.log("Sent ServerFeeBreakdowns: " + JSON.stringify(feeBreakdowns));
   }
 
-  async sendCallSummary(callSummary: ServerCallSummary): Promise<void> {
+  async sendCallSummary(callSummary: ServerCallSummary, callState: BaseCallState): Promise<void> {
     const clientMessageContainer: ServerMessageContainer = {
       "serverCallSummary": callSummary,
       "messageWrapper": "serverCallSummary",
     };
     await this.writeWrapper(clientMessageContainer);
+    await callState.log("Sent ServerCallSummary: " + JSON.stringify(callSummary));
   }
 
   writeWrapper(messageContainer: ServerMessageContainer): Promise<void> {

@@ -11,7 +11,8 @@ export const stripeWebhookListener = functions.https.onRequest(async (request, r
     await configureStripeProviderForFunctions();
     const eventType = request.body.type;
     Logger.log({
-      logName: "stripeWebhookListener", message: `Stripe webhook event: ${eventType}`,
+      logName: "stripeWebhookListener", message: `Stripe webhook event: ${eventType}. Body: ${JSON.stringify(request.body)}`,
+      labels: new Map([["stripeEventType", eventType]]),
     });
     if (eventType == "charge.succeeded") {
       await handleChargeSuceeded(request.body.data.object);

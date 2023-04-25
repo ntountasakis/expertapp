@@ -6,13 +6,13 @@ import {ClientMessageSenderInterface} from "../../message_sender/client_message_
 export async function onCallerTransactionUpdate(clientMessageSender: ClientMessageSenderInterface,
     callState: BaseCallState, update: CallTransaction): Promise<boolean> {
   if (update.calledFinishedTransaction) {
-    callState.log("Caller detected called ended the call");
+    await callState.log("Caller detected called ended the call");
     await callState.disconnect();
     return true;
   } else if (update.calledHasJoined) {
-    callState.log("Caller detected called joined the call");
+    await callState.log("Caller detected called joined the call");
     (callState as CallerCallState).cancelTimers();
-    clientMessageSender.sendCounterpartyJoinedCall({secondsCallAuthorizedFor: update.maxCallTimeSec});
+    clientMessageSender.sendCounterpartyJoinedCall({secondsCallAuthorizedFor: update.maxCallTimeSec}, callState);
   }
   return false;
 }

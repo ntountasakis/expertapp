@@ -7,11 +7,11 @@ import {ServerCallSummary} from "../../protos/call_transaction_package/ServerCal
 export async function onCallerDisconnect({transactionId, clientMessageSender, callState, clientRequested}:
     {transactionId: string, clientMessageSender: ClientMessageSenderInterface,
         callState: BaseCallState, clientRequested: boolean}): Promise<void> {
-  callState.log("Running onCallerDisconnect");
+  await callState.log("Running onCallerDisconnect");
   const callerCallState = callState as CallerCallState;
   const callSummary: ServerCallSummary = await endCallTransactionCaller(
       {transactionId: transactionId, callState: callerCallState, clientRequested: clientRequested});
   if (callState.isConnected()) {
-    await clientMessageSender.sendCallSummary(callSummary);
+    await clientMessageSender.sendCallSummary(callSummary, callState);
   }
 }

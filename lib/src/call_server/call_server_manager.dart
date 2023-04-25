@@ -91,6 +91,7 @@ class CallServerManager {
     final messageContainer =
         new ClientMessageContainer(callInitiateRequest: initiateRequest);
     _serverMessageProducer.sendMessage(messageContainer);
+    log('Initiate call request sent');
   }
 
   void _joinCall(BuildContext context, String callTransactionId) {

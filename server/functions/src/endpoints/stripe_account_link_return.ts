@@ -39,7 +39,7 @@ export const stripeAccountLinkReturn = functions.https.onRequest(async (request,
       labels: new Map([["userId", uid]]),
     });
     const accountLink = await createAccountLinkOnboarding({
-      stripe: StripeProvider.STRIPE, account: uid,
+      stripe: StripeProvider.STRIPE, stripeConnectedId: privateUserInfo.stripeConnectedId,
       refreshUrl: StripeProvider.getAccountLinkRefreshUrl({hostname: request.hostname, uid: uid, version: version}),
       returnUrl: StripeProvider.getAccountLinkReturnUrl({hostname: request.hostname, uid: uid, version: version}),
       functionContext: "stripeAccountLinkReturn",

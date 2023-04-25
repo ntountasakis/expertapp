@@ -7,10 +7,9 @@ export function listenForCallTransactionUpdates(callState: BaseCallState): Fires
   const doc = getCallTransactionDocumentRef({transactionId: callState.transactionId});
   const unsubscribeFn = doc.onSnapshot((docSnapshot) => {
     const callTransaction = docSnapshot.data() as CallTransaction;
-    callState.log("CallTransaction: updated");
     callState.eventListenerManager.onEventUpdate({key: docSnapshot.id, type: "CallTransaction", update: callTransaction});
-  }, (err) => {
-    callState.log(`Encountered error: ${err}`);
+  }, async (err) => {
+    await callState.log(`Encountered error: ${err}`);
   });
 
   return unsubscribeFn;
