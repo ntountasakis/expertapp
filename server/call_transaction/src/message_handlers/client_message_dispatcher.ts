@@ -14,6 +14,9 @@ import {ServerMessageContainer} from "../protos/call_transaction_package/ServerM
 import {handleClientCallDisconnectRequest} from "./handle_client_call_disconnect_request";
 import {handleClientCallInitiateRequest} from "./handle_client_call_initiate_request";
 import {handleClientCallJoinRequest} from "./handle_client_call_join_request";
+import {ClientNotifyRemoteJoinedCall} from "../protos/call_transaction_package/ClientNotifyRemoteJoinedCall";
+import {isValidClientNotifyRemotejoinedCall} from "../message_validators/validate_client_notify_remote_joined_call";
+import {handleClientNotifyRemoteJoinedCall} from "./handle_client_notify_remote_joined_call";
 
 export async function dispatchClientMessage(
     {clientMessage, invalidMessageHandler, clientMessageSender, callManager, callStream}: {
@@ -34,6 +37,8 @@ export async function dispatchClientMessage(
         clientMessageSender, callManager, callStream);
   } else if (clientMessage.callDisconnectRequest) {
     await dispatchCallDisconnectRequest(clientMessage.callDisconnectRequest, invalidMessageHandler, callManager);
+  } else if (clientMessage.notifyRemoteJoinedCall) {
+    await dispatchNotifyRemoteJoinedCall(clientMessage.notifyRemoteJoinedCall, invalidMessageHandler, callManager);
   } else {
     invalidMessageHandler("Unknown client message type");
   }
@@ -58,6 +63,16 @@ async function dispatchCallDisconnectRequest(callDisconnectRequest: ClientCallDi
     return;
   }
   handleClientCallDisconnectRequest(callManager, callDisconnectRequest.uid!);
+}
+
+async function dispatchNotifyRemoteJoinedCall(remoteJoinedCall: ClientNotifyRemoteJoinedCall,
+    invalidMessageHandler: InvalidClientMessageHandlerInterface, callManager: CallManager): Promise<void> {
+  const [callNotifyValid, callNotifyInvalidErrorMessage] = isValidClientNotifyRemotejoinedCall({clientNotifyRemoteJoinedCall: remoteJoinedCall});
+  if (!callNotifyValid) {
+    invalidMessageHandler(callNotifyInvalidErrorMessage);
+    return;
+  }
+  handleClientNotifyRemoteJoinedCall(callManager, remoteJoinedCall);
 }
 
 async function dispatchCallInitiateRequest(callInitiateRequest: ClientCallInitiateRequest,

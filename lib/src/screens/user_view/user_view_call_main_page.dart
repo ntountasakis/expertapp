@@ -66,6 +66,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
         agoraUid: agoraUid,
         onChatButtonTap: onChatButtonTap,
         onEndCallButtonTap: onEndCallTap,
+        onRemoteUserJoined: callServerManager.onRemoteUserJoined,
       );
     }
     return videoCall!;

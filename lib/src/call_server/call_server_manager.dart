@@ -57,6 +57,16 @@ class CallServerManager {
     return _serverMessageProducer.shutdown();
   }
 
+  void onRemoteUserJoined() {
+    final remoteJoinedCall = ClientNotifyRemoteJoinedCall(
+      clientUid: currentUserId,
+      remoteUid: otherUserId,
+    );
+    final messageContainer =
+        new ClientMessageContainer(notifyRemoteJoinedCall: remoteJoinedCall);
+    _serverMessageProducer.sendMessage(messageContainer);
+  }
+
   void _onError(Object error) {
     log('On Error ${error}');
 

@@ -22,11 +22,17 @@ message ClientCallDisconnectRequest {
     string uid = 1;
 }
 
+message ClientNotifyRemoteJoinedCall {
+    string clientUid = 1;
+    string remoteUid = 2;
+}
+
 message ClientMessageContainer {
     oneof messageWrapper {
         ClientCallInitiateRequest callInitiateRequest = 1;
         ClientCallJoinRequest callJoinRequest = 2;
         ClientCallDisconnectRequest callDisconnectRequest = 3;
+        ClientNotifyRemoteJoinedCall notifyRemoteJoinedCall = 4;
     }
 }
 
