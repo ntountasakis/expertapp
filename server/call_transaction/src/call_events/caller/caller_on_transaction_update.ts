@@ -13,6 +13,10 @@ export async function onCallerTransactionUpdate(clientMessageSender: ClientMessa
     await callState.log("Caller detected called joined the call");
     (callState as CallerCallState).cancelTimers();
     clientMessageSender.sendCounterpartyJoinedCall({secondsCallAuthorizedFor: update.maxCallTimeSec}, callState);
+    if (update.callBeginTimeUtcMs != 0 && !callState.sentCallReady) {
+      await clientMessageSender.sendServerBothPartiesReadyForCall({callStartUtcMs: update.callBeginTimeUtcMs}, callState);
+      callState.sentCallReady = true;
+    }
   }
   return false;
 }

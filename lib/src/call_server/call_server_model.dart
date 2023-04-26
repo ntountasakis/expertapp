@@ -37,7 +37,7 @@ class CallServerModel extends ChangeNotifier {
   CallServerCounterpartyConnectionState get callCounterpartyConnectionState =>
       _counterpartyConnectionState;
 
-  int _msEpochOfCounterpartyConnected = 0;
+  int _callStartUtcMs = 0;
   int callJoinTimeExpiryUtcMs = 0;
   int secMaxCallLength = 0;
 
@@ -46,12 +46,21 @@ class CallServerModel extends ChangeNotifier {
         new CallServerPaymentPromptModel(notifyListeners);
   }
 
-  int callLengthSeconds() {
-    if (_msEpochOfCounterpartyConnected == 0) return 0;
-    return ((DateTime.now().millisecondsSinceEpoch -
-                _msEpochOfCounterpartyConnected) /
+  int callElapsedSeconds() {
+    if (_callStartUtcMs == 0) return 0;
+    return ((DateTime.now().toUtc().millisecondsSinceEpoch - _callStartUtcMs) /
             1000)
         .round();
+  }
+
+  int callRemainingSeconds() {
+    if (secMaxCallLength == 0) return 0;
+    return secMaxCallLength - callElapsedSeconds();
+  }
+
+  bool callReady() {
+    return callCounterpartyConnectionState ==
+        CallServerCounterpartyConnectionState.READY_TO_START_CALL;
   }
 
   void reset() {
@@ -66,7 +75,7 @@ class CallServerModel extends ChangeNotifier {
     _counterpartyConnectionState =
         CallServerCounterpartyConnectionState.DISCONNECTED;
     _errorReason = CallServerErrorReason.NOT_ERRORED;
-    _msEpochOfCounterpartyConnected = 0;
+    _callStartUtcMs = 0;
     callJoinTimeExpiryUtcMs = 0;
   }
 
@@ -126,14 +135,22 @@ class CallServerModel extends ChangeNotifier {
   }
 
   void onServerCounterpartyJoinedCall(ServerCounterpartyJoinedCall joinedCall) {
-    _counterpartyConnectionState = CallServerCounterpartyConnectionState.JOINED;
-    _msEpochOfCounterpartyConnected = DateTime.now().millisecondsSinceEpoch;
+    _counterpartyConnectionState =
+        CallServerCounterpartyConnectionState.WAITING_FOR_READY;
     notifyListeners();
   }
 
   void onServerCallSummary(ServerCallSummary callSummary) {
     log("onServerCallSummary: " + callSummary.toString());
     _callSummary = callSummary;
+    notifyListeners();
+  }
+
+  void onServerBothPartiesReadyForCall(
+      ServerBothPartiesReadyForCall serverBothPartiesReadyForCall) {
+    _callStartUtcMs = serverBothPartiesReadyForCall.callStartUtcMs.toInt();
+    _counterpartyConnectionState =
+        CallServerCounterpartyConnectionState.READY_TO_START_CALL;
     notifyListeners();
   }
 }

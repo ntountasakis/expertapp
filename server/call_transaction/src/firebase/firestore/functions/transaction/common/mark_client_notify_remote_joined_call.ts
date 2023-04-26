@@ -2,6 +2,7 @@ import * as admin from "firebase-admin";
 import {ClientNotifyRemoteJoinedCall} from "../../../../../protos/call_transaction_package/ClientNotifyRemoteJoinedCall";
 import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
 import {getCallTransactionDocument, getCallTransactionDocumentRef} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {getUtcMsSinceEpoch} from "../../../../../../../shared/src/general/utils";
 
 export const markClientNotifyRemoteJoinedCall = async ({notify, transactionId, isCaller}:
     { notify: ClientNotifyRemoteJoinedCall, transactionId: string, isCaller: boolean }):
@@ -10,10 +11,10 @@ export const markClientNotifyRemoteJoinedCall = async ({notify, transactionId, i
     const callTransaction: CallTransaction = await getCallTransactionDocument(
         {transaction: transaction, transactionId: transactionId});
 
-
     if (!callTransaction.calledHasJoined) {
       throw new Error(`CallTransaction ${transactionId} has not been joined by called. Cannot mark client notify remote joined call`);
     }
+    const counterpartyReady = isCaller ? callTransaction.calledNotifiedCallerJoined : callTransaction.callerNotifiedCalledJoined;
     if (isCaller) {
       if (notify.clientUid != callTransaction.callerUid || notify.remoteUid != callTransaction.calledUid) {
         throw new Error(`ClientNotifyRemoteJoinedCall invalid. transactionId: ${transactionId} notifyClientUid: ${notify.clientUid} \
@@ -29,6 +30,11 @@ export const markClientNotifyRemoteJoinedCall = async ({notify, transactionId, i
       }
       transaction.update(getCallTransactionDocumentRef({transactionId: transactionId}), {
         "calledNotifiedCallerJoined": true,
+      });
+    }
+    if (counterpartyReady) {
+      transaction.update(getCallTransactionDocumentRef({transactionId: transactionId}), {
+        "callBeginTimeUtcMs": getUtcMsSinceEpoch(),
       });
     }
   });

@@ -63,6 +63,10 @@ message ServerCallBeginPaymentPreAuthResolved {
 message ServerCounterpartyJoinedCall {
 }
 
+message ServerBothPartiesReadyForCall {
+    int64 callStartUtcMs = 1;
+}
+
 message ServerFeeBreakdowns {
     float paymentProcessorPercentFee = 1;
     uint32 paymentProcessorCentsFlatFee = 2;
@@ -79,7 +83,6 @@ message ServerCallSummary {
     uint32 earnedTotalCents = 5;
 }
 
-
 message ServerMessageContainer {
     oneof messageWrapper {
         ServerCallJoinOrRequestResponse serverCallJoinOrRequestResponse = 1;
@@ -89,5 +92,6 @@ message ServerMessageContainer {
         ServerCounterpartyJoinedCall serverCounterpartyJoinedCall = 6;
         ServerFeeBreakdowns serverFeeBreakdowns = 7;
         ServerCallSummary serverCallSummary = 8;
+        ServerBothPartiesReadyForCall serverBothPartiesReadyForCall = 9;
     }
 }

@@ -14,6 +14,7 @@ export class BaseCallState {
   onDisconnectFunction?: CallOnDisconnectInterface;
   callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>;
   isCaller: boolean;
+  sentCallReady: boolean;
   _timer?: NodeJS.Timeout;
 
   constructor({userId, transactionId, version, clientMessageSender, onDisconnect, callStream, isCaller}:
@@ -30,6 +31,7 @@ export class BaseCallState {
     this.callStream = callStream;
     this._timer = undefined;
     this.isCaller = isCaller;
+    this.sentCallReady = false;
   }
 
   async disconnect(): Promise<void> {

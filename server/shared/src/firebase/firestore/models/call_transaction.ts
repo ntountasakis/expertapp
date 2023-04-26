@@ -16,7 +16,8 @@ export interface CallTransaction {
     calledFinishedTransaction: boolean;
     callerNotifiedCalledJoined: boolean;
     calledNotifiedCallerJoined: boolean;
-    callEndTimeUtsMs: number;
+    callBeginTimeUtcMs: number;
+    callEndTimeUtcMs: number;
     maxCallTimeSec: number;
     lengthOfCallSec: number;
     costOfCallCents: number;

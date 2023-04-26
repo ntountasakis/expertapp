@@ -11,6 +11,10 @@ export async function onCalledTransactionUpdate(clientMessageSender: ClientMessa
   } else if (update.calledHasJoined) {
     await callState.log("Counterparty joined the call");
     clientMessageSender.sendCounterpartyJoinedCall({}, callState);
+    if (update.callBeginTimeUtcMs != 0 && !callState.sentCallReady) {
+      clientMessageSender.sendServerBothPartiesReadyForCall({callStartUtcMs: update.callBeginTimeUtcMs}, callState);
+      callState.sentCallReady = true;
+    }
   }
   return false;
 }

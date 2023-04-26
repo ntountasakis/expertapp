@@ -1,15 +1,15 @@
 import * as grpc from "@grpc/grpc-js";
-import { getUtcMsSinceEpoch } from "../../../../shared/src/general/utils";
-import { ClientMessageSenderInterface } from "../../message_sender/client_message_sender_interface";
-import { ClientMessageContainer } from "../../protos/call_transaction_package/ClientMessageContainer";
-import { ServerMessageContainer } from "../../protos/call_transaction_package/ServerMessageContainer";
-import { BaseCallState } from "../common/base_call_state";
-import { CallOnDisconnectInterface } from "../functions/call_on_disconnect_interface";
+import {getUtcMsSinceEpoch} from "../../../../shared/src/general/utils";
+import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
+import {ClientMessageContainer} from "../../protos/call_transaction_package/ClientMessageContainer";
+import {ServerMessageContainer} from "../../protos/call_transaction_package/ServerMessageContainer";
+import {BaseCallState} from "../common/base_call_state";
+import {CallOnDisconnectInterface} from "../functions/call_on_disconnect_interface";
 
 export class CalledCallState extends BaseCallState {
   maxCallLengthTimer?: NodeJS.Timeout;
 
-  constructor({ transactionId, clientMessageSender, onDisconnect, userId, version, callStream }:
+  constructor({transactionId, clientMessageSender, onDisconnect, userId, version, callStream}:
     {
       transactionId: string, clientMessageSender: ClientMessageSenderInterface,
       onDisconnect: CallOnDisconnectInterface,
@@ -18,7 +18,7 @@ export class CalledCallState extends BaseCallState {
     super({
       transactionId: transactionId, clientMessageSender: clientMessageSender, onDisconnect: onDisconnect, userId: userId,
       callStream: callStream, isCaller: false, version: version,
-    })
+    });
     this.maxCallLengthTimer = undefined;
   }
 

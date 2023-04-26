@@ -4,6 +4,7 @@ import {ServerCallJoinOrRequestResponse} from "../protos/call_transaction_packag
 import {ServerCallBeginPaymentPreAuth} from "../protos/call_transaction_package/ServerCallBeginPaymentPreAuth";
 import {ServerCallBeginPaymentPreAuthResolved} from "../protos/call_transaction_package/ServerCallBeginPaymentPreAuthResolved";
 import {ServerFeeBreakdowns} from "../protos/call_transaction_package/ServerFeeBreakdowns";
+import {ServerBothPartiesReadyForCall} from "../protos/call_transaction_package/ServerBothPartiesReadyForCall";
 import {ServerCounterpartyJoinedCall} from "../protos/call_transaction_package/ServerCounterpartyJoinedCall";
 import {BaseCallState} from "../call_state/common/base_call_state";
 
@@ -16,4 +17,5 @@ export abstract class ClientMessageSenderInterface {
     abstract sendServerFeeBreakdowns(feeBreakdowns: ServerFeeBreakdowns, callState: BaseCallState): Promise<void>;
     abstract sendCounterpartyJoinedCall(counterpartyJoinedCall: ServerCounterpartyJoinedCall, callState: BaseCallState): Promise<void>;
     abstract sendCallSummary(callSummary: ServerCallSummary, callState: BaseCallState): Promise<void>;
+    abstract sendServerBothPartiesReadyForCall(callReady: ServerBothPartiesReadyForCall, callState: BaseCallState): Promise<void>;
 }

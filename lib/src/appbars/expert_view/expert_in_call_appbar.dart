@@ -6,6 +6,7 @@ import 'package:expertapp/src/appbars/widgets/earnings_button.dart';
 import 'package:expertapp/src/appbars/widgets/time_remaining.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class ExpertInCallAppbar extends StatefulWidget with PreferredSizeWidget {
@@ -24,29 +25,40 @@ class ExpertInCallAppbar extends StatefulWidget with PreferredSizeWidget {
 class _ExpertInCallAppbarState extends State<ExpertInCallAppbar> {
   TimeRemaining? callTimeRemaining = null;
 
-  String buildTitle() {
-    return "Call with " + widget.userMetadata.documentType.firstName;
+  String buildTitle(CallServerModel model) {
+    final prefix = model.callCounterpartyConnectionState ==
+            CallServerCounterpartyConnectionState.READY_TO_START_CALL
+        ? "Call with "
+        : "Connecting you to ";
+    return prefix + widget.userMetadata.documentType.firstName;
   }
 
-  Widget buildInCallTimer(CallServerModel model) {
-    if (callTimeRemaining == null) {
-      callTimeRemaining = TimeRemaining(
-          msRemaining: model.secMaxCallLength * 1000, onEnd: () => {});
+  Widget buildInCallAppBar(CallServerModel model) {
+    if (callTimeRemaining == null && model.callReady()) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          callTimeRemaining = TimeRemaining(
+              msRemaining: model.callRemainingSeconds() * 1000,
+              onEnd: () => {});
+        });
+      });
     }
     return AppBar(
       title: Row(
         children: [
           Expanded(
-            child: Text(buildTitle()),
+            child: Text(buildTitle(model)),
           ),
           SizedBox(
             width: 15,
           ),
-          callTimeRemaining!,
+          callTimeRemaining != null ? callTimeRemaining! : Container(),
           SizedBox(
             width: 15,
           ),
-          earningsButton(context, widget.model),
+          callTimeRemaining != null
+              ? earningsButton(context, widget.model)
+              : Container(),
         ],
       ),
     );
@@ -60,7 +72,7 @@ class _ExpertInCallAppbarState extends State<ExpertInCallAppbar> {
               CallServerCounterpartyConnectionState.DISCONNECTED) {
         return SizedBox();
       }
-      return buildInCallTimer(model);
+      return buildInCallAppBar(model);
     });
   }
 }

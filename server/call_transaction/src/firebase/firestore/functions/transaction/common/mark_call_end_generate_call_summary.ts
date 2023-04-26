@@ -11,9 +11,9 @@ export const markCallEndGenerateCallSummary = async ({transaction, callTransacti
       callState: BaseCallState}): Promise<ServerCallSummary> => {
   const transactionDocumentRef = getCallTransactionDocumentRef({transactionId: callTransaction.callTransactionId});
   const publicExpertInfoDocumentRef = getPublicExpertInfoDocumentRef({uid: callTransaction.calledUid, fromSignUpFlow: false});
-  if (callTransaction.calledHasJoined) {
-    const lengthOfCallSec: number = (endCallTimeUtcMs - callTransaction.calledJoinTimeUtcMs) / 1000;
-    const costOfCall: number = calculateCostOfCallInCents({beginTimeUtcMs: callTransaction.calledJoinTimeUtcMs, endTimeUtcMs: endCallTimeUtcMs,
+  if (callTransaction.callBeginTimeUtcMs !=0) {
+    const lengthOfCallSec: number = (endCallTimeUtcMs - callTransaction.callBeginTimeUtcMs) / 1000;
+    const costOfCall: number = calculateCostOfCallInCents({beginTimeUtcMs: callTransaction.callBeginTimeUtcMs, endTimeUtcMs: endCallTimeUtcMs,
       centsPerMinute: callTransaction.expertRateCentsPerMinute, centsStartCall: callTransaction.expertRateCentsCallStart});
     const platformFees: number = await calculatePlatformFeeCents({costOfCallCents: costOfCall, platformFeePercent: StripeProvider.PLATFORM_PERCENT_FEE,
       callState: callState});
@@ -22,14 +22,14 @@ export const markCallEndGenerateCallSummary = async ({transaction, callTransacti
     const earnedTotal: number = await calculateEarnedCents({costOfCallCents: costOfCall,
       platformFeeCents: platformFees, processorFeeCents: paymentProcessorFees, callState: callState});
     transaction.update(transactionDocumentRef, {
-      "callEndTimeUtsMs": endCallTimeUtcMs,
+      "callEndTimeUtcMs": endCallTimeUtcMs,
       "lengthOfCallSec": lengthOfCallSec,
       "costOfCallCents": costOfCall,
       "paymentProcessorFeeCents": paymentProcessorFees,
       "platformFeeCents": platformFees,
       "earnedTotalCents": earnedTotal,
     });
-    callTransaction.callEndTimeUtsMs = endCallTimeUtcMs;
+    callTransaction.callEndTimeUtcMs = endCallTimeUtcMs;
     callTransaction.lengthOfCallSec = lengthOfCallSec;
     callTransaction.costOfCallCents = costOfCall;
     callTransaction.paymentProcessorFeeCents = paymentProcessorFees;
