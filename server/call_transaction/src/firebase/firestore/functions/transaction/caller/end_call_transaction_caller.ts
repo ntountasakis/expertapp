@@ -14,7 +14,7 @@ import {markCallEndGenerateCallSummary} from "../common/mark_call_end_generate_c
 export const endCallTransactionCaller = async ({transactionId, callState, clientRequested} :
   {transactionId: string, callState: CallerCallState, clientRequested: boolean})
 : Promise<ServerCallSummary> => {
-  const [paymentIntentId, calledJoined, calledWasRung, calledFcmToken, callSummary] = await admin.firestore().runTransaction(async (transaction) => {
+  const [paymentIntentId, callBegan, calledWasRung, calledFcmToken, callSummary] = await admin.firestore().runTransaction(async (transaction) => {
     const callTransaction: CallTransaction = await getCallTransactionDocument(
         {transaction: transaction, transactionId: transactionId});
 
@@ -23,7 +23,7 @@ export const endCallTransactionCaller = async ({transactionId, callState, client
 
     const callSummary: ServerCallSummary = await markCallEndGenerateCallSummary(
         {transaction: transaction, callTransaction: callTransaction, endCallTimeUtcMs: getUtcMsSinceEpoch(), callState: callState});
-    if (callTransaction.calledHasJoined) {
+    if (callTransaction.callBeginTimeUtcMs != 0) {
       const costOfCallCents = callSummary.costOfCallCents!;
       await updatePaymentStatus({transaction: transaction, paymentStatusCancellationReason: paymentStatus.paymentStatusCancellationReason,
         centsAuthorized: paymentStatus.centsAuthorized, centsCaptured: paymentStatus.centsCaptured, centsPaid: paymentStatus.centsPaid,
@@ -37,9 +37,9 @@ export const endCallTransactionCaller = async ({transactionId, callState, client
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
         paymentStatusId: callTransaction.callerPaymentStatusId, chargeId: paymentStatus.chargeId, status: PaymentStatusStates.CANCELLATION_REQUESTED});
     }
-    return [paymentStatus.paymentIntentId, callTransaction.calledHasJoined, callTransaction.calledWasRung, callTransaction.calledFcmToken, callSummary];
+    return [paymentStatus.paymentIntentId, callTransaction.callBeginTimeUtcMs != 0, callTransaction.calledWasRung, callTransaction.calledFcmToken, callSummary];
   });
-  if (calledJoined) {
+  if (callBegan) {
     await chargeStripePaymentIntent({amountToCaptureInCents: callSummary.costOfCallCents!, paymentIntentId: paymentIntentId});
   } else {
     await cancelStripePaymentIntent({paymentIntentId: paymentIntentId});

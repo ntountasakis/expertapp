@@ -10,7 +10,7 @@ class CallTransaction {
   final String callerPaymentStatusId;
   final int callRequestTimeUtcMs;
   final int calledJoinTimeUtcMs;
-  final int callEndTimeUtsMs;
+  final int callEndTimeUtcMs;
   final int costOfCallCents;
   final int earnedTotalCents;
 
@@ -22,7 +22,7 @@ class CallTransaction {
       this.callerPaymentStatusId,
       this.callRequestTimeUtcMs,
       this.calledJoinTimeUtcMs,
-      this.callEndTimeUtsMs,
+      this.callEndTimeUtcMs,
       this.costOfCallCents,
       this.earnedTotalCents);
 
@@ -35,7 +35,7 @@ class CallTransaction {
           json["callerPaymentStatusId"] as String,
           json["callRequestTimeUtcMs"] as int,
           json["calledJoinTimeUtcMs"] as int,
-          json["callEndTimeUtsMs"] as int,
+          json["callEndTimeUtcMs"] as int,
           json["costOfCallCents"] as int,
           json["earnedTotalCents"] as int,
         );
@@ -49,7 +49,7 @@ class CallTransaction {
       'callerPaymentStatusId': callerPaymentStatusId,
       'callRequestTimeUtcMs': callRequestTimeUtcMs,
       'calledJoinTimeUtcMs': calledJoinTimeUtcMs,
-      'callEndTimeUtsMs': calledJoinTimeUtcMs,
+      'callEndTimeUtcMs': calledJoinTimeUtcMs,
       'costOfCallCents': costOfCallCents,
       'earnedTotalCents': earnedTotalCents,
     };
@@ -60,7 +60,7 @@ class CallTransaction {
       {required String callerUid}) {
     return _callTransactionRef()
         .where("callerUid", isEqualTo: callerUid)
-        .orderBy("callEndTimeUtsMs", descending: true)
+        .orderBy("callEndTimeUtcMs", descending: true)
         .snapshots()
         .map((QuerySnapshot<CallTransaction> collectionSnapshot) {
       return collectionSnapshot.docs
@@ -74,7 +74,7 @@ class CallTransaction {
       {required String calledUid}) {
     return _callTransactionRef()
         .where("calledUid", isEqualTo: calledUid)
-        .orderBy("callEndTimeUtsMs", descending: true)
+        .orderBy("callEndTimeUtcMs", descending: true)
         .snapshots()
         .map((QuerySnapshot<CallTransaction> collectionSnapshot) {
       return collectionSnapshot.docs

@@ -36,7 +36,7 @@ Widget costButton(BuildContext context, CallServerModel model) {
 }
 
 Widget buildCostDialog(CallServerModel model) {
-  int callLengthSec = model.callLengthSeconds();
+  int callLengthSec = model.callElapsedSeconds();
   if (model.feeBreakdowns != null && callLengthSec != 0) {
     return Center(
       child: Column(

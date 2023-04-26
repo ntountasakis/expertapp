@@ -17,7 +17,7 @@ class CompletedCallsUtil {
   }
 
   static String formatEndDate(CallTransaction call) {
-    final endTime = DateTime.fromMillisecondsSinceEpoch(call.callEndTimeUtsMs);
+    final endTime = DateTime.fromMillisecondsSinceEpoch(call.callEndTimeUtcMs);
     return DateFormat.yMd().add_jm().format(endTime);
   }
 
@@ -28,7 +28,7 @@ class CompletedCallsUtil {
 
   static String formatCallLength(CallTransaction call) {
     final callLengthSec =
-        (call.callEndTimeUtsMs - call.calledJoinTimeUtcMs) ~/ 1000;
+        (call.callEndTimeUtcMs - call.calledJoinTimeUtcMs) ~/ 1000;
     return CallSummaryUtil.callLengthFormat(Duration(seconds: callLengthSec));
   }
 }

@@ -34,8 +34,12 @@ class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
         " to join ";
   }
 
-  String buildMainCallTitle() {
-    return "Call with " + widget.userMetadata.documentType.firstName;
+  String buildMainCallTitle(CallServerModel model) {
+    final prefix = model.callCounterpartyConnectionState ==
+            CallServerCounterpartyConnectionState.READY_TO_START_CALL
+        ? "Call with "
+        : "Connecting you to ";
+    return prefix + widget.userMetadata.documentType.firstName;
   }
 
   Widget buildWaitingForCallToJoin(CallServerModel model) {
@@ -71,18 +75,16 @@ class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
     );
   }
 
-  Widget buildInCallTimer(CallServerModel model) {
-    if (timeRemainingMainCall == null) {
+  Widget buildInCallAppBar(CallServerModel model) {
+    if (timeRemainingMainCall == null && model.callReady()) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
         setState(() {
           timeRemainingCalledToJoin = null;
           timeRemainingMainCall = new TimeRemaining(
-              msRemaining: model.secMaxCallLength * 1000, onEnd: (() => {}));
+              msRemaining: model.callRemainingSeconds() * 1000,
+              onEnd: (() => {}));
         });
       });
-      return AppBar(
-        automaticallyImplyLeading: widget.allowBackButton,
-      );
     }
     return AppBar(
       automaticallyImplyLeading: widget.allowBackButton,
@@ -90,18 +92,20 @@ class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
         children: [
           Expanded(
             child: Text(
-              buildMainCallTitle(),
+              buildMainCallTitle(model),
               style: textStyleDuringCall,
             ),
           ),
           SizedBox(
             width: 15,
           ),
-          timeRemainingMainCall!,
+          timeRemainingMainCall != null ? timeRemainingMainCall! : Container(),
           SizedBox(
             width: 15,
           ),
-          costButton(context, model),
+          timeRemainingMainCall != null
+              ? costButton(context, model)
+              : Container(),
         ],
       ),
     );
@@ -132,7 +136,7 @@ class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
           CallServerCounterpartyConnectionState.DISCONNECTED) {
         return buildWaitingForCallToJoin(model);
       }
-      return buildInCallTimer(model);
+      return buildInCallAppBar(model);
     });
   }
 }

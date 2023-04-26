@@ -30,7 +30,7 @@ CallServerModel buildModel() {
       earnedCentsStartCall: rateStartCallCents,
       earnedCentsPerMinute: ratePerMinute);
 
-  when(() => model.callLengthSeconds()).thenReturn(100);
+  when(() => model.callElapsedSeconds()).thenReturn(100);
   when(() => model.feeBreakdowns).thenReturn(fees);
   return model;
 }

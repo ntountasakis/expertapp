@@ -4,7 +4,7 @@ import 'package:expertapp/src/util/currency_util.dart';
 import 'package:flutter/material.dart';
 
 Widget buildEarningsDialog(CallServerModel model) {
-  int callLengthSec = model.callLengthSeconds();
+  int callLengthSec = model.callElapsedSeconds();
   if (model.feeBreakdowns != null && callLengthSec != 0) {
     return Center(
       child: Column(

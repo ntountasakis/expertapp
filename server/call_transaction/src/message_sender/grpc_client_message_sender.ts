@@ -10,6 +10,7 @@ import {ServerFeeBreakdowns} from "../protos/call_transaction_package/ServerFeeB
 import {ServerMessageContainer} from "../protos/call_transaction_package/ServerMessageContainer";
 import {ClientMessageSenderInterface} from "./client_message_sender_interface";
 import {BaseCallState} from "../call_state/common/base_call_state";
+import {ServerBothPartiesReadyForCall} from "../protos/call_transaction_package/ServerBothPartiesReadyForCall";
 
 export class GrpcClientMessageSender extends ClientMessageSenderInterface {
   sendingStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>;
@@ -77,6 +78,15 @@ export class GrpcClientMessageSender extends ClientMessageSenderInterface {
     };
     await this.writeWrapper(clientMessageContainer);
     await callState.log("Sent ServerCallSummary: " + JSON.stringify(callSummary));
+  }
+
+  async sendServerBothPartiesReadyForCall(callReady: ServerBothPartiesReadyForCall, callState: BaseCallState): Promise<void> {
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverBothPartiesReadyForCall": callReady,
+      "messageWrapper": "serverBothPartiesReadyForCall",
+    };
+    await this.writeWrapper(clientMessageContainer);
+    await callState.log("Sent ServerBothPartiesReadyForCall: " + JSON.stringify(callReady));
   }
 
   writeWrapper(messageContainer: ServerMessageContainer): Promise<void> {
