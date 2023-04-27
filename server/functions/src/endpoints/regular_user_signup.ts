@@ -17,7 +17,8 @@ export const regularUserSignup = functions.https.onCall(async (data, context) =>
   const version: string = data.version;
 
   await configureStripeProviderForFunctions();
-  const stripeCustomerId = await createStripeCustomer({stripe: StripeProvider.STRIPE});
+  const stripeCustomerId = await createStripeCustomer({stripe: StripeProvider.STRIPE,
+    firstName: firstName, lastName: lastName, email: email});
   await createRegularUser({
     uid: uid, email: email, stripeCustomerId: stripeCustomerId,
     firstName: firstName, lastName: lastName,

@@ -2,11 +2,15 @@ import Stripe from "stripe";
 import {Logger} from "../google_cloud/google_cloud_logger";
 import handleStripeError from "./stripe_error_handler";
 
-async function createStripeCustomer({stripe}: { stripe: Stripe }): Promise<string> {
+async function createStripeCustomer({stripe, firstName, lastName, email}:
+  { stripe: Stripe, firstName: string, lastName: string, email: string }): Promise<string> {
   let stripeCustomerId = "";
   let errorMessage = "Cannot create Stripe customer. ";
   try {
-    const stripeCustomerResponse = await stripe.customers.create();
+    const stripeCustomerResponse = await stripe.customers.create({
+      name: firstName + " " + lastName,
+      email: email,
+    });
     stripeCustomerId = stripeCustomerResponse.id;
   } catch (error) {
     errorMessage += handleStripeError("createStripeCustomer", error);
