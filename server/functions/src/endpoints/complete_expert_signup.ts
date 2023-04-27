@@ -1,9 +1,9 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {getExpertSignUpProgressDocumentRef, getPublicExpertInfoDocumentRef} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
-import {PublicExpertInfo} from "../../../shared/src/firebase/firestore/models/public_expert_info";
-import {ExpertSignupProgress, isExpertSignupProgressComplete} from "../../../shared/src/firebase/firestore/models/expert_signup_progress";
+import {getPublicExpertInfoDocumentRef, getExpertSignUpProgressDocumentRef} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {isExpertSignupProgressComplete, ExpertSignupProgress} from "../shared/src/firebase/firestore/models/expert_signup_progress";
+import {PublicExpertInfo} from "../shared/src/firebase/firestore/models/public_expert_info";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const completeExpertSignUp = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {

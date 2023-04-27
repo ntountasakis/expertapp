@@ -6,20 +6,22 @@ RUN apt-get update && \
   protobuf-compiler \
   vim-tiny \
   curl
-RUN npm install -g n && n 18
-COPY ./server/call_transaction/package.json ./call_transaction/
-COPY ./server/call_transaction/tsconfig.json ./call_transaction/
-COPY ./server/shared/package.json ./shared/
+RUN npm install -g n && n 16
+WORKDIR /server
+COPY ./server/functions/package.json ./functions/
+COPY ./server/functions/package.json ./call_transaction/
+WORKDIR /server/functions
+RUN npm i
 WORKDIR /server/call_transaction
 RUN npm i
-WORKDIR /server/shared
-RUN npm i
 WORKDIR /server
-COPY ./conf ./conf/
+COPY ./server/functions/src ./functions/
+COPY ./server/functions/package.json ./functions/
+COPY ./server/call_transaction/src ./call_transaction/
+COPY ./server/call_transaction/tsconfig.json ./call_transaction/
 COPY ./server/scripts ./call_transaction/scripts
-COPY ./server/call_transaction/src ./call_transaction/src
-COPY ./server/shared/src ./shared/src
-COPY ../protos ./call_transaction/protos_defs
+COPY ./protos ./call_transaction/protos_defs
+COPY ./conf ../conf/
 WORKDIR /server/call_transaction
 RUN npm run build
 WORKDIR /server/call_transaction/dist/call_transaction/src/

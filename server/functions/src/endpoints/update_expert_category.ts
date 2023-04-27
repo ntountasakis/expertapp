@@ -1,8 +1,8 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {getExpertCategoryRef} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
-import {FirebaseDocRef, getExpertInfoConditionalOnSignup} from "../../../shared/src/firebase/firestore/functions/expert_info_conditional_sign_up_fetcher";
+import {getExpertCategoryRef} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {getExpertInfoConditionalOnSignup, FirebaseDocRef} from "../shared/src/firebase/firestore/functions/expert_info_conditional_sign_up_fetcher";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const updateExpertCategory = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {

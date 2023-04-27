@@ -1,10 +1,9 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import Ajv, {JTDSchemaType} from "ajv/dist/jtd";
-import {DayAvailability, WeekAvailability} from "../../../shared/src/firebase/firestore/models/expert_availability";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
-import {FirebaseDocRef, getExpertInfoConditionalOnSignup} from "../../../shared/src/firebase/firestore/functions/expert_info_conditional_sign_up_fetcher";
-
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
+import {FirebaseDocRef, getExpertInfoConditionalOnSignup} from "../shared/src/firebase/firestore/functions/expert_info_conditional_sign_up_fetcher";
+import {WeekAvailability, DayAvailability} from "../shared/src/firebase/firestore/models/expert_availability";
 
 export const updateExpertAvailability = functions.https.onCall(async (data, context) => {
   if (context.auth == null || context.auth.uid == null) {

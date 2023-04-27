@@ -1,8 +1,8 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
-import {getPublicExpertInfoDocumentRef, getStatusDocumentRef} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {PublicExpertInfo} from "../../../shared/src/firebase/firestore/models/public_expert_info";
+import {getStatusDocumentRef, getPublicExpertInfoDocumentRef} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {PublicExpertInfo} from "../shared/src/firebase/firestore/models/public_expert_info";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 // taken from https://firebase.google.com/docs/firestore/solutions/presence
 

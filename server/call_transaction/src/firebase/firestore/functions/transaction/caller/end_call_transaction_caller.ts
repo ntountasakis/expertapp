@@ -1,15 +1,15 @@
 import * as admin from "firebase-admin";
-import {getCallTransactionDocument, getPaymentStatusDocumentTransaction} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
-import {chargeStripePaymentIntent} from "../../../../../../../shared/src/stripe/payment_intent_creator";
-import {PaymentStatus, PaymentStatusCancellationReason, PaymentStatusStates} from "../../../../../../../shared/src/firebase/firestore/models/payment_status";
-import cancelStripePaymentIntent from "../../../../../../../shared/src/stripe/cancel_payment_intent";
-import {updatePaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/update_payment_status";
-import {CallerCallState} from "../../../../../call_state/caller/caller_call_state";
-import {getUtcMsSinceEpoch} from "../../../../../../../shared/src/general/utils";
-import {sendFcmCallJoinCancel} from "../../../../../../../shared/src/firebase/fcm/functions/send_fcm_call_join_request";
 import {ServerCallSummary} from "../../../../../protos/call_transaction_package/ServerCallSummary";
 import {markCallEndGenerateCallSummary} from "../common/mark_call_end_generate_call_summary";
+import {CallerCallState} from "../../../../../call_state/caller/caller_call_state";
+import {sendFcmCallJoinCancel} from "../../../../../../../functions/src/shared/src/firebase/fcm/functions/send_fcm_call_join_request";
+import {getCallTransactionDocument, getPaymentStatusDocumentTransaction} from "../../../../../../../functions/src/shared/src/firebase/firestore/document_fetchers/fetchers";
+import {updatePaymentStatus} from "../../../../../../../functions/src/shared/src/firebase/firestore/functions/update_payment_status";
+import {CallTransaction} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/call_transaction";
+import {PaymentStatus, PaymentStatusStates, PaymentStatusCancellationReason} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/payment_status";
+import {getUtcMsSinceEpoch} from "../../../../../../../functions/src/shared/src/general/utils";
+import cancelStripePaymentIntent from "../../../../../../../functions/src/shared/src/stripe/cancel_payment_intent";
+import {chargeStripePaymentIntent} from "../../../../../../../functions/src/shared/src/stripe/payment_intent_creator";
 
 export const endCallTransactionCaller = async ({transactionId, callState, clientRequested} :
   {transactionId: string, callState: CallerCallState, clientRequested: boolean})

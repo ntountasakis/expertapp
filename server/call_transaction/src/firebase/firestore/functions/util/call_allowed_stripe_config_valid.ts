@@ -1,5 +1,5 @@
-import {isStringDefined} from "../../../../../../shared/src/general/utils";
-import {PrivateUserInfo} from "../../../../../../shared/src/firebase/firestore/models/private_user_info";
+import {PrivateUserInfo} from "../../../../../../functions/src/shared/src/firebase/firestore/models/private_user_info";
+import {isStringDefined} from "../../../../../../functions/src/shared/src/general/utils";
 
 export default function callAllowedStripeConfigValid({callerUserInfo, calledUserInfo}:
   {callerUserInfo: PrivateUserInfo, calledUserInfo: PrivateUserInfo}): boolean {

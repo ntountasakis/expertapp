@@ -1,5 +1,5 @@
-import {CallTransaction} from "../../../../../shared/src/firebase/firestore/models/call_transaction";
-import {StripeProvider} from "../../../../../shared/src/stripe/stripe_provider";
+import {CallTransaction} from "../../../../../functions/src/shared/src/firebase/firestore/models/call_transaction";
+import {StripeProvider} from "../../../../../functions/src/shared/src/stripe/stripe_provider";
 import {BaseCallState} from "../../../call_state/common/base_call_state";
 import {ClientMessageSenderInterface} from "../../../message_sender/client_message_sender_interface";
 import {ServerFeeBreakdowns} from "../../../protos/call_transaction_package/ServerFeeBreakdowns";

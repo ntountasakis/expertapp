@@ -1,8 +1,8 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {getChatroomId} from "../../../shared/src/firebase/firestore/functions/chatroom_util";
-import {createChatroom} from "../../../shared/src/firebase/firestore/functions/create_chatroom";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {getChatroomId} from "../shared/src/firebase/firestore/functions/chatroom_util";
+import {createChatroom} from "../shared/src/firebase/firestore/functions/create_chatroom";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const chatroomLookup = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {

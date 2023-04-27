@@ -1,12 +1,12 @@
 import * as functions from "firebase-functions";
-import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
-import {createAccountLinkOnboarding} from "../../../shared/src/stripe/util";
-import {updateConnectedAccountPrivateUserInfo} from "../../../shared/src/firebase/firestore/functions/update_connected_account_private_user_info";
-import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
-import {getPrivateUserDocumentNoTransact} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {checkTokenValidAndRemove} from "../../../shared/src/firebase/firestore/functions/check_token_valid_and_remove";
+import {getPrivateUserDocumentNoTransact} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {checkTokenValidAndRemove} from "../shared/src/firebase/firestore/functions/check_token_valid_and_remove";
+import {updateConnectedAccountPrivateUserInfo} from "../shared/src/firebase/firestore/functions/update_connected_account_private_user_info";
+import {PrivateUserInfo} from "../shared/src/firebase/firestore/models/private_user_info";
+import {StripeProvider} from "../shared/src/stripe/stripe_provider";
+import {createAccountLinkOnboarding} from "../shared/src/stripe/util";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const stripeAccountLinkRefresh = functions.https.onRequest(async (request, response) => {
   await configureStripeProviderForFunctions();

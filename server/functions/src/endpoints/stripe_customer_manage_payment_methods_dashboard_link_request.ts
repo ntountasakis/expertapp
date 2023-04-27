@@ -1,9 +1,9 @@
 import * as functions from "firebase-functions";
-import {getPrivateUserDocumentNoTransact} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
-import createCustomerManagePaymentMethodsDashboardLoginLink from "../../../shared/src/stripe/create_customer_manage_payment_methods_dashboard_login_link";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
+import {getPrivateUserDocumentNoTransact} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {PrivateUserInfo} from "../shared/src/firebase/firestore/models/private_user_info";
+import createCustomerManagePaymentMethodsDashboardLoginLink from "../shared/src/stripe/create_customer_manage_payment_methods_dashboard_login_link";
 
 export const stripeManagePaymentMethodsLinkRequest = functions.https.onRequest(async (request, response) => {
   await configureStripeProviderForFunctions();

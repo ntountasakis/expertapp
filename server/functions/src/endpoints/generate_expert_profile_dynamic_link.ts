@@ -1,8 +1,8 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
-import {FirebaseDynamicLinkProvider} from "../../../shared/src/firebase/dynamic_links/web_api_key";
-import {getPublicExpertInfoDocumentRef} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {FirebaseDynamicLinkProvider} from "../shared/src/firebase/dynamic_links/web_api_key";
+import {getPublicExpertInfoDocumentRef} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const generateExpertProfileDynamicLink = functions.https.onCall(async (data) => {
   const expertUid: string = data.expertUid;

@@ -1,11 +1,11 @@
 import * as admin from "firebase-admin";
-import {getCallTransactionDocument, getPaymentStatusDocumentTransaction, getPrivateUserDocument} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {updatePaymentStatus} from "../../../shared/src/firebase/firestore/functions/update_payment_status";
-import {CallTransaction} from "../../../shared/src/firebase/firestore/models/call_transaction";
-import {PaymentStatus, PaymentStatusStates} from "../../../shared/src/firebase/firestore/models/payment_status";
-import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
-import createStripePaymentTransfer from "../../../shared/src/stripe/payment_transfer_creator";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
+import {updatePaymentStatus} from "../shared/src/firebase/firestore/functions/update_payment_status";
+import {CallTransaction} from "../shared/src/firebase/firestore/models/call_transaction";
+import {PaymentStatus, PaymentStatusStates} from "../shared/src/firebase/firestore/models/payment_status";
+import {PrivateUserInfo} from "../shared/src/firebase/firestore/models/private_user_info";
+import createStripePaymentTransfer from "../shared/src/stripe/payment_transfer_creator";
+import {getPaymentStatusDocumentTransaction, getPrivateUserDocument, getCallTransactionDocument} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function handleChargeCaptured(payload: any): Promise<void> {

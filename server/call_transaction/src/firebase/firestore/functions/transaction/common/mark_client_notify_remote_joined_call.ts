@@ -1,8 +1,8 @@
 import * as admin from "firebase-admin";
 import {ClientNotifyRemoteJoinedCall} from "../../../../../protos/call_transaction_package/ClientNotifyRemoteJoinedCall";
-import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
-import {getCallTransactionDocument, getCallTransactionDocumentRef} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {getUtcMsSinceEpoch} from "../../../../../../../shared/src/general/utils";
+import {getCallTransactionDocument, getCallTransactionDocumentRef} from "../../../../../../../functions/src/shared/src/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/call_transaction";
+import {getUtcMsSinceEpoch} from "../../../../../../../functions/src/shared/src/general/utils";
 
 export const markClientNotifyRemoteJoinedCall = async ({notify, transactionId, isCaller}:
     { notify: ClientNotifyRemoteJoinedCall, transactionId: string, isCaller: boolean }):
