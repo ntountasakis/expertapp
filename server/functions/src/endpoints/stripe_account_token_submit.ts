@@ -1,8 +1,7 @@
-
 import * as functions from "firebase-functions";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
-import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
+import {StripeProvider} from "../shared/src/stripe/stripe_provider";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const stripeAccountTokenSubmit = functions.https.onRequest(async (request, response) => {
   await configureStripeProviderForFunctions();

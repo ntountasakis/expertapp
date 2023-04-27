@@ -1,10 +1,10 @@
 import * as grpc from "@grpc/grpc-js";
-import {Logger} from "../../../../shared/src/google_cloud/google_cloud_logger";
 import {FirestoreListenerManager} from "../../firebase/firestore/event_listeners/firestore_listener_manager";
 import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
 import {ClientMessageContainer} from "../../protos/call_transaction_package/ClientMessageContainer";
 import {ServerMessageContainer} from "../../protos/call_transaction_package/ServerMessageContainer";
 import {CallOnDisconnectInterface} from "../functions/call_on_disconnect_interface";
+import {Logger} from "../../../../functions/src/shared/src/google_cloud/google_cloud_logger";
 
 export class BaseCallState {
   userId: string;

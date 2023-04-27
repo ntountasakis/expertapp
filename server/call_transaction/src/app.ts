@@ -1,13 +1,12 @@
 import {Server, ServerCredentials} from "@grpc/grpc-js";
-
 import * as grpc from "@grpc/grpc-js";
 import * as protoLoader from "@grpc/proto-loader";
 import * as admin from "firebase-admin";
 import {ProtoGrpcType} from "./protos/call_transaction";
 import {CallTransactionServer} from "./server/main/call_transaction_server";
-import {StripeProvider} from "../../shared/src/stripe/stripe_provider";
-import {Logger} from "../../shared/src/google_cloud/google_cloud_logger";
 import {applicationDefault} from "firebase-admin/app";
+import {Logger} from "../../functions/src/shared/src/google_cloud/google_cloud_logger";
+import {StripeProvider} from "../../functions/src/shared/src/stripe/stripe_provider";
 
 function getServer(): Server {
   const packageDefinition = protoLoader.loadSync("../protos/call_transaction.proto");

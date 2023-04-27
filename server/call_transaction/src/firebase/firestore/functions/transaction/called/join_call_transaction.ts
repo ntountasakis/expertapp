@@ -1,10 +1,10 @@
 import * as admin from "firebase-admin";
-import {getUtcMsSinceEpoch, isStringDefined} from "../../../../../../../shared/src/general/utils";
-import {getCallTransactionDocument, getCallTransactionDocumentRef, getPrivateUserDocument, getPublicExpertInfo, getPublicExpertInfoDocumentRef} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
-import {PrivateUserInfo} from "../../../../../../../shared/src/firebase/firestore/models/private_user_info";
+import {getCallTransactionDocument, getPrivateUserDocument, getPublicExpertInfo, getCallTransactionDocumentRef, getPublicExpertInfoDocumentRef} from "../../../../../../../functions/src/shared/src/firebase/firestore/document_fetchers/fetchers";
+import {CallTransaction} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/call_transaction";
+import {PrivateUserInfo} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/private_user_info";
+import {PublicExpertInfo} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/public_expert_info";
+import {isStringDefined, getUtcMsSinceEpoch} from "../../../../../../../functions/src/shared/src/general/utils";
 import {ClientCallJoinRequest} from "../../../../../protos/call_transaction_package/ClientCallJoinRequest";
-import {PublicExpertInfo} from "../../../../../../../shared/src/firebase/firestore/models/public_expert_info";
 
 export const joinCallTransaction = async ({request}: { request: ClientCallJoinRequest }):
   Promise<[boolean, CallTransaction]> => {

@@ -1,4 +1,4 @@
-import {ExpertRate} from "../../../../shared/src/firebase/firestore/models/expert_rate";
+import {ExpertRate} from "../../../../functions/src/shared/src/firebase/firestore/models/expert_rate";
 
 export class CallerBeginCallContext {
   transactionId: string;

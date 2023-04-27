@@ -1,17 +1,17 @@
 import {v4 as uuidv4} from "uuid";
 import * as admin from "firebase-admin";
-import {ExpertRate} from "../../../../../../../shared/src/firebase/firestore/models/expert_rate";
-import {FcmToken} from "../../../../../../../shared/src/firebase/firestore/models/fcm_token";
-import {createCallTransactionDocument} from "../../../../../../../shared/src/firebase/firestore/functions/create_call_transaction_document";
-import {getExpertRateDocument, getFcmTokenDocument, getPaymentStatusDocumentRef, getPrivateUserDocument} from "../../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {CallTransaction} from "../../../../../../../shared/src/firebase/firestore/models/call_transaction";
-import {PrivateUserInfo} from "../../../../../../../shared/src/firebase/firestore/models/private_user_info";
-import {createStripePaymentIntentPreAuth} from "../../../../../../../shared/src/stripe/payment_intent_creator";
-import {createPaymentStatus} from "../../../../../../../shared/src/firebase/firestore/functions/create_payment_status";
-import createCustomerEphemeralKey from "../../../../../../../shared/src/stripe/create_customer_ephemeral_key";
-import callAllowedStripeConfigValid from "../../util/call_allowed_stripe_config_valid";
-import {PaymentContext} from "../../../../../../../shared/src/firebase/firestore/models/payment_status";
 import {calculateMaxCallLengthSec, calculatePreAuthAmountForDesiredCallLength} from "../../util/call_cost_calculator";
+import {getExpertRateDocument, getFcmTokenDocument, getPrivateUserDocument, getPaymentStatusDocumentRef} from "../../../../../../../functions/src/shared/src/firebase/firestore/document_fetchers/fetchers";
+import {createCallTransactionDocument} from "../../../../../../../functions/src/shared/src/firebase/firestore/functions/create_call_transaction_document";
+import {createPaymentStatus} from "../../../../../../../functions/src/shared/src/firebase/firestore/functions/create_payment_status";
+import {CallTransaction} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/call_transaction";
+import {ExpertRate} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/expert_rate";
+import {FcmToken} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/fcm_token";
+import {PaymentContext} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/payment_status";
+import {PrivateUserInfo} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/private_user_info";
+import createCustomerEphemeralKey from "../../../../../../../functions/src/shared/src/stripe/create_customer_ephemeral_key";
+import {createStripePaymentIntentPreAuth} from "../../../../../../../functions/src/shared/src/stripe/payment_intent_creator";
+import callAllowedStripeConfigValid from "../../util/call_allowed_stripe_config_valid";
 
 export const createCallTransaction = async ({callerUid, calledUid}: { callerUid: string, calledUid: string }):
   Promise<[boolean, string, string, string, number, CallTransaction?, ExpertRate?]> => {

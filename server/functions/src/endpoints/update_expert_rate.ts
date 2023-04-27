@@ -1,10 +1,10 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {getExpertRateDocumentRef, getPrivateUserDocument} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
-import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
-import {FirebaseDocRef, getExpertInfoConditionalOnSignup} from "../../../shared/src/firebase/firestore/functions/expert_info_conditional_sign_up_fetcher";
+import {getPrivateUserDocument, getExpertRateDocumentRef} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {getExpertInfoConditionalOnSignup, FirebaseDocRef} from "../shared/src/firebase/firestore/functions/expert_info_conditional_sign_up_fetcher";
+import {PrivateUserInfo} from "../shared/src/firebase/firestore/models/private_user_info";
+import {StripeProvider} from "../shared/src/stripe/stripe_provider";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const updateExpertRate = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {

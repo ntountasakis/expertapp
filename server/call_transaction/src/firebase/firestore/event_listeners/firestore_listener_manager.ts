@@ -2,7 +2,7 @@ import {FirestoreUnsubscribeInterface} from "./firestore_unsubscribe_interface";
 import {ClientMessageSenderInterface} from "../../../message_sender/client_message_sender_interface";
 import {BaseCallState} from "../../../call_state/common/base_call_state";
 import {FirestoreUpdateCallback} from "./firestore_update_callback";
-import {Logger} from "../../../../../shared/src/google_cloud/google_cloud_logger";
+import {Logger} from "../../../../../functions/src/shared/src/google_cloud/google_cloud_logger";
 
 export class FirestoreListenerManager {
   clientMessageSender: ClientMessageSenderInterface;

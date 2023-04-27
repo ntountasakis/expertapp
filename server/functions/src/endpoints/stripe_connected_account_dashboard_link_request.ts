@@ -1,9 +1,9 @@
 import * as functions from "firebase-functions";
-import {getPrivateUserDocumentNoTransact} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
-import createConnectedAccountDashboardLoginLink from "../../../shared/src/stripe/create_connected_account_dashboard_login_link";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
+import {getPrivateUserDocumentNoTransact} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {PrivateUserInfo} from "../shared/src/firebase/firestore/models/private_user_info";
+import createConnectedAccountDashboardLoginLink from "../shared/src/stripe/create_connected_account_dashboard_login_link";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const stripeConnectedAccountDashboardLinkRequest = functions.https.onRequest(async (request, response) => {
   await configureStripeProviderForFunctions();

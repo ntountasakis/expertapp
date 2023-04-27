@@ -1,8 +1,8 @@
 import * as admin from "firebase-admin";
-import {getPaymentStatusDocumentTransaction} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {updatePaymentStatus} from "../../../shared/src/firebase/firestore/functions/update_payment_status";
-import {PaymentStatusStates} from "../../../shared/src/firebase/firestore/models/payment_status";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
+import {getPaymentStatusDocumentTransaction} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {updatePaymentStatus} from "../shared/src/firebase/firestore/functions/update_payment_status";
+import {PaymentStatusStates} from "../shared/src/firebase/firestore/models/payment_status";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function handleChargeSuceeded(payload: any): Promise<void> {

@@ -1,12 +1,12 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {getPublicExpertInfo, getPublicUserDocument} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {createReview} from "../../../shared/src/firebase/firestore/functions/create_review";
-import {getReviewsFromAuthorForReviewed} from "../../../shared/src/firebase/firestore/functions/get_reviews_from_author_for_reviewed";
-import {updateReview} from "../../../shared/src/firebase/firestore/functions/update_review";
-import {PublicExpertInfo} from "../../../shared/src/firebase/firestore/models/public_expert_info";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
-import {PublicUserInfo} from "../../../shared/src/firebase/firestore/models/public_user_info";
+import {getPublicUserDocument, getPublicExpertInfo} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {createReview} from "../shared/src/firebase/firestore/functions/create_review";
+import {getReviewsFromAuthorForReviewed} from "../shared/src/firebase/firestore/functions/get_reviews_from_author_for_reviewed";
+import {updateReview} from "../shared/src/firebase/firestore/functions/update_review";
+import {PublicExpertInfo} from "../shared/src/firebase/firestore/models/public_expert_info";
+import {PublicUserInfo} from "../shared/src/firebase/firestore/models/public_user_info";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const submitReview = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {

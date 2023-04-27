@@ -1,9 +1,9 @@
 import * as functions from "firebase-functions";
-import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
-import {createStripeCustomer} from "../../../shared/src/stripe/util";
-import {createRegularUser} from "../../../shared/src/firebase/firestore/functions/create_regular_user";
+import {createRegularUser} from "../shared/src/firebase/firestore/functions/create_regular_user";
+import {StripeProvider} from "../shared/src/stripe/stripe_provider";
+import {createStripeCustomer} from "../shared/src/stripe/util";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const regularUserSignup = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {

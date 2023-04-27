@@ -4,7 +4,7 @@ import {handleChargeCaptured} from "../stripe/handle_charge_captured";
 import {handlePaymentIntentCanceled} from "../stripe/handle_payment_intent_canceled";
 import {handlePaymentIntentSucceeded} from "../stripe/handle_payment_intent_succeeded";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const stripeWebhookListener = functions.https.onRequest(async (request, response) => {
   try {

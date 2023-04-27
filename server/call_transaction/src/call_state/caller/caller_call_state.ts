@@ -5,7 +5,7 @@ import {BaseCallState} from "../common/base_call_state";
 import {ClientMessageSenderInterface} from "../../message_sender/client_message_sender_interface";
 import {ClientMessageContainer} from "../../protos/call_transaction_package/ClientMessageContainer";
 import {ServerMessageContainer} from "../../protos/call_transaction_package/ServerMessageContainer";
-import {getUtcMsSinceEpoch} from "../../../../shared/src/general/utils";
+import {getUtcMsSinceEpoch} from "../../../../functions/src/shared/src/general/utils";
 
 export class CallerCallState extends BaseCallState {
   callerBeginCallContext: CallerBeginCallContext;

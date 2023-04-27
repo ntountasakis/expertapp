@@ -7,7 +7,7 @@ import {CallerBeginCallContext} from "../caller/caller_begin_call_context";
 import {CallerCallState} from "../caller/caller_call_state";
 import {CallOnDisconnectInterface} from "../functions/call_on_disconnect_interface";
 import {BaseCallState} from "./base_call_state";
-import {Logger} from "../../../../shared/src/google_cloud/google_cloud_logger";
+import {Logger} from "../../../../functions/src/shared/src/google_cloud/google_cloud_logger";
 
 export class CallManager {
   _callStates = new Map<string, BaseCallState>();

@@ -1,12 +1,12 @@
 import * as functions from "firebase-functions";
-import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
-import {createAccountLinkOnboarding, retrieveAccount} from "../../../shared/src/stripe/util";
-import {getPrivateUserDocumentNoTransact} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
-import {createExpertUser} from "../../../shared/src/firebase/firestore/functions/create_expert_user";
-import {StoragePaths} from "../../../shared/src/firebase/storage/storage_paths";
+import {getPrivateUserDocumentNoTransact} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {createExpertUser} from "../shared/src/firebase/firestore/functions/create_expert_user";
+import {PrivateUserInfo} from "../shared/src/firebase/firestore/models/private_user_info";
+import {StoragePaths} from "../shared/src/firebase/storage/storage_paths";
+import {StripeProvider} from "../shared/src/stripe/stripe_provider";
+import {retrieveAccount, createAccountLinkOnboarding} from "../shared/src/stripe/util";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const stripeAccountLinkReturn = functions.https.onRequest(async (request, response) => {
   await configureStripeProviderForFunctions();

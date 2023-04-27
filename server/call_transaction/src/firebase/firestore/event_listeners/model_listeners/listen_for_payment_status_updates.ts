@@ -1,5 +1,5 @@
-import {getPaymentStatusDocumentRef} from "../../../../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {PaymentStatus} from "../../../../../../shared/src/firebase/firestore/models/payment_status";
+import {getPaymentStatusDocumentRef} from "../../../../../../functions/src/shared/src/firebase/firestore/document_fetchers/fetchers";
+import {PaymentStatus} from "../../../../../../functions/src/shared/src/firebase/firestore/models/payment_status";
 import {BaseCallState} from "../../../../call_state/common/base_call_state";
 import {FirestoreUnsubscribeInterface} from "../firestore_unsubscribe_interface";
 

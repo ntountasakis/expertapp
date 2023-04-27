@@ -1,12 +1,12 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {getExpertRateDocumentRef, getExpertSignUpProgressDocumentRef, getPrivateUserDocumentRef, getPublicExpertInfoDocumentRef, getPublicUserDocumentRef, getStatusDocumentRef} from "../../../shared/src/firebase/firestore/document_fetchers/fetchers";
-import {PrivateUserInfo} from "../../../shared/src/firebase/firestore/models/private_user_info";
-import {deleteStripeConnectedAccount, deleteStripeCustomer} from "../../../shared/src/stripe/util";
-import {StripeProvider} from "../../../shared/src/stripe/stripe_provider";
-import allBalancesZeroStripeConnectedAccount from "../../../shared/src/stripe/stripe_check_balances";
+import {PrivateUserInfo} from "../shared/src/firebase/firestore/models/private_user_info";
+import allBalancesZeroStripeConnectedAccount from "../shared/src/stripe/stripe_check_balances";
+import {StripeProvider} from "../shared/src/stripe/stripe_provider";
+import {deleteStripeConnectedAccount, deleteStripeCustomer} from "../shared/src/stripe/util";
 import configureStripeProviderForFunctions from "../stripe/stripe_provider_functions_configurer";
-import {Logger} from "../../../shared/src/google_cloud/google_cloud_logger";
+import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
+import {getExpertRateDocumentRef, getExpertSignUpProgressDocumentRef, getPrivateUserDocumentRef, getPublicExpertInfoDocumentRef, getPublicUserDocumentRef, getStatusDocumentRef} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
 
 export const deleteUser = functions.https.onCall(async (data, context) => {
   if (context.auth == null) {
