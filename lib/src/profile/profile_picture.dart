@@ -48,38 +48,65 @@ class ProfilePicture extends StatelessWidget {
     );
   }
 
-  Widget _profilePicUploadButton() {
+  Widget _profilePicUploadButton(BuildContext context) {
     return IconButton(
-        icon: Icon(
-          Icons.camera_alt_rounded,
-          size: 30,
-          color: Colors.grey,
-        ),
-        tooltip: 'Upload a profile picture',
-        onPressed: () async {
-          final ImagePicker picker = ImagePicker();
-          try {
-            final XFile? image =
-                await picker.pickImage(source: ImageSource.gallery);
-            if (image != null) {
-              Uint8List imageBytes = await image.readAsBytes();
-              final imageHandle = img.decodeImage(imageBytes);
-              if (imageHandle == null) {
-                log('Failed to decode image');
-              } else {
-                Uint8List jpegBytes = img.encodeJpg(imageHandle, quality: 50);
-                onProfilePicSelection!(
-                    selectedProfilePicBytes: jpegBytes,
-                    fromSignUpFlow: fromSignUpFlow,
-                    onProfilePictureChanged: onProfilePicUpload);
-              }
-            } else {
-              log('User cancelled profile pic image upload');
-            }
-          } on PlatformException catch (e) {
-            log('Exception picking image:  $e');
-          }
-        });
+      icon: Icon(
+        Icons.camera_alt_rounded,
+        size: 30,
+        color: Colors.grey,
+      ),
+      tooltip: 'Upload a profile picture',
+      onPressed: () async {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Center(child: Text("Select photo source")),
+                actionsAlignment: MainAxisAlignment.spaceEvenly,
+                actions: [
+                  TextButton(
+                    child: Text("Camera"),
+                    onPressed: () async {
+                      uploadNewImage(ImageSource.camera);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  TextButton(
+                    child: Text("Photo Gallery"),
+                    onPressed: () async {
+                      uploadNewImage(ImageSource.gallery);
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+              );
+            });
+      },
+    );
+  }
+
+  Future<void> uploadNewImage(ImageSource source) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? image = await picker.pickImage(source: source);
+      if (image != null) {
+        Uint8List imageBytes = await image.readAsBytes();
+        final imageHandle = img.decodeImage(imageBytes);
+        if (imageHandle == null) {
+          log('Failed to decode image');
+        } else {
+          Uint8List jpegBytes = img.encodeJpg(imageHandle, quality: 50);
+          onProfilePicSelection!(
+              selectedProfilePicBytes: jpegBytes,
+              fromSignUpFlow: fromSignUpFlow,
+              onProfilePictureChanged: onProfilePicUpload);
+        }
+      } else {
+        log('User cancelled profile pic image upload');
+      }
+    } on Exception catch (e) {
+      log('Exception picking image:  $e');
+    }
   }
 
   @override
@@ -95,7 +122,7 @@ class ProfilePicture extends StatelessWidget {
           Positioned(
             bottom: 0,
             right: 0,
-            child: _profilePicUploadButton(),
+            child: _profilePicUploadButton(context),
           ),
       ],
     );
