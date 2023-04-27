@@ -15,15 +15,14 @@ RUN npm i
 WORKDIR /server/call_transaction
 RUN npm i
 WORKDIR /server
-COPY ./server/functions/src ./functions/
-COPY ./server/functions/package.json ./functions/
-COPY ./server/call_transaction/src ./call_transaction/
+COPY ./server/functions/src ./functions/src
+COPY ./server/call_transaction/src ./call_transaction/src
 COPY ./server/call_transaction/tsconfig.json ./call_transaction/
 COPY ./server/scripts ./call_transaction/scripts
 COPY ./protos ./call_transaction/protos_defs
-COPY ./conf ../conf/
+COPY ./conf ./conf/
 WORKDIR /server/call_transaction
-RUN npm run build
+RUN npm run callserver-build
 WORKDIR /server/call_transaction/dist/call_transaction/src/
 ARG IS_PROD_ARG
 ARG STRIPE_PRIVATE_KEY_VERSION_ARG
