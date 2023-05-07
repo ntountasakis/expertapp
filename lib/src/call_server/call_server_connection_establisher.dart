@@ -18,9 +18,11 @@ class CallServerConnectionEstablisher {
       String currentUserId,
       bool isCaller) {
     return _client.initiateCall(clientMessageStream,
-        options: CallOptions(metadata: {
-          "iscaller": isCaller.toString(),
-          "uid": currentUserId
-        }));
+        options: CallOptions(
+          metadata: {
+            "iscaller": isCaller.toString(),
+            "uid": currentUserId,
+          },
+        ));
   }
 }
