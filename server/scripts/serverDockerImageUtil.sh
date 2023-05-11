@@ -9,6 +9,7 @@ buildDockerImage() {
     --progress=plain \
     --build-arg IS_PROD_ARG=$1 \
     --build-arg STRIPE_PRIVATE_KEY_VERSION_ARG=$2 \
+    --platform linux/amd64 \
     -t $REPO_IMAGE_NAME \
     $DOCKER_CONTEXT
 }

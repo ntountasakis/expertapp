@@ -1,3 +1,4 @@
+import {TokenMessage} from "firebase-admin/lib/messaging/messaging-api";
 import {Logger} from "../../../google_cloud/google_cloud_logger";
 import {CallJoinCancel} from "../messages/call_join_cancel";
 import {CallJoinRequest} from "../messages/call_join_request";
@@ -9,7 +10,7 @@ export const sendFcmCallJoinRequest = function({fcmToken, callerUid, calledUid, 
     callTransactionId: string, callRateStartCents: string,
     callRatePerMinuteCents: string, callJoinExpirationTimeUtcMs: number,
   }): void {
-  const payload = {
+  const payload: TokenMessage = {
     data: {
       messageType: CallJoinRequest.messageType(),
       callerUid: callerUid,
@@ -20,6 +21,10 @@ export const sendFcmCallJoinRequest = function({fcmToken, callerUid, calledUid, 
       callJoinExpirationTimeUtcMs: callJoinExpirationTimeUtcMs.toString(),
     },
     token: fcmToken,
+    notification: {
+      title: "Call Join Request",
+      body: "You have a call join request",
+    },
   };
 
   // Send a message to the device corresponding to the provided registration token.

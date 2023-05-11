@@ -65,7 +65,7 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   initFirebaseMessagingForegroundHandler(navigatorKey, lifecycle);
-  initFirebaseMessagingOpenedApp();
+  initFirebaseMessagingOpenedApp(navigatorKey, lifecycle);
 
   await handleFirebaseDynamicLinkInitialLink(navigatorKey);
   listenForFirebaseDynamicLinks(navigatorKey);
