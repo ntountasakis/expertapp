@@ -80,18 +80,25 @@ class _ExpertViewUpdateAvailabilityScaffoldState
   Widget buildSelectWeekdays(Map<String, TimeRangeResult?> availability) {
     List<DayInWeek> _days = [
       DayInWeek(ExpertAvailabilityUtil.DAYS[0],
+          dayKey: ExpertAvailabilityUtil.DAYS[0],
           isSelected: availability[ExpertAvailabilityUtil.DAYS[0]] != null),
       DayInWeek(ExpertAvailabilityUtil.DAYS[1],
+          dayKey: ExpertAvailabilityUtil.DAYS[1],
           isSelected: availability[ExpertAvailabilityUtil.DAYS[1]] != null),
       DayInWeek(ExpertAvailabilityUtil.DAYS[2],
+          dayKey: ExpertAvailabilityUtil.DAYS[2],
           isSelected: availability[ExpertAvailabilityUtil.DAYS[2]] != null),
       DayInWeek(ExpertAvailabilityUtil.DAYS[3],
+          dayKey: ExpertAvailabilityUtil.DAYS[3],
           isSelected: availability[ExpertAvailabilityUtil.DAYS[3]] != null),
       DayInWeek(ExpertAvailabilityUtil.DAYS[4],
+          dayKey: ExpertAvailabilityUtil.DAYS[4],
           isSelected: availability[ExpertAvailabilityUtil.DAYS[4]] != null),
       DayInWeek(ExpertAvailabilityUtil.DAYS[5],
+          dayKey: ExpertAvailabilityUtil.DAYS[5],
           isSelected: availability[ExpertAvailabilityUtil.DAYS[5]] != null),
       DayInWeek(ExpertAvailabilityUtil.DAYS[6],
+          dayKey: ExpertAvailabilityUtil.DAYS[6],
           isSelected: availability[ExpertAvailabilityUtil.DAYS[6]] != null),
     ];
     return SelectWeekDays(

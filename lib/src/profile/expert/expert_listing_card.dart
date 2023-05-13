@@ -83,8 +83,9 @@ class ExpertListingCard extends StatelessWidget {
         subtitle: SizedBox(),
         trailing: buildTrailing(),
         onTapCallback: (BuildContext context) {
-          context.pushNamed(Routes.UV_EXPERT_PROFILE_PAGE,
-              params: {Routes.EXPERT_ID_PARAM: _publicExpertInfo.documentId});
+          context.pushNamed(Routes.UV_EXPERT_PROFILE_PAGE, pathParameters: {
+            Routes.EXPERT_ID_PARAM: _publicExpertInfo.documentId
+          });
         });
   }
 }

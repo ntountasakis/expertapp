@@ -59,7 +59,7 @@ Future<void> handleMessage(GlobalKey<NavigatorState> navigatorKey,
       return;
     }
     navigatorKey.currentContext!
-        .goNamed(Routes.EV_CALL_JOIN_PROMPT_PAGE, params: {
+        .goNamed(Routes.EV_CALL_JOIN_PROMPT_PAGE, pathParameters: {
       Routes.CALLED_UID_PARAM: callJoinRequest.calledUid,
       Routes.CALLER_UID_PARAM: callJoinRequest.callerUid,
       Routes.CALL_TRANSACTION_ID_PARAM: callJoinRequest.callTransactionId,

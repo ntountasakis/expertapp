@@ -85,7 +85,7 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
   }
 
   void onChatButtonTap() {
-    context.pushNamed(Routes.EV_CALL_CHAT_PAGE, params: {
+    context.pushNamed(Routes.EV_CALL_CHAT_PAGE, pathParameters: {
       Routes.CALLER_UID_PARAM: widget.callerUserId,
       Routes.CALL_TRANSACTION_ID_PARAM: widget.callTransactionId,
     });

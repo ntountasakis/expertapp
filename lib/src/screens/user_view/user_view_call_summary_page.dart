@@ -24,7 +24,7 @@ class _UserViewCallSummaryPageState extends State<UserViewCallSummaryPage> {
 
   void goSubmitReview(CallServerModel model) {
     context.goNamed(Routes.UV_REVIEW_SUBMIT_PAGE,
-        params: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
+        pathParameters: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
   }
 
   void goHome(CallServerModel model) {

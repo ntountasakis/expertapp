@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-class ExpertInCallAppbar extends StatefulWidget with PreferredSizeWidget {
+class ExpertInCallAppbar extends StatefulWidget implements PreferredSizeWidget {
   final DocumentWrapper<PublicUserInfo> userMetadata;
   final CallServerModel model;
 

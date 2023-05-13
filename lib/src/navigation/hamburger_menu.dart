@@ -25,7 +25,7 @@ class HamburgerMenu extends StatelessWidget {
         title: Text("My Profile"),
         onTap: () {
           context.pushNamed(Routes.EV_PROFILE_EDIT_PAGE,
-              params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "false"});
+              pathParameters: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "false"});
         });
   }
 
@@ -50,7 +50,7 @@ class HamburgerMenu extends StatelessWidget {
         title: Text("Update Call Prices"),
         onTap: () {
           context.pushNamed(Routes.EV_UPDATE_RATE_PAGE,
-              params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "false"});
+              pathParameters: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "false"});
         });
   }
 
@@ -59,7 +59,7 @@ class HamburgerMenu extends StatelessWidget {
         title: Text("Update Call Availability Times"),
         onTap: () {
           context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE,
-              params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "false"});
+              pathParameters: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "false"});
         });
   }
 
@@ -94,13 +94,14 @@ class HamburgerMenu extends StatelessWidget {
         onTap: () {
           context.pushNamed(Routes.EV_CONNECTED_ACCOUNT_SIGNUP_PAGE);
           context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE,
-              params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
+              pathParameters: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
           if (progress.updatedAvailability) {
             context.pushNamed(Routes.EV_UPDATE_RATE_PAGE,
-                params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
+                pathParameters: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
             if (progress.updatedCallRate) {
-              context.pushNamed(Routes.EV_PROFILE_EDIT_PAGE,
-                  params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
+              context.pushNamed(Routes.EV_PROFILE_EDIT_PAGE, pathParameters: {
+                Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"
+              });
             }
           }
         });

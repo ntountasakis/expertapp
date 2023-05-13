@@ -49,7 +49,7 @@ class UserViewCallPreviewPage extends StatelessWidget {
         style: callButtonStyle,
         onPressed: () {
           context.pushNamed(Routes.UV_CALL_HOME_PAGE,
-              params: {Routes.EXPERT_ID_PARAM: _expertUid});
+              pathParameters: {Routes.EXPERT_ID_PARAM: _expertUid});
         },
         child: const Text('Begin Call'),
       ),

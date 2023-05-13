@@ -18,7 +18,7 @@ class ExpertViewConnectedAccountSignupPage extends StatelessWidget {
 
   static void onProceedPressed(BuildContext context) {
     context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE,
-        params: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
+        pathParameters: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
   }
 
   PreferredSizeWidget defaultAppBar() {
