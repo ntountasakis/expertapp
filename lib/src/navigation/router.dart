@@ -95,7 +95,7 @@ class AppRouter {
               path:
                   Routes.UV_EXPERT_PROFILE_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
               builder: (BuildContext context, GoRouterState state) {
-                final expertId = state.params[Routes.EXPERT_ID_PARAM];
+                final expertId = state.pathParameters[Routes.EXPERT_ID_PARAM];
                 return UserViewExpertProfilePage(
                     key: ValueKey(expertId),
                     currentUid: lifecycle.currentUserId(),
@@ -106,7 +106,7 @@ class AppRouter {
                   name: Routes.UV_EXPERT_CALL_PREVIEW_PAGE,
                   path: Routes.UV_EXPERT_CALL_PREVIEW_PAGE,
                   builder: (BuildContext context, GoRouterState state) {
-                    final expertId = state.params[Routes.EXPERT_ID_PARAM];
+                    final expertId = state.pathParameters[Routes.EXPERT_ID_PARAM];
                     return UserViewCallPreviewPage(expertId!);
                   },
                 ),
@@ -142,7 +142,7 @@ class AppRouter {
             Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM,
         builder: (BuildContext context, GoRouterState state) {
           final fromSignupFlow =
-              state.params[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
+              state.pathParameters[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
           if (fromSignupFlow == 'true') {
             return ExpertViewExpertProfileSignUpPage(
                 expertUid: lifecycle.currentUserId()!);
@@ -170,7 +170,7 @@ class AppRouter {
           name: Routes.UV_CALL_HOME_PAGE,
           path: Routes.UV_CALL_HOME_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
           builder: (BuildContext context, GoRouterState state) {
-            final expertId = state.params[Routes.EXPERT_ID_PARAM];
+            final expertId = state.pathParameters[Routes.EXPERT_ID_PARAM];
             return UserViewCallMainPage(
                 currentUserId: lifecycle.currentUserId()!,
                 otherUserId: expertId!,
@@ -181,8 +181,8 @@ class AppRouter {
               name: Routes.UV_CALL_CHAT_PAGE,
               path: Routes.UV_CALL_CHAT_PAGE + '/:' + Routes.IS_EDITABLE_PARAM,
               builder: (BuildContext context, GoRouterState state) {
-                final expertId = state.params[Routes.EXPERT_ID_PARAM];
-                final isEditable = state.params[Routes.IS_EDITABLE_PARAM];
+                final expertId = state.pathParameters[Routes.EXPERT_ID_PARAM];
+                final isEditable = state.pathParameters[Routes.IS_EDITABLE_PARAM];
                 return CommonViewChatPage(
                   currentUserUid: lifecycle.currentUserId()!,
                   otherUserUid: expertId!,
@@ -195,7 +195,7 @@ class AppRouter {
           name: Routes.UV_REVIEW_SUBMIT_PAGE,
           path: Routes.UV_REVIEW_SUBMIT_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
           builder: (BuildContext context, GoRouterState state) {
-            final expertUid = state.params[Routes.EXPERT_ID_PARAM];
+            final expertUid = state.pathParameters[Routes.EXPERT_ID_PARAM];
             return UserViewReviewSubmitPage(
                 currentUserId: lifecycle.currentUserId()!,
                 expertUserId: expertUid!,
@@ -205,7 +205,7 @@ class AppRouter {
           name: Routes.UV_CALL_SUMMARY_PAGE,
           path: Routes.UV_CALL_SUMMARY_PAGE + '/:' + Routes.CALLED_UID_PARAM,
           builder: (BuildContext context, GoRouterState state) {
-            final calledUid = state.params[Routes.CALLED_UID_PARAM];
+            final calledUid = state.pathParameters[Routes.CALLED_UID_PARAM];
             return UserViewCallSummaryPage(otherUserId: calledUid!);
           }),
       GoRoute(
@@ -224,15 +224,15 @@ class AppRouter {
               '/:' +
               Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS_PARAM,
           builder: (BuildContext context, GoRouterState state) {
-            final callerUid = state.params[Routes.CALLER_UID_PARAM];
+            final callerUid = state.pathParameters[Routes.CALLER_UID_PARAM];
             final transactionId =
-                state.params[Routes.CALL_TRANSACTION_ID_PARAM];
+                state.pathParameters[Routes.CALL_TRANSACTION_ID_PARAM];
             final rateStartCents =
-                int.parse(state.params[Routes.CALL_RATE_START_PARAM]!);
+                int.parse(state.pathParameters[Routes.CALL_RATE_START_PARAM]!);
             final ratePerMinuteCents =
-                int.parse(state.params[Routes.CALL_RATE_PER_MINUTE_PARAM]!);
+                int.parse(state.pathParameters[Routes.CALL_RATE_PER_MINUTE_PARAM]!);
             final callJoinExpirationTimeUtcMs = int.parse(
-                state.params[Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS_PARAM]!);
+                state.pathParameters[Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS_PARAM]!);
             return ExpertViewCallPromptPage(
               transactionId: transactionId!,
               currentUserId: lifecycle.currentUserId()!,
@@ -251,9 +251,9 @@ class AppRouter {
               '/:' +
               Routes.CALL_TRANSACTION_ID_PARAM,
           builder: (BuildContext context, GoRouterState state) {
-            final callerUid = state.params[Routes.CALLER_UID_PARAM];
+            final callerUid = state.pathParameters[Routes.CALLER_UID_PARAM];
             final transactionId =
-                state.params[Routes.CALL_TRANSACTION_ID_PARAM];
+                state.pathParameters[Routes.CALL_TRANSACTION_ID_PARAM];
             return ExpertViewCallMainPage(
                 callTransactionId: transactionId!,
                 currentUserId: lifecycle.currentUserId()!,
@@ -264,7 +264,7 @@ class AppRouter {
               name: Routes.EV_CALL_CHAT_PAGE,
               path: Routes.EV_CALL_CHAT_PAGE,
               builder: (BuildContext context, GoRouterState state) {
-                final callerUid = state.params[Routes.CALLER_UID_PARAM];
+                final callerUid = state.pathParameters[Routes.CALLER_UID_PARAM];
                 return CommonViewChatPage(
                   currentUserUid: lifecycle.currentUserId()!,
                   otherUserUid: callerUid!,
@@ -286,7 +286,7 @@ class AppRouter {
               Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM,
           builder: (BuildContext context, GoRouterState state) {
             final fromSignupFlow =
-                state.params[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
+                state.pathParameters[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
             if (fromSignupFlow == 'true') {
               return ExpertViewUpdateRatesSignUpPage(
                   uid: lifecycle.currentUserId()!);
@@ -301,7 +301,7 @@ class AppRouter {
               Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM,
           builder: (BuildContext context, GoRouterState state) {
             final fromSignupFlow =
-                state.params[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
+                state.pathParameters[Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM];
             if (fromSignupFlow == 'true') {
               return ExpertViewUpdateAvailabilitySignUpPage(
                   uid: lifecycle.currentUserId()!);
@@ -316,7 +316,7 @@ class AppRouter {
               '/:' +
               Routes.EXPERT_ID_PARAM,
           builder: (BuildContext context, GoRouterState state) {
-            final expertId = state.params[Routes.EXPERT_ID_PARAM];
+            final expertId = state.pathParameters[Routes.EXPERT_ID_PARAM];
             return UserViewExpertAvailabilityPage(uid: expertId!);
           }),
       GoRoute(

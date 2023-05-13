@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
-class ClientInCallAppbar extends StatefulWidget with PreferredSizeWidget {
+class ClientInCallAppbar extends StatefulWidget implements PreferredSizeWidget {
   final DocumentWrapper<PublicExpertInfo> userMetadata;
   final bool allowBackButton;
 

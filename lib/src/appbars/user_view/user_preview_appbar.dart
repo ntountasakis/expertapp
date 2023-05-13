@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class UserPreviewAppbar extends StatelessWidget with PreferredSizeWidget {
+class UserPreviewAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String shortName;
   final String namePrefix;
 

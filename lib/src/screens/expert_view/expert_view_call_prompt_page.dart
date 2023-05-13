@@ -45,7 +45,7 @@ class _ExpertViewCallPromptPageState extends State<ExpertViewCallPromptPage> {
   }
 
   void onCallAcceptTap() {
-    context.goNamed(Routes.EV_CALL_HOME_PAGE, params: {
+    context.goNamed(Routes.EV_CALL_HOME_PAGE, pathParameters: {
       Routes.CALLER_UID_PARAM: widget.callerUserId,
       Routes.CALL_TRANSACTION_ID_PARAM: widget.transactionId
     });

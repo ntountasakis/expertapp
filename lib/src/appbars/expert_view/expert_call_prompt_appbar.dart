@@ -1,7 +1,7 @@
 import 'package:expertapp/src/appbars/widgets/time_remaining.dart';
 import 'package:flutter/material.dart';
 
-class ExpertCallPromptAppbar extends StatefulWidget with PreferredSizeWidget {
+class ExpertCallPromptAppbar extends StatefulWidget implements PreferredSizeWidget {
   final int callJoinExpirationTimeUtcMs;
   final String callerName;
   final VoidCallback onCallJoinTimerExpires;

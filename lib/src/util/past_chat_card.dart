@@ -91,7 +91,7 @@ class PastChatCard extends StatelessWidget {
                 subtitle: buildSubtitle(userInfo),
                 trailing: SizedBox(),
                 onTapCallback: (context) {
-                  context.pushNamed(Routes.UV_CALL_CHAT_PAGE, params: {
+                  context.pushNamed(Routes.UV_CALL_CHAT_PAGE, pathParameters: {
                     Routes.EXPERT_ID_PARAM: preview.otherUid,
                     Routes.IS_EDITABLE_PARAM: "false",
                   });

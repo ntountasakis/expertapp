@@ -73,7 +73,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
   }
 
   void onChatButtonTap() {
-    context.pushNamed(Routes.UV_CALL_CHAT_PAGE, params: {
+    context.pushNamed(Routes.UV_CALL_CHAT_PAGE, pathParameters: {
       Routes.EXPERT_ID_PARAM: widget.otherUserId,
       Routes.IS_EDITABLE_PARAM: "true",
     });
@@ -102,7 +102,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
             CallServerCounterpartyConnectionState.READY_TO_START_CALL;
         if (counterpartyJoined) {
           context.goNamed(Routes.UV_CALL_SUMMARY_PAGE,
-              params: {Routes.CALLED_UID_PARAM: widget.otherUserId});
+              pathParameters: {Routes.CALLED_UID_PARAM: widget.otherUserId});
         } else {
           model.reset();
           context.goNamed(Routes.HOME_PAGE);

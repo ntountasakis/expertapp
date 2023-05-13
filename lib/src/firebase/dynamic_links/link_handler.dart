@@ -34,7 +34,7 @@ void processDynamicLink(
       final expertUid = params['expertProfile'];
       if (expertUid != null) {
         navigatorKey.currentContext!.pushNamed(Routes.UV_EXPERT_PROFILE_PAGE,
-            params: {Routes.EXPERT_ID_PARAM: expertUid});
+            pathParameters: {Routes.EXPERT_ID_PARAM: expertUid});
       }
     }
   }

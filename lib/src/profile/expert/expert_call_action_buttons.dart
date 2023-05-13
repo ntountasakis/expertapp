@@ -27,9 +27,9 @@ Widget buildCallButtonHelper(
             style: style,
             onPressed: () async {
               if (shouldPush) {
-                context.pushNamed(routeName, params: params);
+                context.pushNamed(routeName, pathParameters: params);
               } else {
-                context.pushReplacementNamed(routeName, params: params);
+                context.pushReplacementNamed(routeName, pathParameters: params);
               }
             },
             child: Text(buttonText)),
