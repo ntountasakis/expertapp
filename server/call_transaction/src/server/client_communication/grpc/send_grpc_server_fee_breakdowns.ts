@@ -7,8 +7,6 @@ import {ServerFeeBreakdowns} from "../../../protos/call_transaction_package/Serv
 export function sendGrpcServerFeeBreakdowns(clientMessageSender: ClientMessageSenderInterface,
     callTransaction: CallTransaction, callState: BaseCallState): void {
   const serverFeeBreakdown : ServerFeeBreakdowns = {
-    "paymentProcessorPercentFee": StripeProvider.STRIPE_PERCENT_FEE,
-    "paymentProcessorCentsFlatFee": StripeProvider.STRIPE_FLAT_FEE_CENTS,
     "platformPercentFee": StripeProvider.PLATFORM_PERCENT_FEE,
     "earnedCentsStartCall": callTransaction.expertRateCentsCallStart,
     "earnedCentsPerMinute": callTransaction.expertRateCentsPerMinute,

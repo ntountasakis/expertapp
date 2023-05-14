@@ -31,16 +31,9 @@ export async function calculatePlatformFeeCents({costOfCallCents, platformFeePer
   return platformFee;
 }
 
-export async function calculatePaymentProcessorFeeCents({costOfCallCents, processorFeePercent, processorFlatFeeCents, callState}:
-  {costOfCallCents: number, processorFeePercent: number, processorFlatFeeCents: number, callState: BaseCallState}): Promise<number> {
-  const processorFee = Math.round((costOfCallCents * (processorFeePercent / 100)) + processorFlatFeeCents);
-  await callState.log(`Processor fee (cents): ${processorFee}`);
-  return processorFee;
-}
-
-export async function calculateEarnedCents({costOfCallCents, platformFeeCents, processorFeeCents, callState}:
-  {costOfCallCents: number, platformFeeCents: number, processorFeeCents: number, callState: BaseCallState}): Promise<number> {
-  const earnedCents = costOfCallCents - platformFeeCents - processorFeeCents;
+export async function calculateEarnedCents({costOfCallCents, platformFeeCents, callState}:
+  {costOfCallCents: number, platformFeeCents: number, callState: BaseCallState}): Promise<number> {
+  const earnedCents = costOfCallCents - platformFeeCents;
   await callState.log(`Earned (cents): ${earnedCents}`);
   return earnedCents;
 }

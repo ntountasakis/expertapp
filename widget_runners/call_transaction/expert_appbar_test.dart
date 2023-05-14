@@ -2,7 +2,6 @@ import 'package:expertapp/firebase_options.dart';
 import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:expertapp/src/appbars/expert_view/expert_in_call_appbar.dart';
@@ -10,22 +9,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../runner_util/widget_runner_util.dart';
-
 class MockCallServerModel extends Mock implements CallServerModel {}
 
 CallServerModel buildModel() {
   final model = MockCallServerModel();
 
-  final stripeFeePercent = 2.9;
-  final stripeFlatFeeCents = 60;
-  final platformFeePercent = 8.0;
+  final platformFeePercent = 15.0;
   final rateStartCallCents = 180;
   final ratePerMinute = 240;
 
   final fees = ServerFeeBreakdowns(
-      paymentProcessorPercentFee: stripeFeePercent,
-      paymentProcessorCentsFlatFee: stripeFlatFeeCents,
       platformPercentFee: platformFeePercent,
       earnedCentsStartCall: rateStartCallCents,
       earnedCentsPerMinute: ratePerMinute);

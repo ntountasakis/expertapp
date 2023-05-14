@@ -55,15 +55,6 @@ class CallSummaryUtil {
     );
   }
 
-  static Widget buildCallEarningsPaymentProcessorFee(
-      ServerCallSummary summary) {
-    final paymentFee = formattedRate(summary.paymentProcessorFeeCents);
-    return Text(
-      "Payment Processor Fee: " + paymentFee,
-      style: BOLD_STYLE,
-    );
-  }
-
   static Widget buildCallEarningsPlatformFee(ServerCallSummary summary) {
     final platformFee = formattedRate(summary.platformFeeCents);
     return Text(

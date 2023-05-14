@@ -21,7 +21,6 @@ export interface CallTransaction {
     maxCallTimeSec: number;
     lengthOfCallSec: number;
     costOfCallCents: number;
-    paymentProcessorFeeCents: number;
     platformFeeCents: number;
     earnedTotalCents: number;
 }

@@ -65,11 +65,8 @@ Future<void> testHelper(String path) async {
   final summary = new ServerCallSummary();
   summary.lengthOfCallSec = 100;
   summary.costOfCallCents = 1750;
-  summary.paymentProcessorFeeCents = 250;
   summary.platformFeeCents = 550;
-  summary.earnedTotalCents = summary.costOfCallCents -
-      summary.paymentProcessorFeeCents -
-      summary.platformFeeCents;
+  summary.earnedTotalCents = summary.costOfCallCents - summary.platformFeeCents;
   model.onServerCallSummary(summary);
 
   runApp(

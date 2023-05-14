@@ -45,8 +45,6 @@ class _ExpertViewCallSummaryPageState extends State<ExpertViewCallSummaryPage> {
         SizedBox(height: 20),
         CallSummaryUtil.buildCallEarningsSubtotal(callSummary),
         SizedBox(height: 20),
-        CallSummaryUtil.buildCallEarningsPaymentProcessorFee(callSummary),
-        SizedBox(height: 20),
         CallSummaryUtil.buildCallEarningsPlatformFee(callSummary),
         SizedBox(height: 20),
         CallSummaryUtil.buildCallEarningsAmountEarned(callSummary),
