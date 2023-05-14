@@ -33,7 +33,6 @@ export function createCallTransactionDocument({transaction, callerUid, calledUid
     "maxCallTimeSec": maxCallTimeSec,
     "lengthOfCallSec": 0,
     "costOfCallCents": 0,
-    "paymentProcessorFeeCents": 0,
     "platformFeeCents": 0,
     "earnedTotalCents": 0,
   };

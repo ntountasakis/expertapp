@@ -68,9 +68,7 @@ message ServerBothPartiesReadyForCall {
 }
 
 message ServerFeeBreakdowns {
-    float paymentProcessorPercentFee = 1;
-    uint32 paymentProcessorCentsFlatFee = 2;
-    float platformPercentFee = 3;
+    float platformPercentFee = 1;
     uint32 earnedCentsStartCall = 4;
     uint32 earnedCentsPerMinute = 5;
 }
@@ -78,9 +76,8 @@ message ServerFeeBreakdowns {
 message ServerCallSummary {
     uint32 lengthOfCallSec = 1;
     uint32 costOfCallCents = 2;
-    uint32 paymentProcessorFeeCents = 3;
-    uint32 platformFeeCents = 4;
-    uint32 earnedTotalCents = 5;
+    uint32 platformFeeCents = 3;
+    uint32 earnedTotalCents = 4;
 }
 
 message ServerMessageContainer {

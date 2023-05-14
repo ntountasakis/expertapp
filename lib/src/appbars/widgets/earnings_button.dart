@@ -11,7 +11,6 @@ Widget buildEarningsDialog(CallServerModel model) {
         children: [
           Text(callLength(callLengthSec)),
           Text(beforeFees(model.feeBreakdowns!, callLengthSec)),
-          Text(paymentProcessorFees(model.feeBreakdowns!, callLengthSec)),
           Text(platformFees(model.feeBreakdowns!, callLengthSec)),
           Text(total(model.feeBreakdowns!, callLengthSec)),
         ],
@@ -61,22 +60,14 @@ int subtotalCents(ServerFeeBreakdowns fees, int callLengthSec) {
   return centsRunningTime + fees.earnedCentsStartCall;
 }
 
-int paymentProcessorFeesCents(ServerFeeBreakdowns fees, int callLengthSec) {
-  return (subtotalCents(fees, callLengthSec) *
-              (fees.paymentProcessorPercentFee / 100))
-          .round() +
-      fees.paymentProcessorCentsFlatFee;
-}
-
 int platformFeeCents(ServerFeeBreakdowns fees, int callLengthSec) {
-  int amtBeforePlatformFee = subtotalCents(fees, callLengthSec) -
-      paymentProcessorFeesCents(fees, callLengthSec);
+  int amtBeforePlatformFee = subtotalCents(fees, callLengthSec);
   return (amtBeforePlatformFee * (fees.platformPercentFee / 100)).round();
 }
 
 int totalCents(ServerFeeBreakdowns fees, int callLengthSec) {
   return subtotalCents(fees, callLengthSec) -
-      paymentProcessorFeesCents(fees, callLengthSec);
+      platformFeeCents(fees, callLengthSec);
 }
 
 String callLength(int callLengthSec) {
@@ -86,11 +77,6 @@ String callLength(int callLengthSec) {
 String beforeFees(ServerFeeBreakdowns fees, int callLengthSec) {
   String fmtAmt = formattedRate(subtotalCents(fees, callLengthSec));
   return 'Before Fees: ${fmtAmt}';
-}
-
-String paymentProcessorFees(ServerFeeBreakdowns fees, int callLengthSec) {
-  String fmtAmt = formattedRate(paymentProcessorFeesCents(fees, callLengthSec));
-  return 'Payment Processor Fees: ${fmtAmt}';
 }
 
 String platformFees(ServerFeeBreakdowns fees, int callLengthSec) {

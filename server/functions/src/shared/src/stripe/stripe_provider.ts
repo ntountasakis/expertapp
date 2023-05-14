@@ -9,9 +9,12 @@ export class StripeProvider {
   static STRIPE_CONFIGURED = false;
   static STRIPE: Stripe;
 
-  static PLATFORM_PERCENT_FEE = 8.0;
+  /* document on stripe fees: https://stripe.com/pricing */
+  /* not used in this application, but will deduct from our profit */
   static STRIPE_PERCENT_FEE = 2.9;
   static STRIPE_FLAT_FEE_CENTS = 30;
+
+  static PLATFORM_PERCENT_FEE = 15.0;
   static MIN_BILLABLE_AMOUNT_CENTS = 50;
   static MAX_MINUTELY_RATE_CENTS = 500;
   static MAX_START_CALL_RATE_CENTS = 10 * 100;
