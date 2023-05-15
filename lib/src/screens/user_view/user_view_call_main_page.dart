@@ -98,15 +98,8 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
     if (!exiting) {
       exiting = true;
       SchedulerBinding.instance.addPostFrameCallback((_) async {
-        final counterpartyJoined = model.callCounterpartyConnectionState ==
-            CallServerCounterpartyConnectionState.READY_TO_START_CALL;
-        if (counterpartyJoined) {
-          context.goNamed(Routes.UV_CALL_SUMMARY_PAGE,
-              pathParameters: {Routes.CALLED_UID_PARAM: widget.otherUserId});
-        } else {
-          model.reset();
-          context.goNamed(Routes.HOME_PAGE);
-        }
+        context.goNamed(Routes.UV_CALL_SUMMARY_PAGE,
+            pathParameters: {Routes.CALLED_UID_PARAM: widget.otherUserId});
       });
     }
   }

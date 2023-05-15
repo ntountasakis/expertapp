@@ -33,18 +33,7 @@ class _UserViewCallSummaryPageState extends State<UserViewCallSummaryPage> {
     context.goNamed(Routes.HOME_PAGE);
   }
 
-  Widget buildSummaryBody(BuildContext context) {
-    final model = Provider.of<CallServerModel>(context);
-    if (model.callSummary == null) {
-      SchedulerBinding.instance.addPostFrameCallback((_) async {
-        if (!exiting) {
-          log('Call summary is null. Exiting to home');
-          goHome(model);
-        }
-      });
-      return SizedBox();
-    }
-
+  Widget buildSummaryBodyCallFinished(CallServerModel model) {
     final callSummary = model.callSummary!;
     return Container(
         child: Column(
@@ -54,7 +43,7 @@ class _UserViewCallSummaryPageState extends State<UserViewCallSummaryPage> {
         SizedBox(height: 20),
         CallSummaryUtil.buildCallLength(callSummary),
         SizedBox(height: 20),
-        CallSummaryUtil.buildClientCallSummaryBlurb(callSummary),
+        CallSummaryUtil.buildClientCallFinishedSummaryBlurb(callSummary),
         SizedBox(height: 50),
         Row(
           children: [
@@ -67,6 +56,38 @@ class _UserViewCallSummaryPageState extends State<UserViewCallSummaryPage> {
         )
       ],
     ));
+  }
+
+  Widget buildSummaryBodyCallCanceled(CallServerModel model) {
+    return Container(
+        child: Column(
+      children: [
+        SizedBox(height: 20),
+        CallSummaryUtil.buildClientCallCanceledSummaryBlurb(
+            model.callPaymentPromptModel),
+        SizedBox(height: 50),
+        CallSummaryUtil.buildButton(model, "Finish", goHome),
+        SizedBox(width: 10),
+      ],
+    ));
+  }
+
+  Widget buildSummaryBody(BuildContext context) {
+    final model = Provider.of<CallServerModel>(context);
+    if (model.callSummary == null) {
+      SchedulerBinding.instance.addPostFrameCallback((_) async {
+        if (!exiting) {
+          log('Call summary is null. Exiting to home');
+          goHome(model);
+        }
+      });
+      return SizedBox();
+    }
+    if (model.callSummary!.lengthOfCallSec != 0) {
+      return buildSummaryBodyCallFinished(model);
+    } else {
+      return buildSummaryBodyCallCanceled(model);
+    }
   }
 
   @override
