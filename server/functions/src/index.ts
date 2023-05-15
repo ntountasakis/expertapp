@@ -37,6 +37,9 @@ export {getAllChatroomPreviewsForUser};
 import {getDefaultProfilePicUrl} from "./endpoints/get_default_profile_pic_url";
 export {getDefaultProfilePicUrl};
 
+import {getPlatformFee} from "./endpoints/get_platform_fee";
+export {getPlatformFee};
+
 import {generateExpertProfileDynamicLink} from "./endpoints/generate_expert_profile_dynamic_link";
 export {generateExpertProfileDynamicLink};
 

@@ -5,6 +5,7 @@ import 'package:expertapp/src/preferences/preferences.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_expert_profile_page.dart';
 import 'package:expertapp/src/screens/auth/sign_in_page.dart';
 import 'package:expertapp/src/screens/common_view/delete_account_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_show_platform_fee_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_rates_sign_up_page.dart';
 import 'package:expertapp/src/screens/user_view/past_chats_page.dart';
@@ -106,7 +107,8 @@ class AppRouter {
                   name: Routes.UV_EXPERT_CALL_PREVIEW_PAGE,
                   path: Routes.UV_EXPERT_CALL_PREVIEW_PAGE,
                   builder: (BuildContext context, GoRouterState state) {
-                    final expertId = state.pathParameters[Routes.EXPERT_ID_PARAM];
+                    final expertId =
+                        state.pathParameters[Routes.EXPERT_ID_PARAM];
                     return UserViewCallPreviewPage(expertId!);
                   },
                 ),
@@ -182,7 +184,8 @@ class AppRouter {
               path: Routes.UV_CALL_CHAT_PAGE + '/:' + Routes.IS_EDITABLE_PARAM,
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.pathParameters[Routes.EXPERT_ID_PARAM];
-                final isEditable = state.pathParameters[Routes.IS_EDITABLE_PARAM];
+                final isEditable =
+                    state.pathParameters[Routes.IS_EDITABLE_PARAM];
                 return CommonViewChatPage(
                   currentUserUid: lifecycle.currentUserId()!,
                   otherUserUid: expertId!,
@@ -229,10 +232,10 @@ class AppRouter {
                 state.pathParameters[Routes.CALL_TRANSACTION_ID_PARAM];
             final rateStartCents =
                 int.parse(state.pathParameters[Routes.CALL_RATE_START_PARAM]!);
-            final ratePerMinuteCents =
-                int.parse(state.pathParameters[Routes.CALL_RATE_PER_MINUTE_PARAM]!);
-            final callJoinExpirationTimeUtcMs = int.parse(
-                state.pathParameters[Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS_PARAM]!);
+            final ratePerMinuteCents = int.parse(
+                state.pathParameters[Routes.CALL_RATE_PER_MINUTE_PARAM]!);
+            final callJoinExpirationTimeUtcMs = int.parse(state.pathParameters[
+                Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS_PARAM]!);
             return ExpertViewCallPromptPage(
               transactionId: transactionId!,
               currentUserId: lifecycle.currentUserId()!,
@@ -333,11 +336,17 @@ class AppRouter {
                 uid: lifecycle.currentUserId()!);
           }),
       GoRoute(
-          name: Routes.EV_STRIPE_EARNINGS_DASHBOARD,
-          path: Routes.EV_STRIPE_EARNINGS_DASHBOARD,
+          name: Routes.EV_STRIPE_EARNINGS_DASHBOARD_PAGE,
+          path: Routes.EV_STRIPE_EARNINGS_DASHBOARD_PAGE,
           builder: (BuildContext context, GoRouterState state) {
             return ExpertViewStripeEarningsDashboard(
                 uid: lifecycle.currentUserId()!);
+          }),
+      GoRoute(
+          name: Routes.EV_PLATFORM_FEE_PAGE,
+          path: Routes.EV_PLATFORM_FEE_PAGE,
+          builder: (BuildContext context, GoRouterState state) {
+            return ExpertViewShowPlatformFeePage();
           }),
       GoRoute(
           name: Routes.UV_STRIPE_PAYMENT_METHODS_DASHBOARD,

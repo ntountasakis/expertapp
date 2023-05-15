@@ -21,6 +21,7 @@ class CallableFunctions {
   static final String GET_SHAREABLE_DYNAMIC_PROFILE_LINK =
       'generateExpertProfileDynamicLink';
   static final String COMPLETE_EXPERT_SIGN_UP = 'completeExpertSignUp';
+  static final String GET_PLATFORM_FEE = 'getPlatformFee';
 }
 
 class HttpEndpoints {

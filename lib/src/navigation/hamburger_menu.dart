@@ -63,11 +63,19 @@ class HamburgerMenu extends StatelessWidget {
         });
   }
 
+  ListTile platformFeesTile(BuildContext context) {
+    return ListTile(
+        title: Text("Platform Fees"),
+        onTap: () {
+          context.pushNamed(Routes.EV_PLATFORM_FEE_PAGE);
+        });
+  }
+
   ListTile stripeEarningsDashboard(BuildContext context) {
     return ListTile(
         title: Text("Stripe Earnings Dashboard"),
         onTap: () {
-          context.pushNamed(Routes.EV_STRIPE_EARNINGS_DASHBOARD);
+          context.pushNamed(Routes.EV_STRIPE_EARNINGS_DASHBOARD_PAGE);
         });
   }
 
@@ -154,6 +162,7 @@ class HamburgerMenu extends StatelessWidget {
         pastChatsTile(context),
         updateCallPricesTile(context),
         updateCallAvailabilityTile(context),
+        platformFeesTile(context),
         signOutTile(context),
         deleteAccountTile(context),
       ]),
