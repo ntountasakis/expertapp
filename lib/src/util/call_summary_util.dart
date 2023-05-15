@@ -1,4 +1,5 @@
 import 'package:expertapp/src/call_server/call_server_model.dart';
+import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart';
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:expertapp/src/util/currency_util.dart';
 import 'package:flutter/material.dart';
@@ -82,11 +83,26 @@ class CallSummaryUtil {
     );
   }
 
-  static Widget buildClientCallSummaryBlurb(ServerCallSummary summary) {
+  static Widget buildClientCallFinishedSummaryBlurb(ServerCallSummary summary) {
     final blurb =
         "Your payment method was charged ${formattedRate(summary.costOfCallCents)} for the call. "
         "We have cancelled the hold on the remaining amount that was authorized at the start of the call. "
         "Please consider leaving a review. Thank you for using ExpertApp!";
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        blurb,
+        style: LIGHT_STYLE,
+      ),
+    );
+  }
+
+  static Widget buildClientCallCanceledSummaryBlurb(
+      CallServerPaymentPromptModel paymentPrompt) {
+    final blurb =
+        "Your payment method was refunded in the amount of  ${formattedRate(paymentPrompt.centsRequestedAuthorized)}. "
+        "If you experienced any issues with the platform, please reach out to customer service. "
+        "Thank you for using ExpertApp!";
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
