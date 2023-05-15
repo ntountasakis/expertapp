@@ -13,6 +13,7 @@ class CallTransaction {
   final int callEndTimeUtcMs;
   final int costOfCallCents;
   final int earnedTotalCents;
+  final int lengthOfCallSec;
 
   CallTransaction(
       this.callerUid,
@@ -24,7 +25,8 @@ class CallTransaction {
       this.calledJoinTimeUtcMs,
       this.callEndTimeUtcMs,
       this.costOfCallCents,
-      this.earnedTotalCents);
+      this.earnedTotalCents,
+      this.lengthOfCallSec);
 
   CallTransaction.fromJson(Map<String, dynamic> json)
       : this(
@@ -38,6 +40,7 @@ class CallTransaction {
           json["callEndTimeUtcMs"] as int,
           json["costOfCallCents"] as int,
           json["earnedTotalCents"] as int,
+          json["lengthOfCallSec"] as int,
         );
 
   Map<String, dynamic> _toJson() {
@@ -52,6 +55,7 @@ class CallTransaction {
       'callEndTimeUtcMs': calledJoinTimeUtcMs,
       'costOfCallCents': costOfCallCents,
       'earnedTotalCents': earnedTotalCents,
+      'lengthOfCallSec': lengthOfCallSec,
     };
     return fieldsMap;
   }

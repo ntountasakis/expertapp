@@ -19,7 +19,6 @@ export const markCallEndGenerateCallSummary = async ({transaction, callTransacti
       callState: callState});
     const earnedTotal: number = await calculateEarnedCents({costOfCallCents: costOfCall, platformFeeCents: platformFees, callState: callState});
     transaction.update(transactionDocumentRef, {
-      "callEndTimeUtcMs": endCallTimeUtcMs,
       "lengthOfCallSec": lengthOfCallSec,
       "costOfCallCents": costOfCall,
       "platformFeeCents": platformFees,
@@ -31,6 +30,9 @@ export const markCallEndGenerateCallSummary = async ({transaction, callTransacti
     callTransaction.platformFeeCents = platformFees;
     callTransaction.earnedTotalCents = earnedTotal;
   }
+  transaction.update(transactionDocumentRef, {
+    "callEndTimeUtcMs": endCallTimeUtcMs,
+  });
   if (callState instanceof CallerCallState) {
     transaction.update(transactionDocumentRef, {
       "callerFinishedTransaction": true,
