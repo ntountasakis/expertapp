@@ -69,6 +69,15 @@ Future<String> getDefaultProfilePicUrl() async {
   return result.data;
 }
 
+Future<double> getPlatformPercentFee() async {
+  Map<String, dynamic> query = {
+    'version': AppVersion.version,
+  };
+  final result =
+      await getCallable(CallableFunctions.GET_PLATFORM_FEE).call(query);
+  return result.data['platformPercentFee'].toDouble();
+}
+
 Future<void> onProfilePicUpload(
     {required Uint8List pictureBytes, required bool fromSignUpFlow}) async {
   Map<String, dynamic> picture = {
