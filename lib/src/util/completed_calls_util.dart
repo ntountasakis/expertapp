@@ -27,8 +27,7 @@ class CompletedCallsUtil {
   }
 
   static String formatCallLength(CallTransaction call) {
-    final callLengthSec =
-        (call.callEndTimeUtcMs - call.calledJoinTimeUtcMs) ~/ 1000;
-    return CallSummaryUtil.callLengthFormat(Duration(seconds: callLengthSec));
+    return CallSummaryUtil.callLengthFormat(
+        Duration(seconds: call.lengthOfCallSec));
   }
 }

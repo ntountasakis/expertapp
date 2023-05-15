@@ -31,7 +31,9 @@ class UserCompletedCallCard extends StatelessWidget {
             final expertMetadata =
                 snapshot.data![0] as DocumentWrapper<PublicExpertInfo>?;
 
-            String title = 'Completed Call';
+            String title =
+                (call.lengthOfCallSec == 0 ? 'Canceled' : 'Completed') +
+                    ' Call';
             if (expertMetadata != null) {
               title += ' with ' + expertMetadata.documentType.shortName();
             } else {
