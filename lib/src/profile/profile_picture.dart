@@ -5,6 +5,7 @@ import 'package:expertapp/src/firebase/storage/storage_paths.dart';
 import 'package:expertapp/src/firebase/storage/storage_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 
@@ -91,18 +92,17 @@ class ProfilePicture extends StatelessWidget {
       final XFile? image = await picker.pickImage(source: source);
       if (image != null) {
         Uint8List imageBytes = await image.readAsBytes();
-        final imageHandle = img.decodeImage(imageBytes);
-        if (imageHandle == null) {
-          log('Failed to decode image');
-        } else {
-          Uint8List jpegBytes = img.encodeJpg(imageHandle, quality: 50);
-          onProfilePicSelection!(
-              selectedProfilePicBytes: jpegBytes,
-              fromSignUpFlow: fromSignUpFlow,
-              onProfilePictureChanged: onProfilePicUpload);
-        }
-      } else {
-        log('User cancelled profile pic image upload');
+        Uint8List jpegBytes = await FlutterImageCompress.compressWithList(
+            imageBytes,
+            minHeight: 400,
+            minWidth: 400,
+            quality: 50,
+            format: CompressFormat.jpeg);
+        onProfilePicSelection!(
+            selectedProfilePicBytes: jpegBytes,
+            fromSignUpFlow: fromSignUpFlow,
+            onProfilePictureChanged: onProfilePicUpload);
+        // }
       }
     } on Exception catch (e) {
       log('Exception picking image:  $e');

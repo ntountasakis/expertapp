@@ -20,13 +20,19 @@ export const updateProfilePicture = functions.https.onCall(async (data, context)
     throw new Error("Cannot updateProfilePicture with missing parameters");
   }
 
+  console.time("updateProfilePicture-bufferCreate");
   const pictureBytes: Buffer = Buffer.from(pictureData);
+  console.timeEnd("updateProfilePicture-bufferCreate");
+  console.time("updateProfilePicture-uploadFromMemory");
   const publicUrl = await uploadFromMemory(pictureBytes, uid, version);
+  console.timeEnd("updateProfilePicture-uploadFromMemory");
 
+  console.time("updateProfilePicture-runTransaction");
   const success = await admin.firestore().runTransaction(async (transaction) => {
     return updateProfilePicUrl({transaction: transaction, uid: uid, profilePicUrl: publicUrl,
       fromSignUpFlow: fromSignUpFlow, version: version});
   });
+  console.timeEnd("updateProfilePicture-runTransaction");
   return {
     success: success,
     message: success ? "Your profile picture was updated" : "Internal Server Error",
