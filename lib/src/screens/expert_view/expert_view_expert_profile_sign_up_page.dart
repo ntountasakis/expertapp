@@ -95,7 +95,9 @@ class _ExpertViewExpertProfileSignUpPageState
   Future<void> onProceedPressed(BuildContext context) async {
     final result = await completeExpertSignUp();
     if (result.success) {
-      await showDialog(
+      // todo: this context is invalid, throws error sometimes
+      context.goNamed(Routes.HOME_PAGE);
+      showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
@@ -103,8 +105,6 @@ class _ExpertViewExpertProfileSignUpPageState
               content: Text("You may now start accepting calls"),
             );
           });
-      // todo: this context is invalid, throws error sometimes
-      context.pushReplacementNamed(Routes.HOME_PAGE);
     } else {
       showDialog(
           context: context,
