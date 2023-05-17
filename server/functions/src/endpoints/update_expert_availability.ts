@@ -1,9 +1,10 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
-import Ajv, {JTDSchemaType} from "ajv/dist/jtd";
 import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 import {FirebaseDocRef, getExpertInfoConditionalOnSignup} from "../shared/src/firebase/firestore/functions/expert_info_conditional_sign_up_fetcher";
-import {WeekAvailability, DayAvailability} from "../shared/src/firebase/firestore/models/expert_availability";
+import {WeekAvailability} from "../shared/src/firebase/firestore/models/expert_availability";
+import {expertAvailabilitySchemaValidator} from "../shared/src/json_schema/expert_availability_validator.js";
+
 
 export const updateExpertAvailability = functions.https.onCall(async (data, context) => {
   if (context.auth == null || context.auth.uid == null) {
@@ -38,9 +39,7 @@ export const updateExpertAvailability = functions.https.onCall(async (data, cont
 
 
 function validatePayload(uid: string, version: string, payload: Map<string, unknown>): boolean {
-  const ajv = new Ajv();
-  const validator = ajv.compile(WeekAvailabilitySchema);
-  const isValid = validator(payload);
+  const isValid = expertAvailabilitySchemaValidator(payload);
   if (!isValid) {
     Logger.logError({
       logName: "updateExpertAvailability", message: `Cannot update availability because payload is invalid. Payload: ${payload}`,
@@ -69,10 +68,8 @@ function updateAvailabilityInfo(expertInfoRef: FirebaseDocRef, transaction: Fire
 }
 
 async function updateAvailability(uid: string, version: string, fromSignUpFlow: boolean, payload: Map<string, unknown>): Promise<boolean> {
-  const ajv = new Ajv();
-  const parser = ajv.compileParser(WeekAvailabilitySchema);
-  const result = parser(JSON.stringify(payload)) as WeekAvailability;
-  return await admin.firestore().runTransaction(async (transaction) => {
+  const result = JSON.parse(JSON.stringify(payload)) as WeekAvailability;
+  const value = await admin.firestore().runTransaction(async (transaction) => {
     const success: boolean = await getExpertInfoConditionalOnSignup({functionNameForLogging: "updateExpertAvailability",
       uid: uid, fromSignUpFlow: fromSignUpFlow,
       transaction: transaction, version: version, updateSignupProgressFunc: updateAvailabilityProgress,
@@ -87,27 +84,5 @@ async function updateAvailability(uid: string, version: string, fromSignUpFlow: 
     }
     return success;
   });
+  return value;
 }
-
-const WeekAvailabilitySchema: JTDSchemaType<WeekAvailability, { DayAvailabilitySchema: DayAvailability }> = {
-  definitions: {
-    DayAvailabilitySchema: {
-      properties: {
-        isAvailable: {type: "boolean"},
-        startHourUtc: {type: "int32"},
-        startMinuteUtc: {type: "int32"},
-        endHourUtc: {type: "int32"},
-        endMinuteUtc: {type: "int32"},
-      },
-    },
-  },
-  properties: {
-    mondayAvailability: {ref: "DayAvailabilitySchema"},
-    tuesdayAvailability: {ref: "DayAvailabilitySchema"},
-    wednesdayAvailability: {ref: "DayAvailabilitySchema"},
-    thursdayAvailability: {ref: "DayAvailabilitySchema"},
-    fridayAvailability: {ref: "DayAvailabilitySchema"},
-    saturdayAvailability: {ref: "DayAvailabilitySchema"},
-    sundayAvailability: {ref: "DayAvailabilitySchema"},
-  },
-};
