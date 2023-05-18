@@ -27,10 +27,11 @@ class _UserViewCallSummaryPageState extends State<UserViewCallSummaryPage> {
         pathParameters: {Routes.EXPERT_ID_PARAM: widget.otherUserId});
   }
 
-  void goHome(CallServerModel model) {
-    exiting = true;
-    model.reset();
-    context.goNamed(Routes.HOME_PAGE);
+  Future<void> goHome(CallServerModel model) async {
+    setState(() {
+      exiting = true;
+    });
+    CallSummaryUtil.postCallGoHome(context, model);
   }
 
   Widget buildSummaryBodyCallFinished(CallServerModel model) {

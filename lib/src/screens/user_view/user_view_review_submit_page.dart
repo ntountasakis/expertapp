@@ -2,10 +2,9 @@ import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
-import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/util/call_summary_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../call_server/call_server_model.dart';
@@ -75,9 +74,9 @@ class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
             children: [
               SimpleDialogOption(
                   onPressed: () async {
-                    Provider.of<CallServerModel>(context, listen: false)
-                        .reset();
-                    context.goNamed(Routes.HOME_PAGE);
+                    final model =
+                        Provider.of<CallServerModel>(context, listen: false);
+                    CallSummaryUtil.postCallGoHome(context, model);
                   },
                   child: Center(
                     child: Text(
@@ -101,7 +100,7 @@ class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
               reviewRating: _rating);
           _reviewSubmitAcknowledgmentDialog(context, dialogText);
         },
-        child: Text("Submit Review"));
+        child: Text("Submit Review for Expert"));
   }
 
   @override
