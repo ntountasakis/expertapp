@@ -3,6 +3,10 @@ import 'package:expertapp/src/call_server/call_server_payment_prompt_model.dart'
 import 'package:expertapp/src/generated/protos/call_transaction.pb.dart';
 import 'package:expertapp/src/util/currency_util.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:in_app_review/in_app_review.dart';
+
+import '../navigation/routes.dart';
 
 class CallSummaryUtil {
   static final BOLD_STYLE = TextStyle(
@@ -25,6 +29,20 @@ class CallSummaryUtil {
     String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     return "${twoDigits(duration.inHours)}\h $twoDigitMinutes\m $twoDigitSeconds\s";
+  }
+
+  static Future<void> postCallGoHome(
+      BuildContext context, CallServerModel model) async {
+    final secLengthCall =
+        model.callSummary != null ? model.callSummary!.lengthOfCallSec : 0;
+    model.reset();
+    context.goNamed(Routes.HOME_PAGE);
+    if (secLengthCall > 120) {
+      final InAppReview inAppReview = InAppReview.instance;
+      if (await inAppReview.isAvailable()) {
+        inAppReview.requestReview();
+      }
+    }
   }
 
   static Widget buildCallLength(ServerCallSummary summary) {

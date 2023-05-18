@@ -77,6 +77,7 @@ class CallServerModel extends ChangeNotifier {
     _errorReason = CallServerErrorReason.NOT_ERRORED;
     _callStartUtcMs = 0;
     callJoinTimeExpiryUtcMs = 0;
+    secMaxCallLength = 0;
   }
 
   void onConnected() {
