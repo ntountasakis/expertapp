@@ -2,7 +2,7 @@ import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 
-class DeleteAccountPage extends StatelessWidget {
+class CommonViewDeleteAccountPage extends StatelessWidget {
   Widget buildWarningText() {
     const text =
         '''Are you sure you want to delete your account? Please note that this action is irreversible and all your data will be permanently deleted from our system.

@@ -6,6 +6,7 @@ class Routes {
   static const ONBOARDING = '/onboarding';
   static const SIGN_IN_PAGE = '/signin';
   static const DELETE_ACCOUNT_PAGE = '/deleteaccount';
+  static const CONTACT_US_PAGE = '/contactus';
 
   // user view pages
   static const UV_USER_SIGNUP_PAGE = '/uv_user_signup';
