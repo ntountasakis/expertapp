@@ -17,7 +17,8 @@ class WebviewWrapper extends StatefulWidget {
 }
 
 class _WebviewWrapperState extends State<WebviewWrapper> {
-  late final WebViewController _controller;
+  late final WebViewController controller;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -33,20 +34,33 @@ class _WebviewWrapperState extends State<WebviewWrapper> {
     } else {
       params = const PlatformWebViewControllerCreationParams();
     }
-    final WebViewController controller =
-        WebViewController.fromPlatformCreationParams(params);
+    controller = WebViewController.fromPlatformCreationParams(params);
     // #enddocregion platform_features
 
     controller.setJavaScriptMode(JavaScriptMode.unrestricted);
-    _controller = controller;
-
-    _controller.loadRequest(Uri.parse(widget.initUrl));
+    controller.loadRequest(Uri.parse(widget.initUrl));
+    controller.setNavigationDelegate(NavigationDelegate(
+      onPageFinished: (url) {
+        setState(() {
+          isLoading = false;
+        });
+      },
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return WebViewWidget(
-      controller: _controller,
+    return Stack(
+      children: [
+        WebViewWidget(
+          controller: controller,
+        ),
+        isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Stack(),
+      ],
     );
   }
 }
