@@ -2,9 +2,10 @@ import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dar
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/preferences/preferences.dart';
+import 'package:expertapp/src/screens/common_view/common_view_contact_us_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_expert_profile_page.dart';
 import 'package:expertapp/src/screens/auth/sign_in_page.dart';
-import 'package:expertapp/src/screens/common_view/delete_account_page.dart';
+import 'package:expertapp/src/screens/common_view/common_view_delete_account_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_show_platform_fee_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_rates_sign_up_page.dart';
@@ -83,6 +84,13 @@ class AppRouter {
         },
       ),
       GoRoute(
+        name: Routes.CONTACT_US_PAGE,
+        path: Routes.CONTACT_US_PAGE,
+        builder: (BuildContext context, GoRouterState state) {
+          return CommonViewContactUsPage();
+        },
+      ),
+      GoRoute(
         name: Routes.HOME_PAGE,
         path: Routes.HOME_PAGE,
         builder: (BuildContext context, GoRouterState state) {
@@ -125,7 +133,7 @@ class AppRouter {
           name: Routes.DELETE_ACCOUNT_PAGE,
           path: Routes.DELETE_ACCOUNT_PAGE,
           builder: (BuildContext context, GoRouterState state) {
-            return DeleteAccountPage();
+            return CommonViewDeleteAccountPage();
           }),
       GoRoute(
         name: Routes.UV_USER_SIGNUP_PAGE,

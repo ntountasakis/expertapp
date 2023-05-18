@@ -145,6 +145,16 @@ class HamburgerMenu extends StatelessWidget {
         });
   }
 
+  ListTile contactUsTile(BuildContext context) {
+    return ListTile(
+        title: Text(
+          "Contact Us",
+        ),
+        onTap: () async {
+          context.pushNamed(Routes.CONTACT_US_PAGE);
+        });
+  }
+
   Widget buildExpertMenu(BuildContext context) {
     return Drawer(
       child: ListView(children: [
@@ -163,6 +173,7 @@ class HamburgerMenu extends StatelessWidget {
         updateCallPricesTile(context),
         updateCallAvailabilityTile(context),
         platformFeesTile(context),
+        contactUsTile(context),
         signOutTile(context),
         deleteAccountTile(context),
       ]),
@@ -180,6 +191,7 @@ class HamburgerMenu extends StatelessWidget {
           child: Text("Main Menu"),
         ),
         finishSignUpExpertTile(context, progress),
+        contactUsTile(context),
         signOutTile(context),
         deleteAccountTile(context),
       ]),
@@ -199,6 +211,7 @@ class HamburgerMenu extends StatelessWidget {
         pastCallsWithExpertsTile(context),
         pastChatsTile(context),
         stripePaymentMethodsDashboard(context),
+        contactUsTile(context),
         signOutTile(context),
         deleteAccountTile(context),
       ]),
@@ -215,6 +228,7 @@ class HamburgerMenu extends StatelessWidget {
           child: Text("Main Menu"),
         ),
         createNoUserAccountSignInTile(context),
+        contactUsTile(context),
         isSignedIn ? deleteAccountTile(context) : Container(),
         isSignedIn ? signOutTile(context) : Container(),
       ]),
