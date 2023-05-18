@@ -63,30 +63,27 @@ class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
 
   void _reviewSubmitAcknowledgmentDialog(
       BuildContext context, String dialogText) async {
-    showDialog(
+    await showDialog(
         context: context,
         builder: (context) {
-          return SimpleDialog(
+          return AlertDialog(
             title: Text(
               dialogText,
               style: TextStyle(fontSize: 18),
             ),
-            children: [
-              SimpleDialogOption(
-                  onPressed: () async {
-                    final model =
-                        Provider.of<CallServerModel>(context, listen: false);
-                    CallSummaryUtil.postCallGoHome(context, model);
-                  },
-                  child: Center(
-                    child: Text(
-                      "Ok",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ))
+            actionsAlignment: MainAxisAlignment.center,
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () async {
+                  Navigator.pop(context);
+                },
+              )
             ],
           );
         });
+    final model = Provider.of<CallServerModel>(context, listen: false);
+    CallSummaryUtil.postCallGoHome(context, model);
   }
 
   Widget buildSubmit(BuildContext context,
