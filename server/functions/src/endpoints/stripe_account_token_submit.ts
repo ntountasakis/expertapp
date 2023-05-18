@@ -23,7 +23,6 @@ export const stripeAccountTokenSubmit = functions.https.onRequest(async (request
   response.status(200).end();
 });
 
-
 function accountTokenSubmitHtml(requestUrl: string, wasTokenInvalid: boolean): string {
   let html = `
     <!DOCTYPE html>
@@ -32,39 +31,59 @@ function accountTokenSubmitHtml(requestUrl: string, wasTokenInvalid: boolean): s
             <title>Token Validation</title>
             <style>
                 body {
-                font-family: Arial, sans-serif;
-                font-size: 32px;
+                    font-family: Arial, sans-serif;
+                    font-size: 32px;
                 }
                 div {
-                margin: 0 auto;
-                width: 80%;
-                display: block;
-                text-align: center;
+                    margin: 0 auto;
+                    width: 80%;
+                    display: block;
+                    text-align: center;
                 }
 
-                h2 {text-align: center;}
-                h3 {text-align: center; color: red}
+                h2 {
+                    text-align: center;
+                }
+                h3 {
+                    text-align: center;
+                    color: red;
+                }
 
                 input[type="text"] {
-                width: 100%;
-                padding: 12px 20px;
-                margin: 8px 0;
-                box-sizing: border-box;
-                border: 2px solid #ccc;
-                border-radius: 4px;
-                font-size: 48px;
+                    width: 100%;
+                    padding: 12px 20px;
+                    margin: 8px 0;
+                    box-sizing: border-box;
+                    border: 2px solid #ccc;
+                    border-radius: 4px;
+                    font-size: 48px;
                 }
 
-                input[type="submit"] {
-                width: 50%;
-                background-color: #4CAF50;
-                color: white;
-                padding: 14px 20px;
-                margin: 8px 0;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 48px;
+                button {
+                  width: 50%;
+                  background-color: #4CAF50;
+                  color: white;
+                  padding: 14px 20px;
+                  margin: 8px 0;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                  font-size: 48px;
+                  }
+
+                .loading-spinner {
+                    display: inline-block;
+                    width: 48px;
+                    height: 48px;
+                    border-radius: 50%;
+                    border: 4px solid #f3f3f3;
+                    border-top: 4px solid #3498db;
+                    animation: spin 1s linear infinite;
+                }
+
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
                 }
             </style>
         </head>
@@ -79,12 +98,18 @@ function accountTokenSubmitHtml(requestUrl: string, wasTokenInvalid: boolean): s
             <div>
                 <label for="token">Enter Token:</label>
                 <input type="text" id="token" name="token">
-                <input type="submit" value="Submit" onclick="submitToken()">
+                <button onclick="submitToken()" id="submitBtn">Submit</button>
+                <span class="loading-spinner" style="display: none;"></span>
                 <script>
                     function submitToken() {
-                    var tokenValue = document.getElementById('token').value;
-                    var url = "${requestUrl}&token=" + tokenValue;
-                    window.location.replace(url);
+                        var tokenValue = document.getElementById('token').value;
+                        var url = "${requestUrl}&token=" + tokenValue;
+                        var submitBtn = document.getElementById('submitBtn');
+                        var loadingSpinner = document.querySelector('.loading-spinner');
+
+                        submitBtn.style.display = 'none';
+                        loadingSpinner.style.display = 'inline-block';
+                        window.location.replace(url);
                     }
                 </script>
             </div>
