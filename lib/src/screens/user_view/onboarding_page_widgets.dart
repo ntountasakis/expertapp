@@ -10,11 +10,11 @@ Widget buildOnboardingValuePropPage() {
         SizedBox(height: 100),
         SizedBox(
           height: 150,
-          child: _buildIconImage('appicon.png'),
+          child: _buildIconImage('icon_android.png'),
         ),
         SizedBox(height: 20),
         _textHelper(
-            "Stop wasting time Googling\n\nVideo call 1:1 with knowledgeable experts to get your questions answered"),
+            "Video call 1:1 with knowledgeable experts to get your questions answered"),
       ],
     ),
   );
@@ -32,7 +32,7 @@ Widget buildOnboardingExpertChoicePage() {
             "Choose your expert by viewing their category of expertise, reviews, and cost"),
         SizedBox(height: 20),
         SizedBox(
-          height: 300,
+          height: 450,
           child: _buildImage('expert-listings.png'),
         ),
         SizedBox(height: 20),
@@ -50,10 +50,10 @@ Widget buildOnboardingVideoCallPage() {
         _buildAppTitle(),
         SizedBox(height: 50),
         _textHelper(
-            "Have a conversation with a real person without needing to schedule ahead. You only pay per-minute"),
+            "Have a conversation with a real person without needing to schedule ahead"),
         SizedBox(height: 20),
         SizedBox(
-          height: 300,
+          height: 450,
           child: _buildImage('video-call.png'),
         ),
         SizedBox(height: 20),
@@ -74,7 +74,7 @@ Widget buildOnboardingChatPage() {
             "Exchange messages between the expert that you can review later"),
         SizedBox(height: 20),
         SizedBox(
-          height: 300,
+          height: 450,
           child: _buildImage('chat-messages.png'),
         ),
         SizedBox(height: 20),
@@ -95,8 +95,8 @@ Widget buildExpertSignupPage() {
             "If you have a skill we can verify, sign up in the app to become one of our experts and earn money quickly"),
         SizedBox(height: 20),
         SizedBox(
-          height: 300,
-          child: _buildImage('join-us.png'),
+          height: 450,
+          child: _buildImage('join-us.jpg'),
         ),
         SizedBox(height: 20),
       ],

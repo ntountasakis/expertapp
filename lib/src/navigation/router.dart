@@ -51,10 +51,11 @@ class AppRouter {
       final userExists = lifecycle.currentUserId() != null;
 
       if (state.location == Routes.ONBOARDING) {
-        if (await Preferences.shouldShowOnboarding()) {
-          return null;
-        }
-        return Routes.HOME_PAGE;
+        return null;
+        // if (await Preferences.shouldShowOnboarding()) {
+        //   return null;
+        // }
+        // return Routes.HOME_PAGE;
       }
 
       if (state.location == Routes.DELETE_ACCOUNT_PAGE && !signedIn) {
