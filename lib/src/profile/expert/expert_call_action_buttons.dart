@@ -42,8 +42,8 @@ Widget buildCallButtonHelper(
 Widget buildMakeAccountButton(BuildContext context) {
   return buildCallButtonHelper(
       context,
-      Colors.blue[500]!,
-      Colors.blue[900]!,
+      Colors.green[500]!,
+      Colors.green[900]!,
       'Make an account / sign in to call this expert',
       Routes.SIGN_IN_PAGE,
       {},
