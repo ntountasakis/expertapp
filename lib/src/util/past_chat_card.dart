@@ -94,6 +94,9 @@ class PastChatCard extends StatelessWidget {
                   context.pushNamed(Routes.UV_CALL_CHAT_PAGE, pathParameters: {
                     Routes.EXPERT_ID_PARAM: preview.otherUid,
                     Routes.IS_EDITABLE_PARAM: "false",
+                    Routes.OTHER_USER_SHORT_NAME: userInfo == null
+                        ? "Deleted User"
+                        : userInfo.documentType.shortName(),
                   });
                 });
           }

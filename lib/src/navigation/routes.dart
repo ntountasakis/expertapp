@@ -53,6 +53,7 @@ class Routes {
   static const CALL_JOIN_EXPIRATION_TIME_UTC_MS_PARAM =
       'calljoinexpirationtimeutcMs';
   static const FROM_EXPERT_SIGNUP_FLOW_PARAM = 'fromexpertsignupflow';
+  static const OTHER_USER_SHORT_NAME = 'otherusershortname';
 
   static String chatroomId(String aRoute) {
     final split = aRoute.split('?');

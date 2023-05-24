@@ -380,7 +380,7 @@ class _ExpertViewUpdateAvailabilityScaffoldState
     final scaffold = !expertInfoSnapshot.hasData
         ? Scaffold(
             appBar: ExpertViewUpdateAvailabilityScaffold.defaultAppBar(),
-            body: CircularProgressIndicator(),
+            body: Center(child: CircularProgressIndicator()),
           )
         : Scaffold(
             appBar: widget.appBarBuilder != null

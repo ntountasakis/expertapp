@@ -3,17 +3,18 @@ import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/chat_message.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/appbars/user_view/user_preview_appbar.dart';
-import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:flutter/material.dart';
 
 class CommonViewChatPage extends StatefulWidget {
   final String currentUserUid;
   final String otherUserUid;
+  final String otherUserShortName;
   final bool isEditable;
 
   CommonViewChatPage(
       {required this.currentUserUid,
       required this.otherUserUid,
+      required this.otherUserShortName,
       required this.isEditable});
 
   @override
@@ -56,20 +57,12 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-        future: Future.wait([
-          PublicUserInfo.get(widget.otherUserUid),
-          lookupChatroomId(widget.otherUserUid)
-        ]),
+        future: Future.wait([lookupChatroomId(widget.otherUserUid)]),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.hasData) {
-            final otherUserShortName = snapshot.data![0] != null
-                ? ((snapshot.data![0] as DocumentWrapper<PublicUserInfo>)
-                    .documentType
-                    .firstName)
-                : "Deleted User";
-            final chatroomId = snapshot.data![1] as String;
+            final chatroomId = snapshot.data![0] as String;
             return Scaffold(
-              appBar: UserPreviewAppbar(otherUserShortName, ""),
+              appBar: UserPreviewAppbar(widget.otherUserShortName, ""),
               body: Column(
                 children: [
                   Expanded(
@@ -91,7 +84,9 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
                                 );
                               });
                         } else {
-                          return Text("Loading.....");
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
                         }
                       },
                     ),
@@ -105,7 +100,8 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
             );
           } else {
             return Scaffold(
-              body: CircularProgressIndicator(),
+              appBar: UserPreviewAppbar(widget.otherUserShortName, ""),
+              body: Center(child: CircularProgressIndicator()),
             );
           }
         });

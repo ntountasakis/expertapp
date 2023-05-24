@@ -42,14 +42,17 @@ class UserViewCallPreviewPage extends StatelessWidget {
     );
   }
 
-  Widget buildBeginCallButton(BuildContext context) {
+  Widget buildBeginCallButton(
+      BuildContext context, PublicExpertInfo publicExpertInfo) {
     return Align(
       alignment: Alignment.centerRight,
       child: ElevatedButton(
         style: callButtonStyle,
         onPressed: () {
-          context.pushNamed(Routes.UV_CALL_HOME_PAGE,
-              pathParameters: {Routes.EXPERT_ID_PARAM: _expertUid});
+          context.pushNamed(Routes.UV_CALL_HOME_PAGE, pathParameters: {
+            Routes.EXPERT_ID_PARAM: _expertUid,
+            Routes.OTHER_USER_SHORT_NAME: publicExpertInfo.shortName(),
+          });
         },
         child: const Text('Begin Call'),
       ),
@@ -90,7 +93,8 @@ class UserViewCallPreviewPage extends StatelessWidget {
                     SizedBox(
                       height: 20,
                     ),
-                    buildBeginCallButton(context)
+                    buildBeginCallButton(
+                        context, publicExpertInfo!.documentType)
                   ]),
                 ));
           } else {

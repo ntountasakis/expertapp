@@ -23,11 +23,13 @@ import 'package:go_router/go_router.dart';
 class UserViewCallMainPage extends StatefulWidget {
   final String currentUserId;
   final String otherUserId;
+  final String otherUserShortName;
   final AppLifecycle lifecycle;
 
   const UserViewCallMainPage(
       {required this.currentUserId,
       required this.otherUserId,
+      required this.otherUserShortName,
       required this.lifecycle});
 
   @override
@@ -90,6 +92,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
   void onChatButtonTap() {
     context.pushNamed(Routes.UV_CALL_CHAT_PAGE, pathParameters: {
       Routes.EXPERT_ID_PARAM: widget.otherUserId,
+      Routes.OTHER_USER_SHORT_NAME: widget.otherUserShortName,
       Routes.IS_EDITABLE_PARAM: "true",
     });
   }
@@ -223,7 +226,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
           } else {
             return Scaffold(
               appBar: AppBar(title: const Text("Expert Call")),
-              body: CircularProgressIndicator(),
+              body: Center(child: CircularProgressIndicator()),
             );
           }
         });

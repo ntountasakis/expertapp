@@ -44,10 +44,11 @@ class _ExpertViewCallPromptPageState extends State<ExpertViewCallPromptPage> {
     );
   }
 
-  void onCallAcceptTap() {
+  void onCallAcceptTap(PublicUserInfo caller) {
     context.goNamed(Routes.EV_CALL_HOME_PAGE, pathParameters: {
       Routes.CALLER_UID_PARAM: widget.callerUserId,
-      Routes.CALL_TRANSACTION_ID_PARAM: widget.transactionId
+      Routes.CALL_TRANSACTION_ID_PARAM: widget.transactionId,
+      Routes.OTHER_USER_SHORT_NAME: caller.shortName(),
     });
   }
 
@@ -55,13 +56,13 @@ class _ExpertViewCallPromptPageState extends State<ExpertViewCallPromptPage> {
     context.goNamed(Routes.HOME_PAGE);
   }
 
-  Widget buildCallButtons(BuildContext context) {
+  Widget buildCallButtons(BuildContext context, PublicUserInfo caller) {
     return callButtonRow(context, [
       endCallButton(navigateHome),
       SizedBox(
         width: 50,
       ),
-      startCallButton(onCallAcceptTap),
+      startCallButton(() => onCallAcceptTap(caller)),
     ]);
   }
 
@@ -89,7 +90,7 @@ class _ExpertViewCallPromptPageState extends State<ExpertViewCallPromptPage> {
                     SizedBox(
                       height: 10,
                     ),
-                    buildCallButtons(context),
+                    buildCallButtons(context, callerMetadata.documentType),
                   ]),
                 ));
           }
