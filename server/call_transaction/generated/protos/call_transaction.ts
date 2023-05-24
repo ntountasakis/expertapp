@@ -13,6 +13,7 @@ export interface ProtoGrpcType {
     ClientCallDisconnectRequest: MessageTypeDefinition
     ClientCallInitiateRequest: MessageTypeDefinition
     ClientCallJoinRequest: MessageTypeDefinition
+    ClientKeepAlivePing: MessageTypeDefinition
     ClientMessageContainer: MessageTypeDefinition
     ClientNotifyRemoteJoinedCall: MessageTypeDefinition
     ServerAgoraCredentials: MessageTypeDefinition
@@ -23,6 +24,7 @@ export interface ProtoGrpcType {
     ServerCallSummary: MessageTypeDefinition
     ServerCounterpartyJoinedCall: MessageTypeDefinition
     ServerFeeBreakdowns: MessageTypeDefinition
+    ServerKeepAlivePong: MessageTypeDefinition
     ServerMessageContainer: MessageTypeDefinition
   }
 }

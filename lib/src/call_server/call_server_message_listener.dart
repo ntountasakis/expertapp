@@ -44,6 +44,8 @@ class CallServerMessageListener {
     } else if (aMessage.hasServerBothPartiesReadyForCall()) {
       model.onServerBothPartiesReadyForCall(
           aMessage.serverBothPartiesReadyForCall);
+    } else if (aMessage.hasServerKeepAlivePong()) {
+      log('Received server keep alive pong');
     } else {
       throw new Exception('''Unexpected ServerResponseContainer messageType 
       on call request ${aMessage.whichMessageWrapper()}''');

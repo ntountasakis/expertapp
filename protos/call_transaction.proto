@@ -27,12 +27,16 @@ message ClientNotifyRemoteJoinedCall {
     string remoteUid = 2;
 }
 
+message ClientKeepAlivePing{
+}
+
 message ClientMessageContainer {
     oneof messageWrapper {
         ClientCallInitiateRequest callInitiateRequest = 1;
         ClientCallJoinRequest callJoinRequest = 2;
         ClientCallDisconnectRequest callDisconnectRequest = 3;
         ClientNotifyRemoteJoinedCall notifyRemoteJoinedCall = 4;
+        ClientKeepAlivePing keepAlivePing = 5;
     }
 }
 
@@ -80,6 +84,9 @@ message ServerCallSummary {
     uint32 earnedTotalCents = 4;
 }
 
+message ServerKeepAlivePong{
+}
+
 message ServerMessageContainer {
     oneof messageWrapper {
         ServerCallJoinOrRequestResponse serverCallJoinOrRequestResponse = 1;
@@ -90,5 +97,6 @@ message ServerMessageContainer {
         ServerFeeBreakdowns serverFeeBreakdowns = 7;
         ServerCallSummary serverCallSummary = 8;
         ServerBothPartiesReadyForCall serverBothPartiesReadyForCall = 9;
+        ServerKeepAlivePong serverKeepAlivePong = 10;
     }
 }

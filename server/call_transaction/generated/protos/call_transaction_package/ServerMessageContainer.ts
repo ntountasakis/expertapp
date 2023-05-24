@@ -8,6 +8,7 @@ import type { ServerCounterpartyJoinedCall as _call_transaction_package_ServerCo
 import type { ServerFeeBreakdowns as _call_transaction_package_ServerFeeBreakdowns, ServerFeeBreakdowns__Output as _call_transaction_package_ServerFeeBreakdowns__Output } from '../call_transaction_package/ServerFeeBreakdowns';
 import type { ServerCallSummary as _call_transaction_package_ServerCallSummary, ServerCallSummary__Output as _call_transaction_package_ServerCallSummary__Output } from '../call_transaction_package/ServerCallSummary';
 import type { ServerBothPartiesReadyForCall as _call_transaction_package_ServerBothPartiesReadyForCall, ServerBothPartiesReadyForCall__Output as _call_transaction_package_ServerBothPartiesReadyForCall__Output } from '../call_transaction_package/ServerBothPartiesReadyForCall';
+import type { ServerKeepAlivePong as _call_transaction_package_ServerKeepAlivePong, ServerKeepAlivePong__Output as _call_transaction_package_ServerKeepAlivePong__Output } from '../call_transaction_package/ServerKeepAlivePong';
 
 export interface ServerMessageContainer {
   'serverCallJoinOrRequestResponse'?: (_call_transaction_package_ServerCallJoinOrRequestResponse | null);
@@ -18,7 +19,8 @@ export interface ServerMessageContainer {
   'serverFeeBreakdowns'?: (_call_transaction_package_ServerFeeBreakdowns | null);
   'serverCallSummary'?: (_call_transaction_package_ServerCallSummary | null);
   'serverBothPartiesReadyForCall'?: (_call_transaction_package_ServerBothPartiesReadyForCall | null);
-  'messageWrapper'?: "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentPreAuth"|"serverCallBeginPaymentPreAuthResolved"|"serverCounterpartyJoinedCall"|"serverFeeBreakdowns"|"serverCallSummary"|"serverBothPartiesReadyForCall";
+  'serverKeepAlivePong'?: (_call_transaction_package_ServerKeepAlivePong | null);
+  'messageWrapper'?: "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentPreAuth"|"serverCallBeginPaymentPreAuthResolved"|"serverCounterpartyJoinedCall"|"serverFeeBreakdowns"|"serverCallSummary"|"serverBothPartiesReadyForCall"|"serverKeepAlivePong";
 }
 
 export interface ServerMessageContainer__Output {
@@ -30,5 +32,6 @@ export interface ServerMessageContainer__Output {
   'serverFeeBreakdowns'?: (_call_transaction_package_ServerFeeBreakdowns__Output | null);
   'serverCallSummary'?: (_call_transaction_package_ServerCallSummary__Output | null);
   'serverBothPartiesReadyForCall'?: (_call_transaction_package_ServerBothPartiesReadyForCall__Output | null);
-  'messageWrapper': "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentPreAuth"|"serverCallBeginPaymentPreAuthResolved"|"serverCounterpartyJoinedCall"|"serverFeeBreakdowns"|"serverCallSummary"|"serverBothPartiesReadyForCall";
+  'serverKeepAlivePong'?: (_call_transaction_package_ServerKeepAlivePong__Output | null);
+  'messageWrapper': "serverCallJoinOrRequestResponse"|"serverAgoraCredentials"|"serverCallBeginPaymentPreAuth"|"serverCallBeginPaymentPreAuthResolved"|"serverCounterpartyJoinedCall"|"serverFeeBreakdowns"|"serverCallSummary"|"serverBothPartiesReadyForCall"|"serverKeepAlivePong";
 }

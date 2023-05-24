@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
@@ -31,6 +33,7 @@ class ExpertViewCallMainPage extends StatefulWidget {
 
 class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
   final CallServerManager callServerManager;
+  late Timer keepAliveTimer;
   bool requestedExit = false;
   bool errorDialogShown = false;
   AgoraVideoCall? videoCall;
@@ -43,7 +46,19 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       callServerManager.joinCall(
           context: context, callTransactionId: widget.callTransactionId);
+      keepAliveTimer = Timer.periodic(
+        const Duration(seconds: 30),
+        (timer) {
+          callServerManager.sendKeepAlive();
+        },
+      );
     });
+  }
+
+  @override
+  void dispose() async {
+    keepAliveTimer.cancel();
+    super.dispose();
   }
 
   Widget buildErrorView(BuildContext context, CallServerModel model) {

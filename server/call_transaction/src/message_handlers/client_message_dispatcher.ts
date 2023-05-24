@@ -28,8 +28,9 @@ export async function dispatchClientMessage(
   if (!checkMessageContainerValid(clientMessage, invalidMessageHandler)) {
     throw new Error("Server received a malformed client message.");
   }
-
-  if (clientMessage.callInitiateRequest) {
+  if (clientMessage.keepAlivePing) {
+    await clientMessageSender.sendServerKeepAlivePong();
+  } else if (clientMessage.callInitiateRequest) {
     await dispatchCallInitiateRequest(clientMessage.callInitiateRequest, invalidMessageHandler,
         clientMessageSender, callManager, callStream);
   } else if (clientMessage.callJoinRequest) {
