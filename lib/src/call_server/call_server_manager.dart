@@ -93,6 +93,13 @@ class CallServerManager {
     _serverMessageListener.onDisconnect();
   }
 
+  void sendKeepAlive() {
+    final messageContainer =
+        new ClientMessageContainer(keepAlivePing: ClientKeepAlivePing());
+    _serverMessageProducer.sendMessage(messageContainer);
+    log('Client sent keep alive ping');
+  }
+
   void _beginCall(BuildContext context) {
     final initiateRequest = ClientCallInitiateRequest(
       callerUid: currentUserId,

@@ -18,4 +18,5 @@ export abstract class ClientMessageSenderInterface {
     abstract sendCounterpartyJoinedCall(counterpartyJoinedCall: ServerCounterpartyJoinedCall, callState: BaseCallState): Promise<void>;
     abstract sendCallSummary(callSummary: ServerCallSummary, callState: BaseCallState): Promise<void>;
     abstract sendServerBothPartiesReadyForCall(callReady: ServerBothPartiesReadyForCall, callState: BaseCallState): Promise<void>;
+    abstract sendServerKeepAlivePong(): Promise<void>;
 }

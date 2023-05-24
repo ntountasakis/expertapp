@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:expertapp/src/agora/agora_video_call.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
@@ -36,6 +38,7 @@ class UserViewCallMainPage extends StatefulWidget {
 
 class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
   final CallServerManager callServerManager;
+  late Timer keepAliveTimer;
   bool requestedExit = false;
   bool exiting = false;
   bool errorDialogShown = false;
@@ -48,7 +51,19 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       callServerManager.initiateCall(context);
+      keepAliveTimer = Timer.periodic(
+        const Duration(seconds: 30),
+        (timer) {
+          callServerManager.sendKeepAlive();
+        },
+      );
     });
+  }
+
+  @override
+  void dispose() async {
+    keepAliveTimer.cancel();
+    super.dispose();
   }
 
   Widget buildVideoCallView(BuildContext context, CallServerModel model) {

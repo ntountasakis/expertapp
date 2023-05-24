@@ -89,6 +89,14 @@ export class GrpcClientMessageSender extends ClientMessageSenderInterface {
     await callState.log("Sent ServerBothPartiesReadyForCall: " + JSON.stringify(callReady));
   }
 
+  async sendServerKeepAlivePong(): Promise<void> {
+    const clientMessageContainer: ServerMessageContainer = {
+      "serverKeepAlivePong": {},
+      "messageWrapper": "serverKeepAlivePong",
+    };
+    await this.writeWrapper(clientMessageContainer);
+  }
+
   writeWrapper(messageContainer: ServerMessageContainer): Promise<void> {
     return new Promise((resolve, reject) => {
       this.write(messageContainer, (successResponse: any) => {
