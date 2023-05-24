@@ -178,25 +178,37 @@ class AppRouter {
       ),
       GoRoute(
           name: Routes.UV_CALL_HOME_PAGE,
-          path: Routes.UV_CALL_HOME_PAGE + '/:' + Routes.EXPERT_ID_PARAM,
+          path: Routes.UV_CALL_HOME_PAGE +
+              '/:' +
+              Routes.EXPERT_ID_PARAM +
+              '/:' +
+              Routes.OTHER_USER_SHORT_NAME,
           builder: (BuildContext context, GoRouterState state) {
             final expertId = state.pathParameters[Routes.EXPERT_ID_PARAM];
+            final otherUserShortName =
+                state.pathParameters[Routes.OTHER_USER_SHORT_NAME];
             return UserViewCallMainPage(
                 currentUserId: lifecycle.currentUserId()!,
                 otherUserId: expertId!,
+                otherUserShortName: otherUserShortName!,
                 lifecycle: lifecycle);
           },
           routes: <GoRoute>[
             GoRoute(
               name: Routes.UV_CALL_CHAT_PAGE,
-              path: Routes.UV_CALL_CHAT_PAGE + '/:' + Routes.IS_EDITABLE_PARAM,
+              path: Routes.UV_CALL_CHAT_PAGE +
+                  '/:' +
+                  Routes.IS_EDITABLE_PARAM,
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.pathParameters[Routes.EXPERT_ID_PARAM];
                 final isEditable =
                     state.pathParameters[Routes.IS_EDITABLE_PARAM];
+                final otherUserShortName =
+                    state.pathParameters[Routes.OTHER_USER_SHORT_NAME];
                 return CommonViewChatPage(
                   currentUserUid: lifecycle.currentUserId()!,
                   otherUserUid: expertId!,
+                  otherUserShortName: otherUserShortName!,
                   isEditable: isEditable! == 'true',
                 );
               },
@@ -260,15 +272,21 @@ class AppRouter {
               '/:' +
               Routes.CALLER_UID_PARAM +
               '/:' +
-              Routes.CALL_TRANSACTION_ID_PARAM,
+              Routes.CALL_TRANSACTION_ID_PARAM +
+              '/:' +
+              Routes.OTHER_USER_SHORT_NAME,
           builder: (BuildContext context, GoRouterState state) {
             final callerUid = state.pathParameters[Routes.CALLER_UID_PARAM];
             final transactionId =
                 state.pathParameters[Routes.CALL_TRANSACTION_ID_PARAM];
+            final callerShortName =
+                state.pathParameters[Routes.OTHER_USER_SHORT_NAME];
             return ExpertViewCallMainPage(
-                callTransactionId: transactionId!,
-                currentUserId: lifecycle.currentUserId()!,
-                callerUserId: callerUid!);
+              callTransactionId: transactionId!,
+              currentUserId: lifecycle.currentUserId()!,
+              callerUserId: callerUid!,
+              callerShortName: callerShortName!,
+            );
           },
           routes: <GoRoute>[
             GoRoute(
@@ -276,9 +294,12 @@ class AppRouter {
               path: Routes.EV_CALL_CHAT_PAGE,
               builder: (BuildContext context, GoRouterState state) {
                 final callerUid = state.pathParameters[Routes.CALLER_UID_PARAM];
+                final otherUserShortName =
+                    state.pathParameters[Routes.OTHER_USER_SHORT_NAME];
                 return CommonViewChatPage(
                   currentUserUid: lifecycle.currentUserId()!,
                   otherUserUid: callerUid!,
+                  otherUserShortName: otherUserShortName!,
                   isEditable: true,
                 );
               },

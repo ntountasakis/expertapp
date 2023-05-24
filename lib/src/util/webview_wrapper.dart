@@ -55,11 +55,7 @@ class _WebviewWrapperState extends State<WebviewWrapper> {
         WebViewWidget(
           controller: controller,
         ),
-        isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Stack(),
+        isLoading ? Center(child: CircularProgressIndicator()) : Stack(),
       ],
     );
   }

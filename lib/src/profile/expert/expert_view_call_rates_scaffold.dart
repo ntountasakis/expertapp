@@ -23,7 +23,6 @@ class ExpertViewCallRatesScaffold extends StatelessWidget {
     );
   }
 
-
   Widget buildExistingRateView(DocumentWrapper<ExpertRate>? expertRate) {
     if (expertRate == null) {
       return Text("You have no rate registered yet.");
@@ -83,7 +82,7 @@ class ExpertViewCallRatesScaffold extends StatelessWidget {
     if (!expertRateSnapshot.hasData) {
       return Scaffold(
         appBar: buildDefaultAppBar(),
-        body: CircularProgressIndicator(),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
     return Scaffold(

@@ -70,7 +70,7 @@ class ExpertProfileScaffold extends StatelessWidget {
     if (!expertInfoSnapshot.hasData) {
       return Scaffold(
         appBar: buildDefaultAppBar(),
-        body: CircularProgressIndicator(),
+        body: Center(child: CircularProgressIndicator()),
       );
     }
     return Scaffold(

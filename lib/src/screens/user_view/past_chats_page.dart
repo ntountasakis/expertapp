@@ -50,7 +50,9 @@ class PastChatsPage extends StatelessWidget {
                         preview: preview);
                   });
             } else {
-              return Text("Loading.....");
+              return Center(
+                child: CircularProgressIndicator(),
+              );
             }
           }),
     );

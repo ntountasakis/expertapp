@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:expertapp/src/agora/agora_video_call.dart';
+import 'package:expertapp/src/appbars/user_view/user_preview_appbar.dart';
 import 'package:expertapp/src/call_server/call_server_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_counterparty_connection_state.dart';
 import 'package:expertapp/src/call_server/call_server_error_dialog.dart';
@@ -19,11 +20,13 @@ class ExpertViewCallMainPage extends StatefulWidget {
   final String callTransactionId;
   final String currentUserId;
   final String callerUserId;
+  final String callerShortName;
 
   ExpertViewCallMainPage(
       {required this.callTransactionId,
       required this.currentUserId,
-      required this.callerUserId});
+      required this.callerUserId,
+      required this.callerShortName});
 
   @override
   State<ExpertViewCallMainPage> createState() =>
@@ -82,7 +85,7 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
     if (model.agoraCredentials == null ||
         model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.DISCONNECTED) {
-      return CircularProgressIndicator();
+      return Center(child: CircularProgressIndicator());
     } else if (videoCall == null) {
       final agoraChannelName = model.agoraCredentials!.channelName;
       final agoraToken = model.agoraCredentials!.token;
@@ -103,6 +106,7 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
     context.pushNamed(Routes.EV_CALL_CHAT_PAGE, pathParameters: {
       Routes.CALLER_UID_PARAM: widget.callerUserId,
       Routes.CALL_TRANSACTION_ID_PARAM: widget.callTransactionId,
+      Routes.OTHER_USER_SHORT_NAME: widget.callerShortName,
     });
   }
 
@@ -134,7 +138,10 @@ class _ExpertViewCallMainPageState extends State<ExpertViewCallMainPage> {
               );
             });
           }
-          return Scaffold(body: CircularProgressIndicator());
+          return Scaffold(
+              appBar: UserPreviewAppbar(
+                  widget.callerShortName, "Connecting you to"),
+              body: Center(child: CircularProgressIndicator()));
         });
   }
 }

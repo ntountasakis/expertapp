@@ -40,7 +40,7 @@ class CallTransaction {
           json["callEndTimeUtcMs"] as int,
           json["costOfCallCents"] as int,
           json["earnedTotalCents"] as int,
-          json["lengthOfCallSec"] as int,
+          (json["lengthOfCallSec"]).round(),
         );
 
   Map<String, dynamic> _toJson() {

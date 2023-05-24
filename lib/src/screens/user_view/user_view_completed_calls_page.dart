@@ -54,7 +54,7 @@ class UserViewCompletedCallsPage extends StatelessWidget {
                       key: Key(call.documentId));
                 });
           } else {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
         },
       ),

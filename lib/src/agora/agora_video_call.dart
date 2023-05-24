@@ -180,9 +180,8 @@ class _AgoraVideoCallState extends State<AgoraVideoCall> {
         connection: RtcConnection(channelId: widget.agoraChannelName),
       ));
     } else {
-      return Text(
-        'Please wait for remote user to join',
-        textAlign: TextAlign.center,
+      return Center(
+        child: CircularProgressIndicator(),
       );
     }
   }

@@ -127,7 +127,7 @@ class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
                 ),
               );
             }
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }),
     );
   }

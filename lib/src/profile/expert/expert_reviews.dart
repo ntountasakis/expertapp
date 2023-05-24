@@ -31,7 +31,7 @@ class _ExpertReviewsState extends State<ExpertReviews> {
                   return snapshot.data!.elementAt(index);
                 });
           } else {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
         });
   }
