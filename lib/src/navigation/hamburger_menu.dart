@@ -224,7 +224,7 @@ class HamburgerMenu extends StatelessWidget {
       child: ListView(children: [
         const DrawerHeader(
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Color.fromRGBO(62, 82, 114, 1),
           ),
           child: Text("Main Menu"),
         ),
