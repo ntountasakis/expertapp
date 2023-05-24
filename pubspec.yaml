@@ -39,6 +39,7 @@ dependencies:
   firebase_ui_oauth_apple: ^1.1.0
   firebase_ui_oauth_facebook: ^1.1.0
   firebase_ui_oauth_google: ^1.0.21
+  flex_color_scheme: ^7.1.2
   flutter:
     sdk: flutter
   flutter_chat_bubble: ^2.0.0

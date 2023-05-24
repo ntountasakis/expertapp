@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:expertapp/src/firebase/auth/auth_state_listener.dart' as Auth;
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -100,6 +101,9 @@ class _MyAppState extends State<MyApp> {
         child: MaterialApp.router(
           title: "Expert App",
           routerConfig: widget.router.goRouter,
+          theme: FlexThemeData.light(
+            scheme: FlexScheme.deepBlue,
+          ),
         ));
   }
 }

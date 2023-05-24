@@ -3,6 +3,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/expert_signup_p
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -160,7 +161,7 @@ class HamburgerMenu extends StatelessWidget {
       child: ListView(children: [
         const DrawerHeader(
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Color.fromRGBO(62, 82, 114, 1),
           ),
           child: Text("Main Menu"),
         ),
@@ -186,7 +187,7 @@ class HamburgerMenu extends StatelessWidget {
       child: ListView(children: [
         const DrawerHeader(
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Color.fromRGBO(62, 82, 114, 1),
           ),
           child: Text("Main Menu"),
         ),
@@ -203,7 +204,7 @@ class HamburgerMenu extends StatelessWidget {
       child: ListView(children: [
         const DrawerHeader(
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Color.fromRGBO(62, 82, 114, 1),
           ),
           child: Text("Main Menu"),
         ),
