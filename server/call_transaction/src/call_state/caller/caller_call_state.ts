@@ -11,12 +11,14 @@ export class CallerCallState extends BaseCallState {
   callerBeginCallContext: CallerBeginCallContext;
   _callJoinExpirationTimer?: NodeJS.Timeout;
   callJoinExpirationTimeUtcMs: number;
+  callerFirstName: string;
 
-  constructor({callerBeginCallContext, clientMessageSender, onDisconnect, userId, version, callStream}:
+  constructor({callerBeginCallContext, clientMessageSender, onDisconnect, userId, version, callStream, callerFirstName}:
     {
       callerBeginCallContext: CallerBeginCallContext, clientMessageSender: ClientMessageSenderInterface,
       onDisconnect: CallOnDisconnectInterface, userId: string, version: string,
-      callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>
+      callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>,
+      callerFirstName: string,
     }) {
     super({
       transactionId: callerBeginCallContext.transactionId, clientMessageSender: clientMessageSender,
@@ -25,6 +27,7 @@ export class CallerCallState extends BaseCallState {
     this.callerBeginCallContext = callerBeginCallContext;
     this._callJoinExpirationTimer = undefined;
     this.callJoinExpirationTimeUtcMs = 0;
+    this.callerFirstName = callerFirstName;
   }
 
   async setCallJoinExpirationTimer(maxWaitTimeSec: number): Promise<void> {

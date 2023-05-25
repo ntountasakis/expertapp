@@ -27,7 +27,7 @@ export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSen
     const startRateString = callTransaction.expertRateCentsCallStart.toString();
     const perMinuteRateString = callTransaction.expertRateCentsPerMinute.toString();
 
-    await callerCallState.setCallJoinExpirationTimer(30);
+    await callerCallState.setCallJoinExpirationTimer(150);
 
     const paymentPreAuthResolved: ServerCallBeginPaymentPreAuthResolved = {
       "joinCallTimeExpiryUtcMs": callerCallState.callJoinExpirationTimeUtcMs,
@@ -40,7 +40,9 @@ export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSen
       callTransactionId: callerCallState.callerBeginCallContext.transactionId,
       callRateStartCents: startRateString,
       callRatePerMinuteCents: perMinuteRateString,
-      callJoinExpirationTimeUtcMs: callerCallState.callJoinExpirationTimeUtcMs});
+      callJoinExpirationTimeUtcMs: callerCallState.callJoinExpirationTimeUtcMs,
+      callerFirstName: callerCallState.callerFirstName,
+    });
     await sendGrpcServerAgoraCredentials(clientMessageSender, callerCallState.callerBeginCallContext.agoraChannelName,
         callerCallState.callerBeginCallContext.callerUid, callerCallState);
     return Promise.resolve(true);

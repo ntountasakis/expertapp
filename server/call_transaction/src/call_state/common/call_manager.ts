@@ -31,15 +31,17 @@ export class CallManager {
   }
 
   async createCallStateOnCallerBegin({userId, callerBeginCallContext, callerDisconnectFunction,
-    clientMessageSender, callStream, version}: {
+    clientMessageSender, callStream, version, callerFirstName}: {
       userId: string, version: string, callerBeginCallContext: CallerBeginCallContext,
       callerDisconnectFunction: CallOnDisconnectInterface,
-      clientMessageSender: ClientMessageSenderInterface, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>
+      clientMessageSender: ClientMessageSenderInterface, callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>,
+      callerFirstName: string,
     }): Promise<CallerCallState> {
     const callState = new CallerCallState(
         {
           callerBeginCallContext: callerBeginCallContext, onDisconnect: callerDisconnectFunction,
           clientMessageSender: clientMessageSender, userId: userId, callStream: callStream, version: version,
+          callerFirstName: callerFirstName,
         });
     await this.creatCallState({userId: userId, state: callState});
     await callState.log(`Created CallerCallState for UID: ${userId}`);

@@ -3,13 +3,16 @@ import {Logger} from "../../../google_cloud/google_cloud_logger";
 import {CallJoinCancel} from "../messages/call_join_cancel";
 import {CallJoinRequest} from "../messages/call_join_request";
 import {sendFcmMessage} from "../sender/fcm_token_sender";
+import {convertMillisecondsToMinutesAndSeconds} from "../../../general/utils";
 
 export const sendFcmCallJoinRequest = function({fcmToken, callerUid, calledUid, callTransactionId,
-  callRateStartCents, callRatePerMinuteCents, callJoinExpirationTimeUtcMs}: {
+  callRateStartCents, callRatePerMinuteCents, callJoinExpirationTimeUtcMs, callerFirstName}: {
     fcmToken: string, callerUid: string, calledUid: string,
     callTransactionId: string, callRateStartCents: string,
     callRatePerMinuteCents: string, callJoinExpirationTimeUtcMs: number,
+    callerFirstName: string,
   }): void {
+  const {minutes, seconds} = convertMillisecondsToMinutesAndSeconds(callJoinExpirationTimeUtcMs - Date.now());
   const payload: TokenMessage = {
     data: {
       messageType: CallJoinRequest.messageType(),
@@ -22,15 +25,16 @@ export const sendFcmCallJoinRequest = function({fcmToken, callerUid, calledUid, 
     },
     token: fcmToken,
     notification: {
-      title: "Call Join Request",
-      body: "You have a call join request",
+      title: "Incoming call from " + callerFirstName,
+      body: "You have " + minutes + " minutes and " + seconds + " seconds to accept the call.",
     },
   };
 
   // Send a message to the device corresponding to the provided registration token.
   Logger.log({
     logName: Logger.CALL_SERVER, message: `sendFcmCallJoinRequest: payload: ${JSON.stringify(payload)}`,
-    labels: new Map([["expertId", calledUid], ["userId", callerUid], ["callTransactionId", callTransactionId], ["fcmToken", fcmToken]]),
+    labels: new Map([["expertId", calledUid], ["userId", callerUid], ["callTransactionId", callTransactionId], ["fcmToken", fcmToken],
+      ["callJoinExpirationTimeUtcMs", callJoinExpirationTimeUtcMs.toString()]]),
   });
   sendFcmMessage(payload);
 };
