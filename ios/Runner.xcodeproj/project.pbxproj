@@ -162,6 +162,7 @@
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
@@ -387,7 +388,7 @@
 				DEVELOPMENT_TEAM = 39RW6K2RRV;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
-				"EXCLUDED_ARCHS[sdk=*]" = "i386";
+				"EXCLUDED_ARCHS[sdk=*]" = i386;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -523,7 +524,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 39RW6K2RRV;
 				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=*]" = "i386";
+				"EXCLUDED_ARCHS[sdk=*]" = i386;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -550,7 +551,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 39RW6K2RRV;
 				ENABLE_BITCODE = NO;
-				"EXCLUDED_ARCHS[sdk=*]" = "i386";
+				"EXCLUDED_ARCHS[sdk=*]" = i386;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
