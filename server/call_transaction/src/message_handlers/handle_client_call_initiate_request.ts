@@ -25,7 +25,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   const callerUid = callInitiateRequest.callerUid as string;
   const version = callInitiateRequest.version as string;
 
-  const [didCreateCall, stripeCustomerId, paymentIntentClientSecret, ephemeralKey, centsRequestedAuth, optCallTransaction, optExpertRate] =
+  const [didCreateCall, stripeCustomerId, paymentIntentClientSecret, ephemeralKey, callerFirstName, centsRequestedAuth, optCallTransaction, optExpertRate] =
     await createCallTransaction({callerUid: callerUid, calledUid: calledUid});
   if (!didCreateCall) {
     return;
@@ -36,7 +36,7 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   const newClientCallState: CallerCallState = await _createNewCallState({
     callManager: clientCallManager, callTransaction: callTransaction,
     calledUid: calledUid, callerUid: callerUid, expertRate: expertRate, clientMessageSender: clientMessageSender,
-    callStream: callStream, version: version,
+    callStream: callStream, version: version, callerFirstName: callerFirstName,
   });
 
   await newClientCallState.log(`Received ClientCallInitiateRequest: ${JSON.stringify(callInitiateRequest)}`);
@@ -51,11 +51,12 @@ export async function handleClientCallInitiateRequest(callInitiateRequest: Clien
   sendGrpcServerFeeBreakdowns(clientMessageSender, callTransaction, newClientCallState);
 }
 
-async function _createNewCallState({callTransaction, callerUid, calledUid, expertRate, clientMessageSender, callManager, callStream, version}:
+async function _createNewCallState({callTransaction, callerUid, calledUid, expertRate, clientMessageSender, callManager, callStream, version, callerFirstName}:
   {
     callManager: CallManager, callTransaction: CallTransaction, callerUid: string, calledUid: string,
     version: string, expertRate: ExpertRate, clientMessageSender: ClientMessageSenderInterface,
-    callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>
+    callStream: grpc.ServerDuplexStream<ClientMessageContainer, ServerMessageContainer>,
+    callerFirstName: string,
   }): Promise<CallerCallState> {
   const callBeginCallerContext = new CallerBeginCallContext({
     transactionId: callTransaction.callTransactionId,
@@ -66,6 +67,7 @@ async function _createNewCallState({callTransaction, callerUid, calledUid, exper
     userId: callTransaction.callerUid, callerBeginCallContext: callBeginCallerContext,
     callerDisconnectFunction: onCallerDisconnect,
     clientMessageSender: clientMessageSender, callStream: callStream, version: version,
+    callerFirstName: callerFirstName,
   });
 }
 
