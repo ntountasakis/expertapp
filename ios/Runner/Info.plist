@@ -70,6 +70,8 @@
 		<string>To facilitate voice and video calls</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>To upload a profile picture from photo library</string>
+		<key>PermissionGroupNotification</key>
+		<string>To alert you of an incoming call</string>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>UILaunchStoryboardName</key>
