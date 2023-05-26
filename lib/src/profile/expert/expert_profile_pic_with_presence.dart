@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 Widget buildExpertProfilePicWithPresence(
     {required String profilePicUrl,
     required bool isOnline,
+    required bool isAvailable,
     required double bottomOffset,
     required double rightOffset,
     required double circleSize}) {
@@ -16,7 +17,9 @@ Widget buildExpertProfilePicWithPresence(
         width: circleSize,
         height: circleSize,
         decoration: BoxDecoration(
-          color: isOnline ? Colors.green : Colors.red,
+          color: !isAvailable
+              ? Colors.red
+              : (isOnline ? Colors.green : Colors.yellow[600]),
           shape: BoxShape.circle,
           border: Border.all(color: Colors.white, width: 2),
         ),

@@ -30,11 +30,13 @@ class ExpertViewCompletedCallsPage extends StatelessWidget {
                       return buildTappableCard(
                           context: context,
                           leading: buildLeadingProfileTile(
-                              context: context,
-                              shortName: "",
-                              profilePicUrl: snapshot.data!,
-                              showOnlineStatus: false,
-                              isOnline: false),
+                            context: context,
+                            shortName: "",
+                            profilePicUrl: snapshot.data!,
+                            showOnlineStatus: false,
+                            isOnline: false,
+                            isAvailable: false,
+                          ),
                           title: Text("No calls... yet."),
                           subtitle: Text(
                               "After your first call, the details will appear here."),

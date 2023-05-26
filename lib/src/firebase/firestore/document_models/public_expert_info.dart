@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_availability.dart';
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
+import 'package:expertapp/src/timezone/timezone_util.dart';
 import 'package:expertapp/src/util/string_casing_extension.dart';
 
 class PublicExpertInfo {
@@ -75,6 +76,10 @@ class PublicExpertInfo {
   double getAverageReviewRating() {
     if (numReviews == 0) return 0;
     return runningSumReviewRatings / numReviews;
+  }
+
+  bool isAvailable() {
+    return TimezoneUtil.isWithinTimeRange(availability);
   }
 
   Future<void> updateProfilePic(

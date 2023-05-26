@@ -38,6 +38,7 @@ Widget buildProfilePictureUserView(
     child: buildExpertProfilePicWithPresence(
       profilePicUrl: publicExpertInfo.documentType.profilePicUrl,
       isOnline: publicExpertInfo.documentType.isOnline,
+      isAvailable: publicExpertInfo.documentType.isAvailable(),
       bottomOffset: 10,
       rightOffset: 10,
       circleSize: 30,

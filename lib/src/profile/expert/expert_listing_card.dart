@@ -74,11 +74,13 @@ class ExpertListingCard extends StatelessWidget {
     return buildTappableCard(
         context: context,
         leading: buildLeadingProfileTile(
-            context: context,
-            shortName: _publicExpertInfo.documentType.shortName(),
-            profilePicUrl: _publicExpertInfo.documentType.profilePicUrl,
-            showOnlineStatus: true,
-            isOnline: _publicExpertInfo.documentType.isOnline),
+          context: context,
+          shortName: _publicExpertInfo.documentType.shortName(),
+          profilePicUrl: _publicExpertInfo.documentType.profilePicUrl,
+          showOnlineStatus: true,
+          isOnline: _publicExpertInfo.documentType.isOnline,
+          isAvailable: _publicExpertInfo.documentType.isAvailable(),
+        ),
         title: buildTitle(),
         subtitle: SizedBox(),
         trailing: buildTrailing(),
