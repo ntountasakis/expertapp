@@ -2,6 +2,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/expert_rate.dar
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/preferences/preferences.dart';
+import 'package:expertapp/src/profile/expert/expert_phone_number_picker.dart';
 import 'package:expertapp/src/screens/common_view/common_view_contact_us_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_call_join_expired_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_expert_profile_page.dart';
@@ -9,6 +10,7 @@ import 'package:expertapp/src/screens/auth/sign_in_page.dart';
 import 'package:expertapp/src/screens/common_view/common_view_delete_account_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_show_platform_fee_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_availability_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_update_phone_number_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_update_rates_sign_up_page.dart';
 import 'package:expertapp/src/screens/user_view/past_chats_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_stripe_earnings_dashboard.dart';
@@ -356,6 +358,12 @@ class AppRouter {
               return ExpertViewUpdateAvailabilityPage(
                   uid: lifecycle.currentUserId()!);
             }
+          }),
+      GoRoute(
+          name: Routes.EV_UPDATE_PHONE_NUMBER_PAGE,
+          path: Routes.EV_UPDATE_PHONE_NUMBER_PAGE,
+          builder: (BuildContext context, GoRouterState state) {
+            return ExpertViewUpdatePhoneNumberPage(uid: lifecycle.currentUserId()!);
           }),
       GoRoute(
           name: Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,

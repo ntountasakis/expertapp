@@ -6,11 +6,19 @@ class PrivateUserInfo {
   final String email;
   final String stripeCustomerId;
   final String stripeConnectedId;
+  final String phoneNumber;
+  final String phoneNumberDialCode;
+  final String phoneNumberIsoCode;
+  final bool consentsToSms;
 
   PrivateUserInfo(
     this.email,
     this.stripeCustomerId,
     this.stripeConnectedId,
+    this.phoneNumber,
+    this.phoneNumberDialCode,
+    this.phoneNumberIsoCode,
+    this.consentsToSms,
   );
 
   PrivateUserInfo.fromJson(Map<String, dynamic> json)
@@ -18,6 +26,10 @@ class PrivateUserInfo {
           json['email'] as String,
           json['stripeCustomerId'] as String,
           json['stripeConnectedId'] as String,
+          json['phoneNumber'] as String,
+          json['phoneNumberDialCode'] as String,
+          json['phoneNumberIsoCode'] as String,
+          json['consentsToSms'] as bool,
         );
 
   Map<String, dynamic> _toJson() {
@@ -25,6 +37,10 @@ class PrivateUserInfo {
       'email': email,
       'stripeCustomerId': stripeCustomerId,
       'stripeConnectedId': stripeConnectedId,
+      'phoneNumber': phoneNumber,
+      'phoneNumberDialCode': phoneNumberDialCode,
+      'phoneNumberIsoCode': phoneNumberIsoCode,
+      'consentsToSms': consentsToSms,
     };
     return fieldsMap;
   }

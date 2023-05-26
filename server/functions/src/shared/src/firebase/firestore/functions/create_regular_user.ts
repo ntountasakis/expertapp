@@ -11,6 +11,10 @@ export async function createRegularUser({uid, email, stripeCustomerId, firstName
     "email": email,
     "stripeCustomerId": stripeCustomerId,
     "stripeConnectedId": "",
+    "phoneNumber": "",
+    "phoneNumberDialCode": "",
+    "phoneNumberIsoCode": "",
+    "consentsToSms": false,
   };
   const publicUserInfo: PublicUserInfo = {
     "firstName": firstName,
