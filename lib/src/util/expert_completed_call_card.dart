@@ -34,11 +34,13 @@ class ExpertCompletedCallCard extends StatelessWidget {
             return buildTappableCard(
                 context: context,
                 leading: buildLeadingProfileTile(
-                    context: context,
-                    shortName: shortName,
-                    profilePicUrl: profilePicUrl,
-                    showOnlineStatus: false,
-                    isOnline: false),
+                  context: context,
+                  shortName: shortName,
+                  profilePicUrl: profilePicUrl,
+                  showOnlineStatus: false,
+                  isOnline: false,
+                  isAvailable: false,
+                ),
                 title: Text(title),
                 subtitle: Text(subtitle),
                 trailing: SizedBox(),

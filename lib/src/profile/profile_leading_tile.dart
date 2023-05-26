@@ -7,7 +7,8 @@ Widget buildLeadingProfileTile(
     required String shortName,
     required String profilePicUrl,
     required bool showOnlineStatus,
-    required bool isOnline}) {
+    required bool isOnline,
+    required bool isAvailable}) {
   final TextStyle nameStyle =
       TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
   return SizedBox(
@@ -25,9 +26,11 @@ Widget buildLeadingProfileTile(
             : SizedBox(),
         shortName != "" ? SizedBox(height: 5) : SizedBox(),
         buildProfilePicTileElement(
-            profilePicUrl: profilePicUrl,
-            showOnlineStatus: showOnlineStatus,
-            isOnline: isOnline),
+          profilePicUrl: profilePicUrl,
+          showOnlineStatus: showOnlineStatus,
+          isOnline: isOnline,
+          isAvailable: isAvailable,
+        ),
         SizedBox(height: 5),
       ],
     ),
@@ -37,7 +40,8 @@ Widget buildLeadingProfileTile(
 Widget buildProfilePicTileElement(
     {required String profilePicUrl,
     required bool showOnlineStatus,
-    required bool isOnline}) {
+    required bool isOnline,
+    required bool isAvailable}) {
   if (!showOnlineStatus) {
     return Expanded(
       child: ProfilePicture(profilePicUrl),
@@ -47,6 +51,7 @@ Widget buildProfilePicTileElement(
       child: buildExpertProfilePicWithPresence(
           profilePicUrl: profilePicUrl,
           isOnline: isOnline,
+          isAvailable: isAvailable,
           bottomOffset: 0,
           rightOffset: 20,
           circleSize: 15));

@@ -1,7 +1,6 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
-import 'package:expertapp/src/timezone/timezone_util.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -40,14 +39,8 @@ Widget buildCallButtonHelper(
 }
 
 Widget buildMakeAccountButton(BuildContext context) {
-  return buildCallButtonHelper(
-      context,
-      Colors.green[500]!,
-      Colors.green[900]!,
-      'Make an account / sign in to call this expert',
-      Routes.SIGN_IN_PAGE,
-      {},
-      false);
+  return buildCallButtonHelper(context, Colors.green[500]!, Colors.green[900]!,
+      'Click to sign in to call this expert', Routes.SIGN_IN_PAGE, {}, false);
 }
 
 Widget buildCallPreviewButton(
@@ -58,18 +51,6 @@ Widget buildCallPreviewButton(
       Colors.green[900]!,
       'Call ${publicExpertInfo.documentType.firstName}',
       Routes.UV_EXPERT_CALL_PREVIEW_PAGE,
-      {Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId},
-      true);
-}
-
-Widget buildCallUnableExpertOfflineStatus(
-    BuildContext context, DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
-  return buildCallButtonHelper(
-      context,
-      Colors.red[500]!,
-      Colors.red[900]!,
-      'They are currently offline.  View ${publicExpertInfo.documentType.firstName}\'s availability',
-      Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
       {Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId},
       true);
 }
@@ -102,16 +83,12 @@ Widget buildExpertProfileCallActionButton(
     {required BuildContext context,
     required DocumentWrapper<PublicExpertInfo> publicExpertInfo,
     required String? currentUserUid}) {
-  if ((currentUserUid == publicExpertInfo.documentId) ||
-      !TimezoneUtil.isWithinTimeRange(
-          publicExpertInfo.documentType.availability)) {
+  if (currentUserUid == publicExpertInfo.documentId ||
+      !publicExpertInfo.documentType.isAvailable()) {
     return buildCallUnableShowAvailabilityButton(context, publicExpertInfo);
   }
   if (publicExpertInfo.documentType.inCall) {
     return buildCallUnableShowInCallStatus(context, publicExpertInfo);
-  }
-  if (!publicExpertInfo.documentType.isOnline) {
-    return buildCallUnableExpertOfflineStatus(context, publicExpertInfo);
   }
   if (currentUserUid == null) {
     return buildMakeAccountButton(context);

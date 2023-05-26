@@ -41,11 +41,13 @@ class PastChatCard extends StatelessWidget {
       DocumentWrapper<PublicUserInfo>? userInfo) {
     if (expertInfo != null) {
       return buildLeadingProfileTile(
-          context: context,
-          shortName: expertInfo.documentType.shortName(),
-          profilePicUrl: expertInfo.documentType.profilePicUrl,
-          showOnlineStatus: false,
-          isOnline: false);
+        context: context,
+        shortName: expertInfo.documentType.shortName(),
+        profilePicUrl: expertInfo.documentType.profilePicUrl,
+        showOnlineStatus: false,
+        isOnline: false,
+        isAvailable: false,
+      );
     } else {
       return FutureBuilder(
           future: getDefaultProfilePicUrl(),
@@ -56,11 +58,13 @@ class PastChatCard extends StatelessWidget {
                   ? userInfo.documentType.shortName()
                   : "Deleted User";
               return buildLeadingProfileTile(
-                  context: context,
-                  shortName: shortName,
-                  profilePicUrl: defaultUrl,
-                  showOnlineStatus: false,
-                  isOnline: false);
+                context: context,
+                shortName: shortName,
+                profilePicUrl: defaultUrl,
+                showOnlineStatus: false,
+                isOnline: false,
+                isAvailable: false,
+              );
             } else {
               return CircularProgressIndicator();
             }
