@@ -25,6 +25,9 @@ export {updateExpertAvailability};
 import {updateExpertCategory} from "./endpoints/update_expert_category";
 export {updateExpertCategory};
 
+import {updateExpertPhoneNumber} from "./endpoints/update_expert_phone_number";
+export {updateExpertPhoneNumber};
+
 import {completeExpertSignUp} from "./endpoints/complete_expert_signup";
 export {completeExpertSignUp};
 

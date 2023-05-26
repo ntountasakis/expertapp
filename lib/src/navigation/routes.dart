@@ -27,6 +27,7 @@ class Routes {
   static const EV_PROFILE_EDIT_PAGE = '/ev_profileedit';
   static const EV_UPDATE_AVAILABILITY_PAGE = '/ev_updateavailability';
   static const EV_UPDATE_RATE_PAGE = '/ev_updaterates';
+  static const EV_UPDATE_PHONE_NUMBER_PAGE = '/ev_updatephonenumber';
   static const EV_CONNECTED_ACCOUNT_SIGNUP_PAGE = '/ev_connectedaccountsignup';
   static const EV_COMPLETED_CALLS_PAGE = '/ev_completedcalls';
   static const EV_CALL_JOIN_PROMPT_PAGE = '/ev_calljoinprompt';

@@ -63,6 +63,14 @@ class HamburgerMenu extends StatelessWidget {
         });
   }
 
+  ListTile updatePhoneNumberTile(BuildContext context) {
+    return ListTile(
+        title: Text("Update Phone Number"),
+        onTap: () {
+          context.pushNamed(Routes.EV_UPDATE_PHONE_NUMBER_PAGE);
+        });
+  }
+
   ListTile platformFeesTile(BuildContext context) {
     return ListTile(
         title: Text("Platform Fees"),
@@ -172,6 +180,7 @@ class HamburgerMenu extends StatelessWidget {
         pastChatsTile(context),
         updateCallPricesTile(context),
         updateCallAvailabilityTile(context),
+        updatePhoneNumberTile(context),
         platformFeesTile(context),
         contactUsTile(context),
         signOutTile(context),

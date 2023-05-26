@@ -218,6 +218,28 @@ Future<UpdateResult> updateExpertCategory({
   return UpdateResult(success: success, message: message);
 }
 
+Future<UpdateResult> updateExpertPhoneNumber({
+  required String phoneNumber,
+  required String phoneNumberDialCode,
+  required String phoneNumberIsoCode,
+  required bool consentsToSms,
+}) async {
+  Map<String, dynamic> updatePhoneNumberQuery = {
+    'phoneNumber': phoneNumber,
+    'phoneNumberDialCode': phoneNumberDialCode,
+    'phoneNumberIsoCode': phoneNumberIsoCode,
+    'consentsToSms': consentsToSms,
+    'version': AppVersion.version,
+  };
+  HttpsCallableResult result =
+      await getCallable(CallableFunctions.UPDATE_EXPERT_PHONE_NUMBER)
+          .call(updatePhoneNumberQuery);
+  bool success = result.data['success'];
+  String message = result.data['message'];
+
+  return UpdateResult(success: success, message: message);
+}
+
 Future<UpdateResult> completeExpertSignUp() async {
   Map<String, dynamic> query = {
     'version': AppVersion.version,
