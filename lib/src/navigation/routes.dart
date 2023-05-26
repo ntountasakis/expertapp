@@ -30,6 +30,7 @@ class Routes {
   static const EV_CONNECTED_ACCOUNT_SIGNUP_PAGE = '/ev_connectedaccountsignup';
   static const EV_COMPLETED_CALLS_PAGE = '/ev_completedcalls';
   static const EV_CALL_JOIN_PROMPT_PAGE = '/ev_calljoinprompt';
+  static const EV_CALL_JOIN_EXPIRED_PAGE = '/ev_calljoinexpired';
   static const EV_CALL_HOME_PAGE = '/ev_callhome';
   static const EV_CALL_CHAT_PAGE = 'ev_callchat';
   static const EV_CALL_VIDEO_PAGE = 'ev_callvideo';
