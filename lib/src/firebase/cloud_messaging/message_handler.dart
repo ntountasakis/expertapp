@@ -37,10 +37,7 @@ Future<void> handleMessage(GlobalKey<NavigatorState> navigatorKey,
     print('Message also contained a notification: ${message.notification}');
   }
   final messageType = message.data['messageType'];
-
-  if (messageType == "call_join_cancel") {
-    navigatorKey.currentContext!.goNamed(Routes.HOME_PAGE);
-  } else if (messageType == "call_join_request") {
+  if (messageType == "call_join_request") {
     final CallJoinRequestTokenPayload callJoinRequest =
         MessageDecoder.callJoinRequestFromJson(message.data);
     final DocumentWrapper<PublicUserInfo>? userInfo =

@@ -3,6 +3,7 @@ import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/preferences/preferences.dart';
 import 'package:expertapp/src/screens/common_view/common_view_contact_us_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_call_join_expired_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_expert_profile_page.dart';
 import 'package:expertapp/src/screens/auth/sign_in_page.dart';
 import 'package:expertapp/src/screens/common_view/common_view_delete_account_page.dart';
@@ -25,7 +26,7 @@ import 'package:expertapp/src/screens/expert_view/expert_view_expert_profile_sig
 import 'package:expertapp/src/screens/expert_view/expert_view_call_summary_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_expert_profile_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_review_submit_page.dart';
-import 'package:expertapp/src/screens/expert_view/expert_view_call_prompt_page.dart';
+import 'package:expertapp/src/screens/expert_view/expert_view_call_join_prompt_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_call_main_page.dart';
 import 'package:expertapp/src/screens/user_view/user_view_call_preview_page.dart';
 import 'package:expertapp/src/screens/expert_view/expert_view_call_main_page.dart';
@@ -196,9 +197,7 @@ class AppRouter {
           routes: <GoRoute>[
             GoRoute(
               name: Routes.UV_CALL_CHAT_PAGE,
-              path: Routes.UV_CALL_CHAT_PAGE +
-                  '/:' +
-                  Routes.IS_EDITABLE_PARAM,
+              path: Routes.UV_CALL_CHAT_PAGE + '/:' + Routes.IS_EDITABLE_PARAM,
               builder: (BuildContext context, GoRouterState state) {
                 final expertId = state.pathParameters[Routes.EXPERT_ID_PARAM];
                 final isEditable =
@@ -256,14 +255,30 @@ class AppRouter {
                 state.pathParameters[Routes.CALL_RATE_PER_MINUTE_PARAM]!);
             final callJoinExpirationTimeUtcMs = int.parse(state.pathParameters[
                 Routes.CALL_JOIN_EXPIRATION_TIME_UTC_MS_PARAM]!);
-            return ExpertViewCallPromptPage(
+            return ExpertViewCallJoinPromptPage(
+              callJoinExpirationTimeUtcMs: callJoinExpirationTimeUtcMs,
               transactionId: transactionId!,
-              currentUserId: lifecycle.currentUserId()!,
               callerUserId: callerUid!,
               expertRate: ExpertRate(
                   centsCallStart: rateStartCents,
                   centsPerMinute: ratePerMinuteCents),
-              callJoinExpirationTimeUtcMs: callJoinExpirationTimeUtcMs,
+            );
+          }),
+      GoRoute(
+          name: Routes.EV_CALL_JOIN_EXPIRED_PAGE,
+          path: Routes.EV_CALL_JOIN_EXPIRED_PAGE +
+              '/:' +
+              Routes.CALL_TRANSACTION_ID_PARAM +
+              '/:' +
+              Routes.OTHER_USER_SHORT_NAME,
+          builder: (BuildContext context, GoRouterState state) {
+            final transactionId =
+                state.pathParameters[Routes.CALL_TRANSACTION_ID_PARAM];
+            final callerShortName =
+                state.pathParameters[Routes.OTHER_USER_SHORT_NAME];
+            return ExpertViewCallJoinExpiredPage(
+              callerShortName: callerShortName!,
+              callTransactionId: transactionId!,
             );
           }),
       GoRoute(

@@ -60,6 +60,25 @@ class CallTransaction {
     return fieldsMap;
   }
 
+  static Future<DocumentWrapper<CallTransaction>?> get(
+      String documentId) async {
+    DocumentSnapshot snapshot =
+        await _callTransactionRef().doc(documentId).get();
+    if (snapshot.exists) {
+      return DocumentWrapper(documentId, snapshot.data() as CallTransaction);
+    }
+    return null;
+  }
+
+  static Stream<DocumentWrapper<CallTransaction>> getStreamForTransaction(String documentId) {
+    return _callTransactionRef()
+        .doc(documentId)
+        .snapshots()
+        .map((DocumentSnapshot<CallTransaction> documentSnapshot) {
+      return DocumentWrapper(documentSnapshot.id, documentSnapshot.data()!);
+    });
+  }
+
   static Stream<Iterable<DocumentWrapper<CallTransaction>>> getStreamForCaller(
       {required String callerUid}) {
     return _callTransactionRef()

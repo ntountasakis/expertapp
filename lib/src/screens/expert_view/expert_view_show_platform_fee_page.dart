@@ -4,20 +4,6 @@ import 'package:flutter/material.dart';
 class ExpertViewShowPlatformFeePage extends StatelessWidget {
   const ExpertViewShowPlatformFeePage({Key? key}) : super(key: key);
 
-  // Widget buildPlatformFeeCard(double platformFee) {
-  //   const description =
-  //       """For every call you make through our platform, we charge a 15% fee.
-  //       This fee helps us maintain and improve the quality of our service, so that you can continue to enjoy seamless and hassle-free calling experiences.
-  //       We believe that transparency is key when it comes to pricing, so you can rest assured that you will always know exactly what you are paying for.
-  //       If you have any questions or concerns about our pricing structure, please don't hesitate to reach out to our customer support team. We're here to help!""";
-  //   return Card(
-  //     child: Padding(
-  //       padding: const EdgeInsets.all(8.0),
-  //       child: Text('Platform Fee: $platformFee'),
-  //     ),
-  //   );
-  // }
-
   Widget buildPlatformFeeCard(double platformFee) {
     return Card(
       margin: EdgeInsets.all(16.0),
