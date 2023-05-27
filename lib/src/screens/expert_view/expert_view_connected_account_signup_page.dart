@@ -17,7 +17,7 @@ class ExpertViewConnectedAccountSignupPage extends StatelessWidget {
   }
 
   static void onProceedPressed(BuildContext context) {
-    context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE,
+    context.pushNamed(Routes.EV_UPDATE_PHONE_NUMBER_PAGE,
         pathParameters: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
   }
 
@@ -35,7 +35,7 @@ class ExpertViewConnectedAccountSignupPage extends StatelessWidget {
     }
     final builder = ExpertPostSignupAppbar(
       uid: uid,
-      titleText: 'Next: Set your availability',
+      titleText: 'Next: Set contact preferences',
       progress: snapshot.documentType,
       allowBackButton: true,
       allowProceed: true,

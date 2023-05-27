@@ -223,12 +223,14 @@ Future<UpdateResult> updateExpertPhoneNumber({
   required String phoneNumberDialCode,
   required String phoneNumberIsoCode,
   required bool consentsToSms,
+  required bool fromSignUpFlow,
 }) async {
   Map<String, dynamic> updatePhoneNumberQuery = {
     'phoneNumber': phoneNumber,
     'phoneNumberDialCode': phoneNumberDialCode,
     'phoneNumberIsoCode': phoneNumberIsoCode,
     'consentsToSms': consentsToSms,
+    'fromSignUpFlow': fromSignUpFlow,
     'version': AppVersion.version,
   };
   HttpsCallableResult result =

@@ -8,13 +8,16 @@ class ExpertSignupProgress {
   final bool updatedExpertCategory;
   final bool updatedCallRate;
   final bool updatedAvailability;
+  final bool updatedSmsPreferences;
 
   ExpertSignupProgress(
       this.updatedProfilePic,
       this.updatedProfileDescription,
       this.updatedExpertCategory,
       this.updatedCallRate,
-      this.updatedAvailability);
+      this.updatedAvailability,
+      this.updatedSmsPreferences,
+      );
 
   ExpertSignupProgress.fromJson(Map<String, dynamic> json)
       : this(
@@ -23,6 +26,7 @@ class ExpertSignupProgress {
           json['updatedExpertCategory'] as bool,
           json['updatedCallRate'] as bool,
           json['updatedAvailability'] as bool,
+          json['updatedSmsPreferences'] as bool,
         );
 
   Map<String, dynamic> _toJson() {
@@ -32,6 +36,7 @@ class ExpertSignupProgress {
       'updatedExpertCategory': updatedExpertCategory,
       'updatedCallRate': updatedCallRate,
       'updatedAvailability': updatedAvailability,
+      'updatedSmsPreferences': updatedSmsPreferences,
     };
     return fieldsMap;
   }
