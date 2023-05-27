@@ -6,8 +6,9 @@ import {sendGrpcServerAgoraCredentials} from "../../server/client_communication/
 import {ServerCallBeginPaymentPreAuthResolved} from "../../protos/call_transaction_package/ServerCallBeginPaymentPreAuthResolved";
 import {CallTransaction} from "../../../../functions/src/shared/src/firebase/firestore/models/call_transaction";
 import {PaymentStatus, PaymentStatusStates} from "../../../../functions/src/shared/src/firebase/firestore/models/payment_status";
-import {getCallTransactionDocumentRef} from "../../../../functions/src/shared/src/firebase/firestore/document_fetchers/fetchers";
-import {sendFcmCallJoinRequest} from "../../../../functions/src/shared/src/firebase/fcm/functions/send_fcm_call_join_request";
+import {getCallTransactionDocumentRef, getPrivateUserDocument} from "../../../../functions/src/shared/src/firebase/firestore/document_fetchers/fetchers";
+import {sendCallJoinRequestNotification} from "../../../../functions/src/shared/src/general/send_fcm_call_join_request";
+import {PrivateUserInfo} from "../../../../functions/src/shared/src/firebase/firestore/models/private_user_info";
 
 export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSender: ClientMessageSenderInterface,
     callState : BaseCallState,
@@ -15,13 +16,15 @@ export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSen
   if (update.status == PaymentStatusStates.CHARGE_CONFIRMED) {
     const callerCallState = callState as CallerCallState;
 
-    const callTransaction = await admin.firestore().runTransaction(async (transaction) => {
+    const [callTransaction, calledPrivateUserInfo] = await admin.firestore().runTransaction(async (transaction) => {
       const callTransactionRef = getCallTransactionDocumentRef({transactionId: callerCallState.callerBeginCallContext.transactionId});
+      const calledPrivateUserInfo: PrivateUserInfo = await getPrivateUserDocument({transaction: transaction,
+        uid: callerCallState.callerBeginCallContext.calledUid});
       const callTransaction: CallTransaction = (await transaction.get(callTransactionRef)).data() as CallTransaction;
       transaction.update(callTransactionRef, {
         "calledWasRung": true,
       });
-      return callTransaction;
+      return [callTransaction, calledPrivateUserInfo];
     });
 
     const startRateString = callTransaction.expertRateCentsCallStart.toString();
@@ -34,7 +37,7 @@ export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSen
     };
     clientMessageSender.sendCallBeginPaymentPreAuthResolved(paymentPreAuthResolved, callerCallState);
 
-    sendFcmCallJoinRequest({fcmToken: callerCallState.callerBeginCallContext.calledFcmToken,
+    sendCallJoinRequestNotification({fcmToken: callerCallState.callerBeginCallContext.calledFcmToken,
       callerUid: callerCallState.callerBeginCallContext.callerUid,
       calledUid: callerCallState.callerBeginCallContext.calledUid,
       callTransactionId: callerCallState.callerBeginCallContext.transactionId,
@@ -42,6 +45,7 @@ export async function onCallerPaymentPreAuthSuccessCallInitiate(clientMessageSen
       callRatePerMinuteCents: perMinuteRateString,
       callJoinExpirationTimeUtcMs: callerCallState.callJoinExpirationTimeUtcMs,
       callerFirstName: callerCallState.callerFirstName,
+      calledPrivateUserInfo: calledPrivateUserInfo,
     });
     await sendGrpcServerAgoraCredentials(clientMessageSender, callerCallState.callerBeginCallContext.agoraChannelName,
         callerCallState.callerBeginCallContext.callerUid, callerCallState);

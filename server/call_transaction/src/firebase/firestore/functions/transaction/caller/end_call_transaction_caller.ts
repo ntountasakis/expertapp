@@ -2,7 +2,6 @@ import * as admin from "firebase-admin";
 import {ServerCallSummary} from "../../../../../protos/call_transaction_package/ServerCallSummary";
 import {markCallEndGenerateCallSummary} from "../common/mark_call_end_generate_call_summary";
 import {CallerCallState} from "../../../../../call_state/caller/caller_call_state";
-import {sendFcmCallJoinCancel} from "../../../../../../../functions/src/shared/src/firebase/fcm/functions/send_fcm_call_join_request";
 import {getCallTransactionDocument, getPaymentStatusDocumentTransaction} from "../../../../../../../functions/src/shared/src/firebase/firestore/document_fetchers/fetchers";
 import {updatePaymentStatus} from "../../../../../../../functions/src/shared/src/firebase/firestore/functions/update_payment_status";
 import {CallTransaction} from "../../../../../../../functions/src/shared/src/firebase/firestore/models/call_transaction";
@@ -14,7 +13,7 @@ import {chargeStripePaymentIntent} from "../../../../../../../functions/src/shar
 export const endCallTransactionCaller = async ({transactionId, callState, clientRequested} :
   {transactionId: string, callState: CallerCallState, clientRequested: boolean})
 : Promise<ServerCallSummary> => {
-  const [paymentIntentId, callBegan, calledWasRung, calledFcmToken, callSummary] = await admin.firestore().runTransaction(async (transaction) => {
+  const [paymentIntentId, callBegan, callSummary] = await admin.firestore().runTransaction(async (transaction) => {
     const callTransaction: CallTransaction = await getCallTransactionDocument(
         {transaction: transaction, transactionId: transactionId});
 
@@ -37,15 +36,12 @@ export const endCallTransactionCaller = async ({transactionId, callState, client
         centsRequestedAuthorized: paymentStatus.centsRequestedAuthorized, centsRequestedCapture: paymentStatus.centsRequestedCapture,
         paymentStatusId: callTransaction.callerPaymentStatusId, chargeId: paymentStatus.chargeId, status: PaymentStatusStates.CANCELLATION_REQUESTED});
     }
-    return [paymentStatus.paymentIntentId, callTransaction.callBeginTimeUtcMs != 0, callTransaction.calledWasRung, callTransaction.calledFcmToken, callSummary];
+    return [paymentStatus.paymentIntentId, callTransaction.callBeginTimeUtcMs != 0, callSummary];
   });
   if (callBegan) {
     await chargeStripePaymentIntent({amountToCaptureInCents: callSummary.costOfCallCents!, paymentIntentId: paymentIntentId});
   } else {
     await cancelStripePaymentIntent({paymentIntentId: paymentIntentId});
-    if (calledWasRung) {
-      sendFcmCallJoinCancel({fcmToken: calledFcmToken});
-    }
   }
 
   return callSummary;

@@ -14,7 +14,8 @@
     "allowJs": true,
     "types": [
       "jest"
-    ]
+    ],
+    "esModuleInterop": true,
   },
   "compileOnSave": true,
   "include": [
