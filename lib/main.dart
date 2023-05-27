@@ -2,7 +2,7 @@ import 'package:expertapp/src/call_server/call_server_model.dart';
 import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/firebase/auth/auth_providers.dart';
 import 'package:expertapp/src/firebase/cloud_messaging/message_handler.dart';
-import 'package:expertapp/src/firebase/dynamic_links/link_handler.dart';
+import 'package:expertapp/src/firebase/dynamic_links/dynamic_link_handler.dart';
 import 'package:expertapp/src/firebase/emulator/configure_emulator.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/router.dart';
