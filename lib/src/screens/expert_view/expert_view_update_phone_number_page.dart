@@ -12,9 +12,11 @@ class ExpertViewUpdatePhoneNumberPage extends StatelessWidget {
     return Column(
       children: [
         ExpertPhoneNumberPicker(
+          key: Key('expert_phone_number_picker'),
           initialPhoneNumber: privateUserInfo.phoneNumber,
           initialPhoneNumberIsoCode: privateUserInfo.phoneNumberIsoCode,
           initialConsentStatus: privateUserInfo.consentsToSms,
+          fromSignUpFlow: false,
         ),
       ],
     );

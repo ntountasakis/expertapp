@@ -9,12 +9,14 @@ class ExpertPhoneNumberPicker extends StatefulWidget {
   final String initialPhoneNumber;
   final String initialPhoneNumberIsoCode;
   final bool initialConsentStatus;
+  final bool fromSignUpFlow;
 
   const ExpertPhoneNumberPicker({
     Key? key,
     required this.initialPhoneNumber,
     required this.initialPhoneNumberIsoCode,
     required this.initialConsentStatus,
+    required this.fromSignUpFlow,
   }) : super(key: key);
 
   @override
@@ -80,6 +82,14 @@ class _ExpertPhoneNumberPickerState extends State<ExpertPhoneNumberPicker> {
               onToggle: (index) {
                 setState(() {
                   currentConsentStatus = index == 1 ? true : false;
+                  if (!currentConsentStatus) {
+                    setState(() {
+                      currentNumber = PhoneNumber(isoCode: 'US');
+                      formKey.currentState?.setState(() {
+                        controller.clear();
+                      });
+                    });
+                  }
                 });
               },
             ),
@@ -87,6 +97,72 @@ class _ExpertPhoneNumberPickerState extends State<ExpertPhoneNumberPicker> {
         )
       ],
     );
+  }
+
+  Widget buildPhoneInputPicker() {
+    return Visibility(
+      visible: currentConsentStatus,
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: InternationalPhoneNumberInput(
+          onInputChanged: (PhoneNumber number) {
+            print(number.phoneNumber);
+          },
+          onInputValidated: (bool value) {
+            print(value);
+          },
+          selectorConfig: SelectorConfig(
+            selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+          ),
+          ignoreBlank: false,
+          autoValidateMode: AutovalidateMode.disabled,
+          selectorTextStyle: TextStyle(color: Colors.black),
+          initialValue: currentNumber,
+          textFieldController: controller,
+          formatInput: true,
+          keyboardType:
+              TextInputType.numberWithOptions(signed: true, decimal: true),
+          inputBorder: OutlineInputBorder(),
+          onSaved: (PhoneNumber number) async {
+            final result = await onSavePressed(number);
+            if (result.success) {
+              setState(() {
+                currentNumber = number;
+              });
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<UpdateResult> onSavePressed(PhoneNumber? number) async {
+    final UpdateResult result = await updateExpertPhoneNumber(
+      phoneNumber: number != null ? number.phoneNumber! : '',
+      phoneNumberDialCode: number != null ? number.dialCode! : '',
+      phoneNumberIsoCode: number != null ? number.isoCode! : '',
+      consentsToSms: currentConsentStatus,
+      fromSignUpFlow: widget.fromSignUpFlow,
+    );
+    showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text(result.success ? "Success" : "Error"),
+            children: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    result.message,
+                    style: CallSummaryUtil.LIGHT_STYLE,
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
+    return result;
   }
 
   @override
@@ -100,65 +176,17 @@ class _ExpertPhoneNumberPickerState extends State<ExpertPhoneNumberPicker> {
             SizedBox(height: 20),
             buildSmsConsentToggle(),
             SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: InternationalPhoneNumberInput(
-                onInputChanged: (PhoneNumber number) {
-                  print(number.phoneNumber);
-                },
-                onInputValidated: (bool value) {
-                  print(value);
-                },
-                selectorConfig: SelectorConfig(
-                  selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                ),
-                ignoreBlank: false,
-                autoValidateMode: AutovalidateMode.disabled,
-                selectorTextStyle: TextStyle(color: Colors.black),
-                initialValue: currentNumber,
-                textFieldController: controller,
-                formatInput: true,
-                keyboardType: TextInputType.numberWithOptions(
-                    signed: true, decimal: true),
-                inputBorder: OutlineInputBorder(),
-                onSaved: (PhoneNumber number) async {
-                  final UpdateResult result = await updateExpertPhoneNumber(
-                      phoneNumber: number.phoneNumber!,
-                      phoneNumberDialCode: number.dialCode!,
-                      phoneNumberIsoCode: number.isoCode!,
-                      consentsToSms: currentConsentStatus);
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return SimpleDialog(
-                          title: Text(result.success ? "Success" : "Error"),
-                          children: [
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  result.message,
-                                  style: CallSummaryUtil.LIGHT_STYLE,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      });
-                  if (result.success) {
-                    setState(() {
-                      currentNumber = number;
-                    });
-                  }
-                },
-              ),
-            ),
+            buildPhoneInputPicker(),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                final isValid = formKey.currentState?.validate();
-                if (isValid != null && isValid) {
-                  formKey.currentState?.save();
+                if (currentConsentStatus) {
+                  final isValid = formKey.currentState?.validate();
+                  if (isValid != null && isValid) {
+                    formKey.currentState?.save();
+                  }
+                } else {
+                  onSavePressed(null);
                 }
               },
               child: Text('Save'),

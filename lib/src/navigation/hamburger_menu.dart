@@ -65,9 +65,10 @@ class HamburgerMenu extends StatelessWidget {
 
   ListTile updatePhoneNumberTile(BuildContext context) {
     return ListTile(
-        title: Text("Update Phone Number"),
+        title: Text("Update Contact Preferences"),
         onTap: () {
-          context.pushNamed(Routes.EV_UPDATE_PHONE_NUMBER_PAGE);
+          context.pushNamed(Routes.EV_UPDATE_PHONE_NUMBER_PAGE,
+              pathParameters: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "false"});
         });
   }
 
@@ -109,15 +110,20 @@ class HamburgerMenu extends StatelessWidget {
         title: Text("Complete Expert Signup"),
         onTap: () {
           context.pushNamed(Routes.EV_CONNECTED_ACCOUNT_SIGNUP_PAGE);
-          context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE,
+          context.pushNamed(Routes.EV_UPDATE_PHONE_NUMBER_PAGE,
               pathParameters: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
-          if (progress.updatedAvailability) {
-            context.pushNamed(Routes.EV_UPDATE_RATE_PAGE,
+          if (progress.updatedSmsPreferences) {
+            context.pushNamed(Routes.EV_UPDATE_AVAILABILITY_PAGE,
                 pathParameters: {Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"});
-            if (progress.updatedCallRate) {
-              context.pushNamed(Routes.EV_PROFILE_EDIT_PAGE, pathParameters: {
+            if (progress.updatedAvailability) {
+              context.pushNamed(Routes.EV_UPDATE_RATE_PAGE, pathParameters: {
                 Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"
               });
+              if (progress.updatedCallRate) {
+                context.pushNamed(Routes.EV_PROFILE_EDIT_PAGE, pathParameters: {
+                  Routes.FROM_EXPERT_SIGNUP_FLOW_PARAM: "true"
+                });
+              }
             }
           }
         });

@@ -39,6 +39,7 @@ export async function createExpertUser({uid}:
       "updatedExpertCategory": false,
       "updatedCallRate": false,
       "updatedAvailability": false,
+      "updatedSmsPreferences": false,
     };
     transaction.set(publicExpertInfoDocRef, publicExpertInfo);
     transaction.set(getExpertSignUpProgressDocumentRef({uid: uid}), signUpProgress);

@@ -1,6 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import {getPrivateUserDocumentRef} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
+import {getExpertSignUpProgressDocumentRef, getPrivateUserDocumentRef} from "../shared/src/firebase/firestore/document_fetchers/fetchers";
 import {Logger} from "../shared/src/google_cloud/google_cloud_logger";
 
 export const updateExpertPhoneNumber = functions.https.onCall(async (data, context) => {
@@ -13,10 +13,11 @@ export const updateExpertPhoneNumber = functions.https.onCall(async (data, conte
   const phoneNumberDialCode: string = data.phoneNumberDialCode;
   const phoneNumberIsoCode: string = data.phoneNumberIsoCode;
   const consentsToSms: boolean = data.consentsToSms;
+  const fromSignUpFlow = data.fromSignUpFlow;
 
   try {
     if (uid == null || version == null || phoneNumber == null || phoneNumberDialCode == null ||
-      phoneNumberIsoCode == null || consentsToSms == null) {
+      phoneNumberIsoCode == null || consentsToSms == null || fromSignUpFlow == null) {
       throw new Error("Cannot update expert phone number, some attributes null");
     }
 
@@ -30,6 +31,15 @@ export const updateExpertPhoneNumber = functions.https.onCall(async (data, conte
         });
         return false;
       }
+      const expertSignUpProgressDoc = await transaction.get(getExpertSignUpProgressDocumentRef({uid: uid}));
+      if (fromSignUpFlow && !expertSignUpProgressDoc.exists) {
+        Logger.logError({
+          logName: "updateExpertPhoneNumber", message: `Cannot update expert phone number for ${uid} \
+          because expert signup progress doc does not exist`,
+          labels: new Map([["expertId", uid], ["version", version]]),
+        });
+        return false;
+      }
 
       const phoneNumberDetails = {
         "phoneNumber": phoneNumber,
@@ -39,6 +49,12 @@ export const updateExpertPhoneNumber = functions.https.onCall(async (data, conte
       };
 
       transaction.update(privateUserDoc.ref, phoneNumberDetails);
+      if (fromSignUpFlow) {
+        const progressUpdate = {
+          "updatedSmsPreferences": true,
+        };
+        transaction.update(expertSignUpProgressDoc.ref, progressUpdate);
+      }
       Logger.log({
         logName: "updateExpertPhoneNumber", message: `Updated expert phone number for ${uid}. \
           Phone number: ${phoneNumber} consented to text messages: ${consentsToSms}`,
