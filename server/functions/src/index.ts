@@ -66,3 +66,6 @@ export {stripeManagePaymentMethodsLinkRequest};
 
 import {updatePresence} from "./endpoints/update_presence";
 export {updatePresence};
+
+import {twilioWebhookSmsStatus} from "./endpoints/twilio_webhook_sms_status";
+export {twilioWebhookSmsStatus};

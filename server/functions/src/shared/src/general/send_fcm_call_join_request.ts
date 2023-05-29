@@ -78,11 +78,12 @@ const sendSmsCallJoinRequestNotification = async function({fcmToken, callerUid, 
     const smsText = "You have an incoming call request from " + callerFirstName +
     ". Click " + link + " to join the call. " + "You have " + minutes + " minutes and " + seconds + " seconds to accept";
 
+    const messageSid = await sendSmsMessage({destinationPhoneNumber: calledPrivateUserInfo.phoneNumber, message: smsText});
     Logger.log({
-      logName: Logger.CALL_SERVER, message: `sendSmsCallJoinRequest: : smsText: ${smsText}`,
+      logName: Logger.CALL_SERVER, message: `sendSmsCallJoinRequest: smsText: ${smsText} sendToPhoneNumber: ${calledPrivateUserInfo.phoneNumber}`,
       labels: new Map([["expertId", calledUid], ["userId", callerUid], ["callTransactionId", callTransactionId], ["fcmToken", fcmToken],
-        ["callJoinExpirationTimeUtcMs", callJoinExpirationTimeUtcMs.toString()]]),
+        ["callJoinExpirationTimeUtcMs", callJoinExpirationTimeUtcMs.toString()],
+        ["messageSid", messageSid]]),
     });
-    sendSmsMessage({destinationPhoneNumber: calledPrivateUserInfo.phoneNumber, message: smsText});
   }
 };
