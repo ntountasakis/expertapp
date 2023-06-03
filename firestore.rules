@@ -27,7 +27,7 @@ service cloud.firestore {
     }
 
     function canReadCallTransaction(request, resource) {
-	return debug(resource.data.callerUid==request.auth.uid) || debug(resource.data.calledUid==request.auth.uid);
+      return resource.data.callerUid==request.auth.uid || resource.data.calledUid==request.auth.uid;
     }
 
     match /call_transactions/{transactionId} {
@@ -41,10 +41,10 @@ service cloud.firestore {
     }
     match /chat_rooms/{chatroomId}/chat_messages/{chatMessageId} {
       allow list: if true
-    	allow get: if debug(resource.data.authorUid==request.auth.uid) || debug(resource.data.recipientUid==request.auth.uid)
+    	allow get: if resource.data.authorUid==request.auth.uid || resource.data.recipientUid==request.auth.uid
       allow write: if
-      debug(get(/databases/{database}/documents/chatroom_metadata/$(chatroomId)).data.currentUid==request.auth.uid) ||
-      debug(get(/databases/{database}/documents/chatroom_metadata/$(chatroomId)).data.otherUid==request.auth.uid)
+      get(/databases/$(database)/documents/chatroom_metadata/$(chatroomId)).data.currentUid==request.auth.uid ||
+      get(/databases/$(database)/documents/chatroom_metadata/$(chatroomId)).data.otherUid==request.auth.uid
     }
   }
 }
