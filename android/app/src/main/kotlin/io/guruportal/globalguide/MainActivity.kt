@@ -1,4 +1,4 @@
-package com.example.expertapp
+package io.guruportal.globalguide
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity
