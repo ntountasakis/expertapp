@@ -13,23 +13,21 @@ class ExpertProfileAppbar extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(title),
-      actions: [
-        Row(
+    return AppBar(title: Text(title), actions: [
+      InkWell(
+        onTap: () async {
+          final url = await getShareableExpertProfileDynamicLink(expertUid);
+          Share.share(url);
+        },
+        child: Row(
           children: [
             Text("Share"),
-            IconButton(
-              icon: Icon(Icons.share),
-              onPressed: () async {
-                final url =
-                    await getShareableExpertProfileDynamicLink(expertUid);
-                Share.share(url);
-              },
-            ),
+            SizedBox(width: 5),
+            Icon(Icons.share),
+            SizedBox(width: 5),
           ],
         ),
-      ],
-    );
+      ),
+    ]);
   }
 }
