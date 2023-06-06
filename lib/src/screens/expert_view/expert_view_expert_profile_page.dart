@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:expertapp/src/appbars/common_view/expert_profile_shareable_appbar.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_signup_progress.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
@@ -74,8 +75,9 @@ class _ExpertViewExpertProfilePageState
 
   PreferredSizeWidget buildAppbar(
       BuildContext context, DocumentWrapper<ExpertSignupProgress>? progress) {
-    return AppBar(
-      title: Text("Edit Your Profile"),
+    return ExpertProfileAppbar(
+      expertUid: widget.expertUid,
+      title: "Edit Your Profile",
     );
   }
 
