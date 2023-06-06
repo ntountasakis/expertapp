@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>111394228371-0dcs9gu3ckvfjvqahinaitvi6gqp4vdi.apps.googleusercontent.com</string>
+	<string>111394228371-652k90fo7r2e54mu59olfie8mj71ur66.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.111394228371-0dcs9gu3ckvfjvqahinaitvi6gqp4vdi</string>
+	<string>com.googleusercontent.apps.111394228371-652k90fo7r2e54mu59olfie8mj71ur66</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>111394228371-edlq6mu7f1je3thj3jpt9o96a3ih6m5u.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.backend.expertapp</string>
+	<string>io.guruportal.globalguide</string>
 	<key>PROJECT_ID</key>
 	<string>expert-app-backend</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:111394228371:ios:2658d258476441ea1f2566</string>
+	<string>1:111394228371:ios:ba86c75ef7877a7a1f2566</string>
 	<key>DATABASE_URL</key>
 	<string>https://expert-app-backend-default-rtdb.firebaseio.com</string>
 </dict>
