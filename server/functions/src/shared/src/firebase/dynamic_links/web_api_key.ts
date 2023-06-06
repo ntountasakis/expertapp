@@ -24,10 +24,10 @@ export class FirebaseDynamicLinkProvider {
         this.LINK_TYPE_KEY + "=" + this.LINK_TYPE_PROFILE_VALUE + "&" +
         this.EXPERT_UID_KEY + "=" + expertUid,
         "androidInfo": {
-          "androidPackageName": "com.example.expertapp",
+          "androidPackageName": "io.guruportal.globalguide",
         },
         "iosInfo": {
-          "iosBundleId": "com.example.expertapp",
+          "iosBundleId": "io.guruportal.globalguide",
         },
       },
       "suffix": {
