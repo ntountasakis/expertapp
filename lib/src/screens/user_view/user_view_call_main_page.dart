@@ -225,7 +225,14 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
             });
           } else {
             return Scaffold(
-              appBar: AppBar(title: const Text("Expert Call")),
+              appBar: AppBar(
+                title: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text(
+                    "Call Loading",
+                  ),
+                ),
+              ),
               body: Center(child: CircularProgressIndicator()),
             );
           }

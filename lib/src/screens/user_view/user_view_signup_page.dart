@@ -123,7 +123,12 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Sign Up"),
+          title: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Text(
+              "Sign Up",
+            ),
+          ),
           actions: [
             ElevatedButton(
               onPressed: () async {

@@ -13,17 +13,20 @@ class ExpertViewStripeEarningsDashboard extends StatelessWidget {
 
   PreferredSizeWidget _buildAppbar() {
     return AppBar(
-      title: const Text('View your earnings'),
-    );
+        title: FittedBox(
+      fit: BoxFit.fitWidth,
+      child: Text(
+        'View your earnings',
+      ),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-          return Scaffold(
-              appBar: _buildAppbar(),
-              body: Center(
-                child: webview,
-              ));
+    return Scaffold(
+        appBar: _buildAppbar(),
+        body: Center(
+          child: webview,
+        ));
   }
 }
-

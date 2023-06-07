@@ -95,8 +95,12 @@ class _UserViewCallSummaryPageState extends State<UserViewCallSummaryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Call Summary'),
-      ),
+          title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          "Call Summary",
+        ),
+      )),
       body: buildSummaryBody(context),
     );
   }

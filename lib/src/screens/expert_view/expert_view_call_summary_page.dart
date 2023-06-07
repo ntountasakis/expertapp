@@ -64,8 +64,12 @@ class _ExpertViewCallSummaryPageState extends State<ExpertViewCallSummaryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Call Summary'),
-      ),
+          title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          "Call Summary",
+        ),
+      )),
       body: buildSummaryBody(context),
     );
   }

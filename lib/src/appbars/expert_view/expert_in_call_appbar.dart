@@ -25,12 +25,18 @@ class ExpertInCallAppbar extends StatefulWidget implements PreferredSizeWidget {
 class _ExpertInCallAppbarState extends State<ExpertInCallAppbar> {
   TimeRemaining? callTimeRemaining = null;
 
-  String buildTitle(CallServerModel model) {
+  Widget buildTitle(CallServerModel model) {
     final prefix = model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.READY_TO_START_CALL
         ? "Call with "
         : "Connecting you to ";
-    return prefix + widget.userMetadata.documentType.firstName;
+    final text = prefix + widget.userMetadata.documentType.firstName;
+    return FittedBox(
+      fit: BoxFit.fitWidth,
+      child: Text(
+        text,
+      ),
+    );
   }
 
   Widget buildInCallAppBar(CallServerModel model) {
@@ -46,16 +52,12 @@ class _ExpertInCallAppbarState extends State<ExpertInCallAppbar> {
     return AppBar(
       title: Row(
         children: [
-          Expanded(
-            child: Text(buildTitle(model)),
-          ),
+          buildTitle(model),
           SizedBox(
             width: 15,
           ),
           callTimeRemaining != null ? callTimeRemaining! : Container(),
-          SizedBox(
-            width: 15,
-          ),
+          Spacer(),
           callTimeRemaining != null
               ? earningsButton(context, widget.model)
               : Container(),

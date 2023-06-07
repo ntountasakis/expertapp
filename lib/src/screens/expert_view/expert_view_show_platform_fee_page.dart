@@ -67,7 +67,12 @@ class ExpertViewShowPlatformFeePage extends StatelessWidget {
   Widget buildPlatformFeePage(double? platformFee) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Platform Fee'),
+        title: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            "Our Fees",
+          ),
+        ),
       ),
       body: Center(
         child: platformFee == null

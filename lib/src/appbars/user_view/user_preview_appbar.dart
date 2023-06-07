@@ -6,24 +6,23 @@ class UserPreviewAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   UserPreviewAppbar(this.shortName, this.namePrefix);
 
-  String buildTitle() {
+  Widget buildTitle() {
     String title = shortName;
     if (namePrefix != "") {
       title = namePrefix + " " + title;
     }
-    return title;
+    return FittedBox(
+      fit: BoxFit.fitWidth,
+      child: Text(
+        title,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Row(
-        children: [
-          Expanded(
-            child: Text(buildTitle()),
-          ),
-        ],
-      ),
+      title: buildTitle(),
     );
   }
 

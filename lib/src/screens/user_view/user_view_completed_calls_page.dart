@@ -14,7 +14,13 @@ class UserViewCompletedCallsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Past Calls with Experts")),
+      appBar: AppBar(
+          title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          "Past Calls with Experts",
+        ),
+      )),
       body: StreamBuilder(
         stream: CallTransaction.getStreamForCaller(callerUid: uid),
         builder: (BuildContext context,

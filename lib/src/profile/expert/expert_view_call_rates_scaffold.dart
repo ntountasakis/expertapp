@@ -18,9 +18,12 @@ class ExpertViewCallRatesScaffold extends StatelessWidget {
       required this.appBarBuilder});
 
   static PreferredSizeWidget buildDefaultAppBar() {
-    return AppBar(
-      title: Text(DEFAULT_APP_BAR_TITLE),
-    );
+    return AppBar(title: FittedBox(
+      fit: BoxFit.fitWidth,
+      child: Text(
+        DEFAULT_APP_BAR_TITLE,
+      ),
+    ));
   }
 
   Widget buildExistingRateView(DocumentWrapper<ExpertRate>? expertRate) {

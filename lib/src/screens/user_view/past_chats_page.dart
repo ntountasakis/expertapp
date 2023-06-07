@@ -11,7 +11,13 @@ class PastChatsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Past Chats')),
+      appBar: AppBar(
+          title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          'Past Chats',
+        ),
+      )),
       body: FutureBuilder(
           future: getAllChatroomsForUser(),
           builder: (BuildContext context,

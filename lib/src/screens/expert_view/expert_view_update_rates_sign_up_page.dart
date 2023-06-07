@@ -37,7 +37,7 @@ class ExpertViewUpdateRatesSignUpPage extends StatelessWidget {
     final builder = ExpertPostSignupAppbar(
       uid: uid,
       titleText: progress.documentType.updatedCallRate
-          ? 'Next: Edit Your Profile'
+          ? 'Press arrow to continue'
           : ExpertViewCallRatesScaffold.DEFAULT_APP_BAR_TITLE,
       progress: progress.documentType,
       allowBackButton: true,

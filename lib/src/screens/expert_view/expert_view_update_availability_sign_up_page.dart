@@ -45,7 +45,7 @@ class ExpertViewUpdateAvailabilitySignUpPage extends StatelessWidget {
     final builder = ExpertPostSignupAppbar(
       uid: uid,
       titleText: allowProceed
-          ? "Next: Set Your Rates"
+          ? "Press arrow to continue"
           : ExpertViewUpdateAvailabilityScaffold.DEFAULT_APP_BAR_TITLE,
       progress: progress.documentType,
       allowBackButton: true,

@@ -36,8 +36,12 @@ class UserViewExpertAvailabilityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Availability for accepting calls"),
-        ),
+            title: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            "Availability for accepting calls",
+          ),
+        )),
         body: Container(
           child: buildAvailabilityView(),
         ));

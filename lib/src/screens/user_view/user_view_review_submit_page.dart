@@ -104,8 +104,12 @@ class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Submit a Review"),
-      ),
+          title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          "Submit a Review",
+        ),
+      )),
       body: FutureBuilder<DocumentWrapper<PublicExpertInfo>?>(
           future: PublicExpertInfo.get(
               uid: widget.expertUserId, fromSignUpFlow: false),

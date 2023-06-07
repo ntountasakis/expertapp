@@ -9,7 +9,11 @@ class CommonViewContactUsPage extends StatelessWidget {
     const style = TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
     return Scaffold(
         appBar: AppBar(
-          title: Text("Contact Us"),
+          title: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                "Contact Us",
+              )),
         ),
         body: Column(
           children: [

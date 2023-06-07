@@ -14,8 +14,12 @@ class UserViewStripeBillingDashboard extends StatelessWidget {
 
   PreferredSizeWidget _buildAppbar() {
     return AppBar(
-      title: const Text('Manage Your Payment Methods'),
-    );
+        title: FittedBox(
+      fit: BoxFit.fitWidth,
+      child: Text(
+        'Manage Your Payment Methods',
+      ),
+    ));
   }
 
   @override

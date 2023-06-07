@@ -1,7 +1,8 @@
 import 'package:expertapp/src/appbars/widgets/time_remaining.dart';
 import 'package:flutter/material.dart';
 
-class ExpertCallPromptAppbar extends StatefulWidget implements PreferredSizeWidget {
+class ExpertCallPromptAppbar extends StatefulWidget
+    implements PreferredSizeWidget {
   final int callJoinExpirationTimeUtcMs;
   final String callerName;
   final VoidCallback onCallJoinTimerExpires;
@@ -23,20 +24,24 @@ class _ExpertCallPromptAppbarState extends State<ExpertCallPromptAppbar> {
 
   _ExpertCallPromptAppbarState(this.joinTimeRemainingWidget);
 
-  String buildTitle() {
-    return "Call from ${widget.callerName}. Time left to join: ";
+  Widget buildTitle() {
+    return FittedBox(
+      fit: BoxFit.fitWidth,
+      child: Text(
+        "Call from ${widget.callerName}. Time left to join: ",
+        style: TextStyle(fontSize: 16),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      centerTitle: true,
       title: Row(
         children: [
           Expanded(
-            child: Text(
-              buildTitle(),
-              style: TextStyle(fontSize: 16),
-            ),
+            child: buildTitle(),
           ),
           SizedBox(
             width: 15,
