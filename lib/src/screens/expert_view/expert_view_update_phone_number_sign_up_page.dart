@@ -53,7 +53,7 @@ class ExpertViewUpdatePhoneNumberSignUpPage extends StatelessWidget {
     final allowProceed = progress.documentType.updatedSmsPreferences;
     final builder = ExpertPostSignupAppbar(
       uid: uid,
-      titleText: 'Next: Set your availability',
+      titleText: 'Press arrow to continue',
       progress: progress.documentType,
       allowBackButton: true,
       allowProceed: allowProceed,
@@ -66,8 +66,12 @@ class ExpertViewUpdatePhoneNumberSignUpPage extends StatelessWidget {
   Widget buildLoadingScreen() {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Update Contact Preferences"),
-      ),
+          title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          "Update Contact Preferences",
+        ),
+      )),
       body: const Center(child: CircularProgressIndicator()),
     );
   }

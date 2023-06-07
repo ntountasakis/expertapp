@@ -23,7 +23,7 @@ class CallWaitingWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Call Waiting"),
+        title: Text("Test"),
       ),
       body: CallWaitingJoin(
         onCancelCallTap: () => print("Cancel Call"),

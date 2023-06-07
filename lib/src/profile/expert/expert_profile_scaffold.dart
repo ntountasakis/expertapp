@@ -29,7 +29,10 @@ class ExpertProfileScaffold extends StatelessWidget {
 
   static PreferredSizeWidget buildDefaultAppBar() {
     return AppBar(
-      title: Text(ExpertProfileScaffold.DEFAULT_APP_BAR_TITLE),
+      title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(ExpertProfileScaffold.DEFAULT_APP_BAR_TITLE),
+      ),
     );
   }
 

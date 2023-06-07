@@ -52,7 +52,13 @@ class ExpertViewCallJoinExpiredPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Call Expired")),
+      appBar: AppBar(
+          title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(
+          "Call Expired",
+        ),
+      )),
       body: Column(
         children: [
           SizedBox(height: 20),

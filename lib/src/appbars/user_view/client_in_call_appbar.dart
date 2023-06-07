@@ -25,21 +25,30 @@ class ClientInCallAppbar extends StatefulWidget implements PreferredSizeWidget {
 class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
   TimeRemaining? timeRemainingCalledToJoin;
   TimeRemaining? timeRemainingMainCall;
-  final textStylePreCall = TextStyle(fontSize: 16);
-  final textStyleDuringCall = TextStyle(fontSize: 18);
 
-  String buildWaitingForCallToJoinTitle() {
-    return "Time left waiting for " +
+  Widget buildWaitingForCallToJoinTitle() {
+    final text = "Waiting for " +
         widget.userMetadata.documentType.firstName +
         " to join ";
+    return buildTitle(text);
   }
 
-  String buildMainCallTitle(CallServerModel model) {
+  Widget buildMainCallTitle(CallServerModel model) {
     final prefix = model.callCounterpartyConnectionState ==
             CallServerCounterpartyConnectionState.READY_TO_START_CALL
         ? "Call with "
         : "Connecting you to ";
-    return prefix + widget.userMetadata.documentType.firstName;
+    final text = prefix + widget.userMetadata.documentType.firstName;
+    return buildTitle(text);
+  }
+
+  Widget buildTitle(String titleText) {
+    return FittedBox(
+      fit: BoxFit.fitWidth,
+      child: Text(
+        titleText,
+      ),
+    );
   }
 
   Widget buildWaitingForCallToJoin(CallServerModel model) {
@@ -60,15 +69,8 @@ class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
       automaticallyImplyLeading: widget.allowBackButton,
       title: Row(
         children: [
-          Expanded(
-            child: Text(
-              buildWaitingForCallToJoinTitle(),
-              style: textStylePreCall,
-            ),
-          ),
-          SizedBox(
-            width: 15,
-          ),
+          buildWaitingForCallToJoinTitle(),
+          Spacer(),
           timeRemainingCalledToJoin!,
         ],
       ),
@@ -90,19 +92,12 @@ class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
       automaticallyImplyLeading: widget.allowBackButton,
       title: Row(
         children: [
-          Expanded(
-            child: Text(
-              buildMainCallTitle(model),
-              style: textStyleDuringCall,
-            ),
-          ),
+          buildMainCallTitle(model),
           SizedBox(
             width: 15,
           ),
           timeRemainingMainCall != null ? timeRemainingMainCall! : Container(),
-          SizedBox(
-            width: 15,
-          ),
+          Spacer(),
           timeRemainingMainCall != null
               ? costButton(context, model)
               : Container(),
@@ -117,18 +112,16 @@ class _ClientInCallAppbarState extends State<ClientInCallAppbar> {
       if (model.callConnectionState == CallServerConnectionState.UNCONNECTED) {
         return AppBar(
           automaticallyImplyLeading: widget.allowBackButton,
-          title: Text(
+          title: buildTitle(
             "Connecting to server...",
-            style: textStylePreCall,
           ),
         );
       }
       if (model.callJoinTimeExpiryUtcMs == 0) {
         return AppBar(
           automaticallyImplyLeading: widget.allowBackButton,
-          title: Text(
+          title: buildTitle(
             "Awaiting payment pre-authorization",
-            style: textStylePreCall,
           ),
         );
       }

@@ -60,8 +60,12 @@ If you're absolutely sure you want to proceed with the account deletion, please 
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Delete Account"),
-        ),
+            title: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            "Delete Account",
+          ),
+        )),
         body: Column(
           children: [
             SizedBox(height: 20),

@@ -8,7 +8,11 @@ class SignInPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Register or Sign In"),
+        title: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: Text(
+              "Register or Sign In",
+            )),
         actions: [
           ElevatedButton(
             onPressed: () async {

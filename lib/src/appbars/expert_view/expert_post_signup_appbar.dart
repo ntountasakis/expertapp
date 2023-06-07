@@ -23,10 +23,19 @@ class ExpertPostSignupAppbar {
 
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 
+  Widget buildTitle() {
+    return FittedBox(
+      fit: BoxFit.fitWidth,
+      child: Text(
+        this.titleText,
+      ),
+    );
+  }
+
   PreferredSizeWidget buildAppBar(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: allowBackButton,
-      title: Text(this.titleText),
+      title: buildTitle(),
       actions: [
         Padding(
           padding: const EdgeInsets.all(5.0),

@@ -18,8 +18,12 @@ class UserViewExpertListingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Expert Listings'),
-        ),
+            title: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            'Expert Listings',
+          ),
+        )),
         drawer: HamburgerMenu(
           isSignedIn: isSignedIn,
           currentUserId: currentUserId,

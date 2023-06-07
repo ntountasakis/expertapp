@@ -23,7 +23,11 @@ class ExpertViewConnectedAccountSignupPage extends StatelessWidget {
 
   PreferredSizeWidget defaultAppBar() {
     return AppBar(
-      title: Text("Sign up for an expert account"),
+      centerTitle: true,
+      title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text('Sign Up'),
+      ),
     );
   }
 
@@ -35,7 +39,7 @@ class ExpertViewConnectedAccountSignupPage extends StatelessWidget {
     }
     final builder = ExpertPostSignupAppbar(
       uid: uid,
-      titleText: 'Next: Set contact preferences',
+      titleText: 'Press arrow to continue',
       progress: snapshot.documentType,
       allowBackButton: true,
       allowProceed: true,

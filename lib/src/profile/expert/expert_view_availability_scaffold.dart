@@ -27,7 +27,10 @@ class ExpertViewUpdateAvailabilityScaffold extends StatefulWidget {
 
   static PreferredSizeWidget defaultAppBar() {
     return AppBar(
-      title: Text(ExpertViewUpdateAvailabilityScaffold.DEFAULT_APP_BAR_TITLE),
+      title: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Text(ExpertViewUpdateAvailabilityScaffold.DEFAULT_APP_BAR_TITLE),
+      ),
     );
   }
 

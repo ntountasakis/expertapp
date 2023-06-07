@@ -26,8 +26,12 @@ class ExpertViewUpdatePhoneNumberPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Update Contact Preferences"),
-        ),
+            title: FittedBox(
+          fit: BoxFit.fitWidth,
+          child: Text(
+            "Update Contact Preferences",
+          ),
+        )),
         body: FutureBuilder(
             future: PrivateUserInfo.get(uid),
             builder: (BuildContext context,
