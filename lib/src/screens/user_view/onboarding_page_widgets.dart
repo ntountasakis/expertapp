@@ -27,15 +27,12 @@ Widget buildOnboardingExpertChoicePage() {
       children: [
         SizedBox(height: 30),
         _buildAppTitle(),
-        SizedBox(height: 50),
+        SizedBox(height: 10),
         _textHelper(
             "Choose your guide by viewing their location expertise, reviews, and cost"),
-        SizedBox(height: 20),
-        SizedBox(
-          height: 450,
-          child: _buildImage('expert-listings.png'),
-        ),
-        Spacer(),
+        SizedBox(height: 10),
+        Expanded(child: _buildImage('expert-listings.png')),
+        SizedBox(height: 75),
       ],
     ),
   );
@@ -48,15 +45,14 @@ Widget buildOnboardingVideoCallPage() {
       children: [
         SizedBox(height: 30),
         _buildAppTitle(),
-        SizedBox(height: 50),
+        SizedBox(height: 10),
         _textHelper(
             "Have a conversation with a real person without needing to schedule ahead"),
-        SizedBox(height: 20),
-        SizedBox(
-          height: 450,
+        SizedBox(height: 10),
+        Expanded(
           child: _buildImage('video-call.png'),
         ),
-        Spacer(),
+        SizedBox(height: 75),
       ],
     ),
   );
@@ -69,15 +65,14 @@ Widget buildOnboardingChatPage() {
       children: [
         SizedBox(height: 30),
         _buildAppTitle(),
-        SizedBox(height: 50),
+        SizedBox(height: 10),
         _textHelper(
             "Exchange messages between the guide that you can review later"),
-        SizedBox(height: 20),
-        SizedBox(
-          height: 450,
+        SizedBox(height: 10),
+        Expanded(
           child: _buildImage('chat-messages.png'),
         ),
-        Spacer(),
+        SizedBox(height: 75),
       ],
     ),
   );
@@ -90,15 +85,14 @@ Widget buildExpertSignupPage() {
       children: [
         SizedBox(height: 30),
         _buildAppTitle(),
-        SizedBox(height: 50),
+        SizedBox(height: 10),
         _textHelper(
             "If you would like to become a guide, sign up in the app and earn money quickly"),
-        SizedBox(height: 20),
-        SizedBox(
-          height: 450,
+        SizedBox(height: 10),
+        Expanded(
           child: _buildImage('join-us.jpg'),
         ),
-        Spacer(),
+        SizedBox(height: 75),
       ],
     ),
   );
