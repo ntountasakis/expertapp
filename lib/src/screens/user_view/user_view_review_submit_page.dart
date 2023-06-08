@@ -32,7 +32,7 @@ class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
   final focusNode = FocusNode();
 
   String _review = '';
-  double _rating = 0.0;
+  double _rating = 5.0;
 
   Widget buildTextReview() => TextFormField(
         focusNode: focusNode,
@@ -44,8 +44,8 @@ class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
       );
 
   Widget buildNumericalRating() => RatingBar.builder(
-        initialRating: 3,
-        minRating: 1,
+        initialRating: 5,
+        minRating: 0.5,
         direction: Axis.horizontal,
         allowHalfRating: true,
         itemCount: 5,
