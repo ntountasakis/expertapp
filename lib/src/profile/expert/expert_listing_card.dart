@@ -22,17 +22,21 @@ class ExpertListingCard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          _publicExpertInfo.documentType.majorCategory(),
-          style: majorStyle,
-          overflow: TextOverflow.ellipsis,
+        IntrinsicWidth(
+          child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                _publicExpertInfo.documentType.majorCategory(),
+                style: majorStyle,
+              )),
         ),
         IntrinsicWidth(
-          child: Text(
-            _publicExpertInfo.documentType.minorCategory(),
-            style: minorStyle,
-            overflow: TextOverflow.ellipsis,
-          ),
+          child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                _publicExpertInfo.documentType.minorCategory(),
+                style: minorStyle,
+              )),
         ),
         SizedBox(height: 5),
         buildStarRating(_publicExpertInfo, 14),

@@ -18,11 +18,12 @@ Widget buildLeadingProfileTile(
       children: [
         shortName != ""
             ? IntrinsicWidth(
-                child: Text(
-                shortName,
-                style: nameStyle,
-                overflow: TextOverflow.ellipsis,
-              ))
+                child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Text(
+                      shortName,
+                      style: nameStyle,
+                    )))
             : SizedBox(),
         shortName != "" ? SizedBox(height: 5) : SizedBox(),
         buildProfilePicTileElement(
