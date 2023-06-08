@@ -7,7 +7,7 @@ class CommonViewDeleteAccountPage extends StatelessWidget {
     const text =
         '''Are you sure you want to delete your account? Please note that this action is irreversible and all your data will be permanently deleted from our system.
 
-If you're experiencing any issues or have feedback about our product, please contact our customer service team at [insert email/contact information] so we can help you and improve our service for everyone.
+If you're experiencing any issues or have feedback about our product, please contact our customer service team at help@guruportal.io so we can help you and improve our service for everyone.
 
 If you're absolutely sure you want to proceed with the account deletion, please click the button below.
         ''';
