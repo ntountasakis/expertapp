@@ -7,8 +7,10 @@ import '../star_rating.dart';
 
 Widget buildStarRating(
     DocumentWrapper<PublicExpertInfo> publicExpertInfo, double size) {
-  return StarRating(
-      publicExpertInfo.documentType.getAverageReviewRating(), size);
+  return FittedBox(
+      fit: BoxFit.fitWidth,
+      child: StarRating(
+          publicExpertInfo.documentType.getAverageReviewRating(), size));
 }
 
 Widget buildTextRating(
