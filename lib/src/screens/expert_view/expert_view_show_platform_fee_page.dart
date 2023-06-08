@@ -53,7 +53,7 @@ class ExpertViewShowPlatformFeePage extends StatelessWidget {
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  'We believe that transparency is key when it comes to pricing. If you have any questions or concerns about our pricing structure, please don\'t hesitate to reach out to our customer support team. We\'re here to help!',
+                  'If you have any questions or concerns about our fee structure, please don\'t hesitate to reach out to our support team. We\'re here to help!',
                   style: TextStyle(fontSize: 16.0),
                 ),
               ],
