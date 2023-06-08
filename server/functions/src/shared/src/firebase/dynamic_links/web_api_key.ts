@@ -3,7 +3,7 @@ import axios from "axios";
 
 export class FirebaseDynamicLinkProvider {
   static WEB_API_KEY = "AIzaSyCK6muU1XDxjQL6ftxoQcoYUFjFLktfI7s";
-  static DYNAMIC_LINK_URL_PREFIX = "https://expertprofile.page.link";
+  static DYNAMIC_LINK_URL_PREFIX = "https://globalguide.page.link";
   static DYNAMIC_LINK_ENDPOINT = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=" + FirebaseDynamicLinkProvider.WEB_API_KEY;
   static LINK_TYPE_KEY = "expertLinkType";
   static LINK_TYPE_PROFILE_VALUE = "visitProfile";
