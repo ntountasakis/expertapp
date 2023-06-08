@@ -99,7 +99,7 @@ class _MyAppState extends State<MyApp> {
     return ChangeNotifierProvider<AppLifecycle>.value(
         value: widget.lifecycle,
         child: MaterialApp.router(
-          title: "Expert App",
+          title: "Global Guides",
           routerConfig: widget.router.goRouter,
           theme: FlexThemeData.light(
             scheme: FlexScheme.deepBlue,
