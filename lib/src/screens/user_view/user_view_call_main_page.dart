@@ -125,7 +125,7 @@ class _UserViewCallMainPageState extends State<UserViewCallMainPage> {
   Widget buildAwaitingPaymentView(CallServerModel model) {
     final paymentPrompt =
         "We are requesting a hold on your card for the amount of ${formattedRate(model.callPaymentPromptModel.centsRequestedAuthorized)}. "
-        "At the end of the call, we will charge your card for the actual amount of time you were connected to the expert. "
+        "At the end of the call, we will charge your card for the actual amount of time you were connected to the guide. "
         "The call can last a maximum of ${CallSummaryUtil.callLengthFormat(Duration(seconds: model.secMaxCallLength))}. "
         "Once that time has elapsed, the call will automatically end.";
     return Center(

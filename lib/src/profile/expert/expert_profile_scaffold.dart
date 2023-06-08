@@ -14,7 +14,7 @@ class ExpertProfileScaffold extends StatelessWidget {
   final Function(DocumentWrapper<PublicExpertInfo>?) profileHeaderBuilder;
   final Function(DocumentWrapper<PublicExpertInfo>?) aboutMeBuilder;
   final Function(DocumentWrapper<PublicExpertInfo>?)? onUpdate;
-  static String DEFAULT_APP_BAR_TITLE = "View Expert Profile";
+  static String DEFAULT_APP_BAR_TITLE = "View Guide Profile";
 
   const ExpertProfileScaffold(
       {Key? key,

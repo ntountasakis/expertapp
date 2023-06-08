@@ -40,7 +40,7 @@ Widget buildCallButtonHelper(
 
 Widget buildMakeAccountButton(BuildContext context) {
   return buildCallButtonHelper(context, Colors.green[500]!, Colors.green[900]!,
-      'Click to sign in to call this expert', Routes.SIGN_IN_PAGE, {}, false);
+      'Click to sign in to call this guide', Routes.SIGN_IN_PAGE, {}, false);
 }
 
 Widget buildCallPreviewButton(

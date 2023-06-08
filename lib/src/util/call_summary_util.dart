@@ -105,7 +105,7 @@ class CallSummaryUtil {
     final blurb =
         "Your payment method was charged ${formattedRate(summary.costOfCallCents)} for the call. "
         "We have cancelled the hold on the remaining amount that was authorized at the start of the call. "
-        "Please consider leaving a review. Thank you for using ExpertApp!";
+        "Please consider leaving a review. Thank you for using GlobalGuides!";
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
@@ -120,7 +120,7 @@ class CallSummaryUtil {
     final blurb =
         "Your payment method was refunded in the amount of  ${formattedRate(paymentPrompt.centsRequestedAuthorized)}. "
         "If you experienced any issues with the platform, please reach out to customer service. "
-        "Thank you for using ExpertApp!";
+        "Thank you for using GlobalGuides!";
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
@@ -134,7 +134,7 @@ class CallSummaryUtil {
     final blurb =
         "After fees, you earned ${formattedRate(summary.earnedTotalCents)} for the call. "
         "Funds will be transferred to your bank account on file within 3-5 business days. "
-        "Thank for your services on ExpertApp!";
+        "Thank for your services on GlobalGuides!";
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(
