@@ -97,7 +97,7 @@ class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
               reviewRating: _rating);
           _reviewSubmitAcknowledgmentDialog(context, dialogText);
         },
-        child: Text("Submit Review for Expert"));
+        child: Text("Submit Review for Guide"));
   }
 
   @override
