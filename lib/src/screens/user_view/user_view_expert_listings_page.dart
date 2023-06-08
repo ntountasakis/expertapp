@@ -21,7 +21,7 @@ class UserViewExpertListingsPage extends StatelessWidget {
             title: FittedBox(
           fit: BoxFit.fitWidth,
           child: Text(
-            'Expert Listings',
+            'Guide Listings',
           ),
         )),
         drawer: HamburgerMenu(

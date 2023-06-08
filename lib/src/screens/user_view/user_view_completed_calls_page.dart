@@ -18,7 +18,7 @@ class UserViewCompletedCallsPage extends StatelessWidget {
           title: FittedBox(
         fit: BoxFit.fitWidth,
         child: Text(
-          "Past Calls with Experts",
+          "Past Calls with Guides",
         ),
       )),
       body: StreamBuilder(

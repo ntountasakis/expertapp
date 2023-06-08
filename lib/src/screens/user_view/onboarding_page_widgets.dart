@@ -14,7 +14,7 @@ Widget buildOnboardingValuePropPage() {
         ),
         SizedBox(height: 20),
         _textHelper(
-            "Video call 1:1 with knowledgeable experts to get your questions answered"),
+            "Video call 1:1 with knowledgeable guides to get your questions answered"),
       ],
     ),
   );
@@ -29,7 +29,7 @@ Widget buildOnboardingExpertChoicePage() {
         _buildAppTitle(),
         SizedBox(height: 50),
         _textHelper(
-            "Choose your expert by viewing their category of expertise, reviews, and cost"),
+            "Choose your guide by viewing their category of expertise, reviews, and cost"),
         SizedBox(height: 20),
         SizedBox(
           height: 450,
@@ -71,7 +71,7 @@ Widget buildOnboardingChatPage() {
         _buildAppTitle(),
         SizedBox(height: 50),
         _textHelper(
-            "Exchange messages between the expert that you can review later"),
+            "Exchange messages between the guide that you can review later"),
         SizedBox(height: 20),
         SizedBox(
           height: 450,
@@ -92,7 +92,7 @@ Widget buildExpertSignupPage() {
         _buildAppTitle(),
         SizedBox(height: 50),
         _textHelper(
-            "If you have a skill we can verify, sign up in the app to become one of our experts and earn money quickly"),
+            "If you have a skill we can verify, sign up in the app to become one of our guides and earn money quickly"),
         SizedBox(height: 20),
         SizedBox(
           height: 450,
@@ -131,7 +131,7 @@ Widget _buildAppTitle() {
     children: [
       Spacer(),
       Text(
-        "Expert App",
+        "Global Guides",
         style: titleStyle,
       ),
       Spacer(),

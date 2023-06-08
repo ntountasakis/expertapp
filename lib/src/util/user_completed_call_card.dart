@@ -37,7 +37,7 @@ class UserCompletedCallCard extends StatelessWidget {
             if (expertMetadata != null) {
               title += ' with ' + expertMetadata.documentType.shortName();
             } else {
-              title += ' with Deleted Expert';
+              title += ' with Deleted Guide';
             }
 
             String subtitle =

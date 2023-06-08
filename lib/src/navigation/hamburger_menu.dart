@@ -31,7 +31,7 @@ class HamburgerMenu extends StatelessWidget {
 
   ListTile pastCallsWithExpertsTile(BuildContext context) {
     return ListTile(
-        title: Text("Past Calls with Experts"),
+        title: Text("Past Calls with Guides"),
         onTap: () {
           context.pushNamed(Routes.UV_COMPLETED_CALLS_PAGE);
         });
@@ -98,7 +98,7 @@ class HamburgerMenu extends StatelessWidget {
 
   ListTile becomeAnExpertTile(BuildContext context) {
     return ListTile(
-        title: Text("Become an Expert!"),
+        title: Text("Become a Guide!"),
         onTap: () {
           context.pushNamed(Routes.EV_CONNECTED_ACCOUNT_SIGNUP_PAGE);
         });
@@ -107,7 +107,7 @@ class HamburgerMenu extends StatelessWidget {
   ListTile finishSignUpExpertTile(
       BuildContext context, ExpertSignupProgress progress) {
     return ListTile(
-        title: Text("Complete Expert Signup"),
+        title: Text("Complete Guide Signup"),
         onTap: () {
           context.pushNamed(Routes.EV_CONNECTED_ACCOUNT_SIGNUP_PAGE);
           context.pushNamed(Routes.EV_UPDATE_PHONE_NUMBER_PAGE,
