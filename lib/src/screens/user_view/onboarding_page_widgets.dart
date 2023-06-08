@@ -35,7 +35,7 @@ Widget buildOnboardingExpertChoicePage() {
           height: 450,
           child: _buildImage('expert-listings.png'),
         ),
-        SizedBox(height: 20),
+        Spacer(),
       ],
     ),
   );
@@ -56,7 +56,7 @@ Widget buildOnboardingVideoCallPage() {
           height: 450,
           child: _buildImage('video-call.png'),
         ),
-        SizedBox(height: 20),
+        Spacer(),
       ],
     ),
   );
@@ -77,7 +77,7 @@ Widget buildOnboardingChatPage() {
           height: 450,
           child: _buildImage('chat-messages.png'),
         ),
-        SizedBox(height: 20),
+        Spacer(),
       ],
     ),
   );
@@ -98,7 +98,7 @@ Widget buildExpertSignupPage() {
           height: 450,
           child: _buildImage('join-us.jpg'),
         ),
-        SizedBox(height: 20),
+        Spacer(),
       ],
     ),
   );
