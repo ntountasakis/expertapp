@@ -110,6 +110,9 @@ class _ProfilePictureState extends State<ProfilePicture> {
     if (source == ImageSource.camera) {
       final shouldProceed = await promptCamera(context);
       if (!shouldProceed) return;
+    } else if (source == ImageSource.gallery) {
+      final shouldProceed = await promptPhotoGallery(context);
+      if (!shouldProceed) return;
     }
     try {
       final ImagePicker picker = ImagePicker();
