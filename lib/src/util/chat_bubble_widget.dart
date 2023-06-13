@@ -17,7 +17,7 @@ class ChatBubbleWidget extends StatelessWidget {
         alignment: Alignment.topRight,
         margin: EdgeInsets.only(top: 20),
         backGroundColor: Colors.blue,
-        child: Text(
+        child: SelectableText(
           chatMessage.documentType.chatText,
           style: TextStyle(color: Colors.white),
         ));
@@ -28,7 +28,7 @@ class ChatBubbleWidget extends StatelessWidget {
       clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
       backGroundColor: Color(0xffE7E7ED),
       margin: EdgeInsets.only(top: 20),
-      child: Text(
+      child: SelectableText(
         chatMessage.documentType.chatText,
         style: TextStyle(color: Colors.black),
       ),
