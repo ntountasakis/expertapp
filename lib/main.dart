@@ -11,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'package:expertapp/src/firebase/auth/auth_state_listener.dart' as Auth;
@@ -52,6 +53,8 @@ void main() async {
   Stripe.publishableKey =
       "pk_test_51LLQIdAoQ8pfRhfFNyVrKysmtjgsXqW2zjx6IxcVpKjvq8iMqTTGRl8BCUnTYiIzq5HUkbnZ9dXtiibhdum3Ozfv00lOhg3RyX";
   Stripe.merchantIdentifier = 'merchant.example.expertapp';
+
+  GoRouter.optionURLReflectsImperativeAPIs = true;
 
   runApp(
     MultiProvider(
