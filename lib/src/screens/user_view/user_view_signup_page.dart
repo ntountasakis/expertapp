@@ -5,6 +5,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/document_wrappe
 import 'package:expertapp/src/firebase/firestore/document_models/public_user_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/util/loading_icon.dart';
 import 'package:expertapp/src/util/reg_expr_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,7 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ButtonStyle buttonStyle =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 12));
+  bool isLoadingUserSignUp = false;
 
   Widget _buildFirstName() {
     return Padding(
@@ -87,31 +89,38 @@ class _UserViewSignupPageState extends State<UserViewSignupPage> {
     );
   }
 
+  Future<void> onSubmitPressed(AppLifecycle lifecycle) async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    _formKey.currentState!.save();
+
+    setState(() => isLoadingUserSignUp = true);
+
+    await onUserSignup(widget.firstName!, widget.lastName!, widget.email!,
+        lifecycle.authenticatedUser!.photoURL);
+
+    log('New User Signup');
+
+    DocumentWrapper<PublicUserInfo>? userMetadataWrapper =
+        await PublicUserInfo.get(lifecycle.authenticatedUser!.uid);
+
+    if (userMetadataWrapper == null) {
+      throw Exception('Expected ${lifecycle.authenticatedUser!.uid} to exist');
+    }
+
+    onUserCreated(lifecycle, userMetadataWrapper);
+
+    setState(() => isLoadingUserSignUp = false);
+  }
+
   Widget _buildSubmitButton(AppLifecycle lifecycle) {
-    return ElevatedButton(
+    return ElevatedButton.icon(
         style: buttonStyle,
-        onPressed: () async {
-          if (!_formKey.currentState!.validate()) {
-            return;
-          }
-          _formKey.currentState!.save();
-
-          await onUserSignup(widget.firstName!, widget.lastName!, widget.email!,
-              lifecycle.authenticatedUser!.photoURL);
-
-          log('New User Signup');
-
-          DocumentWrapper<PublicUserInfo>? userMetadataWrapper =
-              await PublicUserInfo.get(lifecycle.authenticatedUser!.uid);
-
-          if (userMetadataWrapper == null) {
-            throw Exception(
-                'Expected ${lifecycle.authenticatedUser!.uid} to exist');
-          }
-
-          onUserCreated(lifecycle, userMetadataWrapper);
-        },
-        child: const Text('Submit'));
+        onPressed:
+            isLoadingUserSignUp ? null : () => onSubmitPressed(lifecycle),
+        label: isLoadingUserSignUp ? loadingIcon() : Icon(Icons.check),
+        icon: const Text('Submit'));
   }
 
   void onUserCreated(AppLifecycle lifecycle,

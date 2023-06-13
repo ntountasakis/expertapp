@@ -1,8 +1,18 @@
 import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
+import 'package:expertapp/src/util/loading_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FirebaseAuth;
 
-class CommonViewDeleteAccountPage extends StatelessWidget {
+class CommonViewDeleteAccountPage extends StatefulWidget {
+  @override
+  State<CommonViewDeleteAccountPage> createState() =>
+      _CommonViewDeleteAccountPageState();
+}
+
+class _CommonViewDeleteAccountPageState
+    extends State<CommonViewDeleteAccountPage> {
+  bool isLoading = false;
+
   Widget buildWarningText() {
     const text =
         '''Are you sure you want to delete your account? Please note that this action is irreversible and all your data will be permanently deleted from our system.
@@ -19,6 +29,16 @@ If you're absolutely sure you want to proceed with the account deletion, please 
     ]);
   }
 
+  Future<void> onAccountDeletePressed() async {
+    setState(() => isLoading = true);
+    final result = await onAccountDelete();
+    setState(() => isLoading = false);
+    await showPostDeleteDialog(context, result);
+    if (result.success) {
+      await FirebaseAuth.FirebaseAuth.instance.signOut();
+    }
+  }
+
   Widget buildDeleteButton(BuildContext context) {
     final ButtonStyle style = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20),
@@ -29,16 +49,11 @@ If you're absolutely sure you want to proceed with the account deletion, please 
     return Row(children: [
       SizedBox(width: 20),
       Expanded(
-          child: ElevatedButton(
+          child: ElevatedButton.icon(
               style: style,
-              onPressed: () async {
-                final result = await onAccountDelete();
-                await showPostDeleteDialog(context, result);
-                if (result.success) {
-                  await FirebaseAuth.FirebaseAuth.instance.signOut();
-                }
-              },
-              child: Text("Delete Account"))),
+              label: isLoading ? loadingIcon() : Icon(null),
+              onPressed: isLoading ? null : () => onAccountDeletePressed(),
+              icon: Text("Delete Account"))),
       SizedBox(width: 20),
     ]);
   }

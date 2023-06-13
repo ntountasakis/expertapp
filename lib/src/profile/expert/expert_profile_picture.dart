@@ -6,7 +6,7 @@ import 'package:expertapp/src/profile/profile_picture.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-void onProfilePicSelection(
+Future<void> onProfilePicSelection(
     {required Uint8List selectedProfilePicBytes,
     required bool fromSignUpFlow,
     required VoidCallback? onProfilePictureChanged}) async {

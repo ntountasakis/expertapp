@@ -3,6 +3,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/document_wrappe
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/lifecycle/app_lifecycle.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
+import 'package:expertapp/src/util/loading_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
@@ -28,8 +29,8 @@ class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
   final formKey = GlobalKey<FormState>();
   final ButtonStyle style =
       ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
-
   final focusNode = FocusNode();
+  bool isSubmittingReview = false;
 
   String _review = '';
   double _rating = 5.0;
@@ -86,18 +87,24 @@ class _UserViewReviewSubmitPageState extends State<UserViewReviewSubmitPage> {
     CallSummaryUtil.postCallGoHome(context, model);
   }
 
+  Future<void> onSubmit(
+      DocumentWrapper<PublicExpertInfo> publicExpertInfo) async {
+    setState(() => isSubmittingReview = true);
+    String dialogText = await onSubmitReview(
+        reviewedUid: publicExpertInfo.documentId,
+        reviewText: _review,
+        reviewRating: _rating);
+    setState(() => isSubmittingReview = false);
+    _reviewSubmitAcknowledgmentDialog(context, dialogText);
+  }
+
   Widget buildSubmit(BuildContext context,
       DocumentWrapper<PublicExpertInfo> publicExpertInfo) {
-    return ElevatedButton(
+    return ElevatedButton.icon(
         style: style,
-        onPressed: () async {
-          String dialogText = await onSubmitReview(
-              reviewedUid: publicExpertInfo.documentId,
-              reviewText: _review,
-              reviewRating: _rating);
-          _reviewSubmitAcknowledgmentDialog(context, dialogText);
-        },
-        child: Text("Submit Review for Guide"));
+        onPressed: isSubmittingReview ? null : () => onSubmit(publicExpertInfo),
+        label: isSubmittingReview ? loadingIcon() : Icon(Icons.check),
+        icon: Text("Submit Review for Guide"));
   }
 
   @override
