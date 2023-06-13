@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/firebase/storage/storage_paths.dart';
@@ -110,7 +111,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
     if (source == ImageSource.camera) {
       final shouldProceed = await promptCamera(context);
       if (!shouldProceed) return;
-    } else if (source == ImageSource.gallery) {
+    } else if (source == ImageSource.gallery && Platform.isIOS) {
       final shouldProceed = await promptPhotoGallery(context);
       if (!shouldProceed) return;
     }

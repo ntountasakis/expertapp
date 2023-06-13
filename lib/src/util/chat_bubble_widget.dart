@@ -3,6 +3,8 @@ import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:expertapp/src/util/time_util.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatBubbleWidget extends StatelessWidget {
   final DocumentWrapper<ChatMessage> chatMessage;
@@ -17,9 +19,13 @@ class ChatBubbleWidget extends StatelessWidget {
         alignment: Alignment.topRight,
         margin: EdgeInsets.only(top: 20),
         backGroundColor: Colors.blue,
-        child: SelectableText(
-          chatMessage.documentType.chatText,
+        child: SelectableLinkify(
+          text: chatMessage.documentType.chatText,
           style: TextStyle(color: Colors.white),
+          linkStyle: TextStyle(color: Colors.blue[900]),
+          onOpen: (link) async {
+            await launchUrl(Uri.parse(link.url));
+          },
         ));
   }
 
@@ -28,9 +34,13 @@ class ChatBubbleWidget extends StatelessWidget {
       clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
       backGroundColor: Color(0xffE7E7ED),
       margin: EdgeInsets.only(top: 20),
-      child: SelectableText(
-        chatMessage.documentType.chatText,
+      child: SelectableLinkify(
+        text: chatMessage.documentType.chatText,
         style: TextStyle(color: Colors.black),
+        linkStyle: TextStyle(color: Colors.blue),
+        onOpen: (link) async {
+          await launchUrl(Uri.parse(link.url));
+        },
       ),
     );
   }
