@@ -13,36 +13,57 @@ class ChatBubbleWidget extends StatelessWidget {
   const ChatBubbleWidget(this.chatMessage, this.currentUserId, {Key? key})
       : super(key: key);
 
-  Widget buildSendChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
-    return new ChatBubble(
-        clipper: ChatBubbleClipper3(type: BubbleType.sendBubble),
+  Widget chatBubbleBuilderHelper(
+      DocumentWrapper<ChatMessage> chatMessage,
+      BubbleType bubbleType,
+      Color backgroundColor,
+      Color textColor,
+      Color linkColor) {
+    return ChatBubble(
+        clipper: ChatBubbleClipper3(type: bubbleType),
         alignment: Alignment.topRight,
         margin: EdgeInsets.only(top: 20),
-        backGroundColor: Colors.blue,
+        backGroundColor: backgroundColor,
         child: SelectableLinkify(
+          key: ValueKey(chatMessage.documentId),
+          enableInteractiveSelection: true,
           text: chatMessage.documentType.chatText,
-          style: TextStyle(color: Colors.white),
-          linkStyle: TextStyle(color: Colors.blue[900]),
+          style: TextStyle(color: textColor),
+          linkStyle: TextStyle(color: linkColor),
+          contextMenuBuilder: (context, editableTextState) {
+            return AdaptiveTextSelectionToolbar.buttonItems(
+              anchors: editableTextState.contextMenuAnchors,
+              buttonItems: <ContextMenuButtonItem>[
+                ContextMenuButtonItem(
+                  onPressed: () {
+                    editableTextState
+                        .copySelection(SelectionChangedCause.toolbar);
+                  },
+                  type: ContextMenuButtonType.copy,
+                ),
+                ContextMenuButtonItem(
+                  onPressed: () {
+                    editableTextState.selectAll(SelectionChangedCause.toolbar);
+                  },
+                  type: ContextMenuButtonType.selectAll,
+                ),
+              ],
+            );
+          },
           onOpen: (link) async {
             await launchUrl(Uri.parse(link.url));
           },
         ));
   }
 
+  Widget buildSendChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
+    return chatBubbleBuilderHelper(chatMessage, BubbleType.sendBubble,
+        Colors.blue, Colors.white, Colors.blue[900]!);
+  }
+
   Widget buildReceiverChatBubble(DocumentWrapper<ChatMessage> chatMessage) {
-    return ChatBubble(
-      clipper: ChatBubbleClipper3(type: BubbleType.receiverBubble),
-      backGroundColor: Color(0xffE7E7ED),
-      margin: EdgeInsets.only(top: 20),
-      child: SelectableLinkify(
-        text: chatMessage.documentType.chatText,
-        style: TextStyle(color: Colors.black),
-        linkStyle: TextStyle(color: Colors.blue),
-        onOpen: (link) async {
-          await launchUrl(Uri.parse(link.url));
-        },
-      ),
-    );
+    return chatBubbleBuilderHelper(chatMessage, BubbleType.receiverBubble,
+        Color(0xffE7E7ED), Colors.black, Colors.blue);
   }
 
   @override
