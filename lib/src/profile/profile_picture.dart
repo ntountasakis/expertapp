@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:expertapp/src/environment/environment_config.dart';
 import 'package:expertapp/src/firebase/storage/storage_paths.dart';
 import 'package:expertapp/src/firebase/storage/storage_util.dart';
+import 'package:expertapp/src/util/permission_prompts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -107,26 +108,8 @@ class _ProfilePictureState extends State<ProfilePicture> {
 
   Future<void> uploadNewImage(ImageSource source) async {
     if (source == ImageSource.camera) {
-      final status = await Permission.camera.request();
-      if (status != PermissionStatus.granted) {
-        await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Camera access is required"),
-                actions: [
-                  TextButton(
-                    child: Center(child: Text("Enable camera access")),
-                    onPressed: () async {
-                      await openAppSettings();
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-              );
-            });
-        return;
-      }
+      final shouldProceed = await promptCamera(context);
+      if (!shouldProceed) return;
     }
     try {
       final ImagePicker picker = ImagePicker();

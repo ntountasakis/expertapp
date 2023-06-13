@@ -1,6 +1,7 @@
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/navigation/routes.dart';
+import 'package:expertapp/src/util/permission_prompts.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,7 +12,8 @@ Widget buildCallButtonHelper(
     String buttonText,
     String routeName,
     Map<String, String> params,
-    bool shouldPush) {
+    bool shouldPush,
+    bool promptForPermissions) {
   final ButtonStyle style = ElevatedButton.styleFrom(
     textStyle: const TextStyle(fontSize: 20),
     backgroundColor: backgroundColor,
@@ -25,13 +27,19 @@ Widget buildCallButtonHelper(
         child: ElevatedButton(
             style: style,
             onPressed: () async {
+              if (promptForPermissions) {
+                final allowed = await promptCameraAndMicrophone(context);
+                if (!allowed) {
+                  return;
+                }
+              }
               if (shouldPush) {
                 context.pushNamed(routeName, pathParameters: params);
               } else {
                 context.pushReplacementNamed(routeName, pathParameters: params);
               }
             },
-            child: Text(buttonText)),
+            child: FittedBox(fit: BoxFit.fitWidth, child: Text(buttonText))),
       ),
       SizedBox(width: 10),
     ],
@@ -39,8 +47,15 @@ Widget buildCallButtonHelper(
 }
 
 Widget buildMakeAccountButton(BuildContext context) {
-  return buildCallButtonHelper(context, Colors.green[500]!, Colors.green[900]!,
-      'Click to sign in to call this guide', Routes.SIGN_IN_PAGE, {}, false);
+  return buildCallButtonHelper(
+      context,
+      Colors.green[500]!,
+      Colors.green[900]!,
+      'Click to sign in to call this guide',
+      Routes.SIGN_IN_PAGE,
+      {},
+      false,
+      false);
 }
 
 Widget buildCallPreviewButton(
@@ -49,9 +64,10 @@ Widget buildCallPreviewButton(
       context,
       Colors.green[500]!,
       Colors.green[900]!,
-      'Call ${publicExpertInfo.documentType.firstName}',
+      'Preview call with ${publicExpertInfo.documentType.firstName}',
       Routes.UV_EXPERT_CALL_PREVIEW_PAGE,
       {Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId},
+      true,
       true);
 }
 
@@ -64,7 +80,8 @@ Widget buildCallUnableShowInCallStatus(
       'They are currently in another call. Please come back later.',
       Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
       {Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId},
-      true);
+      true,
+      false);
 }
 
 Widget buildCallUnableShowAvailabilityButton(
@@ -76,7 +93,8 @@ Widget buildCallUnableShowAvailabilityButton(
       'View ${publicExpertInfo.documentType.firstName}\'s availability',
       Routes.UV_VIEW_EXPERT_AVAILABILITY_PAGE,
       {Routes.EXPERT_ID_PARAM: publicExpertInfo.documentId},
-      true);
+      true,
+      false);
 }
 
 Widget buildExpertProfileCallActionButton(
