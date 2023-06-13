@@ -85,6 +85,7 @@ class _MyRatePickerState extends State<RatePickers> {
         centsPerMinute: _ratePerMinute,
         centsStartCall: _rateStartCall,
         fromSignUpFlow: widget.fromSignUpFlow);
+    setState(() => isSubmitting = false);
     showDialog(
         context: context,
         builder: (context) {
@@ -100,10 +101,15 @@ class _MyRatePickerState extends State<RatePickers> {
                   ),
                 ),
               ),
+              TextButton(
+                child: Text("OK"),
+                onPressed: () async {
+                  Navigator.pop(context);
+                },
+              )
             ],
           );
         });
-    setState(() => isSubmitting = false);
   }
 
   Widget buildSubmitButton(BuildContext context) {
