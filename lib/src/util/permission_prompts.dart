@@ -14,6 +14,10 @@ Future<bool> promptCamera(BuildContext context) async {
   return promptForPhoneDevice(context, Permission.camera, "Camera");
 }
 
+Future<bool> promptPhotoGallery(BuildContext context) async {
+  return promptForPhoneDevice(context, Permission.photos, "Photos");
+}
+
 Future<bool> promptCameraAndMicrophone(BuildContext context) async {
   final cameraIsGranted = await Permission.camera.request().isGranted;
   final micIsGranted = await Permission.microphone.request().isGranted;
