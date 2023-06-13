@@ -5,6 +5,7 @@ import 'package:expertapp/src/firebase/firestore/document_models/public_user_inf
 import 'package:expertapp/src/navigation/routes.dart';
 import 'package:expertapp/src/appbars/expert_view/expert_call_prompt_appbar.dart';
 import 'package:expertapp/src/util/call_buttons.dart';
+import 'package:expertapp/src/util/permission_prompts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
@@ -47,12 +48,15 @@ class _ExpertViewCallJoinPromptPageState
     );
   }
 
-  void onCallAcceptTap(PublicUserInfo caller) {
-    context.goNamed(Routes.EV_CALL_HOME_PAGE, pathParameters: {
-      Routes.CALLER_UID_PARAM: widget.callerUserId,
-      Routes.CALL_TRANSACTION_ID_PARAM: widget.transactionId,
-      Routes.OTHER_USER_SHORT_NAME: caller.shortName(),
-    });
+  Future<void> onCallAcceptTap(PublicUserInfo caller) async {
+    final isGranted = await promptCameraAndMicrophone(context);
+    if (isGranted) {
+      context.goNamed(Routes.EV_CALL_HOME_PAGE, pathParameters: {
+        Routes.CALLER_UID_PARAM: widget.callerUserId,
+        Routes.CALL_TRANSACTION_ID_PARAM: widget.transactionId,
+        Routes.OTHER_USER_SHORT_NAME: caller.shortName(),
+      });
+    }
   }
 
   void navigateHome() {

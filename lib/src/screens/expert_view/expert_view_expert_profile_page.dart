@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:expertapp/src/appbars/common_view/expert_profile_shareable_appbar.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/expert_signup_progress.dart';
@@ -8,10 +6,9 @@ import 'package:expertapp/src/profile/expert/expert_profile_about_me.dart';
 import 'package:expertapp/src/profile/expert/expert_profile_header.dart';
 import 'package:expertapp/src/profile/expert/expert_profile_scaffold.dart';
 import 'package:expertapp/src/util/expert_category_util.dart';
-import 'package:expertapp/src/util/expert_notification_enable_prompt.dart';
+import 'package:expertapp/src/util/permission_prompts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class ExpertViewExpertProfilePage extends StatefulWidget {
   final String expertUid;
@@ -40,7 +37,7 @@ class _ExpertViewExpertProfilePageState
         uid: widget.expertUid, onComplete: () {}, fromSignUpFlow: false);
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      promptForNotificationEnable(context);
+      promptNotifications(context);
     });
   }
 

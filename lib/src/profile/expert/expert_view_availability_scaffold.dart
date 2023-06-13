@@ -6,8 +6,8 @@ import 'package:expertapp/src/firebase/firestore/document_models/public_expert_i
 import 'package:expertapp/src/timezone/timezone_util.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
 import 'package:expertapp/src/util/expert_availability_util.dart';
-import 'package:expertapp/src/util/expert_notification_enable_prompt.dart';
 import 'package:expertapp/src/util/loading_icon.dart';
+import 'package:expertapp/src/util/permission_prompts.dart';
 import 'package:flutter/material.dart';
 import 'package:day_picker/day_picker.dart';
 import 'package:flutter/scheduler.dart';
@@ -61,7 +61,7 @@ class _ExpertViewUpdateAvailabilityScaffoldState
     refreshAvailability();
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      promptForNotificationEnable(context);
+      promptNotifications(context);
     });
   }
 
