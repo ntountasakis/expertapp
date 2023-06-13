@@ -76,7 +76,7 @@ export const updateExpertRate = functions.https.onCall(async (data, context) => 
     });
     return {
       success: success,
-      message: success ? "Your expert rate has been updated successfully" : "Internal Server Error",
+      message: success ? "Your rates has been updated successfully" : "Internal Server Error",
     };
   } catch (e) {
     return {

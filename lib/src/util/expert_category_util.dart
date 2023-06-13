@@ -5,6 +5,7 @@ import 'package:expertapp/src/firebase/cloud_functions/callable_api.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/document_wrapper.dart';
 import 'package:expertapp/src/firebase/firestore/document_models/public_expert_info.dart';
 import 'package:expertapp/src/firebase/firestore/firestore_paths.dart';
+import 'package:expertapp/src/util/loading_icon.dart';
 import 'package:flutter/material.dart';
 
 Future<List<String>> getMajorExpertCategories() async {
@@ -50,6 +51,7 @@ class ExpertCategorySelector extends StatefulWidget {
 }
 
 class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
+  bool isSubmittingUpdate = false;
   String? theSelectedMajorCategory;
   String? theSelectedMinorCategory;
 
@@ -94,29 +96,35 @@ class _ExpertCategorySelectorState extends State<ExpertCategorySelector> {
     return "";
   }
 
+  Future<void> onSubmitPressed(PublicExpertInfo info) async {
+    setState(() => isSubmittingUpdate = true);
+    String nextMajorCategory = await effectiveMajorCategory(info);
+    String nextMinorCategory =
+        await effectiveMinorCategory(info, nextMajorCategory);
+    final result = await updateExpertCategory(
+        newMajorCategory: nextMajorCategory,
+        newMinorCategory: nextMinorCategory,
+        fromSignUpFlow: widget.fromSignUpFlow);
+    setState(() {
+      theSelectedMajorCategory = null;
+      theSelectedMinorCategory = null;
+      isSubmittingUpdate = false;
+    });
+    if (result.success) {
+      widget.onComplete();
+    }
+    Navigator.of(context).pop();
+  }
+
   Widget buildSubmitButton(PublicExpertInfo info) {
     final ButtonStyle buttonStyle =
         ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
-    return ElevatedButton(
-        style: buttonStyle,
-        onPressed: () async {
-          String nextMajorCategory = await effectiveMajorCategory(info);
-          String nextMinorCategory =
-              await effectiveMinorCategory(info, nextMajorCategory);
-          final result = await updateExpertCategory(
-              newMajorCategory: nextMajorCategory,
-              newMinorCategory: nextMinorCategory,
-              fromSignUpFlow: widget.fromSignUpFlow);
-          setState(() {
-            theSelectedMajorCategory = null;
-            theSelectedMinorCategory = null;
-          });
-          if (result.success) {
-            widget.onComplete();
-          }
-          Navigator.of(context).pop();
-        },
-        child: Text("Submit"));
+    return ElevatedButton.icon(
+      style: buttonStyle,
+      onPressed: isSubmittingUpdate ? null : () => onSubmitPressed(info),
+      label: isSubmittingUpdate ? loadingIcon() : Icon(Icons.check),
+      icon: Text("Submit"),
+    );
   }
 
   @override

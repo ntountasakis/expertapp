@@ -7,6 +7,7 @@ import 'package:expertapp/src/timezone/timezone_util.dart';
 import 'package:expertapp/src/util/call_summary_util.dart';
 import 'package:expertapp/src/util/expert_availability_util.dart';
 import 'package:expertapp/src/util/expert_notification_enable_prompt.dart';
+import 'package:expertapp/src/util/loading_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:day_picker/day_picker.dart';
 import 'package:flutter/scheduler.dart';
@@ -42,6 +43,7 @@ class ExpertViewUpdateAvailabilityScaffold extends StatefulWidget {
 class _ExpertViewUpdateAvailabilityScaffoldState
     extends State<ExpertViewUpdateAvailabilityScaffold> {
   bool _hasChanges = false;
+  bool isSubmitting = false;
   String _mostRecentlySelectedDay = "";
   Widget _selectWeekdaysWidget = SizedBox();
   final _selectedDays = new Map<String, TimeRangeResult?>();
@@ -257,14 +259,9 @@ class _ExpertViewUpdateAvailabilityScaffoldState
   }
 
   Widget buildSubmitAvailabilityButton() {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
-        textStyle: const TextStyle(fontSize: 20),
-        shadowColor: Colors.black,
-        elevation: 10,
-      ),
-      child: Text("Save updated availability"),
+    return ElevatedButton.icon(
+      icon: Text("Save updated availability"),
+      label: isSubmitting ? loadingIcon() : Icon(Icons.check),
       onPressed: sendAvailability,
     );
   }
@@ -290,6 +287,7 @@ class _ExpertViewUpdateAvailabilityScaffoldState
   }
 
   Future<void> sendAvailability() async {
+    setState(() => isSubmitting = true);
     final availability = ExpertAvailability(
       mondayAvailability:
           buildAvailabilityForDay(ExpertAvailabilityUtil.DAYS[0]),
@@ -331,6 +329,7 @@ class _ExpertViewUpdateAvailabilityScaffoldState
       }
     }
     refreshAvailability();
+    setState(() => isSubmitting = false);
   }
 
   Future<bool?> buildUnsavedChangesDialog() {

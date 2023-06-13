@@ -7,13 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image/image.dart' as img;
 
-class ProfilePicture extends StatelessWidget {
+class ProfilePicture extends StatefulWidget {
   final String? profilePicUrl;
   final bool fromSignUpFlow;
   final VoidCallback? onProfilePicUpload;
-  final void Function(
+  final Future<void> Function(
       {required Uint8List selectedProfilePicBytes,
       required bool fromSignUpFlow,
       required VoidCallback? onProfilePictureChanged})? onProfilePicSelection;
@@ -23,19 +22,33 @@ class ProfilePicture extends StatelessWidget {
       this.onProfilePicUpload,
       this.onProfilePicSelection]);
 
+  @override
+  State<ProfilePicture> createState() => _ProfilePictureState();
+}
+
+class _ProfilePictureState extends State<ProfilePicture> {
+  bool isUploadingPicture = false;
+
   Widget _imageWidget(String url) {
-    if (!EnvironmentConfig.getConfig().isProd()) {
-      url = StorageUtil.getLocalhostUrlForStorageUrl(url);
+    if (isUploadingPicture) {
+      return Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      if (!EnvironmentConfig.getConfig().isProd()) {
+        url = StorageUtil.getLocalhostUrlForStorageUrl(url);
+      }
+      return CircleAvatar(
+        backgroundColor: Colors.white,
+        backgroundImage: NetworkImage(url),
+      );
     }
-    return CircleAvatar(
-      backgroundColor: Colors.white,
-      backgroundImage: NetworkImage(url),
-    );
   }
 
   Widget _asyncPicLoader() {
-    if (profilePicUrl != null) {
-      return _imageWidget(profilePicUrl!);
+    if (widget.profilePicUrl != null) {
+      return _imageWidget(widget.profilePicUrl!);
     }
     return FutureBuilder(
       future: StorageUtil.getDownloadUrl(StoragePaths.DEFAULT_PROFILE_PIC),
@@ -49,7 +62,37 @@ class ProfilePicture extends StatelessWidget {
     );
   }
 
+  Future<void> uploadPicture() async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Center(child: Text("Select photo source")),
+            actionsAlignment: MainAxisAlignment.spaceEvenly,
+            actions: [
+              TextButton(
+                child: Text("Camera"),
+                onPressed: () async {
+                  uploadNewImage(ImageSource.camera);
+                  Navigator.pop(context);
+                },
+              ),
+              TextButton(
+                child: Text("Photo Gallery"),
+                onPressed: () async {
+                  uploadNewImage(ImageSource.gallery);
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
+  }
+
   Widget _profilePicUploadButton(BuildContext context) {
+    if (isUploadingPicture) {
+      return SizedBox();
+    }
     return IconButton(
       icon: Icon(
         Icons.camera_alt_rounded,
@@ -57,32 +100,7 @@ class ProfilePicture extends StatelessWidget {
         color: Colors.grey,
       ),
       tooltip: 'Upload a profile picture',
-      onPressed: () async {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Center(child: Text("Select photo source")),
-                actionsAlignment: MainAxisAlignment.spaceEvenly,
-                actions: [
-                  TextButton(
-                    child: Text("Camera"),
-                    onPressed: () async {
-                      uploadNewImage(ImageSource.camera);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  TextButton(
-                    child: Text("Photo Gallery"),
-                    onPressed: () async {
-                      uploadNewImage(ImageSource.gallery);
-                      Navigator.pop(context);
-                    },
-                  )
-                ],
-              );
-            });
-      },
+      onPressed: isUploadingPicture ? null : uploadPicture,
     );
   }
 
@@ -91,6 +109,7 @@ class ProfilePicture extends StatelessWidget {
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(source: source);
       if (image != null) {
+        setState(() => isUploadingPicture = true);
         Uint8List imageBytes = await image.readAsBytes();
         Uint8List jpegBytes = await FlutterImageCompress.compressWithList(
             imageBytes,
@@ -98,11 +117,11 @@ class ProfilePicture extends StatelessWidget {
             minWidth: 400,
             quality: 50,
             format: CompressFormat.jpeg);
-        onProfilePicSelection!(
+        await widget.onProfilePicSelection!(
             selectedProfilePicBytes: jpegBytes,
-            fromSignUpFlow: fromSignUpFlow,
-            onProfilePictureChanged: onProfilePicUpload);
-        // }
+            fromSignUpFlow: widget.fromSignUpFlow,
+            onProfilePictureChanged: widget.onProfilePicUpload);
+        setState(() => isUploadingPicture = false);
       }
     } on Exception catch (e) {
       log('Exception picking image:  $e');
@@ -118,7 +137,7 @@ class ProfilePicture extends StatelessWidget {
             child: _asyncPicLoader(),
           ),
         ),
-        if (onProfilePicSelection != null)
+        if (widget.onProfilePicSelection != null)
           Positioned(
             bottom: 0,
             right: 0,
