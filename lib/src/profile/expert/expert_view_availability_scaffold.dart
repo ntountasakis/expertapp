@@ -306,28 +306,35 @@ class _ExpertViewUpdateAvailabilityScaffoldState
     );
     final result =
         await updateExpertAvailability(availability, widget.fromSignupFlow);
-    if (result.success) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Success"),
-              content: Text("Your availability has been updated"),
-            );
-          });
-    } else {
-      if (!result.success) {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Error"),
-                content: Text("We are experiencing technical difficulties. "
-                    "Please contact customer service to update your availability."),
-              );
-            });
-      }
-    }
+    final title = result.success ? "Success" : "Error";
+    final message = result.success
+        ? "Your availability has been updated"
+        : "We are experiencing technical difficulties. "
+            "Please contact customer service to update your availability.";
+    showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text(title),
+            children: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    message,
+                    style: CallSummaryUtil.LIGHT_STYLE,
+                  ),
+                ),
+              ),
+              TextButton(
+                child: Text("OK"),
+                onPressed: () async {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
     refreshAvailability();
     setState(() => isSubmitting = false);
   }

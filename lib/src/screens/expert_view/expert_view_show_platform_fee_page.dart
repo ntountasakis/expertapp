@@ -32,7 +32,7 @@ class ExpertViewShowPlatformFeePage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'Pricing Details',
+                  'Fee Details',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24.0,
