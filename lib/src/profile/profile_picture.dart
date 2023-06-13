@@ -6,6 +6,7 @@ import 'package:expertapp/src/firebase/storage/storage_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePicture extends StatefulWidget {
@@ -105,6 +106,28 @@ class _ProfilePictureState extends State<ProfilePicture> {
   }
 
   Future<void> uploadNewImage(ImageSource source) async {
+    if (source == ImageSource.camera) {
+      final status = await Permission.camera.request();
+      if (status != PermissionStatus.granted) {
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Camera access is required"),
+                actions: [
+                  TextButton(
+                    child: Center(child: Text("Enable camera access")),
+                    onPressed: () async {
+                      await openAppSettings();
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+              );
+            });
+        return;
+      }
+    }
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(source: source);
