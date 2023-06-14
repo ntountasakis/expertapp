@@ -21,7 +21,9 @@ class ChatBubbleWidget extends StatelessWidget {
       Color linkColor) {
     return ChatBubble(
         clipper: ChatBubbleClipper3(type: bubbleType),
-        alignment: Alignment.topRight,
+        alignment: bubbleType == BubbleType.sendBubble
+            ? Alignment.topRight
+            : Alignment.topLeft,
         margin: EdgeInsets.only(top: 20),
         backGroundColor: backgroundColor,
         child: SelectableLinkify(
