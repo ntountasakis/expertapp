@@ -11,11 +11,12 @@ Future<void> promptNotifications(BuildContext context) async {
 }
 
 Future<bool> promptCamera(BuildContext context) async {
-  return promptForPhoneDevice(context, Permission.camera, "Camera");
+  return promptForPhoneDevice(context, Permission.camera, "Camera", false);
 }
 
 Future<bool> promptPhotoGallery(BuildContext context) async {
-  return promptForPhoneDevice(context, Permission.photos, "Photos");
+  return promptForPhoneDevice(
+      context, Permission.photos, "Photo Gallery", true);
 }
 
 Future<bool> promptCameraAndMicrophone(BuildContext context) async {
@@ -33,10 +34,11 @@ Future<bool> promptCameraAndMicrophone(BuildContext context) async {
   return false;
 }
 
-Future<bool> promptForPhoneDevice(
-    BuildContext context, Permission device, String deviceName) async {
+Future<bool> promptForPhoneDevice(BuildContext context, Permission device,
+    String deviceName, bool allowLimitedPhotoAccess) async {
   final status = await device.request();
-  if (status == PermissionStatus.granted) {
+  if (status == PermissionStatus.granted ||
+      (allowLimitedPhotoAccess && status == PermissionStatus.limited)) {
     return true;
   }
   showSettingsDialog(context, deviceName, null, null);
