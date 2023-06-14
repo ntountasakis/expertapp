@@ -35,24 +35,29 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
     chatTextController.clear();
   }
 
-  Widget buildChatBar(String chatroomId) => TextField(
-      controller: chatTextController,
-      minLines: 1,
-      maxLines: 5,
-      decoration: InputDecoration(
-          labelText: "Write Message",
-          border: OutlineInputBorder(),
-          suffixIcon: IconButton(
-            icon: Icon(Icons.send),
-            onPressed: () async {
-              await submitChatMessage(chatroomId);
-            },
-          )),
-      onChanged: (String chatMessage) {
-        setState(() {
-          _currentChatMessage = chatMessage;
-        });
-      });
+  Widget buildChatBar(String chatroomId) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 16.0, 0, 0),
+      child: TextField(
+          controller: chatTextController,
+          minLines: 1,
+          maxLines: 5,
+          decoration: InputDecoration(
+              labelText: "Write Message",
+              border: OutlineInputBorder(),
+              suffixIcon: IconButton(
+                icon: Icon(Icons.send),
+                onPressed: () async {
+                  await submitChatMessage(chatroomId);
+                },
+              )),
+          onChanged: (String chatMessage) {
+            setState(() {
+              _currentChatMessage = chatMessage;
+            });
+          }),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +78,13 @@ class _CommonViewChatPageState extends State<CommonViewChatPage> {
                               snapshot) {
                         if (snapshot.hasData) {
                           return ListView.builder(
+                              reverse: true,
                               itemCount: snapshot.data!.length,
                               itemBuilder: (context, index) {
-                                DocumentWrapper<ChatMessage> chatMessage =
-                                    snapshot.data!.elementAt(index);
+                                final reversedIndex =
+                                    snapshot.data!.length - 1 - index;
+                                final DocumentWrapper<ChatMessage> chatMessage =
+                                    snapshot.data!.elementAt(reversedIndex);
                                 return new ChatBubbleWidget(
                                   chatMessage,
                                   widget.currentUserUid,
