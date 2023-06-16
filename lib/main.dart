@@ -52,7 +52,7 @@ void main() async {
 
   Stripe.publishableKey =
       "pk_test_51LLQIdAoQ8pfRhfFNyVrKysmtjgsXqW2zjx6IxcVpKjvq8iMqTTGRl8BCUnTYiIzq5HUkbnZ9dXtiibhdum3Ozfv00lOhg3RyX";
-  Stripe.merchantIdentifier = 'merchant.example.expertapp';
+  Stripe.merchantIdentifier = 'merchant.io.guruportal';
 
   GoRouter.optionURLReflectsImperativeAPIs = true;
 
