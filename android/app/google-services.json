@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "111394228371",
+    "firebase_url": "https://expert-app-backend-default-rtdb.firebaseio.com",
+    "project_id": "expert-app-backend",
+    "storage_bucket": "expert-app-backend.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:111394228371:android:54f7626d2329e3451f2566",
+        "android_client_info": {
+          "package_name": "io.guruportal.globalguide"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "111394228371-hpr0i7u59adrc8iro8bs51l8899qvk60.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCslMpXJHBm7CMXPSHgI-jNLAHz-18M4XY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "111394228371-hpr0i7u59adrc8iro8bs51l8899qvk60.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "111394228371-0dcs9gu3ckvfjvqahinaitvi6gqp4vdi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.backend.expertapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

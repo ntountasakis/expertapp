@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2017",
+    "rootDirs": [
+      "src",
+      "generated"
+    ],
+    "allowJs": true,
+    "types": [
+      "jest"
+    ],
+    "esModuleInterop": true,
+  },
+  "compileOnSave": true,
+  "include": [
+    "src",
+    "test",
+    "../functions"
+  ],
+}

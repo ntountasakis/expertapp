@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  	match /expert_rates/{document=**} {
+    	allow read: if true
+    }	
+    match /public_expert_info/{document=**} {
+    	allow read: if true
+    }
+    match /public_user_info/{document=**} {
+    	allow read: if true
+    }
+    match /reviews/{document=**} {
+    	allow read: if true
+    }
+    match /expert_categories/{document=**} {
+    	allow read: if true
+    }
+    match /public_expert_info_staging/{userId} {
+      allow read: if request.auth.uid==userId
+    }
+    match /private_user_info/{userId} {
+    	allow read: if request.auth.uid==userId
+    }
+    match /expert_signup_progress/{userId} {
+      allow read: if request.auth.uid==userId
+    }
+
+    function canReadCallTransaction(request, resource) {
+      return resource.data.callerUid==request.auth.uid || resource.data.calledUid==request.auth.uid;
+    }
+
+    match /call_transactions/{transactionId} {
+    	allow read: if canReadCallTransaction(request, resource)
+    }
+    match /status/{userId} {
+      allow write: if request.auth.uid==userId
+    }
+    match /fcm_tokens/{userId} {
+      allow write: if request.auth.uid==userId
+    }
+    match /chat_rooms/{chatroomId}/chat_messages/{chatMessageId} {
+      allow list: if true
+    	allow get: if resource.data.authorUid==request.auth.uid || resource.data.recipientUid==request.auth.uid
+      allow write: if
+      get(/databases/$(database)/documents/chatroom_metadata/$(chatroomId)).data.currentUid==request.auth.uid ||
+      get(/databases/$(database)/documents/chatroom_metadata/$(chatroomId)).data.otherUid==request.auth.uid
+    }
+  }
+}
