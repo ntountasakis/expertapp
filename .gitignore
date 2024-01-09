@@ -132,3 +132,4 @@ conf/expert-app-localdev.json
 
 # Python venv
 **/venv/
+.ipynb_checkpoints/
